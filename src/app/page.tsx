@@ -1,8 +1,9 @@
+"use client";
 import { useState, useEffect, useMemo } from "react";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import { fetchICalFeed } from "../utils/icalParser";
 import { ICAL_FEED_URL } from "../config";
-import "./Landing.css";
+;
 
 // ── SVG Icon Components ──
 const ClockIcon = () => (
@@ -90,8 +91,7 @@ const FAQ_DATA: Array<{ q: string; a: React.ReactNode }> = [
     a: (
       <span>
         Puedes consultar nuestro calendario completo con todos los eventos, retiros y actividades en la sección de{" "}
-        <Link 
-          to="/calendario" 
+        <Link href="/calendario" 
           style={{ color: "var(--gold)", textDecoration: "underline", fontWeight: "600" }}
         >
           Calendario
@@ -245,7 +245,7 @@ export default function Landing() {
         
         {/* Desktop Links */}
         <ul className="nav-links">
-          <li><Link to="/calendario">Eventos</Link></li>
+          <li><Link href="/calendario">Eventos</Link></li>
           <li>
             <a href="https://wa.me/5214422497485" target="_blank" rel="noopener noreferrer" className="nav-cta-wa">
               <WhatsAppIcon size={16} /> WhatsApp
@@ -267,7 +267,7 @@ export default function Landing() {
         {/* Mobile Dropdown Overlay */}
         <div className={`nav-mobile-overlay ${mobileMenuOpen ? "open" : ""}`}>
           <ul className="nav-mobile-links">
-            <li><Link to="/calendario" onClick={() => setMobileMenuOpen(false)}>Eventos</Link></li>
+            <li><Link href="/calendario" onClick={() => setMobileMenuOpen(false)}>Eventos</Link></li>
             <li>
               <a 
                 href="https://wa.me/5214422497485" 
@@ -334,7 +334,7 @@ export default function Landing() {
                   <WhatsAppIcon size={16} /> WhatsApp Comunidad
                 </a>
                 
-                <Link to="/calendario" className="dynamic-btn btn-events">
+                <Link href="/calendario" className="dynamic-btn btn-events">
                   Calendario de Eventos
                 </Link>
               </div>
@@ -370,7 +370,7 @@ export default function Landing() {
                 <h3>Eventos próximos</h3>
                 <p>Planificados para la semana en curso</p>
               </div>
-              <Link to="/calendario" className="btn-ver-calendar">Ver todo</Link>
+              <Link href="/calendario" className="btn-ver-calendar">Ver todo</Link>
             </div>
 
             <div className="week-events-list">
@@ -616,7 +616,7 @@ export default function Landing() {
           <h2>¿Listo para ser parte de La Pandilla?</h2>
           <p>Ven a conocernos en persona o escríbenos directamente para enterarte de todo.</p>
           <div className="cta-buttons">
-            <Link to="/calendario" className="btn-insta" style={{ fontSize: "1rem", padding: "0.8rem 2rem" }}>
+            <Link href="/calendario" className="btn-insta" style={{ fontSize: "1rem", padding: "0.8rem 2rem" }}>
               Ver Calendario de Eventos
             </Link>
             <a
@@ -661,7 +661,7 @@ export default function Landing() {
           <div className="footer-meta-container">
             <span className="footer-copy">© 2026 La Pandilla de Jesús</span>
             <ul className="footer-links">
-              <li><Link to="/calendario">Eventos</Link></li>
+              <li><Link href="/calendario">Eventos</Link></li>
               <li>
                 <a href="https://wa.me/5214422497485" target="_blank" rel="noopener noreferrer">
                   WhatsApp

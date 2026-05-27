@@ -1,8 +1,9 @@
+"use client";
 import { useState, useEffect, useMemo } from "react";
-import { Link } from "react-router-dom";
-import { fetchICalFeed } from "../utils/icalParser";
-import { ICAL_FEED_URL } from "../config";
-import "./Landing.css";
+import Link from "next/link";
+import { fetchICalFeed } from "../../utils/icalParser";
+import { ICAL_FEED_URL } from "../../config";
+;
 
 // ── SVG Icons ──
 const ClockSmIcon = () => (
@@ -275,7 +276,7 @@ export default function Calendario() {
       <nav className={`nav ${mobileMenuOpen ? "nav-expanded" : ""}`}>
         <div className="nav-left">
           <div className="nav-brand">
-            <Link to="/" style={{ textDecoration: "none" }}>
+            <Link href="/" style={{ textDecoration: "none" }}>
               <span className="nav-brand-name">La Pandilla de Jesús</span>
             </Link>
             <span className="nav-brand-sub">Comunidad católica · Querétaro</span>
@@ -284,7 +285,7 @@ export default function Calendario() {
         
         {/* Desktop Links */}
         <ul className="nav-links">
-          <li><Link to="/">Inicio</Link></li>
+          <li><Link href="/">Inicio</Link></li>
           <li>
             <a href="https://wa.me/5214422497485" target="_blank" rel="noopener noreferrer" className="nav-cta-wa">
               <WhatsAppIcon size={16} /> WhatsApp
@@ -306,7 +307,7 @@ export default function Calendario() {
         {/* Mobile Dropdown Overlay */}
         <div className={`nav-mobile-overlay ${mobileMenuOpen ? "open" : ""}`}>
           <ul className="nav-mobile-links">
-            <li><Link to="/" onClick={() => setMobileMenuOpen(false)}>Inicio</Link></li>
+            <li><Link href="/" onClick={() => setMobileMenuOpen(false)}>Inicio</Link></li>
             <li>
               <a 
                 href="https://wa.me/5214422497485" 
@@ -421,7 +422,7 @@ export default function Calendario() {
           <div className="footer-meta-container">
             <span className="footer-copy">© 2026 La Pandilla de Jesús</span>
             <ul className="footer-links">
-              <li><Link to="/">Inicio</Link></li>
+              <li><Link href="/">Inicio</Link></li>
               <li>
                 <a href="https://wa.me/5214422497485" target="_blank" rel="noopener noreferrer">
                   WhatsApp

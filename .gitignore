@@ -17,6 +17,8 @@ jspm_packages/
 # Output / Build
 dist/
 dist-ssr/
+.next/
+.next
 *.local
 
 # IDEs and editors
