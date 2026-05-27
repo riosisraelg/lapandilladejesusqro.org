@@ -410,6 +410,19 @@ body.landing-body {
   height: 100%;
 }
 
+.upcoming-info-note {
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px dashed var(--border-subtle);
+  font-size: 0.76rem;
+  color: var(--text-light);
+  line-height: 1.5;
+}
+
+.upcoming-info-note p {
+  margin: 0;
+}
+
 .week-events-list {
   flex: 1;
   overflow-y: auto;

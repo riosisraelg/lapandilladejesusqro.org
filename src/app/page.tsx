@@ -212,11 +212,21 @@ export default function Landing() {
     const tomorrowList = thisWeek.filter((e) => e.date === tomorrowStr);
     const remainingList = thisWeek.filter((e) => e.date > tomorrowStr);
 
+    const todayDay = today.getDate();
+    const todayMonth = today.toLocaleDateString("es-ES", { month: "long" });
+    const sundayDay = sunday.getDate();
+    const sundayMonth = sunday.toLocaleDateString("es-ES", { month: "long" });
+    
+    const rangeStr = todayMonth === sundayMonth 
+      ? `del ${todayDay} al ${sundayDay} de ${todayMonth}`
+      : `del ${todayDay} de ${todayMonth} al ${sundayDay} de ${sundayMonth}`;
+
     return {
       today: todayList,
       tomorrow: tomorrowList,
       remaining: remainingList,
-      hasAny: thisWeek.length > 0
+      hasAny: thisWeek.length > 0,
+      rangeStr
     };
   }, [events]);
 
@@ -368,7 +378,7 @@ export default function Landing() {
             <div className="upcoming-header">
               <div className="upcoming-title-group">
                 <h3>Eventos próximos</h3>
-                <p>Planificados para la semana en curso</p>
+                <p>Mostrando agenda {weekEvents.rangeStr && `(${weekEvents.rangeStr})`}</p>
               </div>
               <Link href="/calendario" className="btn-ver-calendar">Ver todo</Link>
             </div>
@@ -486,6 +496,14 @@ export default function Landing() {
                   </div>
                 </div>
               )}
+            </div>
+            <div className="upcoming-info-note">
+              <p>
+                * Mostramos únicamente la agenda de esta semana. Para consultar toda la planeación mensual y agendar eventos directamente en tus dispositivos, visita la sección de <Link href="/calendario" style={{ color: "var(--gold)", textDecoration: "underline", fontWeight: "600" }}>Calendario</Link>.
+              </p>
+              <p style={{ marginTop: '8px' }}>
+                Nos esforzamos por mantener la información actualizada. Si no ves eventos programados o son muy pocos, ¡escríbenos directamente por <a href="https://wa.me/5214422497485" target="_blank" rel="noopener noreferrer" style={{ color: "var(--gold)", textDecoration: "underline", fontWeight: "600" }}>WhatsApp</a> para resolver cualquier duda al instante!
+              </p>
             </div>
           </div>
 
