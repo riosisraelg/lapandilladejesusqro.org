@@ -71,3 +71,6 @@ export default defineConfig([
   },
 ])
 ```
+
+## Vercel Deployment
+Deploy directly on Vercel by importing this repository and running the default Vite build commands.
