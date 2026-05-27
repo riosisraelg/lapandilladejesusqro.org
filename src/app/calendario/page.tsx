@@ -390,6 +390,14 @@ export default function Calendario() {
                   </div>
                 ))
               )}
+              <div className="upcoming-info-note" style={{ marginTop: '1.5rem' }}>
+                <p>
+                  * Esta sección muestra la planeación completa de eventos programados en nuestro calendario. Puedes hacer clic en "Agendar" en cualquier actividad para sincronizarla en tiempo real con tu dispositivo móvil o calendario personal.
+                </p>
+                <p style={{ marginTop: '8px' }}>
+                  Nos esforzamos por mantener la información actualizada. Si no ves eventos programados o son muy pocos, ¡escríbenos directamente por <a href="https://wa.me/5214422497485" target="_blank" rel="noopener noreferrer" style={{ color: "var(--gold)", textDecoration: "underline", fontWeight: "600" }}>WhatsApp</a> para resolver cualquier duda al instante!
+                </p>
+              </div>
             </div>
           </div>
         </section>
