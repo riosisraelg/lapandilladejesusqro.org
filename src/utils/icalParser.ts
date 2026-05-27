@@ -181,16 +181,13 @@ export function parseICS(icsText: string): ParsedEvent[] {
 export async function fetchICalFeed(icsUrl: string): Promise<ParsedEvent[]> {
   if (!icsUrl) return [];
 
-  // Append cache-buster timestamp query param to guarantee we get the absolute fresh version bypassing caching
-  const cleanUrl = icsUrl.includes("?") 
-    ? `${icsUrl}&t=${Date.now()}` 
-    : `${icsUrl}?t=${Date.now()}`;
-
-  // Use corsproxy.io to securely bypass browser CORS policies for public feeds
-  const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(cleanUrl)}`;
+  // Usar nuestra propia ruta de API local de Next.js como proxy en producción/desarrollo
+  // Esto elimina la dependencia del proxy público inestable corsproxy.io y resuelve el error 403.
+  const isBrowser = typeof window !== 'undefined';
+  const fetchUrl = isBrowser ? '/api/calendar' : icsUrl;
 
   try {
-    const response = await fetch(proxyUrl);
+    const response = await fetch(fetchUrl);
     if (!response.ok) {
       throw new Error(`Failed to fetch iCal feed: ${response.statusText}`);
     }
