@@ -1,0 +1,310 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;900&family=Playfair+Display:wght@700&display=swap');
+
+:root {
+  --primary: #C5944E;       /* Dorado logo */
+  --primary-dark: #A0783C;
+  --secondary: #000000;    /* Negro logo */
+  --accent: #E8B97C;
+  --bg-color: #0A0A0A;     /* Fondo oscuro premium */
+  --card-bg: rgba(25, 25, 25, 0.8);
+  --text-main: #FFFFFF;
+  --text-muted: #A1A1AA;
+  --border: rgba(197, 148, 78, 0.2);
+  --glass: rgba(255, 255, 255, 0.05);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Montserrat', system-ui, -apple-system, sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  background-image: radial-gradient(circle at 50% 0%, #1a1a1a 0%, #0a0a0a 100%);
+  min-height: 100vh;
+}
+
+/* SEO Optimization - Typography */
+h1, h2, h3 {
+  font-family: 'Playfair Display', serif;
+  letter-spacing: -0.02em;
+}
+
+/* Animations */
+@keyframes goldPulse {
+  0% { text-shadow: 0 0 10px rgba(197, 148, 78, 0.3); }
+  50% { text-shadow: 0 0 20px rgba(197, 148, 78, 0.6); }
+  100% { text-shadow: 0 0 10px rgba(197, 148, 78, 0.3); }
+}
+
+@keyframes entrance {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Header */
+.app-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.brand-section {
+  text-align: center;
+  padding: 4rem 0;
+  animation: entrance 1s ease-out;
+}
+
+.logo-main {
+  max-width: 320px;
+  height: auto;
+  margin-bottom: 1.5rem;
+  filter: drop-shadow(0 0 15px rgba(197, 148, 78, 0.2));
+  transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.logo-main:hover {
+  transform: scale(1.05) rotate(-2deg);
+}
+
+.brand-title {
+  font-size: 3.5rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  color: var(--primary);
+  margin-bottom: 0.5rem;
+  animation: goldPulse 3s infinite;
+}
+
+/* Dashboard Grid */
+.dashboard-layout {
+  display: grid;
+  grid-template-columns: 350px 1fr;
+  gap: 3rem;
+  margin-top: 2rem;
+}
+
+@media (max-width: 1024px) {
+  .dashboard-layout { grid-template-columns: 1fr; }
+}
+
+/* Glass Panels */
+.glass-panel {
+  background: var(--card-bg);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 2rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  position: sticky;
+  top: 2rem;
+  height: fit-content;
+}
+
+/* Activities Grid */
+.activity-feed {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100%, 1fr));
+  gap: 2rem;
+}
+
+/* Activity Cards - PREMIUM */
+.activity-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  overflow: hidden;
+  transition: all 0.4s ease;
+  animation: entrance 0.6s ease-out backwards;
+}
+
+.activity-card:hover {
+  transform: translateY(-8px);
+  border-color: var(--primary);
+  box-shadow: 0 20px 40px rgba(197, 148, 78, 0.1);
+}
+
+.media-container {
+  width: 100%;
+  aspect-ratio: 16/9;
+  background: #111;
+  overflow: hidden;
+  position: relative;
+}
+
+.media-container img, .media-container video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.8s ease;
+}
+
+.activity-card:hover .media-container img {
+  transform: scale(1.1);
+}
+
+.card-content {
+  padding: 1.5rem;
+}
+
+.badge-float {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: var(--primary);
+  color: black;
+  font-weight: 800;
+  padding: 0.4rem 1rem;
+  border-radius: 99px;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  z-index: 10;
+}
+
+/* Google Calendar Embed Section */
+.calendar-section {
+  margin-top: 5rem;
+  animation: entrance 1.2s ease-out;
+}
+
+.calendar-container {
+  width: 100%;
+  border-radius: 30px;
+  overflow: hidden;
+  border: 3px solid var(--border);
+  height: 600px;
+  background: white; /* Important for contrast if needed */
+}
+
+/* Links & Buttons */
+.btn-luma {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #E81CFF; /* Luma's vibrant pink/purple */
+  color: white;
+  padding: 0.8rem 1.5rem;
+  border-radius: 99px;
+  text-decoration: none;
+  font-weight: 700;
+  margin-top: 1rem;
+  transition: all 0.3s;
+}
+
+.btn-luma:hover {
+  filter: brightness(1.1);
+  transform: scale(1.05);
+}
+
+.btn-gcal {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 2px solid var(--primary);
+  color: var(--primary);
+  padding: 0.8rem 1.5rem;
+  border-radius: 99px;
+  text-decoration: none;
+  font-weight: 700;
+  margin-top: 1rem;
+  transition: all 0.3s;
+}
+
+.btn-gcal:hover {
+  background: var(--primary);
+  color: black;
+}
+
+/* Form Styles */
+.form-group label {
+  color: var(--primary);
+  font-weight: 700;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.form-control {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border);
+  color: white;
+  border-radius: 12px;
+  padding: 1rem;
+  width: 100%;
+  margin-bottom: 1.5rem;
+}
+
+.form-control:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(197, 148, 78, 0.2);
+  outline: none;
+}
+
+.btn-submit-gold {
+  background: var(--primary);
+  color: black;
+  width: 100%;
+  padding: 1rem;
+  border: none;
+  border-radius: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-submit-gold:hover {
+  background: white;
+  transform: translateY(-2px);
+}
+
+.btn-submit-gold:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.form-group {
+  margin-bottom: 0.25rem;
+}
+
+textarea.form-control {
+  resize: vertical;
+  font-family: inherit;
+}
+
+select.form-control {
+  appearance: auto;
+}
+
+input[type="file"].form-control {
+  font-size: 0.85rem;
+  padding: 0.75rem;
+}
+
+/* Loader */
+.loader {
+  display: block;
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(197, 148, 78, 0.3);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .brand-title {
+    font-size: 2rem;
+  }
+  .app-container {
+    padding: 1rem;
+  }
+}
