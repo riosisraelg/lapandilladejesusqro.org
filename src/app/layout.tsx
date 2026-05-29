@@ -23,6 +23,11 @@ export const metadata = {
   alternates: {
     canonical: '/',
   },
+  icons: {
+    icon: '/favicon.svg',
+    shortcut: '/favicon.svg',
+    apple: '/logo.png',
+  },
   openGraph: {
     title: 'La Pandilla de Jesús - Grupo Juvenil Católico',
     description: 'Comunidad juvenil católica de la Parroquia de La Sagrada Familia en Jardines de la Hacienda, Diócesis de Querétaro. Misiones, retiros y asambleas.',
