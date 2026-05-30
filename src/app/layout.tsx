@@ -24,9 +24,9 @@ export const metadata = {
     canonical: '/',
   },
   icons: {
-    icon: '/favicon.svg',
-    shortcut: '/favicon.svg',
-    apple: '/logo.png',
+    icon: '/favicon.png',
+    shortcut: '/favicon.png',
+    apple: '/favicon.png',
   },
   openGraph: {
     title: 'La Pandilla de Jesús - Grupo Juvenil Católico',
