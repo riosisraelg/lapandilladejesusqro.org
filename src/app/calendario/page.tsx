@@ -84,6 +84,13 @@ const AppleIcon = () => (
   </svg>
 );
 
+const CopyIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+  </svg>
+);
+
 const EVENT_FILTERS = [
   { key: "all", label: "Todos" },
   { key: "Retiro", label: "Retiros" },
@@ -100,6 +107,27 @@ export default function Calendario() {
   const [selectedEvent, setSelectedEvent] = useState<any | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const icalUrl = ICAL_FEED_URL;
+  const [showSubscribeModal, setShowSubscribeModal] = useState(false);
+  const [copiedLink, setCopiedLink] = useState(false);
+
+  const googleSubscribeLink = useMemo(() => {
+    return `https://calendar.google.com/calendar/render?cid=${encodeURIComponent(ICAL_FEED_URL)}`;
+  }, []);
+
+  const appleOutlookSubscribeLink = useMemo(() => {
+    if (ICAL_FEED_URL.startsWith("https://")) {
+      return ICAL_FEED_URL.replace("https://", "webcal://");
+    } else if (ICAL_FEED_URL.startsWith("http://")) {
+      return ICAL_FEED_URL.replace("http://", "webcal://");
+    }
+    return `webcal://${ICAL_FEED_URL}`;
+  }, []);
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(ICAL_FEED_URL);
+    setCopiedLink(true);
+    setTimeout(() => setCopiedLink(false), 2000);
+  };
 
   useEffect(() => {
     document.body.classList.add("landing-body");
@@ -138,11 +166,42 @@ export default function Calendario() {
     return `https://calendar.google.com/calendar/embed?src=en.usa%23holiday%40group.v.calendar.google.com&ctz=America%2FMexico_City&mode=MONTH&showPrint=0&showTabs=0&showCalendars=0&showTz=0`;
   }, [icalUrl]);
 
+  const currentMonthEventsInfo = useMemo(() => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = today.getMonth();
+    
+    // El primer día del siguiente mes menos 1 día nos da el último día del mes corriente
+    const lastDay = new Date(year, month + 1, 0);
+    
+    const getLocalDateString = (dateObj: Date) => {
+      const y = dateObj.getFullYear();
+      const m = String(dateObj.getMonth() + 1).padStart(2, '0');
+      const d = String(dateObj.getDate()).padStart(2, '0');
+      return `${y}-${m}-${d}`;
+    };
+    
+    const todayStr = getLocalDateString(today);
+    const endOfMonthStr = getLocalDateString(lastDay);
+    
+    const monthName = today.toLocaleDateString("es-ES", { month: "long" });
+    const rangeStr = `del ${today.getDate()} al ${lastDay.getDate()} de ${monthName}`;
+    
+    return {
+      todayStr,
+      endOfMonthStr,
+      rangeStr
+    };
+  }, []);
+
   const filteredEvents = useMemo(() => {
-    const upcoming = events.filter((e) => new Date(e.date + "T23:59:59") >= new Date());
-    if (activeFilter === "all") return upcoming;
-    return upcoming.filter((e) => e.type === activeFilter);
-  }, [events, activeFilter]);
+    // Filtrar únicamente los eventos comprendidos entre hoy y el fin del mes corriente
+    const currentMonthList = events.filter(
+      (e) => e.date >= currentMonthEventsInfo.todayStr && e.date <= currentMonthEventsInfo.endOfMonthStr
+    );
+    if (activeFilter === "all") return currentMonthList;
+    return currentMonthList.filter((e) => e.type === activeFilter);
+  }, [events, activeFilter, currentMonthEventsInfo]);
 
   const formatDate = (d: string) =>
     new Date(d + "T12:00:00").toLocaleDateString("es-ES", {
@@ -327,8 +386,17 @@ export default function Calendario() {
       <main className="landing-main">
         <section className="events-section" style={{ marginTop: "1rem" }}>
           <div className="events-section-header">
-            <h2>Centro de Eventos</h2>
-            <p>Consulta el calendario completo para ver detalles de cada actividad y apuntarte.</p>
+            <div>
+              <h2>Centro de Eventos</h2>
+              <p>Consulta el calendario completo para ver detalles de cada actividad y apuntarte.</p>
+            </div>
+            <button 
+              className="btn-insta" 
+              onClick={() => setShowSubscribeModal(true)}
+              style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem" }}
+            >
+              <CalendarSmIcon /> Sincronizar Calendario Completo 🗓️
+            </button>
           </div>
 
           <div className="events-layout">
@@ -342,6 +410,14 @@ export default function Calendario() {
 
             {/* Event Sidebar */}
             <div className="event-sidebar">
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginBottom: '0.75rem' }}>
+                <h3 style={{ fontSize: '1rem', fontFamily: 'var(--font-outfit)', fontWeight: '700', color: 'var(--text-dark)', margin: 0 }}>
+                  Eventos Próximos
+                </h3>
+                <p style={{ fontSize: '0.78rem', color: 'var(--text-light)', margin: 0 }}>
+                  Mostrando agenda mensual {currentMonthEventsInfo.rangeStr && `(${currentMonthEventsInfo.rangeStr})`}
+                </p>
+              </div>
               <div className="filter-pills">
                 {EVENT_FILTERS.map((f) => (
                   <button
@@ -485,6 +561,55 @@ export default function Calendario() {
               </button>
               <button
                 onClick={() => setSelectedEvent(null)}
+                className="calendar-btn calendar-btn-cancel"
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── SUBSCRIBE TO CALENDAR FEED MODAL ── */}
+      {showSubscribeModal && (
+        <div className="calendar-modal-overlay" onClick={() => setShowSubscribeModal(false)}>
+          <div className="calendar-modal-card" onClick={(e) => e.stopPropagation()}>
+            <button className="calendar-modal-close-btn" onClick={() => setShowSubscribeModal(false)}>
+              <CloseIcon />
+            </button>
+            <div className="calendar-modal-icon-wrap">
+              <CalendarCheckIcon />
+            </div>
+            <h3 className="calendar-modal-title">Suscribirse al Calendario</h3>
+            <p className="calendar-modal-desc">
+              Sincroniza <strong>todos los eventos</strong> de La Pandilla de Jesús en tu dispositivo. Cualquier cambio en la agenda se actualizará automáticamente.
+            </p>
+            <div className="calendar-modal-buttons">
+              <a
+                href={googleSubscribeLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="calendar-btn calendar-btn-google"
+                onClick={() => setShowSubscribeModal(false)}
+              >
+                <GoogleIcon /> Google Calendar (Web)
+              </a>
+              <a
+                href={appleOutlookSubscribeLink}
+                className="calendar-btn calendar-btn-ical"
+                onClick={() => setShowSubscribeModal(false)}
+              >
+                <AppleIcon /> Apple Calendar / Outlook (Celular/PC)
+              </a>
+              <button
+                onClick={handleCopyLink}
+                className="calendar-btn calendar-btn-outlook"
+                style={{ background: copiedLink ? '#20ba5a' : '', color: copiedLink ? '#fff' : '', transition: 'all 0.3s' }}
+              >
+                <CopyIcon /> {copiedLink ? "¡Enlace Copiado!" : "Copiar Enlace iCal"}
+              </button>
+              <button
+                onClick={() => setShowSubscribeModal(false)}
                 className="calendar-btn calendar-btn-cancel"
               >
                 Cancelar

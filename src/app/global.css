@@ -633,7 +633,14 @@ body.landing-body {
 }
 
 .events-section-header {
-  margin-bottom: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border-subtle);
+  margin-bottom: 1.5rem;
 }
 
 .events-section-header h2 {
@@ -641,15 +648,12 @@ body.landing-body {
   font-size: 2rem;
   font-weight: 700;
   color: var(--text-dark);
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid var(--border-subtle);
 }
 
 .events-section-header p {
   font-size: 0.9rem;
   color: var(--text-light);
   margin-top: 0.5rem;
-  margin-bottom: 1.5rem;
 }
 
 .events-layout {
