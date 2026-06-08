@@ -128,6 +128,26 @@ const parseDateTime = (dtStr: string): { date: string; time: string; jsDate?: Da
 };
 
 /**
+ * Helper to clean up any parameters from an iCal property line (e.g. DTSTART;VALUE=DATE:20260528 -> DTSTART:20260528)
+ */
+const cleanICalLine = (line: string): string => {
+  if (!line) return "";
+  const colonIdx = line.indexOf(":");
+  if (colonIdx === -1) return line;
+  
+  const beforeColon = line.substring(0, colonIdx);
+  const afterColon = line.substring(colonIdx + 1);
+  
+  const semiIdx = beforeColon.indexOf(";");
+  if (semiIdx === -1) {
+    return line;
+  }
+  
+  const propName = beforeColon.substring(0, semiIdx).trim();
+  return `${propName}:${afterColon.trim()}`;
+};
+
+/**
  * Helper to expand a recurring event using the 'rrule' library
  */
 const expandRecurringEvent = (baseEvent: any): ParsedEvent[] => {
@@ -138,14 +158,15 @@ const expandRecurringEvent = (baseEvent: any): ParsedEvent[] => {
     let rruleInput = `RRULE:${baseEvent.rrule}`;
     
     if (baseEvent.dtstart) {
-      rruleInput = `${baseEvent.dtstart}\n${rruleInput}`;
+      rruleInput = `${cleanICalLine(baseEvent.dtstart)}\n${rruleInput}`;
     } else {
       const cleanDate = baseEvent.date.replace(/-/g, "");
       rruleInput = `DTSTART:${cleanDate}T000000Z\n${rruleInput}`;
     }
 
     if (baseEvent.exdates && baseEvent.exdates.length > 0) {
-      rruleInput = `${rruleInput}\n${baseEvent.exdates.join('\n')}`;
+      const cleanExdates = baseEvent.exdates.map((d: string) => cleanICalLine(d));
+      rruleInput = `${rruleInput}\n${cleanExdates.join('\n')}`;
     }
 
     // Set forceset: true to handle potential EXDATEs properly
