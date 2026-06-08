@@ -30,6 +30,9 @@ const guessEventType = (title: string): string => {
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "");
 
+  // Aniversarios o cumpleaños no son eventos litúrgicos/actividades de oración/reuniones ordinarias
+  if (t.includes("aniversario") || t.includes("cumpleanos")) return "Otro";
+
   if (t.includes("retiro")) return "Retiro";
   if (
     t.includes("colecta") || 
