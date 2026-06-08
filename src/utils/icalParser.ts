@@ -1,3 +1,5 @@
+import { rrulestr } from 'rrule';
+
 /**
  * iCal (.ics) Feed Parser Utility for La Pandilla de Jesús
  * Pure client-side parsing of public Google Calendars without heavy dependencies
@@ -14,18 +16,55 @@ export interface ParsedEvent {
   isExternalICS: boolean;
   dtstart?: string;
   dtend?: string;
+  rrule?: string;
+  exdates?: string[];
 }
 
 /**
  * Guesses the event type based on the text of the title/summary to map to our UI badge/filter system
  */
 const guessEventType = (title: string): string => {
-  const t = (title || "").toLowerCase();
+  // Quitar acentos/diacríticos y pasar a minúsculas para una coincidencia robusta
+  const t = (title || "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+
   if (t.includes("retiro")) return "Retiro";
-  if (t.includes("colecta") || t.includes("colectas") || t.includes("víveres") || t.includes("despensa")) return "Colecta";
-  if (t.includes("oración") || t.includes("misa") || t.includes("hora santa") || t.includes("sagrario") || t.includes("rosario")) return "Oración";
-  if (t.includes("misión") || t.includes("misiones") || t.includes("misionar")) return "Misión";
-  if (t.includes("reunión") || t.includes("tema") || t.includes("formación") || t.includes("clase") || t.includes("taller")) return "Reunión";
+  if (
+    t.includes("colecta") || 
+    t.includes("viveres") || 
+    t.includes("despensa") || 
+    t.includes("donacion") || 
+    t.includes("acopio")
+  ) return "Colecta";
+  if (
+    t.includes("oracion") || 
+    t.includes("misa") || 
+    t.includes("hora santa") || 
+    t.includes("sagrario") || 
+    t.includes("rosario") || 
+    t.includes("rezo") || 
+    t.includes("adoracion")
+  ) return "Oración";
+  if (
+    t.includes("mision") || 
+    t.includes("misionar") || 
+    t.includes("evangelizacion")
+  ) return "Misión";
+  if (
+    t.includes("reunion") || 
+    t.includes("tema") || 
+    t.includes("formacion") || 
+    t.includes("clase") || 
+    t.includes("taller") || 
+    t.includes("caridad") || 
+    t.includes("hospital") || 
+    t.includes("tortas") || 
+    t.includes("apostolado") || 
+    t.includes("servicio")
+  ) return "Reunión";
+  
   return "Otro";
 };
 
@@ -89,6 +128,73 @@ const parseDateTime = (dtStr: string): { date: string; time: string; jsDate?: Da
 };
 
 /**
+ * Helper to expand a recurring event using the 'rrule' library
+ */
+const expandRecurringEvent = (baseEvent: any): ParsedEvent[] => {
+  if (!baseEvent.rrule) return [baseEvent];
+
+  try {
+    // Reconstruct the iCal string for rrulestr
+    let rruleInput = `RRULE:${baseEvent.rrule}`;
+    
+    if (baseEvent.dtstart) {
+      rruleInput = `${baseEvent.dtstart}\n${rruleInput}`;
+    } else {
+      const cleanDate = baseEvent.date.replace(/-/g, "");
+      rruleInput = `DTSTART:${cleanDate}T000000Z\n${rruleInput}`;
+    }
+
+    if (baseEvent.exdates && baseEvent.exdates.length > 0) {
+      rruleInput = `${rruleInput}\n${baseEvent.exdates.join('\n')}`;
+    }
+
+    // Set forceset: true to handle potential EXDATEs properly
+    const rule = rrulestr(rruleInput, { forceset: true });
+    
+    const now = new Date();
+    // Use UTC representations of today/horizon to query rrule in a timezone-agnostic manner
+    const todayUTC = new Date(Date.UTC(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate(),
+      0, 0, 0
+    ));
+    
+    const horizonUTC = new Date(Date.UTC(
+      now.getFullYear(),
+      now.getMonth() + 6,
+      now.getDate(),
+      23, 59, 59
+    ));
+
+    const occurrences = rule.between(todayUTC, horizonUTC, true);
+
+    if (occurrences.length === 0) {
+      return [baseEvent];
+    }
+
+    const cleanTitle = baseEvent.title.toLowerCase().replace(/[^a-z0-9]/g, "");
+
+    return occurrences.map((dateObj) => {
+      const instance = { ...baseEvent };
+      
+      const y = dateObj.getUTCFullYear();
+      const m = String(dateObj.getUTCMonth() + 1).padStart(2, '0');
+      const d = String(dateObj.getUTCDate()).padStart(2, '0');
+      const dateStr = `${y}-${m}-${d}`;
+
+      instance.date = dateStr;
+      instance.id = `ical-${dateStr}-${cleanTitle}`;
+      
+      return instance as ParsedEvent;
+    });
+  } catch (error) {
+    console.error("Error expanding recurring event with rrule:", error, baseEvent);
+    return [baseEvent];
+  }
+};
+
+/**
  * Parses raw iCal (.ics) text format into a clean array of structured ParsedEvent items
  */
 export function parseICS(icsText: string): ParsedEvent[] {
@@ -135,7 +241,13 @@ export function parseICS(icsText: string): ParsedEvent[] {
           currentEvent.id = `ical-${currentEvent.date}-${cleanTitle}`;
           currentEvent.type = guessEventType(currentEvent.title);
           currentEvent.isExternalICS = true;
-          events.push(currentEvent as ParsedEvent);
+
+          if (currentEvent.rrule) {
+            const expanded = expandRecurringEvent(currentEvent);
+            events.push(...expanded);
+          } else {
+            events.push(currentEvent as ParsedEvent);
+          }
         }
       }
       currentEvent = null;
@@ -167,6 +279,13 @@ export function parseICS(icsText: string): ParsedEvent[] {
           currentEvent.dtstart = line;
         } else if (key === "DTEND") {
           currentEvent.dtend = line;
+        } else if (key === "RRULE") {
+          currentEvent.rrule = value;
+        } else if (key === "EXDATE") {
+          if (!currentEvent.exdates) {
+            currentEvent.exdates = [];
+          }
+          currentEvent.exdates.push(line);
         }
       }
     }
