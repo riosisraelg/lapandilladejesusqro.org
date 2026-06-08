@@ -20,9 +20,6 @@ export const metadata = {
   description: 'Somos el grupo de jóvenes católicos de la Parroquia de La Sagrada Familia en Jardines de la Hacienda, pertenecientes a la Diócesis de Querétaro. Encuentros, retiros Kerigma, horas santas y misiones juveniles.',
   keywords: 'grupo juvenil catolico queretaro, grupo de jovenes catolicos, pastoral juvenil queretaro, la pandilla de jesus, parroquia de la sagrada familia queretaro, diocesis de queretaro, retiro espiritual jovenes queretaro, retiros catolicos queretaro, misiones catolicas queretaro',
   metadataBase: new URL('https://lapandilladejesusqro.org'),
-  alternates: {
-    canonical: '/',
-  },
   icons: {
     icon: '/favicon.png',
     shortcut: '/favicon.png',
