@@ -748,6 +748,13 @@ body.landing-body {
 .event-type-badge.reunión { background: rgba(197, 148, 78, 0.12); color: var(--gold); }
 .event-type-badge.colecta { background: rgba(139, 111, 90, 0.12); color: var(--coffee-light); }
 .event-type-badge.otro { background: rgba(92, 61, 46, 0.08); color: var(--text-light); }
+.event-type-badge.apostolado { background: rgba(53, 150, 187, 0.12); color: #2183a6; }
+
+.event-type-badges-container {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
 
 .event-detail-time {
   display: flex;

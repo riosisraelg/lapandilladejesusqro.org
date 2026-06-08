@@ -98,6 +98,7 @@ const EVENT_FILTERS = [
   { key: "Colecta", label: "Colectas" },
   { key: "Misión", label: "Misiones" },
   { key: "Reunión", label: "Reuniones" },
+  { key: "Apostolado", label: "Apostolados" },
   { key: "Otro", label: "Otros" },
 ];
 
@@ -200,7 +201,12 @@ export default function Calendario() {
       (e) => e.date >= currentMonthEventsInfo.todayStr && e.date <= currentMonthEventsInfo.endOfMonthStr
     );
     if (activeFilter === "all") return currentMonthList;
-    return currentMonthList.filter((e) => e.type === activeFilter);
+    return currentMonthList.filter((e) => {
+      if (e.types && e.types.length > 0) {
+        return e.types.includes(activeFilter);
+      }
+      return e.type === activeFilter;
+    });
   }, [events, activeFilter, currentMonthEventsInfo]);
 
   const formatDate = (d: string) =>
@@ -395,7 +401,7 @@ export default function Calendario() {
               onClick={() => setShowSubscribeModal(true)}
               style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem" }}
             >
-              <CalendarSmIcon /> Sincronizar Calendario Completo 🗓️
+              <CalendarSmIcon /> Sincronizar Calendario Completo
             </button>
           </div>
 
@@ -438,9 +444,13 @@ export default function Calendario() {
                 filteredEvents.map((ev) => (
                   <div key={ev.id} className="event-detail-card">
                     <div className="event-detail-top">
-                      <span className={`event-type-badge ${(ev.type || "otro").toLowerCase()}`}>
-                        {ev.type || "Evento"}
-                      </span>
+                      <div className="event-type-badges-container">
+                        {(ev.types && ev.types.length > 0 ? ev.types : [ev.type || "Otro"]).map((t: string) => (
+                          <span key={t} className={`event-type-badge ${t.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")}`}>
+                            {t}
+                          </span>
+                        ))}
+                      </div>
                       <span className="event-detail-time">
                         <ClockSmIcon />
                         {formatDate(ev.date)}{ev.time && ev.time !== "Todo el día" && ` · ${ev.time}`}

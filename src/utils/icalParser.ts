@@ -9,6 +9,7 @@ export interface ParsedEvent {
   id: string;
   title: string;
   type: string;
+  types: string[];
   date: string; // YYYY-MM-DD
   time?: string;
   location: string;
@@ -21,9 +22,9 @@ export interface ParsedEvent {
 }
 
 /**
- * Guesses the event type based on the text of the title/summary to map to our UI badge/filter system
+ * Guesses the event types based on the text of the title/summary to map to our UI badge/filter system
  */
-const guessEventType = (title: string): string => {
+const guessEventTypes = (title: string): string[] => {
   // Quitar acentos/diacríticos y pasar a minúsculas para una coincidencia robusta
   const t = (title || "")
     .toLowerCase()
@@ -31,16 +32,18 @@ const guessEventType = (title: string): string => {
     .replace(/[\u0300-\u036f]/g, "");
 
   // Aniversarios o cumpleaños no son eventos litúrgicos/actividades de oración/reuniones ordinarias
-  if (t.includes("aniversario") || t.includes("cumpleanos")) return "Otro";
+  if (t.includes("aniversario") || t.includes("cumpleanos")) return ["Otro"];
 
-  if (t.includes("retiro")) return "Retiro";
+  const matchedTypes: string[] = [];
+
+  if (t.includes("retiro")) matchedTypes.push("Retiro");
   if (
     t.includes("colecta") || 
     t.includes("viveres") || 
     t.includes("despensa") || 
     t.includes("donacion") || 
     t.includes("acopio")
-  ) return "Colecta";
+  ) matchedTypes.push("Colecta");
   if (
     t.includes("oracion") || 
     t.includes("misa") || 
@@ -49,12 +52,12 @@ const guessEventType = (title: string): string => {
     t.includes("rosario") || 
     t.includes("rezo") || 
     t.includes("adoracion")
-  ) return "Oración";
+  ) matchedTypes.push("Oración");
   if (
     t.includes("mision") || 
     t.includes("misionar") || 
     t.includes("evangelizacion")
-  ) return "Misión";
+  ) matchedTypes.push("Misión");
   if (
     t.includes("reunion") || 
     t.includes("tema") || 
@@ -64,11 +67,21 @@ const guessEventType = (title: string): string => {
     t.includes("caridad") || 
     t.includes("hospital") || 
     t.includes("tortas") || 
-    t.includes("apostolado") || 
     t.includes("servicio")
-  ) return "Reunión";
+  ) matchedTypes.push("Reunión");
+  if (
+    t.includes("apostolado") || 
+    t.includes("pan") || 
+    t.includes("tortas") || 
+    t.includes("caridad") || 
+    t.includes("hospital")
+  ) matchedTypes.push("Apostolado");
+
+  if (matchedTypes.length === 0) {
+    return ["Otro"];
+  }
   
-  return "Otro";
+  return matchedTypes;
 };
 
 // Helper to parse date and time from iCal DTSTART/DTEND string
@@ -263,7 +276,9 @@ export function parseICS(icsText: string): ParsedEvent[] {
           // Build unique stable ID based on title and date
           const cleanTitle = currentEvent.title.toLowerCase().replace(/[^a-z0-9]/g, "");
           currentEvent.id = `ical-${currentEvent.date}-${cleanTitle}`;
-          currentEvent.type = guessEventType(currentEvent.title);
+          const types = guessEventTypes(currentEvent.title);
+          currentEvent.types = types;
+          currentEvent.type = types[0] || "Otro";
           currentEvent.isExternalICS = true;
 
           if (currentEvent.rrule) {
