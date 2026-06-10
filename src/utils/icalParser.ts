@@ -71,10 +71,7 @@ const guessEventTypes = (title: string): string[] => {
   ) matchedTypes.push("Reunión");
   if (
     t.includes("apostolado") || 
-    t.includes("pan") || 
-    t.includes("tortas") || 
-    t.includes("caridad") || 
-    t.includes("hospital")
+    t.includes("reunion de caridad")
   ) matchedTypes.push("Apostolado");
 
   if (matchedTypes.length === 0) {
