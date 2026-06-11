@@ -899,11 +899,7 @@ export default function Landing() {
                   onClick={() => setShowCancionero(true)}
                 >
                   <div className="recursos-icon-circle">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M20.5 4.5S16.5 6 13 9c-3.5 3-4 8-4 8s3-.5 6-3.5c3-3 5.5-9 5.5-9z" />
-                      <path d="M9 14c-1.5 1.5-3.5 2.5-5.5 2.5-2 0-2.5-1-2.5-1.5s.5-1.5 2.5-2.5c2-1 5.5-1.5 5.5-1.5" />
-                      <path d="M13.5 9c-.5-1.5-2-3.5-4.5-4.5-2.5-1-3.5-.5-3.5-.5s.5 1.5 2 3c1.5 1.5 6 2 6 2" />
-                    </svg>
+                    <img src="/cancionero-icon.svg" alt="Cancionero" style={{ width: '22px', height: '22px', objectFit: 'contain' }} />
                   </div>
                   Cancionero
                 </button>
