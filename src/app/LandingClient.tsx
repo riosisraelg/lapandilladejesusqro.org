@@ -1006,7 +1006,7 @@ export default function Landing() {
             </div>
             <div className="stat-divider"></div>
             <div className="stat-item">
-              <span className="stat-number">100+</span>
+              <span className="stat-number">60+</span>
               <span className="stat-label">Jóvenes activos</span>
             </div>
             <div className="stat-divider"></div>
