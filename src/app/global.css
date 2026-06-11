@@ -1748,3 +1748,460 @@ body.landing-body {
     display: none;
   }
 }
+
+/* ── RECURSOS DE LA COMUNIDAD SECTION & MODALS ── */
+.hero-right-column {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.hero-right-column .upcoming-card,
+.hero-right-column .recursos-card {
+  height: auto;
+}
+
+/* Recursos Card */
+.recursos-card {
+  padding: 2.2rem;
+  background: var(--white);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.recursos-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-bottom: 0.25rem;
+}
+
+.recursos-desc {
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: var(--text-body);
+  margin-bottom: 0.75rem;
+}
+
+.recursos-buttons-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+/* Rounded colored buttons with white text */
+.recursos-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 1.25rem 0.5rem;
+  border-radius: var(--radius-sm);
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: var(--white);
+  font-family: var(--font-outfit), sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.recursos-btn:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 16px rgba(92, 61, 46, 0.15);
+}
+
+.recursos-icon-circle {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--white);
+  transition: background 0.3s ease;
+}
+
+.recursos-btn:hover .recursos-icon-circle {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.btn-cancionero {
+  background: #8a8ef5; /* Soft purple */
+}
+.btn-cancionero:hover {
+  background: #767bf0;
+}
+
+.btn-oraciones {
+  background: #d1a13d; /* Soft golden */
+}
+.btn-oraciones:hover {
+  background: #c0912f;
+}
+
+.btn-guia {
+  background: #856854; /* Soft coffee */
+}
+.btn-guia:hover {
+  background: #735948;
+}
+
+/* Modals layout */
+.recursos-modal-card {
+  background: var(--white);
+  border: 1px solid var(--border-subtle);
+  border-radius: 24px;
+  width: 100%;
+  max-width: 600px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  padding: 2.25rem 2rem;
+  box-shadow: var(--shadow-lg);
+  position: relative;
+  animation: scaleInModal 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  overflow: hidden;
+  text-align: left;
+}
+
+.recursos-modal-body {
+  overflow-y: auto;
+  margin-top: 1rem;
+  padding-right: 0.5rem;
+  flex-grow: 1;
+}
+
+/* Cancionero List & Search */
+.cancionero-search {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xs);
+  font-size: 0.9rem;
+  font-family: var(--font-outfit), sans-serif;
+  color: var(--text-dark);
+  margin-bottom: 1rem;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.cancionero-search:focus {
+  border-color: var(--coffee-light);
+}
+
+.cancionero-nota {
+  font-size: 0.78rem;
+  color: var(--text-light);
+  background: var(--cream);
+  padding: 0.6rem 0.8rem;
+  border-radius: var(--radius-xs);
+  margin-bottom: 1rem;
+  line-height: 1.4;
+  border-left: 3px solid var(--gold);
+}
+
+.cancionero-song-item {
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xs);
+  margin-bottom: 0.5rem;
+  overflow: hidden;
+  background: var(--white);
+  transition: border-color 0.2s ease;
+}
+
+.cancionero-song-header {
+  width: 100%;
+  background: transparent;
+  border: none;
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  text-align: left;
+}
+
+.cancionero-song-title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.cancionero-song-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+.cancionero-song-artist {
+  font-size: 0.78rem;
+  color: var(--text-light);
+}
+
+.cancionero-song-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.cancionero-order-btn {
+  background: var(--cream);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-body);
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cancionero-order-btn:hover {
+  background: var(--coffee-light);
+  color: var(--white);
+}
+
+.cancionero-song-body {
+  padding: 1.5rem;
+  border-top: 1px solid var(--border-subtle);
+  background: var(--cream);
+  font-size: 0.92rem;
+  line-height: 1.65;
+  color: var(--text-body);
+  text-align: center;
+  white-space: pre-line;
+}
+
+.cancionero-agradecimiento-card {
+  background: var(--beige);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 1.8rem;
+  margin-top: 1.5rem;
+  text-align: center;
+  font-size: 0.88rem;
+  line-height: 1.65;
+  color: var(--text-body);
+}
+
+.cancionero-agradecimiento-card p {
+  white-space: pre-line;
+  margin-bottom: 0.5rem;
+}
+
+.cancionero-agradecimiento-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-bottom: 0.75rem;
+}
+
+/* Oraciones Deck Stack */
+.oraciones-deck-container {
+  perspective: 1000px;
+  margin: 1.5rem 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 280px;
+}
+
+.oracion-card {
+  background: var(--cream);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius);
+  padding: 2.2rem;
+  box-shadow: var(--shadow-md);
+  width: 100%;
+  max-width: 480px;
+  text-align: center;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 270px;
+  transition: all 0.3s ease;
+}
+
+.oracion-card h4 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-bottom: 0.8rem;
+}
+
+.oracion-card p {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--text-body);
+  white-space: pre-line;
+}
+
+.oraciones-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+  padding: 0 0.5rem;
+}
+
+.oraciones-nav-btn {
+  background: transparent;
+  border: 1px solid var(--border-subtle);
+  color: var(--text-body);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-xs);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.oraciones-nav-btn:hover:not(:disabled) {
+  background: var(--beige);
+  color: var(--text-dark);
+  border-color: var(--text-light);
+}
+
+.oraciones-nav-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.oraciones-counter {
+  font-size: 0.82rem;
+  color: var(--text-light);
+  font-weight: 600;
+}
+
+/* Guía de Misa Tabs */
+.guia-tabs {
+  display: flex;
+  gap: 0.35rem;
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 0.5rem;
+  overflow-x: auto;
+  margin-bottom: 1.5rem;
+}
+
+.guia-tab-btn {
+  background: transparent;
+  border: none;
+  padding: 0.5rem 0.8rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-light);
+  cursor: pointer;
+  border-radius: var(--radius-xs);
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.guia-tab-btn:hover {
+  background: var(--cream);
+  color: var(--text-dark);
+}
+
+.guia-tab-btn.active {
+  background: var(--coffee-light);
+  color: var(--white);
+}
+
+.guia-content-panel {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--text-body);
+}
+
+.guia-content-panel h4 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 0.25rem;
+}
+
+.guia-content-panel p {
+  margin-bottom: 1rem;
+}
+
+.guia-content-panel ul {
+  margin-left: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.guia-content-panel li {
+  margin-bottom: 0.4rem;
+}
+
+.guia-responses-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+}
+
+.guia-responses-table th,
+.guia-responses-table td {
+  padding: 0.6rem 0.75rem;
+  text-align: left;
+  font-size: 0.82rem;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.guia-responses-table th {
+  background: var(--cream);
+  color: var(--text-dark);
+  font-weight: 700;
+}
+
+.guia-responses-table tr:hover {
+  background: rgba(245, 240, 232, 0.4);
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .recursos-modal-card {
+    padding: 1.5rem 1rem;
+    max-height: 90vh;
+  }
+  .recursos-buttons-grid {
+    gap: 0.5rem;
+  }
+  .recursos-btn {
+    padding: 1rem 0.25rem;
+    font-size: 0.78rem;
+  }
+  .recursos-icon-circle {
+    width: 36px;
+    height: 36px;
+  }
+  .guia-tabs {
+    padding-bottom: 0.25rem;
+  }
+  .guia-tab-btn {
+    padding: 0.4rem 0.6rem;
+    font-size: 0.78rem;
+  }
+  .oracion-card {
+    padding: 1.5rem;
+    min-height: 250px;
+  }
+}
+
