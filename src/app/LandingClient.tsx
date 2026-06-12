@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import Link from "next/link";
 import { fetchICalFeed } from "../utils/icalParser";
 import { ICAL_FEED_URL } from "../config";
@@ -345,59 +345,82 @@ Uh… Adorándote, Amándote
 
 const oraciones = [
   {
-    title: "Ofrecimiento de la Hora Santa",
-    text: `Señor Jesús, me presento ante Ti para acompañarte durante esta Hora Santa. Quiero ofrecerte este tiempo en reparación por mis pecados y los del mundo entero, para adorarte en el Santísimo Sacramento del Altar, darte gracias por tus inmensos beneficios y pedirte las gracias que tanto necesito. Envía tu Espíritu Santo para que me guíe y me enseñe a orar como a Ti te agrada. Amén.`
-  },
-  {
-    title: "Acto de Contrición",
-    text: `Señor mío Jesucristo, Dios y Hombre verdadero, Creador, Padre y Redentor mío; por ser Vos quien sois, Bondad infinita, y porque os amo sobre todas las cosas, me pesa de todo corazón de haberos ofendido; también me pesa porque podéis castigarme con las penas del infierno. Ayudado de vuestra divina gracia, propongo firmemente nunca más pecar, confesarme y cumplir la penitencia que me fuere impuesta. Amén.`
-  },
-  {
-    title: "Comunión Espiritual",
-    text: `Jesús mío, creo firmemente que estás presente en el Santísimo Sacramento del Altar. Te amo sobre todas las cosas y deseo ardientemente recibirte dentro de mi alma; pero no pudiendo hacerlo ahora sacramentalmente, ven al menos espiritualmente a mi corazón. Y como si ya te hubiese recibido, te abrazo y me uno del todo a Ti. Señor, no permitas que jamás me separe de Ti. Amén.`
-  },
-  {
-    title: "Estación al Santísimo Sacramento",
-    text: `— Viva Jesús Sacramentado.
-— ¡Sea por siempre bendito y alabado!
+    title: "Oración de la Pandilla de Jesús",
+    text: `Jesús, sé el Señor de mi vida.
+Toma mi libertad, mi historia,
+mi voluntad y mi juventud;
+porque tu gracia vale más que la vida.
 
-*Padrenuestro, Avemaría y Gloria.*
+Quiero seguirte sin mirar atrás,
+atreverme a tu plan,
+ser tus manos y tus pies.
 
-Señor Jesús, te adoramos en esta Hostia Santa, donde estás real y verdaderamente presente con tu Cuerpo, Sangre, Alma y Divinidad. Te pedimos perdón por todos los ultrajes, sacrilegios e indiferencias con que eres ofendido en este Sacramento de tu amor. Amén.`
+Enséñame a distinguir el bien del mal,
+porque de nada sirve ganar el mundo
+si te pierdo a Ti.
+
+Sé que te basta mi debilidad,
+y aún así quiero entregarte siempre
+un poco más.
+
+Gracias por amarme, escucharme
+y confiar en mí.
+
+Tuyo soy, Señor, tuyo para siempre.
+Amén.`
   },
   {
-    title: "Oración por las Vocaciones",
-    text: `Señor Jesús, Buen Pastor de nuestras almas, que viniste no a ser servido sino a servir; te pedimos que envíes abundantes obreros a tu mies. Suscita en el corazón de muchos jóvenes el deseo de entregarse enteramente a Ti y al servicio de tu Iglesia como sacerdotes, religiosos y laicos consagrados. Dales valentía para responder a tu llamado y generosidad para seguirte con alegría. Amén.`
+    title: "Oración por la paz",
+    text: `Señor Jesús, Tú eres nuestra paz,
+mira nuestra Patria dañada por la violencia
+y dispersa por el miedo y la inseguridad.
+Consuela el dolor de quienes sufren.
+Da acierto a las decisiones de quienes nos gobiernan.
+Toca el corazón de quienes olvidan que somos hermanos
+y provocan sufrimiento y muerte.
+Dales el don de la conversión.
+Protege a las familias, a nuestros niños, adolescentes
+y jóvenes, a nuestros pueblos y comunidades.
+Que, como discípulos misioneros tuyos,
+ciudadanos responsables,
+sepamos ser promotores de justicia y de paz,
+para que, en Ti, nuestro pueblo tenga vida digna. AMÉN.
+
+María, Reina de la paz, ruega por nosotros.
+
+Septiembre 2025`
   },
   {
-    title: "Alma de Cristo (Anima Christi)",
-    text: `Alma de Cristo, santifícame.
-Cuerpo de Cristo, sálvame.
-Sangre de Cristo, embriágame.
-Agua del costado de Cristo, lávame.
-Pasión de Cristo, confórtame.
-¡Oh, buen Jesús!, óyeme.
-Dentro de tus llagas, escóndeme.
-No permitas que me aparte de Ti.
-Del enemigo malo, defiéndeme.
-En la hora de mi muerte, llámame.
-Y mándame ir a Ti.
-Para que con tus santos te alabe.
-Por los siglos de los siglos. Amén.`
-  },
-  {
-    title: "Respuestas breves de la Misa",
-    text: `— El Señor esté con vosotros.
-— Y con tu espíritu.
+    title: "Oración a la Sagrada Familia",
+    text: `Jesús, María y José
+en ustedes contemplamos
+el esplendor del verdadero amor,
+a ustedes, confiados, nos dirigimos.
 
-— Levantemos el corazón.
-— Lo tenemos levantado hacia el Señor.
+Santa Familia de Nazaret,
+haz también de nuestras familias
+lugar de comunión y cenáculo de oración,
+auténticas escuelas del Evangelio
+y pequeñas iglesias domésticas.
 
-— Demos gracias al Señor, nuestro Dios.
-— Es justo y necesario.
+Santa Familia de Nazaret,
+que nunca más haya en las familias episodios de violencia,
+de cerrazón y división;
+que quien haya sido herido o escandalizado
+sea pronto consolado y curado.
 
-— Podéis ir en paz.
-— Demos gracias a Dios.`
+Santa Familia de Nazaret,
+haz tomar conciencia a todos
+del carácter sagrado e inviolable de la familia,
+de su belleza en el proyecto de Dios.
+
+Jesús, María y José,
+escuchen, acojan nuestra súplica.
+Amén.
+
+(Papa Francisco, Amoris Laetitia, 325)
+
+Septiembre 2025`
   }
 ];
 
@@ -422,6 +445,10 @@ export default function Landing() {
 
   // Guía de Misa state
   const [activeGuiaTab, setActiveGuiaTab] = useState<'misterio' | 'respuestas' | 'liturgia' | 'biblia'>('misterio');
+
+  // Cancionero view states
+  const [cancioneroMode, setCancioneroMode] = useState<'lista' | 'tarjetas'>('lista');
+  const [activeSongIdx, setActiveSongIdx] = useState(0);
 
   // Load song order from localStorage
   useEffect(() => {
@@ -477,6 +504,52 @@ export default function Landing() {
       setActiveOracionIdx(newIdx);
       localStorage.setItem("active_oracion_index", String(newIdx));
     }
+  };
+
+  // Touch gestures for Oraciones
+  const oracionesTouchStartX = useRef<number | null>(null);
+  const handleOracionesTouchStart = (e: React.TouchEvent) => {
+    oracionesTouchStartX.current = e.touches[0].clientX;
+  };
+  const handleOracionesTouchEnd = (e: React.TouchEvent) => {
+    if (oracionesTouchStartX.current === null) return;
+    const touchEndX = e.changedTouches[0].clientX;
+    const deltaX = touchEndX - oracionesTouchStartX.current;
+    const swipeThreshold = 50; // pixels
+
+    if (deltaX < -swipeThreshold) {
+      if (activeOracionIdx < oraciones.length - 1) {
+        handleOracionNav(activeOracionIdx + 1);
+      }
+    } else if (deltaX > swipeThreshold) {
+      if (activeOracionIdx > 0) {
+        handleOracionNav(activeOracionIdx - 1);
+      }
+    }
+    oracionesTouchStartX.current = null;
+  };
+
+  // Touch gestures for Cancionero
+  const cancioneroTouchStartX = useRef<number | null>(null);
+  const handleCancioneroTouchStart = (e: React.TouchEvent) => {
+    cancioneroTouchStartX.current = e.touches[0].clientX;
+  };
+  const handleCancioneroTouchEnd = (e: React.TouchEvent, maxIdx: number) => {
+    if (cancioneroTouchStartX.current === null) return;
+    const touchEndX = e.changedTouches[0].clientX;
+    const deltaX = touchEndX - cancioneroTouchStartX.current;
+    const swipeThreshold = 50; // pixels
+
+    if (deltaX < -swipeThreshold) {
+      if (activeSongIdx < maxIdx) {
+        setActiveSongIdx(activeSongIdx + 1);
+      }
+    } else if (deltaX > swipeThreshold) {
+      if (activeSongIdx > 0) {
+        setActiveSongIdx(activeSongIdx - 1);
+      }
+    }
+    cancioneroTouchStartX.current = null;
   };
 
   const filteredSongs = useMemo(() => {
@@ -636,7 +709,7 @@ export default function Landing() {
         <ul className="nav-links">
           <li><Link href="/calendario">Eventos</Link></li>
           <li>
-            <a href="https://wa.me/5214422497485" target="_blank" rel="noopener noreferrer" className="nav-cta-wa">
+            <a href="https://wa.me/5214422497485" target="_blank" rel="noopener noreferrer" className="nav-cta-wa" data-tooltip="Escríbenos por WhatsApp para unirte o resolver tus dudas">
               <WhatsAppIcon size={16} /> WhatsApp
             </a>
           </li>
@@ -647,6 +720,7 @@ export default function Landing() {
           className={`nav-mobile-btn ${mobileMenuOpen ? "active" : ""}`} 
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           aria-label="Toggle menu"
+          data-tooltip="Abrir menú de navegación móvil"
         >
           <span className="bar"></span>
           <span className="bar"></span>
@@ -664,6 +738,7 @@ export default function Landing() {
                 rel="noopener noreferrer" 
                 className="nav-mobile-cta-wa"
                 onClick={() => setMobileMenuOpen(false)}
+                data-tooltip="Escríbenos por WhatsApp para unirte o resolver tus dudas"
               >
                 <WhatsAppIcon size={18} /> WhatsApp
               </a>
@@ -719,11 +794,12 @@ export default function Landing() {
                   target="_blank" 
                   rel="noopener noreferrer" 
                   className="dynamic-btn btn-whatsapp"
+                  data-tooltip="Unirse al canal de comunicación y chat grupal de WhatsApp"
                 >
                   <WhatsAppIcon size={16} /> WhatsApp Comunidad
                 </a>
                 
-                <Link href="/calendario" className="dynamic-btn btn-events">
+                <Link href="/calendario" className="dynamic-btn btn-events" data-tooltip="Ver el calendario mensual completo de retiros, temas y asambleas">
                   Calendario de Eventos
                 </Link>
               </div>
@@ -744,6 +820,7 @@ export default function Landing() {
                   rel="noopener noreferrer" 
                   className="btn-ver-eventos"
                   style={{ display: "flex", justifyContent: "center", textDecoration: "none", width: "100%" }}
+                  data-tooltip="Visitar el sitio web oficial de la Parroquia de La Sagrada Familia"
                 >
                   Visitar Sitio Web Parroquial
                 </a>
@@ -761,7 +838,7 @@ export default function Landing() {
                   <h3>Eventos próximos</h3>
                   <p>Mostrando agenda {weekEvents.rangeStr && `(${weekEvents.rangeStr})`}</p>
                 </div>
-                <Link href="/calendario" className="btn-ver-calendar">Ver todo</Link>
+                <Link href="/calendario" className="btn-ver-calendar" data-tooltip="Ver toda la planeación y el calendario de eventos del mes">Ver todo</Link>
               </div>
 
               <div className="week-events-list">
@@ -897,6 +974,7 @@ export default function Landing() {
                 <button 
                   className="recursos-btn btn-cancionero" 
                   onClick={() => setShowCancionero(true)}
+                  data-tooltip="Abrir el cancionero del aniversario con letras y buscador de cantos"
                 >
                   <div className="recursos-icon-circle">
                     <img src="/cancionero-icon.svg" alt="Cancionero" style={{ width: '22px', height: '22px', objectFit: 'contain' }} />
@@ -907,6 +985,7 @@ export default function Landing() {
                 <button 
                   className="recursos-btn btn-oraciones" 
                   onClick={() => setShowOraciones(true)}
+                  data-tooltip="Abrir el tarjetero interactivo de oraciones diarias y comunitarias"
                 >
                   <div className="recursos-icon-circle">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -920,7 +999,9 @@ export default function Landing() {
 
                 <button 
                   className="recursos-btn btn-guia" 
-                  onClick={() => setShowGuiaMisa(true)}
+                  disabled
+                  style={{ opacity: 0.6, cursor: "not-allowed" }}
+                  data-tooltip="Guía de Misa desactivada temporalmente por curación de contenido"
                 >
                   <div className="recursos-icon-circle">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -1042,7 +1123,7 @@ export default function Landing() {
                 key={idx}
                 className={`faq-item ${openFaq === idx ? "faq-open" : ""}`}
               >
-                <button className="faq-question" onClick={() => toggleFaq(idx)}>
+                <button className="faq-question" onClick={() => toggleFaq(idx)} data-tooltip="Hacer clic para expandir o contraer la respuesta a esta pregunta">
                   <span>{item.q}</span>
                   <span className={`faq-chevron ${openFaq === idx ? "faq-chevron-open" : ""}`}>
                     <ChevronDown />
@@ -1061,7 +1142,7 @@ export default function Landing() {
           <h2>¿Listo para ser parte de La Pandilla?</h2>
           <p>Ven a conocernos en persona o escríbenos directamente para enterarte de todo.</p>
           <div className="cta-buttons">
-            <Link href="/calendario" className="btn-insta" style={{ fontSize: "1rem", padding: "0.8rem 2rem" }}>
+            <Link href="/calendario" className="btn-insta" style={{ fontSize: "1rem", padding: "0.8rem 2rem" }} data-tooltip="Consultar la agenda completa de eventos y retiros del mes">
               Ver Calendario de Eventos
             </Link>
             <a
@@ -1070,6 +1151,7 @@ export default function Landing() {
               rel="noopener noreferrer"
               className="btn-wa"
               style={{ fontSize: "1rem", padding: "0.8rem 2rem" }}
+              data-tooltip="Escríbenos directamente por WhatsApp para unirte a la comunidad"
             >
               <WhatsAppIcon size={18} /> WhatsApp Comunidad
             </a>
@@ -1120,7 +1202,7 @@ export default function Landing() {
       {/* Cancionero Modal */}
       {showCancionero && (
         <div className="calendar-modal-overlay" onClick={() => setShowCancionero(false)}>
-          <div className="recursos-modal-card" onClick={(e) => e.stopPropagation()}>
+          <div className="recursos-modal-card modal-large" onClick={(e) => e.stopPropagation()}>
             <button 
               className="calendar-modal-close-btn" 
               onClick={() => setShowCancionero(false)}
@@ -1130,101 +1212,186 @@ export default function Landing() {
             </button>
             <h3 className="recursos-title" style={{ paddingRight: '2rem' }}>Cancionero Horas Santas</h3>
             
-            <div className="cancionero-nota">
-              Nota: El orden de las canciones es informativo y no representa la secuencia exacta en que se cantan en la Hora Santa. Puedes ordenarlas para tu planeación.
+            {/* Tabs for cancioneroMode */}
+            <div className="guia-tabs" style={{ marginBottom: '1.25rem', borderBottom: '1px solid var(--border-subtle)', flexShrink: 0 }}>
+              <button 
+                className={`guia-tab-btn ${cancioneroMode === 'lista' ? 'active' : ''}`}
+                onClick={() => setCancioneroMode('lista')}
+              >
+                Lista de Cantos
+              </button>
+              <button 
+                className={`guia-tab-btn ${cancioneroMode === 'tarjetas' ? 'active' : ''}`}
+                onClick={() => {
+                  setCancioneroMode('tarjetas');
+                  setActiveSongIdx(0);
+                }}
+              >
+                ★ Modo Presentación (Tarjetas)
+              </button>
             </div>
 
-            <input 
-              type="text" 
-              placeholder="Buscar canción por título o letra..." 
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="cancionero-search"
-            />
-
             <div className="recursos-modal-body">
-              {filteredSongs.length === 0 ? (
-                <p style={{ textAlign: 'center', color: 'var(--text-light)', padding: '2rem 0', fontStyle: 'italic' }}>
-                  No se encontraron canciones que coincidan con la búsqueda.
-                </p>
-              ) : (
-                filteredSongs.map((song, idx) => {
-                  const isExpanded = expandedSongId === song.id;
-                  const originalIndex = songs.findIndex(s => s.id === song.id);
-                  
-                  return (
-                    <div key={song.id} className="cancionero-song-item">
-                      <div className="cancionero-song-header" onClick={() => setExpandedSongId(isExpanded ? null : song.id)}>
-                        <div className="cancionero-song-title-group">
-                          <span className="cancionero-song-title">{song.title}</span>
-                          <span className="cancionero-song-artist">{song.artist}</span>
-                        </div>
-                        <div className="cancionero-song-controls" onClick={(e) => e.stopPropagation()}>
-                          <button 
-                            className="cancionero-order-btn" 
-                            disabled={originalIndex === 0 || searchQuery !== ""}
-                            onClick={() => reorderSong(originalIndex, "up")}
-                          >
-                            ▲
-                          </button>
-                          <button 
-                            className="cancionero-order-btn" 
-                            disabled={originalIndex === songs.length - 1 || searchQuery !== ""}
-                            onClick={() => reorderSong(originalIndex, "down")}
-                          >
-                            ▼
-                          </button>
-                          <span style={{ 
-                            marginLeft: '8px', 
-                            fontSize: '0.75rem', 
-                            color: 'var(--text-light)', 
-                            transform: isExpanded ? 'rotate(180deg)' : 'none',
-                            transition: 'transform 0.2s',
-                            cursor: 'pointer'
-                          }}
-                          onClick={() => setExpandedSongId(isExpanded ? null : song.id)}>
-                            ▼
-                          </span>
-                        </div>
-                      </div>
-                      {isExpanded && (
-                        <div className="cancionero-song-body">
-                          {song.lyrics}
-                        </div>
-                      )}
-                    </div>
-                  );
-                })
-              )}
+              {cancioneroMode === 'lista' ? (
+                <>
+                  <div className="cancionero-nota">
+                    Nota: El orden de las canciones es informativo y no representa la secuencia exacta en que se cantan en la Hora Santa. Puedes ordenarlas para tu planeación.
+                  </div>
 
-              {/* Agradecimiento Especial */}
-              <div className="cancionero-agradecimiento-card">
-                <h4 className="cancionero-agradecimiento-title">Jesús,</h4>
-                <p>
-                  Gracias por permitirnos estar tan cerca de Tl, y por regalarnos la gracia de tener sed de Tl.
-                  Por tocar la puerta (nuestro corazón) y llamarnos a tu encuentro.
-                  Gracias por llenar de Tl estos corazones heridos y vacíos, por sanarlos y transformarlos.
-                  Gracias por todas las bendiciones que nos has dado en este gran año, y, por si fuera poco, gracias por darnos la VIDA.
-                </p>
-                <p style={{ marginTop: '1rem' }}>
-                  Hoy no queremos más que encontrarnos con tu AMOR, hoy sabemos que sólo TÚ puedes llenar ese vacío, hoy ya no concebimos vida más allá de esta medida.
-                </p>
-                <p style={{ marginTop: '1rem' }}>
-                  Sólo gracias papá, por un año tan maravilloso.
-                </p>
-                <p style={{ marginTop: '1.5rem', fontWeight: 'bold' }}>
-                  ¡TE AMAMOS CON LOCURA!
-                </p>
-                <p style={{ fontStyle: 'italic' }}>
-                  -Tus hijos muy amados.
-                </p>
-                <p style={{ marginTop: '1rem', fontWeight: 'bold' }}>
-                  ¡GRACIAS!
-                </p>
-                <p style={{ fontSize: '0.8rem', color: 'var(--text-light)', marginTop: '0.5rem' }}>
-                  * Coro RUAH
-                </p>
-              </div>
+                  <input 
+                    type="text" 
+                    placeholder="Buscar canción por título o letra..." 
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="cancionero-search"
+                  />
+
+                  {filteredSongs.length === 0 ? (
+                    <p style={{ textAlign: 'center', color: 'var(--text-light)', padding: '2rem 0', fontStyle: 'italic' }}>
+                      No se encontraron canciones que coincidan con la búsqueda.
+                    </p>
+                  ) : (
+                    filteredSongs.map((song, idx) => {
+                      const isExpanded = expandedSongId === song.id;
+                      const originalIndex = songs.findIndex(s => s.id === song.id);
+                      
+                      return (
+                        <div key={song.id} className="cancionero-song-item">
+                          <div className="cancionero-song-header" onClick={() => setExpandedSongId(isExpanded ? null : song.id)}>
+                            <div className="cancionero-song-title-group">
+                              <span className="cancionero-song-title">{song.title}</span>
+                              <span className="cancionero-song-artist">{song.artist}</span>
+                            </div>
+                            <div className="cancionero-song-controls" onClick={(e) => e.stopPropagation()}>
+                              <button 
+                                className="cancionero-order-btn" 
+                                disabled={originalIndex === 0 || searchQuery !== ""}
+                                onClick={() => reorderSong(originalIndex, "up")}
+                                title="Subir canción"
+                              >
+                                ▲
+                              </button>
+                              <button 
+                                className="cancionero-order-btn" 
+                                disabled={originalIndex === songs.length - 1 || searchQuery !== ""}
+                                onClick={() => reorderSong(originalIndex, "down")}
+                                title="Bajar canción"
+                              >
+                                ▼
+                              </button>
+                              <span style={{ 
+                                marginLeft: '8px', 
+                                fontSize: '0.75rem', 
+                                color: 'var(--text-light)', 
+                                transform: isExpanded ? 'rotate(180deg)' : 'none',
+                                transition: 'transform 0.2s',
+                                cursor: 'pointer'
+                              }}
+                              onClick={() => setExpandedSongId(isExpanded ? null : song.id)}>
+                                ▼
+                              </span>
+                            </div>
+                          </div>
+                          {isExpanded && (
+                            <div className="cancionero-song-body">
+                              {song.lyrics}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })
+                  )}
+
+                  {/* Agradecimiento Especial */}
+                  <div className="cancionero-agradecimiento-card">
+                    <h4 className="cancionero-agradecimiento-title">Jesús,</h4>
+                    <p>
+                      Gracias por permitirnos estar tan cerca de Ti, y por regalarnos la gracia de tener sed de Ti.
+                      Por tocar la puerta (nuestro corazón) y llamarnos a tu encuentro.
+                      Gracias por llenar de Ti estos corazones heridos y vacíos, por sanarlos y transformarlos.
+                      Gracias por todas las bendiciones que nos has dado en este gran año, y, por si fuera poco, gracias por darnos la VIDA.
+                    </p>
+                    <p style={{ marginTop: '1rem' }}>
+                      Hoy no queremos más que encontrarnos con tu AMOR, hoy sabemos que sólo TÚ puedes llenar ese vacío, hoy ya no concebimos vida más allá de esta medida.
+                    </p>
+                    <p style={{ marginTop: '1rem' }}>
+                      Sólo gracias papá, por un año tan maravilloso.
+                    </p>
+                    <p style={{ marginTop: '1.5rem', fontWeight: 'bold' }}>
+                      ¡TE AMAMOS CON LOCURA!
+                    </p>
+                    <p style={{ fontStyle: 'italic' }}>
+                      -Tus hijos muy amados.
+                    </p>
+                    <p style={{ marginTop: '1rem', fontWeight: 'bold' }}>
+                      ¡GRACIAS!
+                    </p>
+                    <p style={{ fontSize: '0.8rem', color: 'var(--text-light)', marginTop: '0.5rem' }}>
+                      * Coro RUAH
+                    </p>
+                  </div>
+                </>
+              ) : (
+                <>
+                  {/* Cards Mode (Tarjetas) */}
+                  {filteredSongs.length === 0 ? (
+                    <p style={{ textAlign: 'center', color: 'var(--text-light)', padding: '2rem 0', fontStyle: 'italic' }}>
+                      No hay canciones disponibles. Intenta borrar el filtro de búsqueda.
+                    </p>
+                  ) : (
+                    <>
+                      <div 
+                        className="stacked-deck-container"
+                        onTouchStart={handleCancioneroTouchStart}
+                        onTouchEnd={(e) => handleCancioneroTouchEnd(e, filteredSongs.length - 1)}
+                      >
+                        {filteredSongs.map((song, idx) => {
+                          let cardClass = "stacked-card";
+                          if (idx === activeSongIdx) {
+                            cardClass += " active";
+                          } else if (idx === activeSongIdx + 1) {
+                            cardClass += " next";
+                          } else if (idx === activeSongIdx + 2) {
+                            cardClass += " next-behind";
+                          } else if (idx > activeSongIdx + 2) {
+                            cardClass += " far-behind";
+                          } else if (idx < activeSongIdx) {
+                            cardClass += " swiped-left";
+                          }
+                          
+                          return (
+                            <div key={song.id} className={cardClass}>
+                              <h4>{song.title}</h4>
+                              <span className="song-artist">de {song.artist}</span>
+                              <div className="song-lyrics">{song.lyrics}</div>
+                            </div>
+                          );
+                        })}
+                      </div>
+
+                      <div className="deck-nav">
+                        <button 
+                          className="deck-nav-btn" 
+                          disabled={activeSongIdx === 0}
+                          onClick={() => setActiveSongIdx(activeSongIdx - 1)}
+                        >
+                          ◀ Anterior
+                        </button>
+                        <span className="deck-counter">
+                          {activeSongIdx + 1} de {filteredSongs.length}
+                        </span>
+                        <button 
+                          className="deck-nav-btn" 
+                          disabled={activeSongIdx === filteredSongs.length - 1}
+                          onClick={() => setActiveSongIdx(activeSongIdx + 1)}
+                        >
+                          Siguiente ▶
+                        </button>
+                      </div>
+                    </>
+                  )}
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -1233,7 +1400,7 @@ export default function Landing() {
       {/* Oraciones Modal */}
       {showOraciones && (
         <div className="calendar-modal-overlay" onClick={() => setShowOraciones(false)}>
-          <div className="recursos-modal-card" onClick={(e) => e.stopPropagation()}>
+          <div className="recursos-modal-card modal-large" onClick={(e) => e.stopPropagation()}>
             <button 
               className="calendar-modal-close-btn" 
               onClick={() => setShowOraciones(false)}
@@ -1246,27 +1413,48 @@ export default function Landing() {
               Tarjetero de oraciones para adoración y preparación espiritual.
             </p>
 
-            <div className="recursos-modal-body" style={{ overflow: 'visible' }}>
-              <div className="oraciones-deck-container">
-                <div className="oracion-card">
-                  <h4>{oraciones[activeOracionIdx].title}</h4>
-                  <p>{oraciones[activeOracionIdx].text}</p>
-                </div>
+            <div className="recursos-modal-body">
+              <div 
+                className="stacked-deck-container"
+                onTouchStart={handleOracionesTouchStart}
+                onTouchEnd={handleOracionesTouchEnd}
+              >
+                {oraciones.map((oracion, idx) => {
+                  let cardClass = "stacked-card";
+                  if (idx === activeOracionIdx) {
+                    cardClass += " active";
+                  } else if (idx === activeOracionIdx + 1) {
+                    cardClass += " next";
+                  } else if (idx === activeOracionIdx + 2) {
+                    cardClass += " next-behind";
+                  } else if (idx > activeOracionIdx + 2) {
+                    cardClass += " far-behind";
+                  } else if (idx < activeOracionIdx) {
+                    cardClass += " swiped-left";
+                  }
+                  
+                  return (
+                    <div key={idx} className={cardClass}>
+                      <h4>{oracion.title}</h4>
+                      <p>{oracion.text}</p>
+                    </div>
+                  );
+                })}
               </div>
 
-              <div className="oraciones-nav">
+              <div className="deck-nav">
                 <button 
-                  className="oraciones-nav-btn" 
+                  className="deck-nav-btn" 
                   disabled={activeOracionIdx === 0}
                   onClick={() => handleOracionNav(activeOracionIdx - 1)}
                 >
                   ◀ Anterior
                 </button>
-                <span className="oraciones-counter">
+                <span className="deck-counter">
                   {activeOracionIdx + 1} de {oraciones.length}
                 </span>
                 <button 
-                  className="oraciones-nav-btn" 
+                  className="deck-nav-btn" 
                   disabled={activeOracionIdx === oraciones.length - 1}
                   onClick={() => handleOracionNav(activeOracionIdx + 1)}
                 >

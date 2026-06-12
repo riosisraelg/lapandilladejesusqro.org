@@ -352,7 +352,7 @@ export default function Calendario() {
         <ul className="nav-links">
           <li><Link href="/">Inicio</Link></li>
           <li>
-            <a href="https://wa.me/5214422497485" target="_blank" rel="noopener noreferrer" className="nav-cta-wa">
+            <a href="https://wa.me/5214422497485" target="_blank" rel="noopener noreferrer" className="nav-cta-wa" data-tooltip="Escríbenos por WhatsApp para unirte o resolver tus dudas">
               <WhatsAppIcon size={16} /> WhatsApp
             </a>
           </li>
@@ -363,6 +363,7 @@ export default function Calendario() {
           className={`nav-mobile-btn ${mobileMenuOpen ? "active" : ""}`} 
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           aria-label="Toggle menu"
+          data-tooltip="Abrir menú de navegación móvil"
         >
           <span className="bar"></span>
           <span className="bar"></span>
@@ -380,6 +381,7 @@ export default function Calendario() {
                 rel="noopener noreferrer" 
                 className="nav-mobile-cta-wa"
                 onClick={() => setMobileMenuOpen(false)}
+                data-tooltip="Escríbenos por WhatsApp para unirte o resolver tus dudas"
               >
                 <WhatsAppIcon size={18} /> WhatsApp
               </a>
@@ -400,6 +402,7 @@ export default function Calendario() {
               className="btn-insta" 
               onClick={() => setShowSubscribeModal(true)}
               style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem" }}
+              data-tooltip="Suscripción automatizada de todo el calendario en tu celular o computadora"
             >
               <CalendarSmIcon /> Sincronizar Calendario Completo
             </button>
@@ -430,6 +433,7 @@ export default function Calendario() {
                     key={f.key}
                     className={`filter-pill ${activeFilter === f.key ? "active" : ""}`}
                     onClick={() => setActiveFilter(f.key)}
+                    title={`Filtrar eventos por la categoría: ${f.label}`}
                   >
                     {f.label}
                   </button>
@@ -464,11 +468,11 @@ export default function Calendario() {
                       </div>
                     )}
                     <div className="event-detail-actions">
-                      <button onClick={() => setSelectedEvent(ev)} className="btn-agendar" style={{ background: 'transparent' }}>
+                      <button onClick={() => setSelectedEvent(ev)} className="btn-agendar" style={{ background: 'transparent' }} data-tooltip="Sincronizar esta actividad individual con tu Google Calendar, Outlook o Apple Calendar">
                         <CalendarSmIcon /> Agendar
                       </button>
                       {ev.lumaLink && (
-                        <a href={ev.lumaLink} target="_blank" rel="noopener noreferrer" className="btn-luma-sm">
+                        <a href={ev.lumaLink} target="_blank" rel="noopener noreferrer" className="btn-luma-sm" data-tooltip="Ver detalles y registro de asistencia en la plataforma Luma">
                            Info Luma <ExternalLinkIcon />
                         </a>
                       )}
@@ -531,7 +535,7 @@ export default function Calendario() {
       {selectedEvent && (
         <div className="calendar-modal-overlay" onClick={() => setSelectedEvent(null)}>
           <div className="calendar-modal-card" onClick={(e) => e.stopPropagation()}>
-            <button className="calendar-modal-close-btn" onClick={() => setSelectedEvent(null)}>
+            <button className="calendar-modal-close-btn" onClick={() => setSelectedEvent(null)} data-tooltip="Cerrar esta ventana emergente">
               <CloseIcon />
             </button>
             <div className="calendar-modal-icon-wrap">
@@ -548,6 +552,7 @@ export default function Calendario() {
                 rel="noopener noreferrer"
                 className="calendar-btn calendar-btn-google"
                 onClick={() => setSelectedEvent(null)}
+                data-tooltip="Sincronizar este evento individual en Google Calendar (Web)"
               >
                 <GoogleIcon /> Google Calendar
               </a>
@@ -557,6 +562,7 @@ export default function Calendario() {
                 rel="noopener noreferrer"
                 className="calendar-btn calendar-btn-outlook"
                 onClick={() => setSelectedEvent(null)}
+                data-tooltip="Sincronizar este evento en tu calendario de Outlook.com (Web)"
               >
                 <OutlookIcon /> Outlook.com
               </a>
@@ -566,12 +572,14 @@ export default function Calendario() {
                   setSelectedEvent(null);
                 }}
                 className="calendar-btn calendar-btn-ical"
+                data-tooltip="Descargar archivo universal .ics compatible con Apple Calendar y Outlook Desktop"
               >
                 <AppleIcon /> iCal (Apple / Outlook)
               </button>
               <button
                 onClick={() => setSelectedEvent(null)}
                 className="calendar-btn calendar-btn-cancel"
+                data-tooltip="Cerrar esta ventana emergente"
               >
                 Cancelar
               </button>
@@ -584,7 +592,7 @@ export default function Calendario() {
       {showSubscribeModal && (
         <div className="calendar-modal-overlay" onClick={() => setShowSubscribeModal(false)}>
           <div className="calendar-modal-card" onClick={(e) => e.stopPropagation()}>
-            <button className="calendar-modal-close-btn" onClick={() => setShowSubscribeModal(false)}>
+            <button className="calendar-modal-close-btn" onClick={() => setShowSubscribeModal(false)} data-tooltip="Cerrar esta ventana emergente">
               <CloseIcon />
             </button>
             <div className="calendar-modal-icon-wrap">
@@ -601,6 +609,7 @@ export default function Calendario() {
                 rel="noopener noreferrer"
                 className="calendar-btn calendar-btn-google"
                 onClick={() => setShowSubscribeModal(false)}
+                data-tooltip="Añadir suscripción automatizada del calendario completo en tu Google Calendar (Web)"
               >
                 <GoogleIcon /> Google Calendar (Web)
               </a>
@@ -608,6 +617,7 @@ export default function Calendario() {
                 href={appleOutlookSubscribeLink}
                 className="calendar-btn calendar-btn-ical"
                 onClick={() => setShowSubscribeModal(false)}
+                data-tooltip="Añadir suscripción en la app nativa de tu dispositivo (Apple Calendar en iPhone/Mac o Outlook)"
               >
                 <AppleIcon /> Apple Calendar / Outlook (Celular/PC)
               </a>
@@ -615,12 +625,14 @@ export default function Calendario() {
                 onClick={handleCopyLink}
                 className="calendar-btn calendar-btn-outlook"
                 style={{ background: copiedLink ? '#20ba5a' : '', color: copiedLink ? '#fff' : '', transition: 'all 0.3s' }}
+                data-tooltip="Copiar la URL del feed de eventos (.ics) para pegarlo e importarlo manualmente"
               >
                 <CopyIcon /> {copiedLink ? "¡Enlace Copiado!" : "Copiar Enlace iCal"}
               </button>
               <button
                 onClick={() => setShowSubscribeModal(false)}
                 className="calendar-btn calendar-btn-cancel"
+                data-tooltip="Cerrar esta ventana emergente"
               >
                 Cancelar
               </button>
