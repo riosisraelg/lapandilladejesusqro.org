@@ -513,11 +513,14 @@ export default function Landing() {
   useEffect(() => {
     if (showCancionero || showOraciones || showGuiaMisa) {
       document.body.style.overflow = 'hidden';
+      document.body.classList.add('modal-open');
     } else {
       document.body.style.overflow = '';
+      document.body.classList.remove('modal-open');
     }
     return () => {
       document.body.style.overflow = '';
+      document.body.classList.remove('modal-open');
     };
   }, [showCancionero, showOraciones, showGuiaMisa]);
 
@@ -1119,7 +1122,7 @@ export default function Landing() {
                 <button 
                   className={`recursos-btn btn-cancionero ${bounceBtn === 'cancionero' ? 'bounce-active' : ''}`} 
                   onClick={() => { setShowCancionero(true); triggerHaptic('medium'); }}
-                  data-tooltip="Abrir el cancionero del aniversario con letras y buscador de cantos"
+                  data-tooltip="Abrir el cancionero de Horas Santas con letras de cantos"
                 >
                   <div className="recursos-icon-circle">
                     <img src="/cancionero-icon.svg" alt="Cancionero" style={{ width: '22px', height: '22px', objectFit: 'contain' }} />
