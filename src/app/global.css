@@ -594,7 +594,6 @@ body.landing-body {
   font-size: 0.8rem;
   text-decoration: none;
   min-width: 0;
-  overflow: hidden;
   white-space: nowrap;
   transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
   box-shadow: var(--shadow-sm);
@@ -1825,6 +1824,26 @@ body.landing-body {
 }
 .nav [data-tooltip]:hover::before {
   transform: translate(-50%, 0);
+}
+
+/* ── TOOLTIP HACIA ABAJO (MODIFICADOR) ── */
+[data-tooltip].tooltip-down::after {
+  bottom: auto !important;
+  top: 130% !important;
+  transform: translate(-50%, -8px) scale(0.95) !important;
+}
+[data-tooltip].tooltip-down:hover::after {
+  transform: translate(-50%, 0) scale(1) !important;
+}
+[data-tooltip].tooltip-down::before {
+  bottom: auto !important;
+  top: 100% !important;
+  transform: translate(-50%, -8px) !important;
+  border-top-color: transparent !important;
+  border-bottom-color: rgba(45, 27, 14, 0.96) !important;
+}
+[data-tooltip].tooltip-down:hover::before {
+  transform: translate(-50%, 0) !important;
 }
 
 [data-tooltip]:hover::before {

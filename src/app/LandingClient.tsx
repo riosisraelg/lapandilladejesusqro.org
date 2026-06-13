@@ -960,7 +960,7 @@ export default function Landing() {
                   <WhatsAppIcon size={16} /> WhatsApp Comunidad
                 </a>
                 
-                <Link href="/calendario" className="dynamic-btn btn-events" data-tooltip="Ver el calendario mensual completo de retiros, temas y asambleas">
+                <Link href="/calendario" className="dynamic-btn btn-events tooltip-down" data-tooltip="Ver el calendario mensual completo de retiros, temas y asambleas">
                   Calendario de Eventos
                 </Link>
               </div>
