@@ -1357,11 +1357,13 @@ export default function Landing() {
               transition: modalDragY === 0 ? 'transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)' : 'none'
             }}
             onClick={(e) => e.stopPropagation()}
-            onTouchStart={handleModalTouchStart}
-            onTouchMove={handleModalTouchMove}
-            onTouchEnd={() => handleModalTouchEnd('cancionero')}
           >
-            <div className="mobile-drag-handle"></div>
+            <div 
+              className="mobile-drag-handle"
+              onTouchStart={handleModalTouchStart}
+              onTouchMove={handleModalTouchMove}
+              onTouchEnd={() => handleModalTouchEnd('cancionero')}
+            ></div>
             <button 
               className="calendar-modal-close-btn" 
               onClick={() => closeModalWithAnimation('cancionero')}
@@ -1470,11 +1472,13 @@ export default function Landing() {
               transition: modalDragY === 0 ? 'transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)' : 'none'
             }}
             onClick={(e) => e.stopPropagation()}
-            onTouchStart={handleModalTouchStart}
-            onTouchMove={handleModalTouchMove}
-            onTouchEnd={() => handleModalTouchEnd('oraciones')}
           >
-            <div className="mobile-drag-handle"></div>
+            <div 
+              className="mobile-drag-handle"
+              onTouchStart={handleModalTouchStart}
+              onTouchMove={handleModalTouchMove}
+              onTouchEnd={() => handleModalTouchEnd('oraciones')}
+            ></div>
             <button 
               className="calendar-modal-close-btn" 
               onClick={() => closeModalWithAnimation('oraciones')}

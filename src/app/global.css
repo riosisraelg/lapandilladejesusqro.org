@@ -1828,21 +1828,21 @@ body.modal-open [data-tooltip]::after {
 
   /* Alineación del tooltip del botón Cancionero (columna izquierda) al borde izquierdo del botón */
   [data-tooltip].btn-cancionero::after {
-    left: 0;
-    transform: translate(0, 8px) scale(0.95);
+    left: 0 !important;
+    transform: translate(0, 8px) scale(0.95) !important;
   }
   [data-tooltip].btn-cancionero:hover::after {
-    transform: translate(0, 0) scale(1);
+    transform: translate(0, 0) scale(1) !important;
   }
 
   /* Alineación del tooltip del botón Guía de Misa (columna derecha) al borde derecho del botón */
   [data-tooltip].btn-guia::after {
-    left: auto;
-    right: 0;
-    transform: translate(0, 8px) scale(0.95);
+    left: auto !important;
+    right: 0 !important;
+    transform: translate(0, 8px) scale(0.95) !important;
   }
   [data-tooltip].btn-guia:hover::after {
-    transform: translate(0, 0) scale(1);
+    transform: translate(0, 0) scale(1) !important;
   }
 }
 
@@ -2444,13 +2444,23 @@ body.modal-open [data-tooltip]::after {
 
   .mobile-drag-handle {
     display: block;
+    width: 100%;
+    height: 36px;
+    margin: -1rem -1rem 0 -1rem;
+    padding-top: 12px;
+    flex-shrink: 0;
+    cursor: grab;
+  }
+  
+  .mobile-drag-handle::after {
+    content: "";
+    display: block;
     width: 40px;
     height: 5px;
     background-color: var(--text-light);
     opacity: 0.3;
     border-radius: 2.5px;
-    margin: 0 auto 1.25rem auto;
-    flex-shrink: 0;
+    margin: 0 auto;
   }
 
   .recursos-modal-card.modal-large {
