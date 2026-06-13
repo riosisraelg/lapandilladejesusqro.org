@@ -340,6 +340,26 @@ Sanándome, Liberándome //
 Uh… Adorándote, Amándote
 Uh… Adorándote, Amándote
 ¡GRACIAS! -Coro RUAH.`
+  },
+  {
+    id: "agradecimiento",
+    title: "Agradecimiento Especial",
+    artist: "Coro RUAH",
+    lyrics: `Jesús,
+Gracias por permitirnos estar tan cerca de Ti, y por regalarnos la gracia de tener sed de Ti.
+Por tocar la puerta (nuestro corazón) y llamarnos a tu encuentro.
+Gracias por llenar de Ti estos corazones heridos y vacíos, por sanarlos y transformarlos.
+Gracias por todas las bendiciones que nos has dado en este gran año, y, por si fuera poco, gracias por darnos la VIDA.
+
+Hoy no queremos más que encontrarnos con tu AMOR, hoy sabemos que sólo TÚ puedes llenar ese vacío, hoy ya no concebimos vida más allá de esta medida.
+
+Sólo gracias papá, por un año tan maravilloso.
+
+¡TE AMAMOS CON LOCURA!
+
+-Tus hijos muy amados.
+
+¡GRACIAS!`
   }
 ];
 
@@ -424,6 +444,23 @@ Septiembre 2025`
   }
 ];
 
+// Apple-style premium haptic vibration helper
+const triggerHaptic = (type: 'light' | 'medium' | 'success' = 'light') => {
+  if (typeof navigator !== 'undefined' && navigator.vibrate) {
+    try {
+      if (type === 'light') {
+        navigator.vibrate(15); // Crisp, light taptic click
+      } else if (type === 'medium') {
+        navigator.vibrate(25); // Clear pulse for interactions
+      } else if (type === 'success') {
+        navigator.vibrate([15, 30, 15]); // Double tap sensation
+      }
+    } catch (e) {
+      console.warn("Vibration API failed", e);
+    }
+  }
+};
+
 export default function Landing() {
   const [events, setEvents] = useState<Array<any>>([]);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
@@ -436,40 +473,26 @@ export default function Landing() {
   const [showGuiaMisa, setShowGuiaMisa] = useState(false);
 
   // Cancionero state
-  const [searchQuery, setSearchQuery] = useState("");
-  const [songs, setSongs] = useState<Array<{ id: string; title: string; artist: string; lyrics: string }>>(defaultSongs);
-  const [expandedSongId, setExpandedSongId] = useState<string | null>(null);
+  const [songs] = useState<Array<{ id: string; title: string; artist: string; lyrics: string }>>(defaultSongs);
 
   // Oraciones state
   const [activeOracionIdx, setActiveOracionIdx] = useState(0);
+  const [oracionTransition, setOracionTransition] = useState<{
+    prevIdx: number | null;
+    action: 'next' | 'prev' | null;
+    isTransitioning: boolean;
+  }>({ prevIdx: null, action: null, isTransitioning: false });
 
   // Guía de Misa state
   const [activeGuiaTab, setActiveGuiaTab] = useState<'misterio' | 'respuestas' | 'liturgia' | 'biblia'>('misterio');
 
   // Cancionero view states
-  const [cancioneroMode, setCancioneroMode] = useState<'lista' | 'tarjetas'>('lista');
   const [activeSongIdx, setActiveSongIdx] = useState(0);
-
-  // Load song order from localStorage
-  useEffect(() => {
-    try {
-      const savedOrder = localStorage.getItem("cancionero_order");
-      if (savedOrder) {
-        const orderIds = JSON.parse(savedOrder) as string[];
-        const ordered = [...defaultSongs].sort((a, b) => {
-          const idxA = orderIds.indexOf(a.id);
-          const idxB = orderIds.indexOf(b.id);
-          if (idxA === -1 && idxB === -1) return 0;
-          if (idxA === -1) return 1;
-          if (idxB === -1) return -1;
-          return idxA - idxB;
-        });
-        setSongs(ordered);
-      }
-    } catch (e) {
-      console.error("Error loading song order", e);
-    }
-  }, []);
+  const [songTransition, setSongTransition] = useState<{
+    prevIdx: number | null;
+    action: 'next' | 'prev' | null;
+    isTransitioning: boolean;
+  }>({ prevIdx: null, action: null, isTransitioning: false });
 
   // Load active oracion index from localStorage
   useEffect(() => {
@@ -486,24 +509,110 @@ export default function Landing() {
     }
   }, []);
 
-  const reorderSong = (index: number, direction: "up" | "down") => {
-    const newSongs = [...songs];
-    const targetIndex = direction === "up" ? index - 1 : index + 1;
-    if (targetIndex < 0 || targetIndex >= newSongs.length) return;
+  // Lock body scroll when any modal is open to prevent background scrolling
+  useEffect(() => {
+    if (showCancionero || showOraciones || showGuiaMisa) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [showCancionero, showOraciones, showGuiaMisa]);
+
+  // Touch tracking for mobile swipe-to-dismiss bottom sheets
+  const modalTouchStartY = useRef<number | null>(null);
+  const modalTouchStartX = useRef<number | null>(null);
+  const [modalDragY, setModalDragY] = useState(0);
+  const [isClosingModal, setIsClosingModal] = useState<'cancionero' | 'oraciones' | null>(null);
+  const [bounceBtn, setBounceBtn] = useState<'cancionero' | 'oraciones' | null>(null);
+
+  const handleModalTouchStart = (e: React.TouchEvent) => {
+    modalTouchStartY.current = e.touches[0].clientY;
+    modalTouchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleModalTouchMove = (e: React.TouchEvent) => {
+    if (modalTouchStartY.current === null || modalTouchStartX.current === null) return;
+    const clientY = e.touches[0].clientY;
+    const clientX = e.touches[0].clientX;
+    const deltaY = clientY - modalTouchStartY.current;
+    const deltaX = clientX - modalTouchStartX.current;
+
+    // Only drag down, and must be primarily vertical drag
+    if (deltaY > 0 && Math.abs(deltaY) > Math.abs(deltaX)) {
+      setModalDragY(deltaY);
+    }
+  };
+
+  const closeModalWithAnimation = (modalType: 'cancionero' | 'oraciones') => {
+    setIsClosingModal(modalType);
+    triggerHaptic('light');
+    setTimeout(() => {
+      if (modalType === 'cancionero') {
+        setShowCancionero(false);
+      } else {
+        setShowOraciones(false);
+      }
+      setIsClosingModal(null);
+      setModalDragY(0);
+      
+      // Trigger the physical bounce feedback on the button that launched it
+      setBounceBtn(modalType);
+      triggerHaptic('medium');
+      setTimeout(() => {
+        setBounceBtn(null);
+      }, 600);
+    }, 300);
+  };
+
+  const handleModalTouchEnd = (modalType: 'cancionero' | 'oraciones') => {
+    if (modalTouchStartY.current === null) return;
+    const threshold = window.innerHeight * 0.2; // 20% of screen height
     
-    const temp = newSongs[index];
-    newSongs[index] = newSongs[targetIndex];
-    newSongs[targetIndex] = temp;
-    
-    setSongs(newSongs);
-    localStorage.setItem("cancionero_order", JSON.stringify(newSongs.map(s => s.id)));
+    if (modalDragY > threshold) {
+      closeModalWithAnimation(modalType);
+    } else {
+      // Return to position
+      setModalDragY(0);
+    }
+    modalTouchStartY.current = null;
+    modalTouchStartX.current = null;
   };
 
   const handleOracionNav = (newIdx: number) => {
-    if (newIdx >= 0 && newIdx < oraciones.length) {
-      setActiveOracionIdx(newIdx);
-      localStorage.setItem("active_oracion_index", String(newIdx));
+    const N = oraciones.length;
+    const wrappedIdx = (newIdx + N) % N;
+    if (wrappedIdx === activeOracionIdx) return;
+
+    triggerHaptic('light');
+
+    let action: 'next' | 'prev' = 'next';
+    if (newIdx < activeOracionIdx) {
+      action = 'prev';
     }
+    if (activeOracionIdx === 0 && wrappedIdx === N - 1) {
+      action = 'prev';
+    } else if (activeOracionIdx === N - 1 && wrappedIdx === 0) {
+      action = 'next';
+    }
+
+    setOracionTransition({
+      prevIdx: activeOracionIdx,
+      action,
+      isTransitioning: true
+    });
+    setActiveOracionIdx(wrappedIdx);
+    localStorage.setItem("active_oracion_index", String(wrappedIdx));
+
+    setTimeout(() => {
+      setOracionTransition({
+        prevIdx: null,
+        action: null,
+        isTransitioning: false
+      });
+    }, 400);
   };
 
   // Touch gestures for Oraciones
@@ -518,15 +627,45 @@ export default function Landing() {
     const swipeThreshold = 50; // pixels
 
     if (deltaX < -swipeThreshold) {
-      if (activeOracionIdx < oraciones.length - 1) {
-        handleOracionNav(activeOracionIdx + 1);
-      }
+      handleOracionNav(activeOracionIdx + 1);
     } else if (deltaX > swipeThreshold) {
-      if (activeOracionIdx > 0) {
-        handleOracionNav(activeOracionIdx - 1);
-      }
+      handleOracionNav(activeOracionIdx - 1);
     }
     oracionesTouchStartX.current = null;
+  };
+
+  const handleSongNav = (newIdx: number) => {
+    const N = songs.length;
+    if (N <= 1) return;
+    const wrappedIdx = (newIdx + N) % N;
+    if (wrappedIdx === activeSongIdx) return;
+
+    triggerHaptic('light');
+
+    let action: 'next' | 'prev' = 'next';
+    if (newIdx < activeSongIdx) {
+      action = 'prev';
+    }
+    if (activeSongIdx === 0 && wrappedIdx === N - 1) {
+      action = 'prev';
+    } else if (activeSongIdx === N - 1 && wrappedIdx === 0) {
+      action = 'next';
+    }
+
+    setSongTransition({
+      prevIdx: activeSongIdx,
+      action,
+      isTransitioning: true
+    });
+    setActiveSongIdx(wrappedIdx);
+
+    setTimeout(() => {
+      setSongTransition({
+        prevIdx: null,
+        action: null,
+        isTransitioning: false
+      });
+    }, 400);
   };
 
   // Touch gestures for Cancionero
@@ -534,31 +673,19 @@ export default function Landing() {
   const handleCancioneroTouchStart = (e: React.TouchEvent) => {
     cancioneroTouchStartX.current = e.touches[0].clientX;
   };
-  const handleCancioneroTouchEnd = (e: React.TouchEvent, maxIdx: number) => {
+  const handleCancioneroTouchEnd = (e: React.TouchEvent) => {
     if (cancioneroTouchStartX.current === null) return;
     const touchEndX = e.changedTouches[0].clientX;
     const deltaX = touchEndX - cancioneroTouchStartX.current;
     const swipeThreshold = 50; // pixels
 
     if (deltaX < -swipeThreshold) {
-      if (activeSongIdx < maxIdx) {
-        setActiveSongIdx(activeSongIdx + 1);
-      }
+      handleSongNav(activeSongIdx + 1);
     } else if (deltaX > swipeThreshold) {
-      if (activeSongIdx > 0) {
-        setActiveSongIdx(activeSongIdx - 1);
-      }
+      handleSongNav(activeSongIdx - 1);
     }
     cancioneroTouchStartX.current = null;
   };
-
-  const filteredSongs = useMemo(() => {
-    if (!searchQuery.trim()) return songs;
-    const q = searchQuery.toLowerCase();
-    return songs.filter(
-      s => s.title.toLowerCase().includes(q) || s.lyrics.toLowerCase().includes(q)
-    );
-  }, [songs, searchQuery]);
 
   // Track active section during scroll
   useEffect(() => {
@@ -972,8 +1099,8 @@ export default function Landing() {
               
               <div className="recursos-buttons-grid">
                 <button 
-                  className="recursos-btn btn-cancionero" 
-                  onClick={() => setShowCancionero(true)}
+                  className={`recursos-btn btn-cancionero ${bounceBtn === 'cancionero' ? 'bounce-active' : ''}`} 
+                  onClick={() => { setShowCancionero(true); triggerHaptic('medium'); }}
                   data-tooltip="Abrir el cancionero del aniversario con letras y buscador de cantos"
                 >
                   <div className="recursos-icon-circle">
@@ -983,8 +1110,8 @@ export default function Landing() {
                 </button>
 
                 <button 
-                  className="recursos-btn btn-oraciones" 
-                  onClick={() => setShowOraciones(true)}
+                  className={`recursos-btn btn-oraciones ${bounceBtn === 'oraciones' ? 'bounce-active' : ''}`} 
+                  onClick={() => { setShowOraciones(true); triggerHaptic('medium'); }}
                   data-tooltip="Abrir el tarjetero interactivo de oraciones diarias y comunitarias"
                 >
                   <div className="recursos-icon-circle">
@@ -1201,195 +1328,94 @@ export default function Landing() {
 
       {/* Cancionero Modal */}
       {showCancionero && (
-        <div className="calendar-modal-overlay" onClick={() => setShowCancionero(false)}>
-          <div className="recursos-modal-card modal-large" onClick={(e) => e.stopPropagation()}>
+        <div className="calendar-modal-overlay" onClick={() => closeModalWithAnimation('cancionero')}>
+          <div 
+            className={`recursos-modal-card modal-large ${isClosingModal === 'cancionero' ? 'slide-down-closing' : ''}`} 
+            style={{
+              transform: modalDragY > 0 && isClosingModal === null ? `translateY(${modalDragY}px)` : undefined,
+              transition: modalDragY === 0 ? 'transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)' : 'none'
+            }}
+            onClick={(e) => e.stopPropagation()}
+            onTouchStart={handleModalTouchStart}
+            onTouchMove={handleModalTouchMove}
+            onTouchEnd={() => handleModalTouchEnd('cancionero')}
+          >
+            <div className="mobile-drag-handle"></div>
             <button 
               className="calendar-modal-close-btn" 
-              onClick={() => setShowCancionero(false)}
+              onClick={() => closeModalWithAnimation('cancionero')}
               aria-label="Cerrar modal"
             >
               ✕
             </button>
-            <h3 className="recursos-title" style={{ paddingRight: '2rem' }}>Cancionero Horas Santas</h3>
-            
-            {/* Tabs for cancioneroMode */}
-            <div className="guia-tabs" style={{ marginBottom: '1.25rem', borderBottom: '1px solid var(--border-subtle)', flexShrink: 0 }}>
-              <button 
-                className={`guia-tab-btn ${cancioneroMode === 'lista' ? 'active' : ''}`}
-                onClick={() => setCancioneroMode('lista')}
-              >
-                Lista de Cantos
-              </button>
-              <button 
-                className={`guia-tab-btn ${cancioneroMode === 'tarjetas' ? 'active' : ''}`}
-                onClick={() => {
-                  setCancioneroMode('tarjetas');
-                  setActiveSongIdx(0);
-                }}
-              >
-                ★ Modo Presentación (Tarjetas)
-              </button>
+            <div className="recursos-title-container">
+              <h3 className="recursos-title" style={{ paddingRight: '2rem' }}>Cancionero Horas Santas</h3>
+              <span className="mobile-counter-badge">{activeSongIdx + 1} de {songs.length}</span>
             </div>
+            <p className="recursos-desc" style={{ marginBottom: '1rem' }}>
+              Tarjetero interactivo para el cancionero de Horas Santas.
+            </p>
 
             <div className="recursos-modal-body">
-              {cancioneroMode === 'lista' ? (
-                <>
-                  <div className="cancionero-nota">
-                    Nota: El orden de las canciones es informativo y no representa la secuencia exacta en que se cantan en la Hora Santa. Puedes ordenarlas para tu planeación.
-                  </div>
-
-                  <input 
-                    type="text" 
-                    placeholder="Buscar canción por título o letra..." 
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="cancionero-search"
-                  />
-
-                  {filteredSongs.length === 0 ? (
-                    <p style={{ textAlign: 'center', color: 'var(--text-light)', padding: '2rem 0', fontStyle: 'italic' }}>
-                      No se encontraron canciones que coincidan con la búsqueda.
-                    </p>
-                  ) : (
-                    filteredSongs.map((song, idx) => {
-                      const isExpanded = expandedSongId === song.id;
-                      const originalIndex = songs.findIndex(s => s.id === song.id);
-                      
-                      return (
-                        <div key={song.id} className="cancionero-song-item">
-                          <div className="cancionero-song-header" onClick={() => setExpandedSongId(isExpanded ? null : song.id)}>
-                            <div className="cancionero-song-title-group">
-                              <span className="cancionero-song-title">{song.title}</span>
-                              <span className="cancionero-song-artist">{song.artist}</span>
-                            </div>
-                            <div className="cancionero-song-controls" onClick={(e) => e.stopPropagation()}>
-                              <button 
-                                className="cancionero-order-btn" 
-                                disabled={originalIndex === 0 || searchQuery !== ""}
-                                onClick={() => reorderSong(originalIndex, "up")}
-                                title="Subir canción"
-                              >
-                                ▲
-                              </button>
-                              <button 
-                                className="cancionero-order-btn" 
-                                disabled={originalIndex === songs.length - 1 || searchQuery !== ""}
-                                onClick={() => reorderSong(originalIndex, "down")}
-                                title="Bajar canción"
-                              >
-                                ▼
-                              </button>
-                              <span style={{ 
-                                marginLeft: '8px', 
-                                fontSize: '0.75rem', 
-                                color: 'var(--text-light)', 
-                                transform: isExpanded ? 'rotate(180deg)' : 'none',
-                                transition: 'transform 0.2s',
-                                cursor: 'pointer'
-                              }}
-                              onClick={() => setExpandedSongId(isExpanded ? null : song.id)}>
-                                ▼
-                              </span>
-                            </div>
-                          </div>
-                          {isExpanded && (
-                            <div className="cancionero-song-body">
-                              {song.lyrics}
-                            </div>
-                          )}
-                        </div>
-                      );
-                    })
-                  )}
-
-                  {/* Agradecimiento Especial */}
-                  <div className="cancionero-agradecimiento-card">
-                    <h4 className="cancionero-agradecimiento-title">Jesús,</h4>
-                    <p>
-                      Gracias por permitirnos estar tan cerca de Ti, y por regalarnos la gracia de tener sed de Ti.
-                      Por tocar la puerta (nuestro corazón) y llamarnos a tu encuentro.
-                      Gracias por llenar de Ti estos corazones heridos y vacíos, por sanarlos y transformarlos.
-                      Gracias por todas las bendiciones que nos has dado en este gran año, y, por si fuera poco, gracias por darnos la VIDA.
-                    </p>
-                    <p style={{ marginTop: '1rem' }}>
-                      Hoy no queremos más que encontrarnos con tu AMOR, hoy sabemos que sólo TÚ puedes llenar ese vacío, hoy ya no concebimos vida más allá de esta medida.
-                    </p>
-                    <p style={{ marginTop: '1rem' }}>
-                      Sólo gracias papá, por un año tan maravilloso.
-                    </p>
-                    <p style={{ marginTop: '1.5rem', fontWeight: 'bold' }}>
-                      ¡TE AMAMOS CON LOCURA!
-                    </p>
-                    <p style={{ fontStyle: 'italic' }}>
-                      -Tus hijos muy amados.
-                    </p>
-                    <p style={{ marginTop: '1rem', fontWeight: 'bold' }}>
-                      ¡GRACIAS!
-                    </p>
-                    <p style={{ fontSize: '0.8rem', color: 'var(--text-light)', marginTop: '0.5rem' }}>
-                      * Coro RUAH
-                    </p>
-                  </div>
-                </>
+              {songs.length === 0 ? (
+                <p style={{ textAlign: 'center', color: 'var(--text-light)', padding: '2rem 0', fontStyle: 'italic' }}>
+                  No hay canciones disponibles.
+                </p>
               ) : (
                 <>
-                  {/* Cards Mode (Tarjetas) */}
-                  {filteredSongs.length === 0 ? (
-                    <p style={{ textAlign: 'center', color: 'var(--text-light)', padding: '2rem 0', fontStyle: 'italic' }}>
-                      No hay canciones disponibles. Intenta borrar el filtro de búsqueda.
-                    </p>
-                  ) : (
-                    <>
-                      <div 
-                        className="stacked-deck-container"
-                        onTouchStart={handleCancioneroTouchStart}
-                        onTouchEnd={(e) => handleCancioneroTouchEnd(e, filteredSongs.length - 1)}
-                      >
-                        {filteredSongs.map((song, idx) => {
-                          let cardClass = "stacked-card";
-                          if (idx === activeSongIdx) {
-                            cardClass += " active";
-                          } else if (idx === activeSongIdx + 1) {
-                            cardClass += " next";
-                          } else if (idx === activeSongIdx + 2) {
-                            cardClass += " next-behind";
-                          } else if (idx > activeSongIdx + 2) {
-                            cardClass += " far-behind";
-                          } else if (idx < activeSongIdx) {
-                            cardClass += " swiped-left";
-                          }
-                          
-                          return (
-                            <div key={song.id} className={cardClass}>
-                              <h4>{song.title}</h4>
-                              <span className="song-artist">de {song.artist}</span>
-                              <div className="song-lyrics">{song.lyrics}</div>
-                            </div>
-                          );
-                        })}
-                      </div>
+                  <div 
+                    className="stacked-deck-container"
+                    onTouchStart={handleCancioneroTouchStart}
+                    onTouchEnd={handleCancioneroTouchEnd}
+                  >
+                    {songs.map((song, idx) => {
+                      let cardClass = "stacked-card";
+                      const { prevIdx, action, isTransitioning } = songTransition;
 
-                      <div className="deck-nav">
-                        <button 
-                          className="deck-nav-btn" 
-                          disabled={activeSongIdx === 0}
-                          onClick={() => setActiveSongIdx(activeSongIdx - 1)}
-                        >
-                          ◀ Anterior
-                        </button>
-                        <span className="deck-counter">
-                          {activeSongIdx + 1} de {filteredSongs.length}
-                        </span>
-                        <button 
-                          className="deck-nav-btn" 
-                          disabled={activeSongIdx === filteredSongs.length - 1}
-                          onClick={() => setActiveSongIdx(activeSongIdx + 1)}
-                        >
-                          Siguiente ▶
-                        </button>
-                      </div>
-                    </>
-                  )}
+                      if (isTransitioning && idx === prevIdx) {
+                        cardClass += action === 'next' ? ' swiped-left' : ' swiped-right';
+                      } else {
+                        const N = songs.length;
+                        const diff = (idx - activeSongIdx + N) % N;
+                        
+                        if (diff === 0) {
+                          cardClass += " active";
+                        } else if (diff === 1) {
+                          cardClass += " next";
+                        } else if (diff === 2) {
+                          cardClass += " next-behind";
+                        } else {
+                          cardClass += " far-behind";
+                        }
+                      }
+                      
+                      return (
+                        <div key={song.id} className={cardClass}>
+                          <h4>{song.title}</h4>
+                          <span className="song-artist">de {song.artist}</span>
+                          <div className="song-lyrics">{song.lyrics}</div>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  <div className="deck-nav">
+                    <button 
+                      className="deck-nav-btn" 
+                      onClick={() => handleSongNav(activeSongIdx - 1)}
+                    >
+                      ◀ Anterior
+                    </button>
+                    <span className="deck-counter">
+                      {activeSongIdx + 1} de {songs.length}
+                    </span>
+                    <button 
+                      className="deck-nav-btn" 
+                      onClick={() => handleSongNav(activeSongIdx + 1)}
+                    >
+                      Siguiente ▶
+                    </button>
+                  </div>
                 </>
               )}
             </div>
@@ -1399,16 +1425,30 @@ export default function Landing() {
 
       {/* Oraciones Modal */}
       {showOraciones && (
-        <div className="calendar-modal-overlay" onClick={() => setShowOraciones(false)}>
-          <div className="recursos-modal-card modal-large" onClick={(e) => e.stopPropagation()}>
+        <div className="calendar-modal-overlay" onClick={() => closeModalWithAnimation('oraciones')}>
+          <div 
+            className={`recursos-modal-card modal-large ${isClosingModal === 'oraciones' ? 'slide-down-closing' : ''}`} 
+            style={{
+              transform: modalDragY > 0 && isClosingModal === null ? `translateY(${modalDragY}px)` : undefined,
+              transition: modalDragY === 0 ? 'transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)' : 'none'
+            }}
+            onClick={(e) => e.stopPropagation()}
+            onTouchStart={handleModalTouchStart}
+            onTouchMove={handleModalTouchMove}
+            onTouchEnd={() => handleModalTouchEnd('oraciones')}
+          >
+            <div className="mobile-drag-handle"></div>
             <button 
               className="calendar-modal-close-btn" 
-              onClick={() => setShowOraciones(false)}
+              onClick={() => closeModalWithAnimation('oraciones')}
               aria-label="Cerrar modal"
             >
               ✕
             </button>
-            <h3 className="recursos-title">Oraciones de la Comunidad</h3>
+            <div className="recursos-title-container">
+              <h3 className="recursos-title">Oraciones de la Comunidad</h3>
+              <span className="mobile-counter-badge">{activeOracionIdx + 1} de {oraciones.length}</span>
+            </div>
             <p className="recursos-desc" style={{ marginBottom: '1rem' }}>
               Tarjetero de oraciones para adoración y preparación espiritual.
             </p>
@@ -1421,16 +1461,23 @@ export default function Landing() {
               >
                 {oraciones.map((oracion, idx) => {
                   let cardClass = "stacked-card";
-                  if (idx === activeOracionIdx) {
-                    cardClass += " active";
-                  } else if (idx === activeOracionIdx + 1) {
-                    cardClass += " next";
-                  } else if (idx === activeOracionIdx + 2) {
-                    cardClass += " next-behind";
-                  } else if (idx > activeOracionIdx + 2) {
-                    cardClass += " far-behind";
-                  } else if (idx < activeOracionIdx) {
-                    cardClass += " swiped-left";
+                  const { prevIdx, action, isTransitioning } = oracionTransition;
+
+                  if (isTransitioning && idx === prevIdx) {
+                    cardClass += action === 'next' ? ' swiped-left' : ' swiped-right';
+                  } else {
+                    const N = oraciones.length;
+                    const diff = (idx - activeOracionIdx + N) % N;
+                    
+                    if (diff === 0) {
+                      cardClass += " active";
+                    } else if (diff === 1) {
+                      cardClass += " next";
+                    } else if (diff === 2) {
+                      cardClass += " next-behind";
+                    } else {
+                      cardClass += " far-behind";
+                    }
                   }
                   
                   return (
@@ -1445,7 +1492,6 @@ export default function Landing() {
               <div className="deck-nav">
                 <button 
                   className="deck-nav-btn" 
-                  disabled={activeOracionIdx === 0}
                   onClick={() => handleOracionNav(activeOracionIdx - 1)}
                 >
                   ◀ Anterior
@@ -1455,7 +1501,6 @@ export default function Landing() {
                 </span>
                 <button 
                   className="deck-nav-btn" 
-                  disabled={activeOracionIdx === oraciones.length - 1}
                   onClick={() => handleOracionNav(activeOracionIdx + 1)}
                 >
                   Siguiente ▶

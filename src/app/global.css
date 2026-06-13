@@ -1837,6 +1837,17 @@ body.landing-body {
   gap: 0.8rem;
 }
 
+.recursos-title-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.mobile-counter-badge {
+  display: none;
+}
+
 .recursos-title {
   font-family: 'Cormorant Garamond', serif;
   font-size: 1.8rem;
@@ -2090,8 +2101,8 @@ body.landing-body {
   position: relative;
   width: 100%;
   max-width: 520px;
-  height: 380px; /* Fixed height for deck to accommodate the stacked items and animation offsets */
-  margin: 1rem auto;
+  height: 330px; /* Shorter default height for mobile */
+  margin: 0.75rem auto;
   perspective: 1000px;
   order: 1; /* Shows above the nav by default (mobile/tablet) */
 }
@@ -2105,7 +2116,7 @@ body.landing-body {
   background: var(--cream);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius);
-  padding: 1.75rem 2rem;
+  padding: 1.5rem 1.75rem;
   box-shadow: var(--shadow-md);
   text-align: center;
   display: flex;
@@ -2121,29 +2132,29 @@ body.landing-body {
 /* Card titles and text styling */
 .stacked-card h4 {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 1.4rem;
+  font-size: 1.35rem;
   font-weight: 700;
   color: var(--text-dark);
-  margin-bottom: 0.6rem;
+  margin-bottom: 0.5rem;
   flex-shrink: 0;
 }
 
 .stacked-card .song-artist {
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   color: var(--text-light);
-  margin-top: -0.4rem;
-  margin-bottom: 0.8rem;
+  margin-top: -0.3rem;
+  margin-bottom: 0.6rem;
   font-style: italic;
   flex-shrink: 0;
 }
 
 .stacked-card p, .stacked-card .song-lyrics {
-  font-size: 0.88rem;
-  line-height: 1.6;
+  font-size: 0.85rem;
+  line-height: 1.55;
   color: var(--text-body);
   white-space: pre-line;
-  margin-top: 0.5rem;
-  padding-bottom: 0.5rem;
+  margin-top: 0.4rem;
+  padding-bottom: 0.4rem;
 }
 
 /* Stacked Positions */
@@ -2155,21 +2166,21 @@ body.landing-body {
 }
 
 .stacked-card.next {
-  transform: translate3d(0, 12px, -60px) scale(0.94);
-  opacity: 0.65;
+  transform: translate3d(0, 14px, -50px) scale(0.95);
+  opacity: 0.75;
   z-index: 5;
   pointer-events: none;
 }
 
 .stacked-card.next-behind {
-  transform: translate3d(0, 24px, -120px) scale(0.88);
-  opacity: 0.3;
+  transform: translate3d(0, 28px, -100px) scale(0.90);
+  opacity: 0.45;
   z-index: 2;
   pointer-events: none;
 }
 
 .stacked-card.far-behind {
-  transform: translate3d(0, 36px, -180px) scale(0.82);
+  transform: translate3d(0, 42px, -150px) scale(0.85);
   opacity: 0;
   z-index: 1;
   pointer-events: none;
@@ -2344,8 +2355,90 @@ body.landing-body {
   background: rgba(245, 240, 232, 0.4);
 }
 
+/* Drag handle for mobile bottom sheet (hidden by default) */
+.mobile-drag-handle {
+  display: none;
+}
+
 /* Responsive Styles */
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
+  .calendar-modal-overlay {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end; /* Align bottom sheet to screen bottom */
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    overscroll-behavior: contain; /* Prevents background scroll chaining */
+    padding: 0 !important; /* Edge-to-edge modal width */
+  }
+
+  /* Hide close button on mobile and tablet */
+  .calendar-modal-close-btn {
+    display: none !important;
+  }
+
+  /* Hide description and old deck nav line on mobile/tablet to save space */
+  .recursos-desc,
+  .deck-nav {
+    display: none !important;
+  }
+
+  .recursos-title-container {
+    margin-bottom: 0.5rem;
+    margin-top: 0.25rem;
+    padding-right: 0.5rem;
+  }
+
+  .mobile-counter-badge {
+    display: inline-block;
+    background: var(--cream);
+    border: 1px solid var(--border-subtle);
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    white-space: nowrap;
+    margin-left: 1rem;
+    flex-shrink: 0;
+  }
+
+  .mobile-drag-handle {
+    display: block;
+    width: 40px;
+    height: 5px;
+    background-color: var(--text-light);
+    opacity: 0.3;
+    border-radius: 2.5px;
+    margin: 0 auto 1.25rem auto;
+    flex-shrink: 0;
+  }
+
+  .recursos-modal-card.modal-large {
+    height: 95vh; /* Exactly 95% height */
+    max-height: 95vh;
+    width: 100%;
+    max-width: 100%;
+    border-radius: 24px 24px 0 0; /* Rounded top, flat bottom */
+    margin: 0;
+    padding: 1rem 1rem 2rem 1rem;
+    box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.15);
+    overscroll-behavior: contain; /* Prevents background scroll chaining */
+    transform-origin: bottom center;
+    animation: mobileSheetOpen 0.55s cubic-bezier(0.175, 0.885, 0.32, 1.1) forwards;
+  }
+
+  .recursos-modal-card.modal-large.slide-down-closing {
+    animation: mobileSheetClose 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) forwards !important;
+  }
+
+  .stacked-deck-container {
+    height: 68vh; /* Cards container expanded to occupy saved vertical space */
+    min-height: 420px;
+    max-height: 640px;
+    margin: 0.5rem auto 1rem auto;
+  }
+
   .recursos-modal-card {
     padding: 1.5rem 1rem;
     max-height: 90vh;
@@ -2371,6 +2464,57 @@ body.landing-body {
   .oracion-card {
     padding: 1.5rem;
     min-height: 250px;
+  }
+}
+
+/* Physical bounce animation for launcher buttons on modal close */
+.recursos-btn.bounce-active {
+  animation: buttonBounce 0.6s cubic-bezier(0.25, 0.8, 0.25, 1.4) !important;
+  z-index: 10;
+}
+
+@keyframes buttonBounce {
+  0% {
+    transform: scale(1);
+  }
+  20% {
+    transform: scale(0.8);
+  }
+  50% {
+    transform: scale(1.18);
+  }
+  75% {
+    transform: scale(0.93);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes mobileSheetOpen {
+  0% {
+    transform: translateY(100%) scale(0.85);
+    opacity: 0;
+  }
+  15% {
+    /* Dip downward (anticipation / inertia) */
+    transform: translateY(103%) scale(0.82);
+    opacity: 0.5;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes mobileSheetClose {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh);
+    opacity: 0;
   }
 }
 
