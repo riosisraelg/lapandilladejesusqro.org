@@ -534,8 +534,8 @@ export default function Landing() {
   // Fidget-style touch tracking for active cards
   const cardTouchStartX = useRef<number | null>(null);
   const cardTouchStartY = useRef<number | null>(null);
+  const cardDragIntent = useRef<'horizontal' | 'vertical' | null>(null);
   const [cardDragX, setCardDragX] = useState(0);
-
 
   const handleModalTouchStart = (e: React.TouchEvent) => {
     modalTouchStartY.current = e.touches[0].clientY;
@@ -559,38 +559,50 @@ export default function Landing() {
     e.stopPropagation(); // Stop bubble to prevent sliding the bottom sheet down
     cardTouchStartX.current = e.touches[0].clientX;
     cardTouchStartY.current = e.touches[0].clientY;
+    cardDragIntent.current = null;
+    setCardDragX(0);
   };
 
   const handleCardTouchMove = (e: React.TouchEvent) => {
     if (cardTouchStartX.current === null || cardTouchStartY.current === null) return;
-    e.stopPropagation();
+    
     const clientX = e.touches[0].clientX;
     const clientY = e.touches[0].clientY;
     const deltaX = clientX - cardTouchStartX.current;
     const deltaY = clientY - cardTouchStartY.current;
 
-    setCardDragX(deltaX);
+    if (!cardDragIntent.current) {
+      if (Math.abs(deltaX) > 10 || Math.abs(deltaY) > 10) {
+        cardDragIntent.current = Math.abs(deltaX) > Math.abs(deltaY) ? 'horizontal' : 'vertical';
+      }
+    }
 
+    if (cardDragIntent.current === 'horizontal') {
+      e.stopPropagation();
+      setCardDragX(deltaX);
+    }
   };
 
   const handleCardTouchEnd = (modalType: 'cancionero' | 'oraciones') => {
     if (cardTouchStartX.current === null) return;
     
-    const thresholdX = 80; // 80px horizontal swipe threshold
-    
-    if (cardDragX > thresholdX) {
-      // Swipe right -> previous card
-      if (modalType === 'cancionero') {
-        handleSongNav(activeSongIdx - 1);
-      } else {
-        handleOracionNav(activeOracionIdx - 1);
-      }
-    } else if (cardDragX < -thresholdX) {
-      // Swipe left -> next card
-      if (modalType === 'cancionero') {
-        handleSongNav(activeSongIdx + 1);
-      } else {
-        handleOracionNav(activeOracionIdx + 1);
+    if (cardDragIntent.current !== 'vertical') {
+      const thresholdX = 80; // 80px horizontal swipe threshold
+      
+      if (cardDragX > thresholdX) {
+        // Swipe right -> previous card
+        if (modalType === 'cancionero') {
+          handleSongNav(activeSongIdx - 1);
+        } else {
+          handleOracionNav(activeOracionIdx - 1);
+        }
+      } else if (cardDragX < -thresholdX) {
+        // Swipe left -> next card
+        if (modalType === 'cancionero') {
+          handleSongNav(activeSongIdx + 1);
+        } else {
+          handleOracionNav(activeOracionIdx + 1);
+        }
       }
     }
     
@@ -599,6 +611,7 @@ export default function Landing() {
 
     cardTouchStartX.current = null;
     cardTouchStartY.current = null;
+    cardDragIntent.current = null;
   };
 
   const closeModalWithAnimation = (modalType: 'cancionero' | 'oraciones') => {
@@ -1429,6 +1442,7 @@ export default function Landing() {
                           onTouchStart={isActive ? handleCardTouchStart : undefined}
                           onTouchMove={isActive ? handleCardTouchMove : undefined}
                           onTouchEnd={isActive ? () => handleCardTouchEnd('cancionero') : undefined}
+                          onTouchCancel={isActive ? () => handleCardTouchEnd('cancionero') : undefined}
                         >
                           <h4>{song.title}</h4>
                           <span className="song-artist">de {song.artist}</span>
@@ -1538,6 +1552,7 @@ export default function Landing() {
                       onTouchStart={isActive ? handleCardTouchStart : undefined}
                       onTouchMove={isActive ? handleCardTouchMove : undefined}
                       onTouchEnd={isActive ? () => handleCardTouchEnd('oraciones') : undefined}
+                      onTouchCancel={isActive ? () => handleCardTouchEnd('oraciones') : undefined}
                     >
                       <h4>{oracion.title}</h4>
                       <p>{oracion.text}</p>
