@@ -2114,10 +2114,10 @@ body.landing-body {
   width: 100%;
   height: 100%;
   background: var(--cream);
-  border: 1px solid var(--border-subtle);
+  border: 1px solid rgba(45, 27, 14, 0.12);
   border-radius: var(--radius);
   padding: 1.5rem 1.75rem;
-  box-shadow: var(--shadow-md);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65), 0 4px 10px rgba(45, 27, 14, 0.08);
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -2159,42 +2159,48 @@ body.landing-body {
 
 /* Stacked Positions */
 .stacked-card.active {
-  transform: translate3d(0, 0, 0) scale(1);
+  transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
   opacity: 1;
   z-index: 10;
   pointer-events: auto;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65), 0 12px 28px rgba(45, 27, 14, 0.12), 0 4px 8px rgba(45, 27, 14, 0.06);
 }
 
 .stacked-card.next {
-  transform: translate3d(0, 14px, -50px) scale(0.95);
-  opacity: 0.75;
+  transform: translate3d(0, 12px, -40px) scale(0.96) rotate(-1deg);
+  opacity: 0.95;
+  filter: brightness(0.93);
   z-index: 5;
   pointer-events: none;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), 0 6px 14px rgba(45, 27, 14, 0.08);
 }
 
 .stacked-card.next-behind {
-  transform: translate3d(0, 28px, -100px) scale(0.90);
-  opacity: 0.45;
+  transform: translate3d(0, 24px, -80px) scale(0.92) rotate(1.5deg);
+  opacity: 0.85;
+  filter: brightness(0.86);
   z-index: 2;
   pointer-events: none;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 4px 8px rgba(45, 27, 14, 0.06);
 }
 
 .stacked-card.far-behind {
-  transform: translate3d(0, 42px, -150px) scale(0.85);
+  transform: translate3d(0, 36px, -120px) scale(0.88) rotate(-0.5deg);
   opacity: 0;
+  filter: brightness(0.8);
   z-index: 1;
   pointer-events: none;
 }
 
 .stacked-card.swiped-left {
-  transform: translate3d(-120%, 0, 0) rotate(-15deg);
+  transform: translate3d(-120%, 8%, 0) rotate(-18deg) !important;
   opacity: 0;
   z-index: 15;
   pointer-events: none;
 }
 
 .stacked-card.swiped-right {
-  transform: translate3d(120%, 0, 0) rotate(15deg);
+  transform: translate3d(120%, 8%, 0) rotate(18deg) !important;
   opacity: 0;
   z-index: 15;
   pointer-events: none;

@@ -528,6 +528,12 @@ export default function Landing() {
   const [isClosingModal, setIsClosingModal] = useState<'cancionero' | 'oraciones' | null>(null);
   const [bounceBtn, setBounceBtn] = useState<'cancionero' | 'oraciones' | null>(null);
 
+  // Fidget-style touch tracking for active cards
+  const cardTouchStartX = useRef<number | null>(null);
+  const cardTouchStartY = useRef<number | null>(null);
+  const [cardDragX, setCardDragX] = useState(0);
+  const [cardDragY, setCardDragY] = useState(0);
+
   const handleModalTouchStart = (e: React.TouchEvent) => {
     modalTouchStartY.current = e.touches[0].clientY;
     modalTouchStartX.current = e.touches[0].clientX;
@@ -544,6 +550,52 @@ export default function Landing() {
     if (deltaY > 0 && Math.abs(deltaY) > Math.abs(deltaX)) {
       setModalDragY(deltaY);
     }
+  };
+
+  const handleCardTouchStart = (e: React.TouchEvent) => {
+    e.stopPropagation(); // Stop bubble to prevent sliding the bottom sheet down
+    cardTouchStartX.current = e.touches[0].clientX;
+    cardTouchStartY.current = e.touches[0].clientY;
+  };
+
+  const handleCardTouchMove = (e: React.TouchEvent) => {
+    if (cardTouchStartX.current === null || cardTouchStartY.current === null) return;
+    e.stopPropagation();
+    const clientX = e.touches[0].clientX;
+    const clientY = e.touches[0].clientY;
+    const deltaX = clientX - cardTouchStartX.current;
+    const deltaY = clientY - cardTouchStartY.current;
+
+    setCardDragX(deltaX);
+    setCardDragY(deltaY);
+  };
+
+  const handleCardTouchEnd = (modalType: 'cancionero' | 'oraciones') => {
+    if (cardTouchStartX.current === null) return;
+    
+    const thresholdX = 80; // 80px horizontal swipe threshold
+    
+    if (cardDragX > thresholdX) {
+      // Swipe right -> previous card
+      if (modalType === 'cancionero') {
+        handleSongNav(activeSongIdx - 1);
+      } else {
+        handleOracionNav(activeOracionIdx - 1);
+      }
+    } else if (cardDragX < -thresholdX) {
+      // Swipe left -> next card
+      if (modalType === 'cancionero') {
+        handleSongNav(activeSongIdx + 1);
+      } else {
+        handleOracionNav(activeOracionIdx + 1);
+      }
+    }
+    
+    // Reset drag offsets
+    setCardDragX(0);
+    setCardDragY(0);
+    cardTouchStartX.current = null;
+    cardTouchStartY.current = null;
   };
 
   const closeModalWithAnimation = (modalType: 'cancionero' | 'oraciones') => {
@@ -615,24 +667,7 @@ export default function Landing() {
     }, 400);
   };
 
-  // Touch gestures for Oraciones
-  const oracionesTouchStartX = useRef<number | null>(null);
-  const handleOracionesTouchStart = (e: React.TouchEvent) => {
-    oracionesTouchStartX.current = e.touches[0].clientX;
-  };
-  const handleOracionesTouchEnd = (e: React.TouchEvent) => {
-    if (oracionesTouchStartX.current === null) return;
-    const touchEndX = e.changedTouches[0].clientX;
-    const deltaX = touchEndX - oracionesTouchStartX.current;
-    const swipeThreshold = 50; // pixels
 
-    if (deltaX < -swipeThreshold) {
-      handleOracionNav(activeOracionIdx + 1);
-    } else if (deltaX > swipeThreshold) {
-      handleOracionNav(activeOracionIdx - 1);
-    }
-    oracionesTouchStartX.current = null;
-  };
 
   const handleSongNav = (newIdx: number) => {
     const N = songs.length;
@@ -668,24 +703,7 @@ export default function Landing() {
     }, 400);
   };
 
-  // Touch gestures for Cancionero
-  const cancioneroTouchStartX = useRef<number | null>(null);
-  const handleCancioneroTouchStart = (e: React.TouchEvent) => {
-    cancioneroTouchStartX.current = e.touches[0].clientX;
-  };
-  const handleCancioneroTouchEnd = (e: React.TouchEvent) => {
-    if (cancioneroTouchStartX.current === null) return;
-    const touchEndX = e.changedTouches[0].clientX;
-    const deltaX = touchEndX - cancioneroTouchStartX.current;
-    const swipeThreshold = 50; // pixels
 
-    if (deltaX < -swipeThreshold) {
-      handleSongNav(activeSongIdx + 1);
-    } else if (deltaX > swipeThreshold) {
-      handleSongNav(activeSongIdx - 1);
-    }
-    cancioneroTouchStartX.current = null;
-  };
 
   // Track active section during scroll
   useEffect(() => {
@@ -1363,11 +1381,7 @@ export default function Landing() {
                 </p>
               ) : (
                 <>
-                  <div 
-                    className="stacked-deck-container"
-                    onTouchStart={handleCancioneroTouchStart}
-                    onTouchEnd={handleCancioneroTouchEnd}
-                  >
+                  <div className="stacked-deck-container">
                     {songs.map((song, idx) => {
                       let cardClass = "stacked-card";
                       const { prevIdx, action, isTransitioning } = songTransition;
@@ -1389,8 +1403,28 @@ export default function Landing() {
                         }
                       }
                       
+                      const N = songs.length;
+                      const diff = (idx - activeSongIdx + N) % N;
+                      const isActive = diff === 0 && !isTransitioning;
+
+                      const activeCardStyle = isActive && (cardDragX !== 0 || cardDragY !== 0) ? {
+                        transform: `translate3d(${cardDragX}px, ${cardDragY}px, 0) rotate(${cardDragX * 0.04 + cardDragY * 0.01}deg) scale(1)`,
+                        transition: 'none',
+                        zIndex: 100,
+                        boxShadow: '0 24px 48px rgba(45, 27, 14, 0.22), 0 8px 18px rgba(45, 27, 14, 0.12)'
+                      } : (isActive && cardDragX === 0 && cardDragY === 0 ? {
+                        transition: 'transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.35s ease'
+                      } : undefined);
+                      
                       return (
-                        <div key={song.id} className={cardClass}>
+                        <div 
+                          key={song.id} 
+                          className={cardClass}
+                          style={activeCardStyle || undefined}
+                          onTouchStart={isActive ? handleCardTouchStart : undefined}
+                          onTouchMove={isActive ? handleCardTouchMove : undefined}
+                          onTouchEnd={isActive ? () => handleCardTouchEnd('cancionero') : undefined}
+                        >
                           <h4>{song.title}</h4>
                           <span className="song-artist">de {song.artist}</span>
                           <div className="song-lyrics">{song.lyrics}</div>
@@ -1454,11 +1488,7 @@ export default function Landing() {
             </p>
 
             <div className="recursos-modal-body">
-              <div 
-                className="stacked-deck-container"
-                onTouchStart={handleOracionesTouchStart}
-                onTouchEnd={handleOracionesTouchEnd}
-              >
+              <div className="stacked-deck-container">
                 {oraciones.map((oracion, idx) => {
                   let cardClass = "stacked-card";
                   const { prevIdx, action, isTransitioning } = oracionTransition;
@@ -1480,8 +1510,28 @@ export default function Landing() {
                     }
                   }
                   
+                  const N = oraciones.length;
+                  const diff = (idx - activeOracionIdx + N) % N;
+                  const isActive = diff === 0 && !isTransitioning;
+
+                  const activeCardStyle = isActive && (cardDragX !== 0 || cardDragY !== 0) ? {
+                    transform: `translate3d(${cardDragX}px, ${cardDragY}px, 0) rotate(${cardDragX * 0.04 + cardDragY * 0.01}deg) scale(1)`,
+                    transition: 'none',
+                    zIndex: 100,
+                    boxShadow: '0 24px 48px rgba(45, 27, 14, 0.22), 0 8px 18px rgba(45, 27, 14, 0.12)'
+                  } : (isActive && cardDragX === 0 && cardDragY === 0 ? {
+                    transition: 'transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.35s ease'
+                  } : undefined);
+                  
                   return (
-                    <div key={idx} className={cardClass}>
+                    <div 
+                      key={idx} 
+                      className={cardClass}
+                      style={activeCardStyle || undefined}
+                      onTouchStart={isActive ? handleCardTouchStart : undefined}
+                      onTouchMove={isActive ? handleCardTouchMove : undefined}
+                      onTouchEnd={isActive ? () => handleCardTouchEnd('oraciones') : undefined}
+                    >
                       <h4>{oracion.title}</h4>
                       <p>{oracion.text}</p>
                     </div>
