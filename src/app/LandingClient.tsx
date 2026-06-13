@@ -549,8 +549,8 @@ export default function Landing() {
     const deltaY = clientY - modalTouchStartY.current;
     const deltaX = clientX - modalTouchStartX.current;
 
-    // Only drag down, and must be primarily vertical drag
-    if (deltaY > 0 && Math.abs(deltaY) > Math.abs(deltaX)) {
+    // Allow dragging up and down as long as it's primarily a vertical drag
+    if (Math.abs(deltaY) > Math.abs(deltaX)) {
       setModalDragY(deltaY);
     }
   };
@@ -1376,6 +1376,7 @@ export default function Landing() {
               onTouchStart={handleModalTouchStart}
               onTouchMove={handleModalTouchMove}
               onTouchEnd={() => handleModalTouchEnd('cancionero')}
+              onTouchCancel={() => handleModalTouchEnd('cancionero')}
             ></div>
             <button 
               className="calendar-modal-close-btn" 
@@ -1492,6 +1493,7 @@ export default function Landing() {
               onTouchStart={handleModalTouchStart}
               onTouchMove={handleModalTouchMove}
               onTouchEnd={() => handleModalTouchEnd('oraciones')}
+              onTouchCancel={() => handleModalTouchEnd('oraciones')}
             ></div>
             <button 
               className="calendar-modal-close-btn" 
