@@ -1,0 +1,15 @@
+const fs = require('fs');
+const path = require('path');
+
+const filePath = path.join(__dirname, '../src/app/LandingClient.tsx');
+let content = fs.readFileSync(filePath, 'utf8');
+
+// Strip all data-tooltip="..." attributes
+content = content.replace(/\s*data-tooltip="[^"]*"/g, '');
+
+// Strip all title="Subir canción" and title="Bajar canción"
+content = content.replace(/\s*title="Subir canción"/g, '');
+content = content.replace(/\s*title="Bajar canción"/g, '');
+
+fs.writeFileSync(filePath, content, 'utf8');
+console.log('Stripped all tooltips from LandingClient.tsx successfully.');

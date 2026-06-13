@@ -535,7 +535,7 @@ export default function Landing() {
   const cardTouchStartX = useRef<number | null>(null);
   const cardTouchStartY = useRef<number | null>(null);
   const [cardDragX, setCardDragX] = useState(0);
-  const [cardDragY, setCardDragY] = useState(0);
+
 
   const handleModalTouchStart = (e: React.TouchEvent) => {
     modalTouchStartY.current = e.touches[0].clientY;
@@ -570,7 +570,7 @@ export default function Landing() {
     const deltaY = clientY - cardTouchStartY.current;
 
     setCardDragX(deltaX);
-    setCardDragY(deltaY);
+
   };
 
   const handleCardTouchEnd = (modalType: 'cancionero' | 'oraciones') => {
@@ -596,7 +596,7 @@ export default function Landing() {
     
     // Reset drag offsets
     setCardDragX(0);
-    setCardDragY(0);
+
     cardTouchStartX.current = null;
     cardTouchStartY.current = null;
   };
@@ -1410,12 +1410,12 @@ export default function Landing() {
                       const diff = (idx - activeSongIdx + N) % N;
                       const isActive = diff === 0 && !isTransitioning;
 
-                      const activeCardStyle = isActive && (cardDragX !== 0 || cardDragY !== 0) ? {
-                        transform: `translate3d(${cardDragX}px, ${cardDragY}px, 0) rotate(${cardDragX * 0.04 + cardDragY * 0.01}deg) scale(1)`,
-                        transition: 'none',
-                        zIndex: 100,
-                        boxShadow: '0 24px 48px rgba(45, 27, 14, 0.22), 0 8px 18px rgba(45, 27, 14, 0.12)'
-                      } : (isActive && cardDragX === 0 && cardDragY === 0 ? {
+                      const activeCardStyle = isActive && (cardDragX !== 0) ? {
+                        transform: `translate3d(${cardDragX}px, 0, 0) rotate(${cardDragX * 0.04}deg) scale(1)`,
+                        boxShadow: '0 24px 48px rgba(45, 27, 14, 0.22), 0 8px 18px rgba(45, 27, 14, 0.12)',
+                        zIndex: 20,
+                        transition: 'none'
+                      } : (isActive && cardDragX === 0 ? {
                         transition: 'transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.35s ease'
                       } : undefined);
                       
@@ -1517,12 +1517,12 @@ export default function Landing() {
                   const diff = (idx - activeOracionIdx + N) % N;
                   const isActive = diff === 0 && !isTransitioning;
 
-                  const activeCardStyle = isActive && (cardDragX !== 0 || cardDragY !== 0) ? {
-                    transform: `translate3d(${cardDragX}px, ${cardDragY}px, 0) rotate(${cardDragX * 0.04 + cardDragY * 0.01}deg) scale(1)`,
-                    transition: 'none',
-                    zIndex: 100,
-                    boxShadow: '0 24px 48px rgba(45, 27, 14, 0.22), 0 8px 18px rgba(45, 27, 14, 0.12)'
-                  } : (isActive && cardDragX === 0 && cardDragY === 0 ? {
+                  const activeCardStyle = isActive && (cardDragX !== 0) ? {
+                    transform: `translate3d(${cardDragX}px, 0, 0) rotate(${cardDragX * 0.04}deg) scale(1)`,
+                    boxShadow: '0 24px 48px rgba(45, 27, 14, 0.22), 0 8px 18px rgba(45, 27, 14, 0.12)',
+                    zIndex: 20,
+                    transition: 'none'
+                  } : (isActive && cardDragX === 0 ? {
                     transition: 'transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.35s ease'
                   } : undefined);
                   

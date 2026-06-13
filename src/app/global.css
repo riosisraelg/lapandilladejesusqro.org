@@ -1504,7 +1504,7 @@ body.landing-body {
   top: 0;
   left: 0;
   width: 100vw;
-  height: 100vh;
+  height: 100dvh; /* Use dvh for mobile browsers */
   background: rgba(45, 27, 14, 0.45);
   backdrop-filter: blur(8px);
   z-index: 1000;
@@ -2454,8 +2454,8 @@ body.modal-open [data-tooltip]::after {
   }
 
   .recursos-modal-card.modal-large {
-    height: 95vh; /* Exactly 95% height */
-    max-height: 95vh;
+    height: 95dvh; /* Exactly 95% dynamic height */
+    max-height: 95dvh;
     width: 100%;
     max-width: 100%;
     border-radius: 24px 24px 0 0; /* Rounded top, flat bottom */
