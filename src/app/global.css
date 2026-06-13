@@ -1826,6 +1826,10 @@ body.modal-open [data-tooltip]::after {
     transition-delay: 0s !important; /* Mostrar de inmediato al hacer tap */
   }
 
+  [data-tooltip]::after {
+    max-width: 200px !important; /* Prevent any tooltip from being too wide on mobile */
+  }
+
   /* Alineación del tooltip del botón Cancionero (columna izquierda) al borde izquierdo del botón */
   [data-tooltip].btn-cancionero::after {
     left: 0 !important;
@@ -1835,13 +1839,15 @@ body.modal-open [data-tooltip]::after {
     transform: translate(0, 0) scale(1) !important;
   }
 
-  /* Alineación del tooltip del botón Guía de Misa (columna derecha) al borde derecho del botón */
-  [data-tooltip].btn-guia::after {
+  /* Alineación del tooltip del botón Guía de Misa y Menú (borde derecho) */
+  [data-tooltip].btn-guia::after,
+  [data-tooltip].nav-mobile-btn::after {
     left: auto !important;
     right: 0 !important;
     transform: translate(0, 8px) scale(0.95) !important;
   }
-  [data-tooltip].btn-guia:hover::after {
+  [data-tooltip].btn-guia:hover::after,
+  [data-tooltip].nav-mobile-btn:hover::after {
     transform: translate(0, 0) scale(1) !important;
   }
 }
