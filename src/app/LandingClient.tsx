@@ -1366,7 +1366,7 @@ export default function Landing() {
           <div 
             className={`recursos-modal-card modal-large ${isClosingModal === 'cancionero' ? 'slide-down-closing' : ''}`} 
             style={{
-              transform: modalDragY > 0 && isClosingModal === null ? `translateY(${modalDragY}px)` : undefined,
+              transform: modalDragY !== 0 && isClosingModal === null ? `translateY(${modalDragY}px)` : undefined,
               transition: modalDragY === 0 ? 'transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)' : 'none'
             }}
             onClick={(e) => e.stopPropagation()}
@@ -1483,7 +1483,7 @@ export default function Landing() {
           <div 
             className={`recursos-modal-card modal-large ${isClosingModal === 'oraciones' ? 'slide-down-closing' : ''}`} 
             style={{
-              transform: modalDragY > 0 && isClosingModal === null ? `translateY(${modalDragY}px)` : undefined,
+              transform: modalDragY !== 0 && isClosingModal === null ? `translateY(${modalDragY}px)` : undefined,
               transition: modalDragY === 0 ? 'transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)' : 'none'
             }}
             onClick={(e) => e.stopPropagation()}
