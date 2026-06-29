@@ -2531,7 +2531,7 @@ body.modal-open [data-tooltip]::after {
     box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.15);
     overscroll-behavior: contain; /* Prevents background scroll chaining */
     transform-origin: bottom center;
-    animation: mobileSheetOpen 0.55s cubic-bezier(0.175, 0.885, 0.32, 1.1) forwards;
+    animation: mobileSheetOpen 0.55s cubic-bezier(0.175, 0.885, 0.32, 1.1);
   }
 
   .recursos-modal-card.modal-large.slide-down-closing {
