@@ -420,7 +420,7 @@ export default function Calendario() {
             {/* Event Sidebar */}
             <div className="event-sidebar">
               <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginBottom: '0.75rem' }}>
-                <h3 style={{ fontSize: '1rem', fontFamily: 'var(--font-outfit)', fontWeight: '700', color: 'var(--text-dark)', margin: 0 }}>
+                <h3 style={{ fontSize: '1rem',  fontWeight: '700', color: 'var(--text-dark)', margin: 0 }}>
                   Eventos Próximos
                 </h3>
                 <p style={{ fontSize: '0.78rem', color: 'var(--text-light)', margin: 0 }}>

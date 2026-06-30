@@ -1,9 +1,10 @@
 /* ── NEXT.JS GOOGLE FONTS INTEGRATION ── */
 body.landing-body {
-  font-family: var(--font-outfit), 'Outfit', system-ui, sans-serif !important;
+  font-family: 'Times New Roman', Times, serif !important;
+  
 }
 .footer-brand-name, .section-heading, .cta-banner h2, .upcoming-header h3, .nav-brand-name, h1, h2, h3, h4, h5, h6, .nav-mobile-links a {
-  font-family: var(--font-cormorant), 'Cormorant Garamond', serif !important;
+  
 }
 
 /* ═══════════════════════════════════════════
@@ -40,7 +41,7 @@ body.landing-body {
 html { scroll-behavior: smooth; }
 
 body.landing-body {
-  font-family: 'Outfit', system-ui, sans-serif;
+  
   background: var(--cream);
   color: var(--text-body);
   overflow-x: hidden;
@@ -82,7 +83,7 @@ body.landing-body {
 }
 
 .nav-brand-name {
-  font-family: 'Cormorant Garamond', serif;
+  
   font-weight: 700;
   font-size: 1.1rem;
   color: var(--text-dark);
@@ -203,7 +204,7 @@ body.landing-body {
 
 .nav-mobile-links a {
   text-decoration: none;
-  font-family: 'Cormorant Garamond', serif;
+  
   font-size: 2rem;
   font-weight: 700;
   color: var(--text-dark);
@@ -224,7 +225,7 @@ body.landing-body {
   padding: 0.8rem 2.2rem !important;
   border-radius: 99px !important;
   font-size: 1.1rem !important;
-  font-family: 'Outfit', sans-serif !important;
+  
   font-weight: 600 !important;
   box-shadow: 0 4px 12px rgba(92, 61, 46, 0.15);
 }
@@ -274,7 +275,7 @@ body.landing-body {
 }
 
 .info-card h1 {
-  font-family: 'Cormorant Garamond', serif;
+  
   font-size: 2.4rem;
   font-weight: 700;
   color: var(--text-dark);
@@ -452,7 +453,7 @@ body.landing-body {
 }
 
 .upcoming-title-group h3 {
-  font-family: 'Cormorant Garamond', serif;
+  
   font-size: 1.25rem;
   font-weight: 700;
   color: var(--text-dark);
@@ -507,7 +508,7 @@ body.landing-body {
 }
 
 .event-day-section h4 {
-  font-family: 'Outfit', sans-serif;
+  
   font-size: 0.82rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -643,7 +644,7 @@ body.landing-body {
 }
 
 .events-section-header h2 {
-  font-family: 'Cormorant Garamond', serif;
+  
   font-size: 2rem;
   font-weight: 700;
   color: var(--text-dark);
@@ -888,7 +889,7 @@ body.landing-body {
 }
 
 .section-heading {
-  font-family: 'Cormorant Garamond', serif;
+  
   font-size: 2.6rem;
   font-weight: 700;
   color: var(--text-dark);
@@ -948,7 +949,7 @@ body.landing-body {
 }
 
 .pillar-card h3 {
-  font-family: 'Cormorant Garamond', serif;
+  
   font-size: 1.35rem;
   font-weight: 700;
   color: var(--text-dark);
@@ -980,7 +981,7 @@ body.landing-body {
 }
 
 .stat-number {
-  font-family: 'Cormorant Garamond', serif;
+  
   font-size: 2.4rem;
   font-weight: 700;
   color: var(--gold);
@@ -1013,7 +1014,7 @@ body.landing-body {
 }
 
 .verse-text {
-  font-family: 'Cormorant Garamond', serif;
+  
   font-size: 1.8rem;
   font-style: italic;
   font-weight: 400;
@@ -1061,7 +1062,7 @@ body.landing-body {
   border: none;
   cursor: pointer;
   text-align: left;
-  font-family: inherit;
+  
   font-size: 0.95rem;
   font-weight: 600;
   color: var(--text-dark);
@@ -1120,7 +1121,7 @@ body.landing-body {
 }
 
 .cta-banner h2 {
-  font-family: 'Cormorant Garamond', serif;
+  
   font-size: 2rem;
   font-weight: 700;
   color: var(--purple);
@@ -1176,7 +1177,7 @@ body.landing-body {
 .sparkle {
   position: absolute;
   color: var(--gold);
-  font-family: serif;
+  
   user-select: none;
   opacity: 0;
   transform: scale(0.5);
@@ -1276,7 +1277,7 @@ body.landing-body {
 }
 
 .footer-brand-name {
-  font-family: 'Cormorant Garamond', serif;
+  
   font-weight: 700;
   font-size: 1.6rem;
   color: var(--text-dark);
@@ -1566,7 +1567,7 @@ body.landing-body {
 }
 
 .calendar-modal-title {
-  font-family: 'Cormorant Garamond', serif;
+  
   font-size: 1.6rem;
   font-weight: 700;
   color: var(--text-dark);
@@ -1602,7 +1603,7 @@ body.landing-body {
   border: none;
   transition: all 0.2s ease;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
-  font-family: 'Outfit', system-ui, sans-serif;
+  
 }
 
 .calendar-btn-google {
@@ -1711,7 +1712,7 @@ body.landing-body {
 
 /* Sliding premium title label */
 .dot-title {
-  font-family: 'Outfit', sans-serif;
+  
   font-size: 0.72rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -1776,7 +1777,7 @@ body.landing-body {
   border: 1px solid rgba(255, 255, 255, 0.08);
   z-index: 99999;
   font-weight: 500;
-  font-family: var(--font-outfit), system-ui, sans-serif;
+  
   transition: opacity 0.25s cubic-bezier(0.25, 0.8, 0.25, 1), transform 0.25s cubic-bezier(0.25, 0.8, 0.25, 1), visibility 0.25s;
   transition-delay: 0s; /* Cierre instantáneo al quitar el cursor */
 }
@@ -1939,7 +1940,7 @@ body.modal-open [data-tooltip]::after {
 }
 
 .recursos-title {
-  font-family: 'Cormorant Garamond', serif;
+  
   font-size: 1.8rem;
   font-weight: 700;
   color: var(--text-dark);
@@ -1973,7 +1974,7 @@ body.modal-open [data-tooltip]::after {
   cursor: pointer;
   transition: all 0.3s ease;
   color: var(--white);
-  font-family: var(--font-outfit), sans-serif;
+  
   font-size: 0.85rem;
   font-weight: 600;
 }
@@ -2063,7 +2064,7 @@ body.modal-open [data-tooltip]::after {
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-xs);
   font-size: 0.9rem;
-  font-family: var(--font-outfit), sans-serif;
+  
   color: var(--text-dark);
   margin-bottom: 1rem;
   outline: none;
@@ -2113,7 +2114,7 @@ body.modal-open [data-tooltip]::after {
 }
 
 .cancionero-song-title {
-  font-family: 'Cormorant Garamond', serif;
+  
   font-size: 1.25rem;
   font-weight: 700;
   color: var(--text-dark);
@@ -2179,7 +2180,7 @@ body.modal-open [data-tooltip]::after {
 }
 
 .cancionero-agradecimiento-title {
-  font-family: 'Cormorant Garamond', serif;
+  
   font-size: 1.4rem;
   font-weight: 700;
   color: var(--text-dark);
@@ -2221,7 +2222,7 @@ body.modal-open [data-tooltip]::after {
 
 /* Card titles and text styling */
 .stacked-card h4 {
-  font-family: 'Cormorant Garamond', serif;
+  
   font-size: 1.35rem;
   font-weight: 700;
   color: var(--text-dark);
@@ -2405,7 +2406,7 @@ body.modal-open [data-tooltip]::after {
 }
 
 .guia-content-panel h4 {
-  font-family: 'Cormorant Garamond', serif;
+  
   font-size: 1.35rem;
   font-weight: 700;
   color: var(--text-dark);

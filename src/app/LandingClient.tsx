@@ -929,7 +929,11 @@ export default function Landing() {
                   <ClockIcon />
                   <div>
                     <div className="contact-label">Horario de reunión</div>
-                    <div className="contact-value">Martes 20:00 - Reunión de formación | Domingo 13:00 - Misa comunitaria (nos ubicamos al fondo a la izquierda pegados al altar; siempre se busca ayuda para la colecta)</div>
+                    <div className="contact-value">
+                      Primer martes de cada mes 20:00 - Reunión de formación<br />
+                      Tercer viernes de cada mes - Plática de psicología impartida por Silvia Ocadiz<br />
+                      Domingo 13:00 - Misa comunitaria (nos ubicamos al fondo a la izquierda pegados al altar; siempre se busca ayuda para la colecta)
+                    </div>
                   </div>
                 </div>
                 
@@ -969,7 +973,7 @@ export default function Landing() {
             {/* CARD 2 — Templo Sede */}
             <div className="info-card templo-card anim-fadeup anim-delay-1" style={{ display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
               <div>
-                <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "2rem", color: "var(--text-dark)", marginBottom: "1rem" }}>Templo Sede: Parroquia de La Sagrada Familia</h2>
+                <h2 style={{ fontSize: "2rem", color: "var(--text-dark)", marginBottom: "1rem" }}>Templo Sede: Parroquia de La Sagrada Familia</h2>
                 <p style={{ fontSize: "0.95rem", lineHeight: "1.6", color: "var(--text-body)", marginBottom: "1.5rem" }}>
                   Nuestra comunidad de fe tiene su sede principal en la Parroquia de La Sagrada Familia, en Querétaro.
                   Aquí se celebran nuestras asambleas semanales de los martes y la eucaristía comunitaria de los domingos.

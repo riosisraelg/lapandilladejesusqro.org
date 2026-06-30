@@ -1,19 +1,4 @@
 import './global.css';
-import { Outfit, Cormorant_Garamond } from 'next/font/google';
-
-const outfit = Outfit({
-  subsets: ['latin'],
-  display: 'swap',
-  variable: '--font-outfit',
-});
-
-const cormorant = Cormorant_Garamond({
-  subsets: ['latin'],
-  weight: ['400', '600', '700'],
-  style: ['normal', 'italic'],
-  display: 'swap',
-  variable: '--font-cormorant',
-});
 
 export const metadata = {
   title: 'La Pandilla de Jesús - Grupo Juvenil Católico · Parroquia de La Sagrada Familia',
@@ -97,7 +82,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className={`${outfit.variable} ${cormorant.variable} landing-body`}>
+      <body className="landing-body">
         {children}
       </body>
     </html>
