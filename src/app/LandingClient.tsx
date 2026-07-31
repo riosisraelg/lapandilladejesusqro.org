@@ -342,117 +342,221 @@ Uh… Adorándote, Amándote
 ¡GRACIAS! -Coro RUAH.`
   },
   {
-    id: "ven_senor_jesus",
-    title: "Ven Señor Jesús",
+    id: "gloria_martin_valverde",
+    title: "Gloria",
+    artist: "Martín Valverde",
+    lyrics: `Gloria, Gloria,
+Gloria, Gloria.
+
+a Jesús el Señor,
+al Cordero de Dios.
+Al Nombre sobre todo nombre. (x2)
+
+Gloria, Glo- ria,
+Gloria, Glo- ria,
+
+a Jesús el Señor,
+al Cordero de Dios.
+Al Nombre sobre todo nombre. (x2)
+
+Al Nombre sobre
+todo nombre.`
+  },
+  {
+    id: "espiritu_santo_athenas",
+    title: "Espíritu Santo",
+    artist: "Athenas",
+    lyrics: `Espíritu de Dios, Espíritu Santo
+Espíritu de Dios, Espíritu Santo
+Mi alma tiene sed de Ti,
+mi alma tiene sed
+X2
+
+Espíritu Santo ven a arder
+Derrama tu fuego y tu poder
+Actúa en mí
+Actúa en mí
+Actúa en mí
+X2
+
+Espíritu de Dios, Espíritu Santo
+Espíritu de Dios, Espíritu Santo`
+  },
+  {
+    id: "ganarte_a_ti_tuyo",
+    title: "Ganarte a Ti",
     artist: "Tuyo",
-    lyrics: `Ven Señor Jesús,
-El Espíritu y la esposa dicen ven,
-Ven Señor Jesús,
-Tú estás conmigo, quiero estar contigo.
+    lyrics: `Miro a la cruz como un loco enamorado
+Y no puedo resistirme a preguntar
+Por qué te diste Jesús por mis pecados
+Por qué quisiste salvarme así
 
-Cristo te adoro, Cristo te amo,
-Cristo me entrego por completo, a ti.
-Cristo te acepto, y te recibo,
-Hoy te hago mío, tú me haces tuyo,
-Y desde ahora somos uno. (x2)
+Tú has querido contar conmigo
+Aún sabiendo como soy
+Sé que me miras con paciencia y con cariño
+Esperando a que lo deje todo por Ti
 
-Ven Señor Jesús,
-El Espíritu y la esposa dicen ven,
-Ven Señor Jesús,
-Tú estás conmigo, quiero estar contigo.
-(X2)
+Te lo entrego todo,
+todo lo que tengo es para Ti
+Te lo entrego todo Jesús,
+todo lo que soy es para Ti
 
-Quiero estar contigo, se que estás
-conmigo.
+Te lo entrego todo,
+todo lo que tengo es para Ti
+Te lo entrego todo,
+todo lo que soy es para Ti
 
-Ven Señor Jesús
-Tuyo`
+De nada sirve la vida,
+si no la vivo contigo
+De nada sirve ganar el mundo
+si te pierdo a Ti
+
+De nada sirve la vida,
+si no la vivo contigo
+De nada sirve ganar el mundo
+si te pierdo a Ti
+
+Ya no quiero nada
+que no venga de Ti
+No me interesa nada
+que no salga de Ti
+No hay nada en este mundo
+que se compare a Ti
+Lo perdería todo por ganarte a Ti
+
+Ya no quiero nada
+que no venga de Ti
+No me interesa nada
+que no salga de Ti
+No hay nada en este mundo
+que se compare a Ti
+Lo dejaría todo
+Por ganarte a Ti
+Lo dejaría todo
+Por ganarte a Ti
+Tu eres mi tesoro, Jesús
+
+De nada sirve mi vida,
+si no la vivo contigo
+De nada sirve ganar el mundo
+si te pierdo a Ti
+
+Sabiendo todo lo que me puedes dar,
+cómo me voy a conformar con el mundo.`
   },
   {
-    id: "confio_en_ti",
-    title: "Confío en ti",
-    artist: "Jesed",
-    lyrics: `Oh, Jesús a tu corazón confío mi necesidad,
-Mírala y después, deja tu corazón actuar,
-Oh, Jesús, yo cuento contigo, yo confío en Ti,
-Oh, Jesús, de Ti estoy seguro, yo me entrego a
-Ti,
-Tú que has dicho, si quieres agradarme,
-Confía en Mí, si quieres agradarme más,
-Confía más, inmensamente más,
-Confía más,
-Inmensamente más, confía.
+    id: "nada_hakuna",
+    title: "Nada",
+    artist: "Hakuna",
+    lyrics: `Deja de herirte
+Deja de poner en mi boca
+Palabras que nunca dije
 
-Las almas que confían en Ti,
-Serán recompensadas por Ti,
-Sagrado corazón de Jesús, yo confío en Ti (x2)
+Deja de pensar que estoy enfadado
+Deja de decir
+Que soy yo el que se está
+Alejando de ti
 
-No habrá confusión que dure por siempre,
-Yo sé en quién he creído,
-Y mi esperanza no será defraudada,
-Pues Tú has dicho, si quieres agradarme,
-Confía en Mí, si quieres agradarme más, Confía
-más,
-Inmensamente más, confía más,
-Inmensamente más, confía.`
+Y es que no lo ves
+Me entrego por ti
+Una y otra vez
+Tú siempre serás mi favorita
+
+Nunca te dejaré
+Nunca te dejaré
+
+Y es que no hay nada
+Nada, nada, nada
+Que puedas hacer
+Para que te deje de querer
+
+Y es que no hay nada
+Hagas lo que hagas
+Por favor
+Deja de decir
+Que no eres amada por mí
+
+No hay nada en tu alma
+Que haga que en ti
+Deje de pensar
+
+Estos muros que te destrozan
+Son entre tú y tu libertad
+Házme caso hija mía
+Yo solo quiero verte feliz
+
+Tú siempre tendrás mi perdón
+Te falta perdonarte a ti
+
+Y es que no hay nada
+Nada, nada, nada
+Que puedas hacer
+Para que te deje de querer
+
+Y es que no hay nada
+Hagas lo que hagas
+Por favor
+Deja de decir
+Que no eres amada por mí
+
+Y es que aunque peques y me cambies
+Por las cosas terrenales
+Aunque te alejes y me olvides
+Y me borres de tu planes
+Aunque te rindas y te caigas
+Y no sepas levantarte
+Si estás perdido pide ayuda (X 2)
+
+Y es que no hay nada
+Nada, nada, nada
+Que puedas hacer
+Para que te deje de querer
+
+Y es que no hay nada
+Hagas lo que hagas
+Por favor
+Deja de decir
+Que no eres amada por mí.`
   },
   {
-    id: "tuyas_son",
-    title: "Tuyas son",
-    artist: "Luispo",
-    lyrics: `La bendición y la gloria, la sabiduría,
-la acción de gracias y el poder,
-la honra y toda fortaleza
-¡tuyas son, bendito Dios!,
-¡tuyas son, bendito Dios,
-para siempre!
-Amén, Amén. x2
+    id: "tu_el_unico_rey_tuyo",
+    title: "TÚ el único REY",
+    artist: "tuyo",
+    lyrics: `Tú, el Único Rey que tiene que reinar
+El Único Señor al que voy a alabar
+Hoy levanto el corazón al que lo conquistó
+Simplemente porque Tú eres Dios
 
-¡Tuyas son, bendito Dios!,
-¡tuyas son, bendito Dios,
-para siempre!
-Amén, Amén. x2`
+Y a Ti, toda la alabanza
+Todo el poder y el honor
+Toda la gloria al Señor (x3)
+
+Tú, el Único Rey que tiene que reinar
+El Único Señor al que voy a alabar
+Hoy levanto el corazón al que lo conquistó
+Simplemente porque Tú eres Dios (x2)`
   },
   {
-    id: "jesus",
-    title: "Jesús",
-    artist: "Berit",
-    lyrics: `Jesús, Jesús
-Jesús, Jesús
-Jesús, Jesús
-Jesús, Jesús (x4)`
-  },
-  {
-    id: "dijiste_si",
-    title: "Dijiste SÍ",
-    artist: "Luispo",
-    lyrics: `Dijiste sí, y la tierra estalló de alegría,
-Dijiste sí y en tu vientre latía divina la salvación,
-Hágase en mí, de corazón, la voluntad de mi Señor
-Que se cumplan en mí cada día los sueños de Dios
-
-María, las tinieblas se harán mediodía,
-A una sola palabra que digas, en tus labios alumbra ya el sol,
-María, la doncella que Dios prometía,
-Un volcán de ternura divina, primavera de Dios Redentor,
-
-Gabriel tembló, conmovido con tanta belleza,
-Madre de Dios, cuélame en tu mirada de amor de la Anunciación,
-Hágase en mí, de corazón, la voluntad de mi Señor,
-Que se cumplan en mí cada día los sueños de Dios.
-
-María, las tinieblas se harán mediodía
-A una sola palabra que digas, en tus labios alumbra ya el sol
-María, la doncella que Dios prometía
-Un volcán de ternura divina, primavera de Dios Redentor
-
-Hágase en mí, de corazón, la voluntad de mi Señor
-Que se cumplan en mí cada día los sueños de Dios
-
-María, las tinieblas se harán mediodía
-A una sola palabra que digas, en tus labios alumbra ya el sol
-María, la doncella que Dios prometía
-Un volcán de ternura divina, primavera de Dios Redentor`
+    id: "consagracion_a_maria",
+    title: "Consagración a María",
+    artist: "Oración",
+    lyrics: `Oh Señora mía,
+Oh Madre mía,
+Yo me ofrezco todo a ti,
+Y en prueba de mi filial afecto,
+Te consagro en este día,
+Mis ojos,
+Mis oídos,
+Mi lengua,
+Y mi corazón,
+En una palabra,
+Todo mi ser.
+Ya que soy todo tuyo,
+Oh Madre de bondad,
+Guárdame, defiéndeme,
+Y utilízame como instrumento,
+Y posesión tuya (x2)
+Amén.`
   },
   {
     id: "agradecimiento",
