@@ -1,4 +1,5 @@
 import './global.css';
+import { Analytics } from "@vercel/analytics/next";
 
 export const metadata = {
   title: 'La Pandilla de Jesús - Grupo Juvenil Católico · Parroquia de La Sagrada Familia',
@@ -84,6 +85,7 @@ export default function RootLayout({
       </head>
       <body className="landing-body">
         {children}
+        <Analytics />
       </body>
     </html>
   );

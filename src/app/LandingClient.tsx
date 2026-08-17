@@ -754,7 +754,7 @@ export default function Landing() {
   const modalTouchStartY = useRef<number | null>(null);
   const modalTouchStartX = useRef<number | null>(null);
   const [modalDragY, setModalDragY] = useState(0);
-  const [isClosingModal, setIsClosingModal] = useState<'cancionero' | 'oraciones' | 'confesion' | null>(null);
+  const [isClosingModal, setIsClosingModal] = useState<string | null>(null);
   const [bounceBtn, setBounceBtn] = useState<string | null>(null);
 
   // Fidget-style touch tracking for active cards
@@ -840,7 +840,7 @@ export default function Landing() {
     cardDragIntent.current = null;
   };
 
-  const closeModalWithAnimation = (modalType: 'cancionero' | 'oraciones') => {
+  const closeModalWithAnimation = (modalType: string) => {
     setIsClosingModal(modalType);
     triggerHaptic('light');
     setTimeout(() => {
