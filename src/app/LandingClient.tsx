@@ -755,7 +755,7 @@ export default function Landing() {
   const modalTouchStartX = useRef<number | null>(null);
   const [modalDragY, setModalDragY] = useState(0);
   const [isClosingModal, setIsClosingModal] = useState<'cancionero' | 'oraciones' | 'confesion' | null>(null);
-  const [bounceBtn, setBounceBtn] = useState<'cancionero' | 'oraciones' | 'confesion' | null>(null);
+  const [bounceBtn, setBounceBtn] = useState<string | null>(null);
 
   // Fidget-style touch tracking for active cards
   const cardTouchStartX = useRef<number | null>(null);
