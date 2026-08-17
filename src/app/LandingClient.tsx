@@ -3,7 +3,8 @@ import { useState, useEffect, useMemo, useRef } from "react";
 import Link from "next/link";
 import { fetchICalFeed } from "../utils/icalParser";
 import { ICAL_FEED_URL } from "../config";
-;
+import AppleMusicLyrics from "./AppleMusicLyrics";
+import { massResponses } from "./massResponses";
 
 // ── SVG Icon Components ──
 const ClockIcon = () => (
@@ -688,6 +689,7 @@ export default function Landing() {
   const [showCancionero, setShowCancionero] = useState(false);
   const [showOraciones, setShowOraciones] = useState(false);
   const [showGuiaMisa, setShowGuiaMisa] = useState(false);
+  const [showConfesion, setShowConfesion] = useState(false);
 
   // Cancionero state
   const [songs] = useState<Array<{ id: string; title: string; artist: string; lyrics: string }>>(defaultSongs);
@@ -702,7 +704,14 @@ export default function Landing() {
 
   // Guía de Misa state
   const [activeGuiaTab, setActiveGuiaTab] = useState<'misterio' | 'respuestas' | 'liturgia' | 'biblia'>('misterio');
+  const [guiaLang, setGuiaLang] = useState<'es' | 'en'>('es');
+  const [showAppleMusicGuia, setShowAppleMusicGuia] = useState(false);
 
+  useEffect(() => {
+    if (typeof navigator !== 'undefined') {
+      setGuiaLang(navigator.language.startsWith('en') ? 'en' : 'es');
+    }
+  }, []);
   // Cancionero view states
   const [activeSongIdx, setActiveSongIdx] = useState(0);
   const [songTransition, setSongTransition] = useState<{
@@ -728,7 +737,7 @@ export default function Landing() {
 
   // Lock body scroll when any modal is open to prevent background scrolling
   useEffect(() => {
-    if (showCancionero || showOraciones || showGuiaMisa) {
+    if (showCancionero || showOraciones || showGuiaMisa || showConfesion) {
       document.body.style.overflow = 'hidden';
       document.body.classList.add('modal-open');
     } else {
@@ -739,14 +748,14 @@ export default function Landing() {
       document.body.style.overflow = '';
       document.body.classList.remove('modal-open');
     };
-  }, [showCancionero, showOraciones, showGuiaMisa]);
+  }, [showCancionero, showOraciones, showGuiaMisa, showConfesion]);
 
   // Touch tracking for mobile swipe-to-dismiss bottom sheets
   const modalTouchStartY = useRef<number | null>(null);
   const modalTouchStartX = useRef<number | null>(null);
   const [modalDragY, setModalDragY] = useState(0);
-  const [isClosingModal, setIsClosingModal] = useState<'cancionero' | 'oraciones' | null>(null);
-  const [bounceBtn, setBounceBtn] = useState<'cancionero' | 'oraciones' | null>(null);
+  const [isClosingModal, setIsClosingModal] = useState<'cancionero' | 'oraciones' | 'confesion' | null>(null);
+  const [bounceBtn, setBounceBtn] = useState<'cancionero' | 'oraciones' | 'confesion' | null>(null);
 
   // Fidget-style touch tracking for active cards
   const cardTouchStartX = useRef<number | null>(null);
@@ -1380,10 +1389,9 @@ export default function Landing() {
                 </button>
 
                 <button 
-                  className="recursos-btn btn-guia" 
-                  disabled
-                  style={{ opacity: 0.6, cursor: "not-allowed" }}
-                  data-tooltip="Guía de Misa desactivada temporalmente por curación de contenido"
+                  className={`recursos-btn btn-guia ${bounceBtn === 'guia' ? 'bounce-active' : ''}`} 
+                  onClick={() => { setShowGuiaMisa(true); triggerHaptic('medium'); }}
+                  data-tooltip="Abrir Guía de Misa para principiantes"
                 >
                   <div className="recursos-icon-circle">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -1392,6 +1400,20 @@ export default function Landing() {
                     </svg>
                   </div>
                   Guía de Misa
+                </button>
+
+                <button 
+                  className={`recursos-btn btn-confesion ${bounceBtn === 'confesion' ? 'bounce-active' : ''}`} 
+                  onClick={() => { setShowConfesion(true); triggerHaptic('medium'); }}
+                  data-tooltip="Abrir guía práctica para el sacramento de la confesión"
+                >
+                  <div className="recursos-icon-circle">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M12 2v20" />
+                      <path d="M7 8h10" />
+                    </svg>
+                  </div>
+                  Guía de Confesión
                 </button>
               </div>
             </div>
@@ -1584,117 +1606,14 @@ export default function Landing() {
       {/* Cancionero Modal */}
       {showCancionero && (
         <div className="calendar-modal-overlay" onClick={() => closeModalWithAnimation('cancionero')}>
-          <div 
-            className={`recursos-modal-card modal-large ${isClosingModal === 'cancionero' ? 'slide-down-closing' : ''}`} 
-            style={{
-              transform: modalDragY !== 0 && isClosingModal === null ? `translateY(${modalDragY}px)` : undefined,
-              transition: modalDragY === 0 ? 'transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)' : 'none'
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div 
-              className="mobile-drag-handle"
-              onTouchStart={handleModalTouchStart}
-              onTouchMove={handleModalTouchMove}
-              onTouchEnd={() => handleModalTouchEnd('cancionero')}
-              onTouchCancel={() => handleModalTouchEnd('cancionero')}
-            ></div>
-            <button 
-              className="calendar-modal-close-btn" 
-              onClick={() => closeModalWithAnimation('cancionero')}
-              aria-label="Cerrar modal"
-            >
-              ✕
-            </button>
-            <div className="recursos-title-container">
-              <h3 className="recursos-title" style={{ paddingRight: '2rem' }}>Cancionero Horas Santas</h3>
-              <span className="mobile-counter-badge">{activeSongIdx + 1} de {songs.length}</span>
-            </div>
-            <p className="recursos-desc" style={{ marginBottom: '1rem' }}>
-              Tarjetero interactivo para el cancionero de Horas Santas.
-            </p>
-
-            <div className="recursos-modal-body">
-              {songs.length === 0 ? (
-                <p style={{ textAlign: 'center', color: 'var(--text-light)', padding: '2rem 0', fontStyle: 'italic' }}>
-                  No hay canciones disponibles.
-                </p>
-              ) : (
-                <>
-                  <div className="stacked-deck-container">
-                    {songs.map((song, idx) => {
-                      let cardClass = "stacked-card";
-                      const { prevIdx, action, isTransitioning } = songTransition;
-
-                      if (isTransitioning && idx === prevIdx) {
-                        cardClass += action === 'next' ? ' swiped-left' : ' swiped-right';
-                      } else {
-                        const N = songs.length;
-                        const diff = (idx - activeSongIdx + N) % N;
-                        
-                        if (diff === 0) {
-                          cardClass += " active";
-                        } else if (diff === 1) {
-                          cardClass += " next";
-                        } else if (diff === 2) {
-                          cardClass += " next-behind";
-                        } else {
-                          cardClass += " far-behind";
-                        }
-                      }
-                      
-                      const N = songs.length;
-                      const diff = (idx - activeSongIdx + N) % N;
-                      const isActive = diff === 0 && !isTransitioning;
-
-                      const activeCardStyle = isActive && (cardDragX !== 0) ? {
-                        transform: `translate3d(${cardDragX}px, 0, 0) rotate(${cardDragX * 0.04}deg) scale(1)`,
-                        boxShadow: '0 24px 48px rgba(45, 27, 14, 0.22), 0 8px 18px rgba(45, 27, 14, 0.12)',
-                        zIndex: 20,
-                        transition: 'none'
-                      } : (isActive && cardDragX === 0 ? {
-                        transition: 'transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.35s ease'
-                      } : undefined);
-                      
-                      return (
-                        <div 
-                          key={song.id} 
-                          className={cardClass}
-                          style={activeCardStyle || undefined}
-                          onTouchStart={isActive ? handleCardTouchStart : undefined}
-                          onTouchMove={isActive ? handleCardTouchMove : undefined}
-                          onTouchEnd={isActive ? () => handleCardTouchEnd('cancionero') : undefined}
-                          onTouchCancel={isActive ? () => handleCardTouchEnd('cancionero') : undefined}
-                        >
-                          <h4>{song.title}</h4>
-                          <span className="song-artist">de {song.artist}</span>
-                          <div className="song-lyrics">{song.lyrics}</div>
-                        </div>
-                      );
-                    })}
-                  </div>
-
-                  <div className="deck-nav">
-                    <button 
-                      className="deck-nav-btn" 
-                      onClick={() => handleSongNav(activeSongIdx - 1)}
-                    >
-                      ◀ Anterior
-                    </button>
-                    <span className="deck-counter">
-                      {activeSongIdx + 1} de {songs.length}
-                    </span>
-                    <button 
-                      className="deck-nav-btn" 
-                      onClick={() => handleSongNav(activeSongIdx + 1)}
-                    >
-                      Siguiente ▶
-                    </button>
-                  </div>
-                </>
-              )}
-            </div>
-          </div>
+          <AppleMusicLyrics
+            title={songs[activeSongIdx]?.title || "Cancionero"}
+            subtitle={`de ${songs[activeSongIdx]?.artist || "Desconocido"} (${activeSongIdx + 1} de ${songs.length})`}
+            onClose={() => closeModalWithAnimation('cancionero')}
+            onPrev={() => handleSongNav(activeSongIdx - 1)}
+            onNext={() => handleSongNav(activeSongIdx + 1)}
+            lines={songs[activeSongIdx]?.lyrics.split('\n').map(l => ({ text: l, isLeft: true })) || []}
+          />
         </div>
       )}
 
@@ -1872,74 +1791,22 @@ export default function Landing() {
               )}
 
               {activeGuiaTab === 'respuestas' && (
-                <div className="guia-content-panel">
-                  <h4>Respuestas y Posturas Clave</h4>
-                  <p>
-                    Las posturas físicas reflejan nuestra actitud interior de oración, respeto y adoración.
+                <div className="guia-content-panel" style={{ textAlign: 'center', padding: '2rem 1rem' }}>
+                  <h4>Modo Interactivo (Apple Music Style)</h4>
+                  <p style={{ marginBottom: '2rem' }}>
+                    Hemos rediseñado la guía de respuestas para que sea más inmersiva, 
+                    como si estuvieras siguiendo la letra de tu canción favorita.
                   </p>
-                  
-                  <div style={{ overflowX: 'auto' }}>
-                    <table className="guia-responses-table">
-                      <thead>
-                        <tr>
-                          <th>Postura</th>
-                          <th>Significado</th>
-                          <th>Momentos Principales</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td><strong>De Pie</strong></td>
-                          <td>Respeto, atención activa y oración libre.</td>
-                          <td>Ritos iniciales, proclamación del Evangelio, Credo, Padre Nuestro y bendición final.</td>
-                        </tr>
-                        <tr>
-                          <td><strong>Sentados</strong></td>
-                          <td>Escucha atenta, meditación y receptividad.</td>
-                          <td>Primera y segunda lectura, homilía y preparación de las ofrendas.</td>
-                        </tr>
-                        <tr>
-                          <td><strong>De Rodillas</strong></td>
-                          <td>Adoración humilde, reverencia extrema y contrición.</td>
-                          <td>Plegaria eucarística y momento de la Consagración.</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-
-                  <h4 style={{ marginTop: '1.5rem' }}>Diálogos Comunes</h4>
-                  <div style={{ overflowX: 'auto' }}>
-                    <table className="guia-responses-table">
-                      <thead>
-                        <tr>
-                          <th>Sacerdote (o Diácono)</th>
-                          <th>Asamblea (Nosotros)</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td>El Señor esté con vosotros.</td>
-                          <td><strong>Y con tu espíritu.</strong></td>
-                        </tr>
-                        <tr>
-                          <td>Levantemos el corazón.</td>
-                          <td><strong>Lo tenemos levantado hacia el Señor.</strong></td>
-                        </tr>
-                        <tr>
-                          <td>Demos gracias al Señor, nuestro Dios.</td>
-                          <td><strong>Es justo y necesario.</strong></td>
-                        </tr>
-                        <tr>
-                          <td>Este es el Misterio de la fe.</td>
-                          <td><strong>Anunciamos tu muerte, proclamamos tu resurrección. ¡Ven, Señor Jesús!</strong></td>
-                        </tr>
-                        <tr>
-                          <td>Podéis ir en paz.</td>
-                          <td><strong>Demos gracias a Dios.</strong></td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
+                  <button 
+                    className="nav-cta-wa" 
+                    style={{ fontSize: '1rem', padding: '1rem 2rem', width: '100%', justifyContent: 'center' }}
+                    onClick={() => {
+                      setShowGuiaMisa(false);
+                      setShowAppleMusicGuia(true);
+                    }}
+                  >
+                    Abrir Respuestas Interactivas
+                  </button>
                 </div>
               )}
 
@@ -2018,6 +1885,224 @@ export default function Landing() {
               )}
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Guía de Confesión Modal */}
+      {showConfesion && (
+        <div className="calendar-modal-overlay" onClick={() => closeModalWithAnimation('confesion')}>
+          <div 
+            className={`recursos-modal-card modal-large ${isClosingModal === 'confesion' ? 'slide-down-closing' : ''}`} 
+            style={{
+              transform: modalDragY !== 0 && isClosingModal === null ? `translateY(${modalDragY}px)` : undefined,
+              transition: modalDragY === 0 ? 'transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)' : 'none',
+              maxWidth: '650px',
+              padding: '2rem 1.5rem'
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div 
+              className="mobile-drag-handle"
+              onTouchStart={handleModalTouchStart}
+              onTouchMove={handleModalTouchMove}
+              onTouchEnd={() => handleModalTouchEnd('confesion')}
+              onTouchCancel={() => handleModalTouchEnd('confesion')}
+            ></div>
+            <button 
+              className="calendar-modal-close-btn" 
+              onClick={() => closeModalWithAnimation('confesion')}
+              aria-label="Cerrar modal"
+            >
+              ✕
+            </button>
+            
+            <div className="recursos-title-container" style={{ textAlign: 'center', marginBottom: '1.5rem', display: 'flex', flexDirection: 'column' }}>
+              <h3 className="recursos-title" style={{ fontSize: '1.5rem', color: 'var(--gold)', marginBottom: '0.5rem' }}>
+                Guía Práctica para la Confesión
+              </h3>
+              <p style={{ fontSize: '0.9rem', color: 'var(--text-light)', margin: 0 }}>
+                Bienvenido al encuentro con la Misericordia de Dios
+              </p>
+            </div>
+
+            <div className="recursos-modal-body" style={{ 
+              overflowY: 'auto', 
+              maxHeight: 'calc(80vh - 120px)', 
+              paddingRight: '10px',
+              color: 'var(--text-color)',
+              fontSize: '0.95rem',
+              lineHeight: '1.6'
+            }}>
+              
+              <div style={{ marginBottom: '2rem', textAlign: 'center', fontStyle: 'italic', backgroundColor: 'var(--bg-card)', padding: '1.5rem', borderRadius: '12px' }}>
+                "Yo te daré las llaves del Reino de los cielos. Todo lo que ates en la tierra, quedará atado en el cielo, y todo lo que desates en la tierra, quedará desatado en el cielo." 
+                <br /><strong style={{ color: 'var(--gold)' }}>Mt. 16, 19</strong>
+              </div>
+
+              <h4 style={{ color: 'var(--gold)', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '0.5rem', marginBottom: '1rem' }}>Oración Preparatoria</h4>
+              <p style={{ marginBottom: '2rem' }}>
+                Ven Espíritu Santo, ilumina mi mente y mi corazón para que pueda reconocer mis pecados, mueve mi conciencia al dolor sincero, ayúdame a hacer una buena confesión. Santa María, Madre de Dios, ruega por mí que soy un pecador. Amén.
+              </p>
+
+              <h4 style={{ color: 'var(--gold)', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '0.5rem', marginBottom: '1rem' }}>Cinco Pasos para una Buena Confesión</h4>
+              <ol style={{ paddingLeft: '1.5rem', marginBottom: '2rem' }}>
+                <li style={{ marginBottom: '1rem' }}><strong>Examen de Conciencia.</strong><br/>Esfuerzo sincero de recordar todos y cada uno de los pecados.</li>
+                <li style={{ marginBottom: '1rem' }}><strong>Dolor de los Pecados.</strong><br/>Reconocer que ante todo se ha ofendido a Dios que nos ama tanto.</li>
+                <li style={{ marginBottom: '1rem' }}><strong>Propósito de no volver a pecar.</strong><br/>La simple y sincera determinación de no volver a pecar por amor a Dios.</li>
+                <li style={{ marginBottom: '1rem' }}><strong>Decir los pecados al Sacerdote.</strong><br/>
+                  El Sacerdote es instrumento de la Misericordia de Dios (In Persona Christi).
+                  <ul style={{ marginTop: '0.5rem', listStyleType: 'disc' }}>
+                    <li><strong>Concisa:</strong> Ir al punto, sin detalles innecesarios.</li>
+                    <li><strong>Clara:</strong> Expresar los pecados sin rodeos ni ambigüedades.</li>
+                    <li><strong>Completa:</strong> No omitir voluntariamente ningún pecado grave.</li>
+                  </ul>
+                </li>
+                <li><strong>Cumplir la Penitencia.</strong><br/>Cumplirla cuanto antes con humildad y dolor en desagravio a Dios.</li>
+              </ol>
+
+              <div style={{ backgroundColor: 'rgba(255, 215, 0, 0.05)', borderLeft: '4px solid var(--gold)', padding: '1rem', marginBottom: '2rem', borderRadius: '0 8px 8px 0' }}>
+                <p style={{ margin: 0, fontSize: '0.9rem' }}>
+                  Ten en cuenta que la Confesión no es una charla, pero si necesitas explicar de manera detallada algunos aspectos de tu vida que te llevan al pecado, puedes solicitar Acompañamiento espiritual en la oficina parroquial.
+                </p>
+              </div>
+
+              <h4 style={{ color: 'var(--gold)', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '0.5rem', marginBottom: '1rem' }}>Examen de Conciencia</h4>
+              <p style={{ marginBottom: '1rem', fontSize: '0.9rem', color: 'var(--text-light)' }}>
+                A continuación, los Mandamientos de la Ley de Dios y algunas faltas que pueden ayudar a recordar:
+              </p>
+              
+              <ul style={{ listStyleType: 'none', padding: 0, margin: 0 }}>
+                <li style={{ marginBottom: '1.5rem' }}>
+                  <strong style={{ color: 'var(--text-color)' }}>1°. Amarás a Dios sobre todas las cosas.</strong>
+                  <ul style={{ listStyleType: 'circle', paddingLeft: '1.5rem', marginTop: '0.5rem', fontSize: '0.9rem' }}>
+                    <li>Creo en amuletos, supersticiones, horóscopos o tarot.</li>
+                    <li>Doy más importancia al trabajo, estudio, o diversión antes que a Dios (faltando a Misa en domingo).</li>
+                    <li>Me olvido de orar o me avergüenzo de la fe.</li>
+                  </ul>
+                </li>
+                <li style={{ marginBottom: '1.5rem' }}>
+                  <strong style={{ color: 'var(--text-color)' }}>2°. No tomarás el nombre de Dios en vano.</strong>
+                  <ul style={{ listStyleType: 'circle', paddingLeft: '1.5rem', marginTop: '0.5rem', fontSize: '0.9rem' }}>
+                    <li>Uso el nombre de Dios, Jesús o María sin respeto. He jurado con mentira.</li>
+                    <li>He faltado a alguna promesa o compromiso.</li>
+                  </ul>
+                </li>
+                <li style={{ marginBottom: '1.5rem' }}>
+                  <strong style={{ color: 'var(--text-color)' }}>3°. Santificarás las fiestas.</strong>
+                  <ul style={{ listStyleType: 'circle', paddingLeft: '1.5rem', marginTop: '0.5rem', fontSize: '0.9rem' }}>
+                    <li>He faltado a Misa los domingos o festivos por flojera.</li>
+                    <li>He llegado tarde a Misa o salgo antes de que termine.</li>
+                  </ul>
+                </li>
+                <li style={{ marginBottom: '1.5rem' }}>
+                  <strong style={{ color: 'var(--text-color)' }}>4°. Honrarás a tu padre y a tu madre.</strong>
+                  <ul style={{ listStyleType: 'circle', paddingLeft: '1.5rem', marginTop: '0.5rem', fontSize: '0.9rem' }}>
+                    <li>He desobedecido, mentido o faltado al respeto a mis padres.</li>
+                    <li>No les ayudo, no les muestro gratitud.</li>
+                  </ul>
+                </li>
+                <li style={{ marginBottom: '1.5rem' }}>
+                  <strong style={{ color: 'var(--text-color)' }}>5°. No matarás.</strong>
+                  <ul style={{ listStyleType: 'circle', paddingLeft: '1.5rem', marginTop: '0.5rem', fontSize: '0.9rem' }}>
+                    <li>He deseado la muerte o maltratado a otros.</li>
+                    <li>Perjudico mi salud con excesos o expongo mi vida sin necesidad.</li>
+                    <li>He dañado la vida de otros o practicado el aborto.</li>
+                  </ul>
+                </li>
+                <li style={{ marginBottom: '1.5rem' }}>
+                  <strong style={{ color: 'var(--text-color)' }}>6°. No cometerás actos impuros.</strong>
+                  <ul style={{ listStyleType: 'circle', paddingLeft: '1.5rem', marginTop: '0.5rem', fontSize: '0.9rem' }}>
+                    <li>He pensado, visto (pornografía) o compartido cosas deshonestas.</li>
+                    <li>He cometido actos impuros solo o con otros.</li>
+                    <li>He tenido relaciones sexuales sin estar casado.</li>
+                  </ul>
+                </li>
+                <li style={{ marginBottom: '1.5rem' }}>
+                  <strong style={{ color: 'var(--text-color)' }}>7°. No robarás.</strong>
+                  <ul style={{ listStyleType: 'circle', paddingLeft: '1.5rem', marginTop: '0.5rem', fontSize: '0.9rem' }}>
+                    <li>He robado, dañado o tomado cosas que no son mías.</li>
+                    <li>He perdido el tiempo en el trabajo/estudio.</li>
+                    <li>No he sido honesto en la administración de bienes.</li>
+                  </ul>
+                </li>
+                <li style={{ marginBottom: '1.5rem' }}>
+                  <strong style={{ color: 'var(--text-color)' }}>8°. No levantar falso testimonio ni mentir.</strong>
+                  <ul style={{ listStyleType: 'circle', paddingLeft: '1.5rem', marginTop: '0.5rem', fontSize: '0.9rem' }}>
+                    <li>He dicho mentiras, criticado o calumniado.</li>
+                    <li>He divulgado pecados ajenos o sembrado discordia.</li>
+                  </ul>
+                </li>
+                <li style={{ marginBottom: '1.5rem' }}>
+                  <strong style={{ color: 'var(--text-color)' }}>9°. No consentirás pensamientos ni deseos impuros.</strong>
+                  <ul style={{ listStyleType: 'circle', paddingLeft: '1.5rem', marginTop: '0.5rem', fontSize: '0.9rem' }}>
+                    <li>He consentido deseos con una persona casada o cometido adulterio de pensamiento.</li>
+                  </ul>
+                </li>
+                <li style={{ marginBottom: '1.5rem' }}>
+                  <strong style={{ color: 'var(--text-color)' }}>10°. No codiciarás los bienes ajenos.</strong>
+                  <ul style={{ listStyleType: 'circle', paddingLeft: '1.5rem', marginTop: '0.5rem', fontSize: '0.9rem' }}>
+                    <li>He tenido envidia, deseo lo ajeno o he sido avaricioso.</li>
+                  </ul>
+                </li>
+              </ul>
+
+              <h4 style={{ color: 'var(--gold)', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '0.5rem', marginBottom: '1rem' }}>Mandamientos de la Iglesia</h4>
+              <p style={{ marginBottom: '1rem', fontSize: '0.9rem', color: 'var(--text-light)' }}>Es pecado no cumplirlos:</p>
+              <ol style={{ paddingLeft: '1.5rem', marginBottom: '2rem' }}>
+                <li>Participar en <strong>MISA</strong> entera los Domingos y Fiestas de guardar.</li>
+                <li><strong>CONFESARSE</strong> cuando menos una vez al año o cuando se ha de comulgar y no se está en gracia.</li>
+                <li><strong>COMULGAR</strong> por lo menos una vez al año, por Pascua de Resurrección.</li>
+                <li><strong>AYUNAR</strong> y abstenerse de comer carne cuando lo manda la Iglesia.</li>
+                <li>Aportar el <strong>DIEZMO</strong>. Contribuir económicamente al sostenimiento de la Iglesia.</li>
+              </ol>
+
+              <h4 style={{ color: 'var(--gold)', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '0.5rem', marginBottom: '1rem' }}>Pecados Capitales</h4>
+              <ul style={{ paddingLeft: '1.5rem', marginBottom: '2rem' }}>
+                <li style={{ marginBottom: '0.5rem' }}><strong>Soberbia:</strong> Amor desordenado de nuestra propia excelencia. (Vanidad, Orgullo, Hipocresía).</li>
+                <li style={{ marginBottom: '0.5rem' }}><strong>Avaricia:</strong> Amor desordenado de los bienes materiales. Ambición.</li>
+                <li style={{ marginBottom: '0.5rem' }}><strong>Lujuria:</strong> Apetito de deleites carnales.</li>
+                <li style={{ marginBottom: '0.5rem' }}><strong>Ira:</strong> Acaloramiento de ánimo, deseo de venganza, odio.</li>
+                <li style={{ marginBottom: '0.5rem' }}><strong>Gula:</strong> Apetito desordenado en el comer y beber.</li>
+                <li style={{ marginBottom: '0.5rem' }}><strong>Envidia:</strong> Pesar por el bien ajeno, deseo desordenado por lo del otro.</li>
+                <li style={{ marginBottom: '0.5rem' }}><strong>Pereza:</strong> Decaimiento de ánimo en el buen obrar, pérdida de tiempo.</li>
+              </ul>
+
+              <h4 style={{ color: 'var(--gold)', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '0.5rem', marginBottom: '1rem', textAlign: 'center' }}>Oración Final</h4>
+              <p style={{ fontStyle: 'italic', textAlign: 'center', marginBottom: '2rem', fontSize: '1rem' }}>
+                Señor Jesús, me arrepiento sinceramente de haberte ofendido, porque eres infinitamente bueno, padeciste y moriste por mí clavado en la cruz, te amo con todo el corazón - y si no fuere cierto, concédeme que lo sea -, me propongo firmemente con tu ayuda y gracia no volver a pecar. Amén.
+              </p>
+
+            </div>
+          </div>
+        </div>
+      )}
+      {/* Guia de Misa Apple Music Style */}
+      {showAppleMusicGuia && (
+        <div className="calendar-modal-overlay" onClick={() => setShowAppleMusicGuia(false)}>
+          <AppleMusicLyrics
+            title="Guía de Misa"
+            subtitle="Modo Interactivo"
+            langToggle={
+              <button 
+                className="lang-toggle-btn" 
+                onClick={(e) => { e.stopPropagation(); setGuiaLang(l => l === 'es' ? 'en' : 'es'); }}
+              >
+                {guiaLang === 'es' ? '🇺🇸 English' : '🇲🇽 Español'}
+              </button>
+            }
+            onClose={() => setShowAppleMusicGuia(false)}
+            lines={massResponses.flatMap(section => [
+              { text: `---SECTION---${section.title[guiaLang]}` },
+              ...section.parts.flatMap(part => [
+                { text: `---SECTION---${part.title[guiaLang]}` },
+                ...part.lines[guiaLang].map(l => ({
+                  text: l.text,
+                  speaker: l.speaker,
+                  isLeft: l.speaker === 'Sacerdote' || l.speaker === 'Celebrant' || l.speaker === 'Priest' || l.speaker === 'Diácono'
+                }))
+              ])
+            ])}
+          />
         </div>
       )}
 
