@@ -809,7 +809,7 @@ export default function Landing() {
     }
   };
 
-  const handleCardTouchEnd = (modalType: 'cancionero' | 'oraciones') => {
+  const handleCardTouchEnd = (modalType: string) => {
     if (cardTouchStartX.current === null) return;
     
     if (cardDragIntent.current !== 'vertical') {
@@ -861,7 +861,7 @@ export default function Landing() {
     }, 300);
   };
 
-  const handleModalTouchEnd = (modalType: 'cancionero' | 'oraciones') => {
+  const handleModalTouchEnd = (modalType: string) => {
     if (modalTouchStartY.current === null) return;
     const threshold = window.innerHeight * 0.2; // 20% of screen height
     
