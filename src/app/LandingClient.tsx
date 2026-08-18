@@ -14,6 +14,7 @@ import {
   getMysteryTypeForDay, 
   MISTERIOS_DATA, 
   MysteryType, 
+  RosaryVariant,
   PrayerCard 
 } from '../data/oracionesData';
 
@@ -700,10 +701,31 @@ export default function Landing() {
   // Deep linking initial section
   const [initialSection, setInitialSection] = useState<string | null>(null);
 
+  // App & Prayer Language state with auto-detection from system/browser
+  const [activeLang, setActiveLang] = useState<'es' | 'en'>('es');
+  const [guiaLang, setGuiaLang] = useState<'es' | 'en'>('es');
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && navigator.language) {
+      if (navigator.language.toLowerCase().startsWith('en')) {
+        setActiveLang('en');
+        setGuiaLang('en');
+      }
+    }
+  }, []);
+
   // Helper to update URL with clean query parameters without page refresh
   const setModalUrl = useCallback((
     modal: string | null, 
-    extraParams?: { seccion?: string | null; deck?: string | null; cancion?: string | null }
+    extraParams?: { 
+      seccion?: string | null; 
+      deck?: string | null; 
+      cancion?: string | null;
+      misterio?: string | null;
+      variante?: string | null;
+      etapa?: string | number | null;
+      lang?: string | null;
+    }
   ) => {
     const params = new URLSearchParams();
     if (modal) {
@@ -711,6 +733,12 @@ export default function Landing() {
       if (extraParams?.deck) params.set('deck', extraParams.deck);
       if (extraParams?.seccion) params.set('seccion', extraParams.seccion);
       if (extraParams?.cancion) params.set('cancion', extraParams.cancion);
+      if (extraParams?.misterio) params.set('misterio', extraParams.misterio);
+      if (extraParams?.variante) params.set('variante', extraParams.variante);
+      if (extraParams?.etapa !== undefined && extraParams?.etapa !== null) {
+        params.set('etapa', String(extraParams.etapa));
+      }
+      if (extraParams?.lang) params.set('lang', extraParams.lang);
     }
     const query = params.toString();
     const url = query ? `${pathname}?${query}` : pathname;
@@ -730,6 +758,7 @@ export default function Landing() {
   const [activeOracionDeck, setActiveOracionDeck] = useState<'comunidad' | 'basicas' | 'rosario'>('comunidad');
   const [activeOracionIdx, setActiveOracionIdx] = useState(0);
   const [selectedMysteryType, setSelectedMysteryType] = useState<MysteryType>(() => getMysteryTypeForDay());
+  const [selectedRosaryVariant, setSelectedRosaryVariant] = useState<RosaryVariant>('mexicana');
   const [decadeBeadsCount, setDecadeBeadsCount] = useState<number>(0);
   const [oracionTransition, setOracionTransition] = useState<{
     prevIdx: number | null;
@@ -743,12 +772,12 @@ export default function Landing() {
       case 'basicas':
         return oracionesBasicas;
       case 'rosario':
-        return getSantoRosarioDeck(selectedMysteryType);
+        return getSantoRosarioDeck(selectedMysteryType, selectedRosaryVariant);
       case 'comunidad':
       default:
         return oracionesComunidad;
     }
-  }, [activeOracionDeck, selectedMysteryType]);
+  }, [activeOracionDeck, selectedMysteryType, selectedRosaryVariant]);
 
   const DECKS_ORDER: Array<'comunidad' | 'basicas' | 'rosario'> = ['comunidad', 'basicas', 'rosario'];
 
@@ -761,7 +790,43 @@ export default function Landing() {
     if (deck === 'rosario') {
       setSelectedMysteryType(getMysteryTypeForDay());
     }
-    setModalUrl('oraciones', { deck });
+    setModalUrl('oraciones', { 
+      deck,
+      misterio: deck === 'rosario' ? selectedMysteryType : undefined,
+      variante: deck === 'rosario' ? selectedRosaryVariant : undefined,
+      etapa: 1,
+      lang: activeLang
+    });
+  };
+
+  const handleSwitchMystery = (mystery: MysteryType) => {
+    if (mystery === selectedMysteryType) return;
+    triggerHaptic('light');
+    setSelectedMysteryType(mystery);
+    setActiveOracionIdx(0);
+    setDecadeBeadsCount(0);
+    setModalUrl('oraciones', {
+      deck: 'rosario',
+      misterio: mystery,
+      variante: selectedRosaryVariant,
+      etapa: 1,
+      lang: activeLang
+    });
+  };
+
+  const handleSwitchRosaryVariant = (variant: RosaryVariant) => {
+    if (variant === selectedRosaryVariant) return;
+    triggerHaptic('light');
+    setSelectedRosaryVariant(variant);
+    setActiveOracionIdx(0);
+    setDecadeBeadsCount(0);
+    setModalUrl('oraciones', {
+      deck: 'rosario',
+      misterio: selectedMysteryType,
+      variante: variant,
+      etapa: 1,
+      lang: activeLang
+    });
   };
 
   const handlePrevDeck = () => {
@@ -805,23 +870,8 @@ export default function Landing() {
     triggerHaptic('light');
   };
 
-  const [guiaLang, setGuiaLang] = useState<'es' | 'en'>('es');
-  
-  useEffect(() => {
-    if (typeof window !== 'undefined' && navigator.language) {
-      if (navigator.language.toLowerCase().startsWith('en')) {
-        setGuiaLang('en');
-      }
-    }
-  }, []);
   const [showAppleMusicGuia, setShowAppleMusicGuia] = useState(false);
   const [activeMisaSectionIdx, setActiveMisaSectionIdx] = useState(0);
-
-  useEffect(() => {
-    if (typeof navigator !== 'undefined') {
-      setGuiaLang(navigator.language.startsWith('en') ? 'en' : 'es');
-    }
-  }, []);
 
   // Sync state with clean URL parameters
   useEffect(() => {
@@ -829,6 +879,10 @@ export default function Landing() {
     const seccion = searchParams.get('seccion');
     const deck = searchParams.get('deck');
     const cancion = searchParams.get('cancion');
+    const misterio = searchParams.get('misterio');
+    const variante = searchParams.get('variante');
+    const etapa = searchParams.get('etapa');
+    const lang = searchParams.get('lang');
     
     // Default to closed
     setShowCancionero(false);
@@ -836,6 +890,11 @@ export default function Landing() {
     setShowGuiaMisa(false);
     setShowConfesion(false);
     setShowAppleMusicGuia(false);
+
+    if (lang && (lang === 'es' || lang === 'en')) {
+      setActiveLang(lang);
+      setGuiaLang(lang);
+    }
 
     if (modal === 'cancionero') {
       setShowCancionero(true);
@@ -847,6 +906,18 @@ export default function Landing() {
       setShowOraciones(true);
       if (deck && (deck === 'comunidad' || deck === 'basicas' || deck === 'rosario')) {
         setActiveOracionDeck(deck);
+      }
+      if (misterio && ['gozosos', 'dolorosos', 'gloriosos', 'luminosos'].includes(misterio)) {
+        setSelectedMysteryType(misterio as any);
+      }
+      if (variante && ['mexicana', 'misionera', 'universal', 'latin'].includes(variante)) {
+        setSelectedRosaryVariant(variante as any);
+      }
+      if (etapa) {
+        const parsedEtapa = parseInt(etapa, 10);
+        if (!isNaN(parsedEtapa) && parsedEtapa >= 1) {
+          setActiveOracionIdx(parsedEtapa - 1);
+        }
       }
     } else if (modal === 'guia') {
       setShowGuiaMisa(true);
@@ -1013,6 +1084,13 @@ export default function Landing() {
     if (activeOracionDeck === 'comunidad') {
       localStorage.setItem("active_oracion_index", String(wrappedIdx));
     }
+    setModalUrl('oraciones', {
+      deck: activeOracionDeck,
+      misterio: activeOracionDeck === 'rosario' ? selectedMysteryType : undefined,
+      variante: activeOracionDeck === 'rosario' ? selectedRosaryVariant : undefined,
+      etapa: wrappedIdx + 1,
+      lang: activeLang
+    });
 
     setTimeout(() => {
       setOracionTransition({
@@ -1775,35 +1853,113 @@ export default function Landing() {
         isClosing={isClosingModal === 'oraciones'}
         onClose={() => closeModalWithAnimation('oraciones')}
       >
-        {/* Compact & Intelligent Pill Switcher */}
-        <div className="oracion-deck-switcher-bar">
-          <button 
-            type="button"
-            className="deck-switch-arrow-btn"
-            onClick={handlePrevDeck}
-            aria-label="Mazo anterior"
-            title="Mazo anterior"
-          >
-            ◀
-          </button>
-          <div className="deck-switch-info">
-            <span className="deck-switch-badge">Mazo {DECKS_ORDER.indexOf(activeOracionDeck) + 1}/3</span>
-            <span className="deck-switch-title">
-              {activeOracionDeck === 'comunidad' && "Oraciones de la Comunidad"}
-              {activeOracionDeck === 'basicas' && "Oraciones Básicas"}
-              {activeOracionDeck === 'rosario' && `Santo Rosario (${MISTERIOS_DATA[selectedMysteryType].name})`}
-            </span>
+        {/* Top Control Bar with Deck Switcher & Non-Overlapping Language Toggle */}
+        <div className="oracion-top-bar">
+          <div className="oracion-deck-switcher-bar">
+            <button 
+              type="button"
+              className="deck-switch-arrow-btn"
+              onClick={handlePrevDeck}
+              aria-label={activeLang === 'en' ? "Previous deck" : "Mazo anterior"}
+              title={activeLang === 'en' ? "Previous deck" : "Mazo anterior"}
+            >
+              ◀
+            </button>
+            <div className="deck-switch-info">
+              <span className="deck-switch-badge">
+                {activeLang === 'en' ? `Deck ${DECKS_ORDER.indexOf(activeOracionDeck) + 1}/3` : `Mazo ${DECKS_ORDER.indexOf(activeOracionDeck) + 1}/3`}
+              </span>
+              <span className="deck-switch-title">
+                {activeOracionDeck === 'comunidad' && (activeLang === 'en' ? "Community Prayers" : "Oraciones de la Comunidad")}
+                {activeOracionDeck === 'basicas' && (activeLang === 'en' ? "Basic Prayers" : "Oraciones Básicas")}
+                {activeOracionDeck === 'rosario' && (activeLang === 'en' ? `Holy Rosary (${MISTERIOS_DATA[selectedMysteryType].name})` : `Santo Rosario (${MISTERIOS_DATA[selectedMysteryType].name})`)}
+              </span>
+            </div>
+            <button 
+              type="button"
+              className="deck-switch-arrow-btn"
+              onClick={handleNextDeck}
+              aria-label={activeLang === 'en' ? "Next deck" : "Siguiente mazo"}
+              title={activeLang === 'en' ? "Next deck" : "Siguiente mazo"}
+            >
+              ▶
+            </button>
           </div>
+
           <button 
             type="button"
-            className="deck-switch-arrow-btn"
-            onClick={handleNextDeck}
-            aria-label="Siguiente mazo"
-            title="Siguiente mazo"
+            className="oracion-lang-toggle-btn"
+            onClick={() => {
+              const nextLang = activeLang === 'es' ? 'en' : 'es';
+              setActiveLang(nextLang);
+              setGuiaLang(nextLang);
+              triggerHaptic('light');
+              setModalUrl('oraciones', {
+                deck: activeOracionDeck,
+                misterio: activeOracionDeck === 'rosario' ? selectedMysteryType : undefined,
+                variante: activeOracionDeck === 'rosario' ? selectedRosaryVariant : undefined,
+                etapa: activeOracionIdx + 1,
+                lang: nextLang
+              });
+            }}
+            aria-label="Cambiar idioma / Switch language"
+            title={activeLang === 'es' ? "Switch to English" : "Cambiar a Español"}
           >
-            ▶
+            {activeLang === 'es' ? '🇲🇽 ES' : '🇺🇸 EN'}
           </button>
         </div>
+
+        {/* Sub-selectors for Rosary: Variants and Mystery Types */}
+        {activeOracionDeck === 'rosario' && (
+          <div className="rosario-sub-selectors">
+            {/* Variant Selector Pills */}
+            <div className="rosario-pill-group">
+              <span className="rosario-pill-label">{activeLang === 'en' ? 'Style:' : 'Variante:'}</span>
+              {(['mexicana', 'misionera', 'universal', 'latin'] as RosaryVariant[]).map((v) => {
+                const labels: Record<RosaryVariant, string> = {
+                  mexicana: '🇲🇽 Tradicional',
+                  misionera: '🌍 Misionero',
+                  universal: '🇻🇦 Universal',
+                  latin: '🏛️ Latín'
+                };
+                return (
+                  <button
+                    key={v}
+                    type="button"
+                    className={`rosario-selector-pill ${selectedRosaryVariant === v ? 'active' : ''}`}
+                    onClick={() => handleSwitchRosaryVariant(v)}
+                  >
+                    {labels[v]}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Mystery Selector Pills */}
+            <div className="rosario-pill-group">
+              <span className="rosario-pill-label">{activeLang === 'en' ? 'Mystery:' : 'Misterio:'}</span>
+              {(['gozosos', 'luminosos', 'dolorosos', 'gloriosos'] as MysteryType[]).map((mType) => {
+                const isToday = getMysteryTypeForDay() === mType;
+                const mLabels: Record<MysteryType, string> = {
+                  gozosos: activeLang === 'en' ? 'Joyful' : 'Gozosos',
+                  luminosos: activeLang === 'en' ? 'Luminous' : 'Luminosos',
+                  dolorosos: activeLang === 'en' ? 'Sorrowful' : 'Dolorosos',
+                  gloriosos: activeLang === 'en' ? 'Glorious' : 'Gloriosos'
+                };
+                return (
+                  <button
+                    key={mType}
+                    type="button"
+                    className={`rosario-selector-pill ${selectedMysteryType === mType ? 'active' : ''}`}
+                    onClick={() => handleSwitchMystery(mType)}
+                  >
+                    {mLabels[mType]} {isToday ? (activeLang === 'en' ? '• Today' : '• Hoy') : ''}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
 
         <div className="recursos-modal-body">
           <div className="stacked-deck-container">
@@ -1851,7 +2007,7 @@ export default function Landing() {
                   onTouchEnd={isActive ? () => handleCardTouchEnd('oraciones') : undefined}
                   onTouchCancel={isActive ? () => handleCardTouchEnd('oraciones') : undefined}
                 >
-                  <h4>{oracion.titleEn && guiaLang === 'en' ? oracion.titleEn : oracion.title}</h4>
+                  <h4>{oracion.titleEn && activeLang === 'en' ? oracion.titleEn : oracion.title}</h4>
                   {oracion.subtitle && <p className="song-artist">{oracion.subtitle}</p>}
                   
                   {/* Visual Guide Rosary Diagram Card */}
@@ -1860,7 +2016,7 @@ export default function Landing() {
                   {/* Decade Beads Interactive Tracker for Rosary Mysteries */}
                   {oracion.isMysteryCard && (
                     <div className="rosario-beads-container" onClick={(e) => e.stopPropagation()}>
-                      <div className="rosario-beads-title">Decena: 10 Ave Marías</div>
+                      <div className="rosario-beads-title">{activeLang === 'en' ? 'Decade: 10 Hail Marys' : 'Decena: 10 Ave Marías'}</div>
                       <div className="rosario-beads-row">
                         {Array.from({ length: 10 }).map((_, bIdx) => {
                           const isDone = bIdx < decadeBeadsCount;
@@ -1881,13 +2037,13 @@ export default function Landing() {
                         })}
                       </div>
                       <span className="rosario-bead-counter-text">
-                        {decadeBeadsCount} de 10 rezadas
+                        {activeLang === 'en' ? `${decadeBeadsCount} of 10 prayed` : `${decadeBeadsCount} de 10 rezadas`}
                       </span>
                     </div>
                   )}
 
-                  <div style={{ whiteSpace: 'pre-wrap', lineHeight: 1.6 }}>
-                    {(oracion.textEn && guiaLang === 'en' ? oracion.textEn : oracion.text)}
+                  <div className="oracion-card-body-text" style={{ whiteSpace: 'pre-wrap' }}>
+                    {(oracion.textEn && activeLang === 'en' ? oracion.textEn : oracion.text)}
                   </div>
                 </div>
               );
@@ -1899,16 +2055,16 @@ export default function Landing() {
               className="deck-nav-btn" 
               onClick={() => handleOracionNav(activeOracionIdx - 1)}
             >
-              ◀ Anterior
+              ◀ {activeLang === 'en' ? 'Previous' : 'Anterior'}
             </button>
             <span className="deck-counter">
-              {activeOracionIdx + 1} de {currentOracionesList.length}
+              {activeOracionIdx + 1} {activeLang === 'en' ? 'of' : 'de'} {currentOracionesList.length}
             </span>
             <button 
               className="deck-nav-btn" 
               onClick={() => handleOracionNav(activeOracionIdx + 1)}
             >
-              Siguiente ▶
+              {activeLang === 'en' ? 'Next' : 'Siguiente'} ▶
             </button>
           </div>
         </div>
