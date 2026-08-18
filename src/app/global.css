@@ -2954,9 +2954,9 @@ body.modal-open [data-tooltip]::after {
   border: 1px solid var(--border-subtle);
   border-radius: 999px; /* Pill design */
   padding: 4px 6px;
-  margin: 0 auto 0.75rem auto;
-  width: 100%;
-  max-width: 100%;
+  margin: 0 0 0.75rem 0;
+  width: calc(100% - 48px); /* Clear space for top-right X close button */
+  max-width: calc(100% - 48px);
   box-shadow: 0 1px 3px rgba(45, 27, 14, 0.04);
 }
 
