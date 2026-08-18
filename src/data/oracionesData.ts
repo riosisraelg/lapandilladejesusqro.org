@@ -563,134 +563,480 @@ export function getMysteryTypeForDay(day?: number): MysteryType {
   }
 }
 
+export type RosaryVariant = 'mexicana' | 'misionera' | 'universal' | 'latin';
+
+export interface RosaryContinentInfo {
+  continent: string;
+  color: string;
+  emoji: string;
+  intention: string;
+}
+
+export const CONTINENTES_MISIONEROS: RosaryContinentInfo[] = [
+  { continent: "África", color: "Verde", emoji: "🟢", intention: "Por la paz, sus selvas y la fe naciente de sus comunidades cristianas." },
+  { continent: "América", color: "Rojo", emoji: "🔴", intention: "Por la sangre de los mártires, la justicia y la fe de todos nuestros pueblos." },
+  { continent: "Europa", color: "Blanco", emoji: "⚪", intention: "Por el Santo Padre, la unidad de la Iglesia y el renacer espiritual de sus raíces." },
+  { continent: "Oceanía", color: "Azul", emoji: "🔵", intention: "Por las islas y mares lejanos que esperan la luz del Evangelio." },
+  { continent: "Asia", color: "Amarillo", emoji: "🟡", intention: "Por los miles de millones de hermanos en la cuna de las grandes culturas." }
+];
+
+export const MYSTERY_TITLES_LATIN: Record<MysteryType, { name: string; mysteries: string[] }> = {
+  gozosos: {
+    name: "Mysteria Gaudiosa",
+    mysteries: [
+      "1. Annuntiatio Domini",
+      "2. Visitatio Mariae Virginis ad Elisabeth",
+      "3. Nativitas Domini nostri Iesu Christi",
+      "4. Praesentatio Iesu in Templo",
+      "5. Inventio Iesu in Templo"
+    ]
+  },
+  dolorosos: {
+    name: "Mysteria Dolorosa",
+    mysteries: [
+      "1. Agonia Iesu in Horto Gethsemani",
+      "2. Flagellatio Domini nostri ad columnam",
+      "3. Coronatio spinis",
+      "4. Baiulatio crucis ad Calvariae locum",
+      "5. Crucifixio et mors Domini"
+    ]
+  },
+  gloriosos: {
+    name: "Mysteria Gloriosa",
+    mysteries: [
+      "1. Resurrectio Domini a mortuis",
+      "2. Ascensio Domini in Caelum",
+      "3. Missio Spiritus Sancti in discipulos",
+      "4. Assumptio Beatae Mariae Virginis",
+      "5. Coronatio Beatae Mariae Virginis in Caelis"
+    ]
+  },
+  luminosos: {
+    name: "Mysteria Luminosa",
+    mysteries: [
+      "1. Baptisma Iesu in Iordane",
+      "2. Autorevelatio Iesu ad nuptias Canenses",
+      "3. Regni Dei proclamatio et ad conversionem invitatio",
+      "4. Transfiguratio Domini in Monte Thabor",
+      "5. Eucharistiae Institutio in Ultima Cena"
+    ]
+  }
+};
+
 /**
- * Genera el flujo guiado completo del Santo Rosario paso a paso
+ * Genera el flujo guiado completo del Santo Rosario según el tipo de misterio y variante
  */
-export function getSantoRosarioDeck(manualType?: MysteryType): PrayerCard[] {
+export function getSantoRosarioDeck(manualType?: MysteryType, variant: RosaryVariant = 'mexicana'): PrayerCard[] {
   const mysteryType = manualType || getMysteryTypeForDay();
   const info = MISTERIOS_DATA[mysteryType];
 
+  if (variant === 'misionera') {
+    // ─────────────────────────────────────────────────────────────────────────
+    // VARIANTE: ROSARIO MISIONERO (5 CONTINENTES)
+    // ─────────────────────────────────────────────────────────────────────────
+    const deck: PrayerCard[] = [
+      {
+        id: 'rosario-misionero-guia',
+        title: 'Rosario Misionero • Los 5 Continentes',
+        titleEn: 'Missionary Rosary • The 5 Continents',
+        subtitle: `Hoy: ${info.name}`,
+        category: 'Santo Rosario Misionero',
+        isRosaryGuide: true,
+        text: `El Rosario Misionero es una oración universal que abraza a toda la humanidad a través de los 5 colores simbólicos:
+
+🟢 1er Misterio: Verde por África (selvas y fe naciente)
+🔴 2do Misterio: Rojo por América (sangre de mártires e indígenas)
+⚪ 3er Misterio: Blanco por Europa (sede de Pedro y unidad)
+🔵 4to Misterio: Azul por Oceanía (islas y mares)
+🟡 5to Misterio: Amarillo por Asia (pueblos y culturas milenarias)
+
+En cada misterio rezamos: 1 Padre Nuestro, 10 Ave Marías, 1 Gloria y la jaculatoria misionera:
+"¡Santa María, Reina de las Misiones; ruega al Señor Jesús por nosotros!"`
+      },
+      {
+        id: 'rosario-misionero-cruz-ofrecimiento',
+        title: '1. Señal de la Cruz y Ofrecimiento Misionero',
+        subtitle: 'Inicio en el amor universal',
+        category: 'Santo Rosario Misionero',
+        text: `Por la señal de la Santa Cruz, de nuestros enemigos líbranos Señor, Dios nuestro. En el nombre del Padre, y del Hijo, y del Espíritu Santo. Amén.
+
+Ofrecimiento:
+Señor Jesús, dueño de la mies, te ofrecemos este Santo Rosario Misionero por la evangelización del mundo entero, por los misioneros que anuncian tu Palabra y por la paz de todos los pueblos.
+
+Señor mío Jesucristo, Dios y Hombre verdadero, me pesa de todo corazón haberte ofendido. Propongo firmemente nunca más pecar. Amén.`
+      },
+      {
+        id: 'rosario-misionero-credo',
+        title: '2. Credo de los Apóstoles',
+        subtitle: 'Profesión de la Fe Universal',
+        category: 'Santo Rosario Misionero',
+        text: `Creo en Dios, Padre Todopoderoso, Creador del cielo y de la tierra.
+
+Creo en Jesucristo, su único Hijo, Nuestro Señor, que fue concebido por obra y gracia del Espíritu Santo, nació de Santa María Virgen, padeció bajo el poder de Poncio Pilato, fue crucificado, muerto y sepultado, descendió a los infiernos, al tercer día resucitó de entre los muertos, subió a los cielos y está sentado a la derecha de Dios, Padre todopoderoso. Desde allí ha de venir a juzgar a vivos y muertos.
+
+Creo en el Espíritu Santo, la santa Iglesia católica, la comunión de los santos, el perdón de los pecados, la resurrección de la carne y la vida eterna. Amén.`
+      },
+      {
+        id: 'rosario-misionero-pn-tres-avemarias',
+        title: '3. Padre Nuestro y 3 Ave Marías Iniciales',
+        subtitle: 'Por el Papa y los misioneros del mundo',
+        category: 'Santo Rosario Misionero',
+        text: `Padre nuestro, que estás en el cielo...
+
+1º Por el Santo Padre y la Iglesia: Dios te salve, María...
+2º Por las vocaciones sacerdotales y misioneras: Dios te salve, María...
+3º Por todos los que aún no conocen a Cristo: Dios te salve, María...
+
+Gloria al Padre, y al Hijo, y al Espíritu Santo. Como era en el principio, ahora y siempre, por los siglos de los siglos. Amén.`
+      }
+    ];
+
+    // 5 Misterios Misioneros
+    info.mysteries.forEach((m, idx) => {
+      const cont = CONTINENTES_MISIONEROS[idx] || CONTINENTES_MISIONEROS[0];
+      deck.push({
+        id: `rosario-misionero-misterio-${m.number}`,
+        title: `${m.number}º Misterio: ${m.title}`,
+        subtitle: `${cont.emoji} Continente: ${cont.continent} (${cont.color}) • ${info.name}`,
+        category: 'Santo Rosario Misionero',
+        isMysteryCard: true,
+        mysteryNumber: m.number,
+        mysteryName: m.title,
+        mysteryMeditation: m.meditation,
+        text: `INTENCIÓN MISIONERA:
+${cont.emoji} Oramos por ${cont.continent} (${cont.color}): ${cont.intention}
+
+MEDITACIÓN:
+${m.meditation} (${m.biblicalRef || ''})
+
+ORACIONES DE ESTE MISTERIO:
+• 1 Padre Nuestro
+• 10 Ave Marías (lleva la cuenta con las esferas)
+• 1 Gloria al Padre
+• Jaculatoria Misionera:
+"¡Santa María, Reina de las Misiones; ruega al Señor Jesús por nosotros!"
+• Jaculatoria de Fátima:
+"Oh Jesús mío, perdona nuestros pecados, líbranos del fuego del infierno, lleva al cielo a todas las almas, especialmente a las más necesitadas de tu misericordia. Amén."`
+      });
+    });
+
+    // Tres últimas Ave Marías (Tres Divinas Personas)
+    deck.push({
+      id: 'rosario-misionero-tres-ultimas',
+      title: 'Las Tres Últimas Ave Marías',
+      subtitle: 'A las Tres Divinas Personas',
+      category: 'Santo Rosario Misionero',
+      text: `Padre Nuestro, que estás en el cielo...
+
+1.- Dios te salve María, Hija de Dios Padre; en Tus Manos ponemos nuestra Fe para que la ilumines; llena eres de gracia, el Señor es contigo; bendita Tú eres entre todas las mujeres, y bendito es el fruto de tu vientre, Jesús. Santa María, Madre de Dios, ruega por nosotros, pecadores, ahora y en la hora de nuestra muerte. Amén.
+
+2.- Dios te salve María, Madre de Dios Hijo; en Tus Manos ponemos nuestra Esperanza para que la alientes; llena eres de gracia, el Señor es contigo; bendita Tú eres entre todas las mujeres, y bendito es el fruto de tu vientre, Jesús. Santa María, Madre de Dios, ruega por nosotros, pecadores, ahora y en la hora de nuestra muerte. Amén.
+
+3.- Dios te salve María, Esposa de Dios Espíritu Santo; en Tus Manos ponemos nuestra Caridad para que la inflames; llena eres de gracia, el Señor es contigo; bendita Tú eres entre todas las mujeres, y bendito es el fruto de tu vientre, Jesús. Santa María, Madre de Dios, ruega por nosotros, pecadores, ahora y en la hora de nuestra muerte. Amén.
+
+Dios te salve María; Templo, Trono y Sagrario de la Santísima Trinidad; Virgen concebida sin pecado original.`
+    });
+
+    // La Salve Misionera
+    deck.push({
+      id: 'rosario-misionero-salve',
+      title: 'La Salve Regina',
+      subtitle: 'Madre de todas las Naciones',
+      category: 'Santo Rosario Misionero',
+      text: `Dios te salve, Reina y Madre de misericordia, vida, dulzura y esperanza nuestra; Dios te salve.
+
+A Ti llamamos los desterrados hijos de Eva; a Ti suspiramos, gimiendo y llorando, en este valle de lágrimas.
+
+Ea, pues, Señora, abogada nuestra, vuelve a nosotros esos tus ojos misericordiosos; y después de este destierro muéstranos a Jesús, fruto bendito de tu vientre.
+
+¡Oh clemente, oh piadosa, oh dulce Virgen María!
+
+V. Ruega por nosotros, Santa Madre de Dios y Reina de las Misiones.
+R. Para que seamos dignos de alcanzar las promesas de Nuestro Señor Jesucristo. Amén.`
+    });
+
+    // Oración Misionera Final
+    deck.push({
+      id: 'rosario-misionero-final',
+      title: 'Oración Misionera Final',
+      subtitle: 'Envío y Bendición Universal',
+      category: 'Santo Rosario Misionero',
+      text: `Oremos:
+Señor Dios nuestro, que has querido que tu Iglesia sea sacramento universal de salvación para todos los pueblos: derrama sobre el mundo entero el fuego de tu Espíritu Santo, bendice a los misioneros en África, América, Europa, Oceanía y Asia, y haz que la luz de tu Evangelio llegue hasta los confines de la tierra.
+Por Jesucristo Nuestro Señor. Amén.
+
+¡Santa María, Reina de las Misiones!
+— Ruega al Señor Jesús por nosotros.
+
+En el nombre del Padre, y del Hijo, y del Espíritu Santo. Amén.`
+    });
+
+    return deck;
+  }
+
+  if (variant === 'latin') {
+    // ─────────────────────────────────────────────────────────────────────────
+    // VARIANTE: LATÍN (ROSARIUM VIRGINIS MARIAE)
+    // ─────────────────────────────────────────────────────────────────────────
+    const latinInfo = MYSTERY_TITLES_LATIN[mysteryType];
+    const deck: PrayerCard[] = [
+      {
+        id: 'rosario-latin-guia',
+        title: 'Rosarium Virginis Mariae',
+        subtitle: `Hodie: ${latinInfo.name}`,
+        category: 'Rosarium Latine',
+        isRosaryGuide: true,
+        text: `Rosarium est oratio contemplativa Christi mysteriorum cum Maria Virgine.
+
+Ordo orationis:
+1. Signum Crucis & Symbolum Apostolorum
+2. Pater Noster & Tres Ave Mariae (pro Fide, Spe et Caritate)
+3. Gloria Patri
+4. Quinque Mysteria (Pater Noster + 10 Ave Mariae + Gloria Patri + Oratio Fatimae)
+5. Salve Regina, Litaniae Lauretanae & Oratio Conclusiva`
+      },
+      {
+        id: 'rosario-latin-signum-credo',
+        title: '1. Signum Crucis & Symbolum Apostolorum',
+        subtitle: 'Professio Fidei',
+        category: 'Rosarium Latine',
+        text: `In nomine Patris, et Filii, et Spiritus Sancti. Amen.
+
+Credo in Deum Patrem omnipotentem, Creatorem caeli et terrae. Et in Iesum Christum, Filium eius unicum, Dominum nostrum, qui conceptus est de Spiritu Sancto, natus ex Maria Virgine, passus sub Pontio Pilato, crucifixus, mortuus, et sepultus, descendit ad inferos, tertia die resurrexit a mortuis, ascendit ad caelos, sedet ad dexteram Dei Patris omnipotentis, inde venturus est iudicare vivos et mortuos.
+
+Credo in Spiritum Sanctum, sanctam Ecclesiam catholicam, sanctorum communionem, remissionem peccatorum, carnis resurrectionem, vitam aeternam. Amen.`
+      },
+      {
+        id: 'rosario-latin-pater-tres-ave',
+        title: '2. Pater Noster & Tres Ave Mariae',
+        subtitle: 'Pro Fide, Spe et Caritate',
+        category: 'Rosarium Latine',
+        text: `Pater noster, qui es in caelis, sanctificetur nomen tuum. Adveniat regnum tuum. Fiat voluntas tua, sicut in caelo et in terra. Panem nostrum cotidianum da nobis hodie, et dimitte nobis debita nostra sicut et nos dimittimus debitoribus nostris. Et ne nos inducas in tentationem: sed libera nos a malo. Amen.
+
+1. Pro Fide: Ave Maria, gratia plena, Dominus tecum...
+2. Pro Spe: Ave Maria, gratia plena, Dominus tecum...
+3. Pro Caritate: Ave Maria, gratia plena, Dominus tecum...
+
+Sancta Maria, Mater Dei, ora pro nobis peccatoribus, nunc et in hora mortis nostrae. Amen.
+
+Gloria Patri, et Filio, et Spiritui Sancto. Sicut erat in principio, et nunc et semper, et in saecula saeculorum. Amen.`
+      }
+    ];
+
+    // 5 Mysteria
+    info.mysteries.forEach((m, idx) => {
+      const latTitle = latinInfo.mysteries[idx] || m.title;
+      deck.push({
+        id: `rosario-latin-mysterium-${m.number}`,
+        title: `${m.number}. Mysterium: ${latTitle}`,
+        subtitle: `${latinInfo.name} • ${m.biblicalRef || ''}`,
+        category: 'Rosarium Latine',
+        isMysteryCard: true,
+        mysteryNumber: m.number,
+        mysteryName: latTitle,
+        mysteryMeditation: m.meditation,
+        text: `MEDITATIO:
+${m.meditation}
+
+ORATIONES HUIUS MYSTERII:
+• 1 Pater Noster
+• 10 Ave Mariae (Decena)
+• 1 Gloria Patri
+• Oratio Fatimae:
+"O mi Iesu, dimitte nobis debita nostra, libera nos ab igne inferni, perduc in caelum omnes animas, praesertim eas quae misericordiae tuae maxime indigent. Amen."`
+      });
+    });
+
+    deck.push({
+      id: 'rosario-latin-salve',
+      title: 'Salve Regina',
+      subtitle: 'Antiphona Beatae Mariae Virginis',
+      category: 'Rosarium Latine',
+      text: `Salve, Regina, Mater misericordiae; vita, dulcedo et spes nostra, salve.
+
+Ad te clamamus, exsules filii Evae. Ad te suspiramus, gementes et flentes in hac lacrimarum valle.
+
+Eia ergo, advocata nostra, illos tuos misericordes oculos ad nos converte. Et Iesum, benedictum fructum ventris tui, nobis post hoc exsilium ostende.
+
+O clemens, o pia, o dulcis Virgo Maria.
+
+V. Ora pro nobis, Sancta Dei Genetrix.
+R. Ut digni efficiamur promissionibus Christi. Amen.`
+    });
+
+    deck.push({
+      id: 'rosario-latin-conclusio',
+      title: 'Oratio Conclusiva',
+      subtitle: 'Benedictio Finalis',
+      category: 'Rosarium Latine',
+      text: `Oremus:
+Deus, cuius Unigenitus per vitam, mortem et resurrectionem suam nobis salutis aeternae praemia comparavit: concede, quaesumus; ut haec mysteria sacratissimo Beatae Mariae Virginis Rosario recolentes, et imitemur quod continent, et quod promittunt assequamur.
+Per Christum Dominum nostrum. Amen.
+
+In nomine Patris, et Filii, et Spiritus Sancti. Amen.`
+    });
+
+    return deck;
+  }
+
+  if (variant === 'universal') {
+    // ─────────────────────────────────────────────────────────────────────────
+    // VARIANTE: UNIVERSAL / ROMANA (ESTÁNDAR VATICANO)
+    // ─────────────────────────────────────────────────────────────────────────
+    const deck: PrayerCard[] = [
+      {
+        id: 'rosario-universal-guia',
+        title: 'Santo Rosario • Guía Universal',
+        titleEn: 'Holy Rosary • Universal Guide',
+        subtitle: `Hoy: ${info.name} (${info.days})`,
+        category: 'Santo Rosario Universal',
+        isRosaryGuide: true,
+        text: `Estructura Universal del Santo Rosario según la tradición de la Iglesia:
+1. Señal de la Cruz y Credo Apostólico
+2. Padre Nuestro y 3 Ave Marías (Fe, Esperanza, Caridad)
+3. Gloria al Padre
+4. 5 Misterios del día (Padre Nuestro + 10 Ave Marías + Gloria + Jaculatoria de Fátima)
+5. La Salve, Letanías Lauretanas y Oración Conclusiva`
+      },
+      {
+        id: 'rosario-universal-cruz-credo',
+        title: '1. Señal de la Cruz y Credo',
+        titleEn: '1. Sign of the Cross and Creed',
+        subtitle: 'Inicio y Profesión de Fe',
+        category: 'Santo Rosario Universal',
+        text: `Por la señal de la Santa Cruz, de nuestros enemigos líbranos Señor, Dios nuestro. En el nombre del Padre, y del Hijo, y del Espíritu Santo. Amén.
+
+Creo en Dios, Padre Todopoderoso, Creador del cielo y de la tierra. Creo en Jesucristo, su único Hijo, Nuestro Señor, que fue concebido por obra y gracia del Espíritu Santo, nació de Santa María Virgen, padeció bajo el poder de Poncio Pilato, fue crucificado, muerto y sepultado, descendió a los infiernos, al tercer día resucitó de entre los muertos, subió a los cielos y está sentado a la derecha de Dios Padre todopoderoso. Desde allí ha de venir a juzgar a vivos y muertos.
+
+Creo en el Espíritu Santo, la santa Iglesia católica, la comunión de los santos, el perdón de los pecados, la resurrección de la carne y la vida eterna. Amén.`
+      },
+      {
+        id: 'rosario-universal-pn-tres-avemarias',
+        title: '2. Padre Nuestro y 3 Ave Marías',
+        titleEn: '2. Our Father and 3 Hail Marys',
+        subtitle: 'Virtudes Teologales: Fe, Esperanza y Caridad',
+        category: 'Santo Rosario Universal',
+        text: `Padre nuestro, que estás en el cielo, santificado sea tu Nombre...
+
+1º Por el aumento de la Fe: Dios te salve, María...
+2º Por el aumento de la Esperanza: Dios te salve, María...
+3º Por el aumento de la Caridad: Dios te salve, María...
+
+Gloria al Padre, y al Hijo, y al Espíritu Santo. Como era en el principio, ahora y siempre, por los siglos de los siglos. Amén.`
+      }
+    ];
+
+    info.mysteries.forEach((m) => {
+      deck.push({
+        id: `rosario-universal-misterio-${m.number}`,
+        title: `${m.number}º Misterio: ${m.title}`,
+        subtitle: `${info.name} • ${m.biblicalRef || ''}`,
+        category: 'Santo Rosario Universal',
+        isMysteryCard: true,
+        mysteryNumber: m.number,
+        mysteryName: m.title,
+        mysteryMeditation: m.meditation,
+        text: `MEDITACIÓN:
+${m.meditation}
+
+ORACIONES DE ESTE MISTERIO:
+• 1 Padre Nuestro
+• 10 Ave Marías (con el contador de cuentas)
+• 1 Gloria al Padre
+• Oración de Fátima:
+"Oh Jesús mío, perdona nuestros pecados, líbranos del fuego del infierno, lleva al cielo a todas las almas, especialmente a las más necesitadas de tu misericordia. Amén."`
+      });
+    });
+
+    deck.push({
+      id: 'rosario-universal-salve',
+      title: 'La Salve',
+      titleEn: 'Hail Holy Queen',
+      subtitle: 'Agradecimiento a la Virgen María',
+      category: 'Santo Rosario Universal',
+      text: `Dios te salve, Reina y Madre de misericordia, vida, dulzura y esperanza nuestra; Dios te salve. A Ti llamamos los desterrados hijos de Eva; a Ti suspiramos, gimiendo y llorando, en este valle de lágrimas. Ea, pues, Señora, abogada nuestra, vuelve a nosotros esos tus ojos misericordiosos; y después de este destierro muéstranos a Jesús, fruto bendito de tu vientre. ¡Oh clemente, oh piadosa, oh dulce Virgen María!
+
+V. Ruega por nosotros, Santa Madre de Dios.
+R. Para que seamos dignos de alcanzar las promesas de Nuestro Señor Jesucristo. Amén.`
+    });
+
+    deck.push({
+      id: 'rosario-universal-final',
+      title: 'Oración Final y Bendición',
+      titleEn: 'Concluding Prayer',
+      subtitle: 'Fin del Santo Rosario',
+      category: 'Santo Rosario Universal',
+      text: `Oremos:
+Te rogamos nos concedas, Señor Dios nuestro, gozar de continua salud de alma y cuerpo, y por la gloriosa intercesión de la bienaventurada siempre Virgen María, vernos libres de las tristezas de la vida presente y disfrutar de las eternas alegrías.
+Por Jesucristo Nuestro Señor. Amén.
+
+En el nombre del Padre, y del Hijo, y del Espíritu Santo. Amén.`
+    });
+
+    return deck;
+  }
+
+  // ───────────────────────────────────────────────────────────────────────────
+  // VARIANTE PREDETERMINADA: MEXICANA / TRADICIONAL (DEVOCIÓN POPULAR Y DIFUNTOS)
+  // ─────────────────────────────────────────────────────────────────────────
   const deck: PrayerCard[] = [
-    // 1. Guía Visual
     {
-      id: 'rosario-guia-visual',
-      title: 'Guía y Estructura del Rosario',
+      id: 'rosario-mexicana-guia',
+      title: 'Santo Rosario • Tradición Mexicana',
+      titleEn: 'Holy Rosary • Mexican Tradition',
       subtitle: `Hoy: ${info.name} (${info.days})`,
       category: 'Santo Rosario',
       isRosaryGuide: true,
-      text: `El Santo Rosario es un camino contemplativo de la vida de Jesús a través del corazón de María.
-
-Estructura del rezo:
-1. Señal de la Cruz y Credo
-2. Padre Nuestro y 3 Ave Marías (Fe, Esperanza y Caridad)
-3. Gloria al Padre
-4. 5 Misterios del día (Enunciado + Padre Nuestro + 10 Ave Marías + Gloria + Jaculatoria)
-5. La Salve, Letanías Lauretanas y Oración Final`
+      text: `Estructura del Santo Rosario en la Tradición Mexicana:
+1. Señal de la Cruz, Acto de Contrición y Ofrecimiento
+2. Credo de los Apóstoles
+3. Padre Nuestro y 3 Ave Marías Iniciales + Gloria
+4. 5 Misterios del día con jaculatorias tradicionales mexicanas
+5. Las Tres Últimas Ave Marías a las Tres Divinas Personas
+6. La Salve Regina, Letanías Lauretanas y Bajo tu Amparo`
     },
-
-    // 2. Señal de la Cruz
     {
-      id: 'rosario-cruz',
-      title: '1. Señal de la Santa Cruz',
-      subtitle: 'Inicio del Santo Rosario',
+      id: 'rosario-mexicana-cruz-contricion',
+      title: '1. Señal de la Cruz y Ofrecimiento',
+      subtitle: 'Por estos misterios santos...',
       category: 'Santo Rosario',
-      text: `Por la señal de la Santa Cruz,
-de nuestros enemigos
-líbranos Señor, Dios nuestro.
+      text: `Por la señal de la Santa Cruz, de nuestros enemigos líbranos Señor, Dios nuestro. En el nombre del Padre, y del Hijo, y del Espíritu Santo. Amén.
 
-En el nombre del Padre,
-y del Hijo,
-y del Espíritu Santo.
-Amén.`
+Ofrecimiento:
+Por estos misterios santos de que hemos hecho memoria, te pedimos, ¡oh María!, de la fe santa el aumento, la exaltación de la Iglesia, del Papa el mejor acierto, de nuestra Patria la paz y del pecador la conversión.
+
+Señor mío Jesucristo, Dios y Hombre verdadero, Creador, Padre y Redentor mío; por ser Vos quien sois, bondad infinita, me pesa de todo corazón haberte ofendido. Propongo firmemente nunca más pecar. Amén.`
     },
-
-    // 3. Credo
     {
-      id: 'rosario-credo',
+      id: 'rosario-mexicana-credo',
       title: '2. Credo de los Apóstoles',
-      subtitle: 'Profesión de nuestra Fe en la Cruz',
+      subtitle: 'Profesión de Fe en la Cruz',
       category: 'Santo Rosario',
-      text: `Creo en Dios, Padre Todopoderoso,
-Creador del cielo y de la tierra.
+      text: `Creo en Dios, Padre Todopoderoso, Creador del cielo y de la tierra.
 
-Creo en Jesucristo, su único Hijo, Nuestro Señor,
-que fue concebido por obra y gracia del Espíritu Santo,
-nació de Santa María Virgen,
-padeció bajo el poder de Poncio Pilato,
-fue crucificado, muerto y sepultado,
-descendió a los infiernos,
-al tercer día resucitó de entre los muertos,
-subió a los cielos
-y está sentado a la derecha de Dios, Padre todopoderoso.
-Desde allí ha de venir a juzgar a vivos y muertos.
+Creo en Jesucristo, su único Hijo, Nuestro Señor, que fue concebido por obra y gracia del Espíritu Santo, nació de Santa María Virgen, padeció bajo el poder de Poncio Pilato, fue crucificado, muerto y sepultado, descendió a los infiernos, al tercer día resucitó de entre los muertos, subió a los cielos y está sentado a la derecha de Dios, Padre todopoderoso. Desde allí ha de venir a juzgar a vivos y muertos.
 
-Creo en el Espíritu Santo,
-la santa Iglesia católica,
-la comunión de los santos,
-el perdón de los pecados,
-la resurrección de la carne
-y la vida eterna.
-Amén.`
+Creo en el Espíritu Santo, la santa Iglesia católica, la comunión de los santos, el perdón de los pecados, la resurrección de la carne y la vida eterna. Amén.`
     },
-
-    // 4. Padre Nuestro inicial
     {
-      id: 'rosario-pn-inicial',
-      title: '3. Padre Nuestro',
-      subtitle: 'Primera cuenta grande',
+      id: 'rosario-mexicana-pn-tres-avemarias',
+      title: '3. Padre Nuestro y 3 Ave Marías Iniciales',
+      subtitle: 'Fe, Esperanza y Caridad',
       category: 'Santo Rosario',
-      text: `Padre nuestro, que estás en el cielo,
-santificado sea tu Nombre;
-venga a nosotros tu Reino;
-hágase tu voluntad en la tierra como en el cielo.
+      text: `Padre nuestro, que estás en el cielo, santificado sea tu Nombre...
 
-Danos hoy nuestro pan de cada día;
-perdona nuestras ofensas,
-como también nosotros perdonamos a los que nos ofenden;
-no nos dejes caer en la tentación,
-y líbranos del mal.
-Amén.`
-    },
+1º Por el aumento de nuestra Fe: Dios te salve, María...
+2º Por el aumento de nuestra Esperanza: Dios te salve, María...
+3º Por el aumento de nuestra Caridad: Dios te salve, María...
 
-    // 5. Tres Ave Marías (Fe, Esperanza y Caridad)
-    {
-      id: 'rosario-tres-avemarias',
-      title: '4. Tres Ave Marías',
-      subtitle: 'Petición por el aumento de Fe, Esperanza y Caridad',
-      category: 'Santo Rosario',
-      text: `1º Por el aumento de nuestra Fe:
-Dios te salve, María, llena eres de gracia...
-
-2º Por el aumento de nuestra Esperanza:
-Dios te salve, María, llena eres de gracia...
-
-3º Por el aumento de nuestra Caridad:
-Dios te salve, María, llena eres de gracia...
-
-(Santa María, Madre de Dios, ruega por nosotros pecadores, ahora y en la hora de nuestra muerte. Amén.)`
-    },
-
-    // 6. Gloria al Padre
-    {
-      id: 'rosario-gloria-inicial',
-      title: '5. Gloria al Padre',
-      subtitle: 'Alabanza a la Santísima Trinidad',
-      category: 'Santo Rosario',
-      text: `Gloria al Padre,
-y al Hijo,
-y al Espíritu Santo.
-
-Como era en el principio,
-ahora y siempre,
-por los siglos de los siglos.
-Amén.`
+Gloria al Padre, y al Hijo, y al Espíritu Santo. Como era en el principio, ahora y siempre, por los siglos de los siglos. Amén.`
     }
   ];
 
-  // 7. Ciclo de los 5 Misterios
+  // 5 Misterios con Jaculatorias Tradicionales Mexicanas
   info.mysteries.forEach((m) => {
     deck.push({
-      id: `rosario-misterio-${m.number}`,
+      id: `rosario-mexicana-misterio-${m.number}`,
       title: `${m.number}º Misterio: ${m.title}`,
       subtitle: `${info.name} • ${m.biblicalRef || ''}`,
       category: 'Santo Rosario',
@@ -699,45 +1045,59 @@ Amén.`
       mysteryName: m.title,
       mysteryMeditation: m.meditation,
       text: `MEDITACIÓN:
-${m.meditation}
+${m.meditation} (${m.biblicalRef || ''})
 
 ORACIONES DE ESTE MISTERIO:
 • 1 Padre Nuestro
-• 10 Ave Marías (lleva la cuenta con las esferas)
+• 10 Ave Marías (cuenta interactiva)
 • 1 Gloria al Padre
-• Oración de Fátima:
-"Oh Jesús mío, perdona nuestros pecados, líbranos del fuego del infierno, lleva al cielo a todas las almas, especialmente a las más necesitadas de tu misericordia. Amén."`
+
+JACULATORIAS TRADICIONALES:
+— "María, Madre de gracia y Madre de misericordia, en la vida y en la muerte ampáranos, Gran Señora."
+— "Alabanzas y gracias sean dadas en todo momento al Santísimo y Divinísimo Sacramento del Altar. Y bendita sea por siempre la Santa e Inmaculada Concepción de la Bienaventurada Virgen María, Madre de Dios y Madre nuestra."
+— "Oh Jesús mío, perdona nuestros pecados, líbranos del fuego del infierno, lleva al cielo a todas las almas, especialmente a las más necesitadas de tu misericordia. Amén."
+— "Sagrado Corazón de Jesús, en Vos confío."`
     });
   });
 
-  // 8. La Salve
+  // Las Tres Últimas Ave Marías a las Tres Divinas Personas
   deck.push({
-    id: 'rosario-salve',
-    title: 'La Salve',
-    subtitle: 'Agradecimiento a Nuestra Madre',
+    id: 'rosario-mexicana-tres-ultimas',
+    title: 'Las Tres Últimas Ave Marías',
+    subtitle: 'A las Tres Divinas Personas',
     category: 'Santo Rosario',
-    text: `Dios te salve, Reina y Madre de misericordia,
-vida, dulzura y esperanza nuestra; Dios te salve.
+    text: `Padre Nuestro, que estás en el cielo...
 
-A Ti llamamos los desterrados hijos de Eva;
-a Ti suspiramos, gimiendo y llorando,
-en este valle de lágrimas.
+1.- Dios te salve María, Hija de Dios Padre; en Tus Manos ponemos nuestra Fe para que la ilumines; llena eres de gracia, el Señor es contigo; bendita Tú eres entre todas las mujeres, y bendito es el fruto de tu vientre, Jesús. Santa María, Madre de Dios, ruega por nosotros, pecadores, ahora y en la hora de nuestra muerte. Amén.
 
-Ea, pues, Señora, abogada nuestra,
-vuelve a nosotros esos tus ojos misericordiosos;
-y después de este destierro muéstranos a Jesús,
-fruto bendito de tu vientre.
+2.- Dios te salve María, Madre de Dios Hijo; en Tus Manos ponemos nuestra Esperanza para que la alientes; llena eres de gracia, el Señor es contigo; bendita Tú eres entre todas las mujeres, y bendito es el fruto de tu vientre, Jesús. Santa María, Madre de Dios, ruega por nosotros, pecadores, ahora y en la hora de nuestra muerte. Amén.
+
+3.- Dios te salve María, Esposa de Dios Espíritu Santo; en Tus Manos ponemos nuestra Caridad para que la inflames; llena eres de gracia, el Señor es contigo; bendita Tú eres entre todas las mujeres, y bendito es el fruto de tu vientre, Jesús. Santa María, Madre de Dios, ruega por nosotros, pecadores, ahora y en la hora de nuestra muerte. Amén.
+
+Dios te salve María; Templo, Trono y Sagrario de la Santísima Trinidad; Virgen concebida sin pecado original. ¡Dios te salve, Reina y Madre de Misericordia!...`
+  });
+
+  // La Salve
+  deck.push({
+    id: 'rosario-mexicana-salve',
+    title: 'La Salve Regina',
+    subtitle: 'Madre y Esperanza Nuestra',
+    category: 'Santo Rosario',
+    text: `Dios te salve, Reina y Madre de misericordia, vida, dulzura y esperanza nuestra; Dios te salve.
+
+A Ti llamamos los desterrados hijos de Eva; a Ti suspiramos, gimiendo y llorando, en este valle de lágrimas.
+
+Ea, pues, Señora, abogada nuestra, vuelve a nosotros esos tus ojos misericordiosos; y después de este destierro muéstranos a Jesús, fruto bendito de tu vientre.
 
 ¡Oh clemente, oh piadosa, oh dulce Virgen María!
 
 V. Ruega por nosotros, Santa Madre de Dios.
-R. Para que seamos dignos de alcanzar las promesas de Nuestro Señor Jesucristo.
-Amén.`
+R. Para que seamos dignos de alcanzar las promesas de Nuestro Señor Jesucristo. Amén.`
   });
 
-  // 9. Letanías Lauretanas
+  // Letanías Lauretanas
   deck.push({
-    id: 'rosario-letanias',
+    id: 'rosario-mexicana-letanias',
     title: 'Letanías Lauretanas',
     subtitle: 'Invocaciones a la Santísima Virgen',
     category: 'Santo Rosario',
@@ -746,17 +1106,18 @@ Cristo, ten piedad de nosotros.
 Señor, ten piedad de nosotros.
 Cristo, óyenos. / Cristo, escúchanos.
 
-Dios, Padre celestial, ten piedad de nosotros.
-Dios, Hijo, Redentor del mundo, ten piedad de nosotros.
-Dios, Espíritu Santo, ten piedad de nosotros.
-Santísima Trinidad, un solo Dios, ten piedad de nosotros.
+Dios, Padre celestial, *ten piedad de nosotros.*
+Dios, Hijo, Redentor del mundo, *ten piedad de nosotros.*
+Dios, Espíritu Santo, *ten piedad de nosotros.*
+Santísima Trinidad, un solo Dios, *ten piedad de nosotros.*
 
 Santa María, *ruega por nosotros.*
-Santa Madre de Dios, *ruega por nosotros.*
+Santa Madre de Dios,
 Santa Virgen de las Vírgenes,
 Madre de Cristo,
 Madre de la Iglesia,
 Madre de la divina gracia,
+Madre de la esperanza,
 Madre purísima,
 Madre castísima,
 Madre siempre virgen,
@@ -766,6 +1127,7 @@ Madre admirable,
 Madre del buen consejo,
 Madre del Creador,
 Madre del Salvador,
+Madre de misericordia,
 
 Virgen prudentísima,
 Virgen digna de veneración,
@@ -779,7 +1141,7 @@ Trono de la sabiduría,
 Causa de nuestra alegría,
 Vaso espiritual,
 Vaso digno de honor,
-Vaso de insigne devoción,
+Vaso insigne de devoción,
 Rosa mística,
 Torre de David,
 Torre de marfil,
@@ -789,7 +1151,8 @@ Puerta del cielo,
 Estrella de la mañana,
 Salud de los enfermos,
 Refugio de los pecadores,
-Consuelo de los afligidos,
+Consuelo de los migrantes,
+Consoladora de los afligidos,
 Auxilio de los cristianos,
 
 Reina de los Ángeles,
@@ -814,13 +1177,15 @@ Cordero de Dios, que quitas el pecado del mundo,
 ten misericordia de nosotros.`
   });
 
-  // 10. Oración Final y Cruz
+  // Bajo tu Amparo y Conclusión
   deck.push({
-    id: 'rosario-final',
-    title: 'Oración Final',
-    subtitle: 'Conclusión del Santo Rosario',
+    id: 'rosario-mexicana-final',
+    title: 'Bajo tu Amparo y Oración Final',
+    subtitle: 'Conclusión y Bendición',
     category: 'Santo Rosario',
-    text: `V. Ruega por nosotros, Santa Madre de Dios.
+    text: `Bajo tu amparo nos acogemos, Santa Madre de Dios; no deseches las súplicas que te dirigimos en nuestras necesidades, antes bien, líbranos de todo peligro, ¡oh Virgen gloriosa y bendita!
+
+V. Ruega por nosotros, Santa Madre de Dios.
 R. Para que seamos dignos de alcanzar las promesas de Nuestro Señor Jesucristo.
 
 Oremos:
@@ -828,7 +1193,8 @@ Te rogamos nos concedas, Señor Dios nuestro, gozar de continua salud de alma y 
 Por Jesucristo Nuestro Señor.
 Amén.
 
-Ave María Purísima, sin pecado concebida.
+Ave María Purísima,
+— Sin pecado concebida.
 
 En el nombre del Padre, y del Hijo, y del Espíritu Santo.
 Amén.`
