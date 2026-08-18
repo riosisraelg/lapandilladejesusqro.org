@@ -700,24 +700,22 @@ export default function Landing() {
   // Deep linking initial section
   const [initialSection, setInitialSection] = useState<string | null>(null);
 
-  // Helper to update URL without refresh
-  const setModalUrl = useCallback((modal: string | null, seccion?: string | null) => {
-    const params = new URLSearchParams(searchParams.toString());
+  // Helper to update URL with clean query parameters without page refresh
+  const setModalUrl = useCallback((
+    modal: string | null, 
+    extraParams?: { seccion?: string | null; deck?: string | null; cancion?: string | null }
+  ) => {
+    const params = new URLSearchParams();
     if (modal) {
       params.set('modal', modal);
-    } else {
-      params.delete('modal');
-      params.delete('seccion');
-    }
-    if (seccion) {
-      params.set('seccion', seccion);
-    } else if (modal) {
-      params.delete('seccion');
+      if (extraParams?.deck) params.set('deck', extraParams.deck);
+      if (extraParams?.seccion) params.set('seccion', extraParams.seccion);
+      if (extraParams?.cancion) params.set('cancion', extraParams.cancion);
     }
     const query = params.toString();
     const url = query ? `${pathname}?${query}` : pathname;
     router.replace(url, { scroll: false });
-  }, [searchParams, pathname, router]);
+  }, [pathname, router]);
 
   // Recursos Modals States
   const [showCancionero, setShowCancionero] = useState(false);
@@ -763,6 +761,7 @@ export default function Landing() {
     if (deck === 'rosario') {
       setSelectedMysteryType(getMysteryTypeForDay());
     }
+    setModalUrl('oraciones', { deck });
   };
 
   const handlePrevDeck = () => {
@@ -791,14 +790,18 @@ export default function Landing() {
   const handlePrevGuia = () => {
     const currentIdx = GUIA_SECTIONS.findIndex(s => s.id === activeGuiaTab);
     const newIdx = (currentIdx - 1 + GUIA_SECTIONS.length) % GUIA_SECTIONS.length;
-    setActiveGuiaTab(GUIA_SECTIONS[newIdx].id);
+    const newTab = GUIA_SECTIONS[newIdx].id;
+    setActiveGuiaTab(newTab);
+    setModalUrl('guia', { seccion: newTab });
     triggerHaptic('light');
   };
 
   const handleNextGuia = () => {
     const currentIdx = GUIA_SECTIONS.findIndex(s => s.id === activeGuiaTab);
     const newIdx = (currentIdx + 1) % GUIA_SECTIONS.length;
-    setActiveGuiaTab(GUIA_SECTIONS[newIdx].id);
+    const newTab = GUIA_SECTIONS[newIdx].id;
+    setActiveGuiaTab(newTab);
+    setModalUrl('guia', { seccion: newTab });
     triggerHaptic('light');
   };
 
@@ -820,10 +823,12 @@ export default function Landing() {
     }
   }, []);
 
-  // Sync state with URL
+  // Sync state with clean URL parameters
   useEffect(() => {
     const modal = searchParams.get('modal');
     const seccion = searchParams.get('seccion');
+    const deck = searchParams.get('deck');
+    const cancion = searchParams.get('cancion');
     
     // Default to closed
     setShowCancionero(false);
@@ -834,22 +839,34 @@ export default function Landing() {
 
     if (modal === 'cancionero') {
       setShowCancionero(true);
-      if (seccion) setInitialSection(seccion);
+      if (cancion) {
+        const sIdx = songs.findIndex(s => s.id.toString() === cancion);
+        if (sIdx !== -1) setActiveSongIdx(sIdx);
+      }
     } else if (modal === 'oraciones') {
       setShowOraciones(true);
+      if (deck && (deck === 'comunidad' || deck === 'basicas' || deck === 'rosario')) {
+        setActiveOracionDeck(deck);
+      }
     } else if (modal === 'guia') {
       setShowGuiaMisa(true);
+      if (seccion && GUIA_SECTIONS.some(s => s.id === seccion)) {
+        setActiveGuiaTab(seccion as any);
+      }
     } else if (modal === 'guia_misa_interactiva') {
       setShowAppleMusicGuia(true);
       if (seccion) {
         setInitialSection(seccion);
-        const idx = massResponses.findIndex(r => r.title.es.toLowerCase().replace(/\s+/g, '-') === seccion);
+        const idx = massResponses.findIndex(r => 
+          r.title.es.toLowerCase().replace(/\s+/g, '-') === seccion ||
+          r.title.en.toLowerCase().replace(/\s+/g, '-') === seccion
+        );
         if (idx !== -1) setActiveMisaSectionIdx(idx);
       }
     } else if (modal === 'confesion') {
       setShowConfesion(true);
     }
-  }, [searchParams]);
+  }, [searchParams, songs]);
   // Cancionero view states
   const [activeSongIdx, setActiveSongIdx] = useState(0);
   const [songTransition, setSongTransition] = useState<{
@@ -957,19 +974,15 @@ export default function Landing() {
   };
 
   const closeModalWithAnimation = (modalType: string) => {
-    setIsClosingModal(modalType);
     triggerHaptic('light');
+    setModalUrl(null);
+    setIsClosingModal(null);
+    
+    // Trigger the physical bounce feedback on the button that launched it
+    setBounceBtn(modalType);
     setTimeout(() => {
-      setModalUrl(null);
-      setIsClosingModal(null);
-      
-      // Trigger the physical bounce feedback on the button that launched it
-      setBounceBtn(modalType);
-      triggerHaptic('medium');
-      setTimeout(() => {
-        setBounceBtn(null);
-      }, 600);
-    }, 300);
+      setBounceBtn(null);
+    }, 400);
   };
 
   const handleOracionNav = (newIdx: number) => {
@@ -1036,7 +1049,7 @@ export default function Landing() {
       isTransitioning: true
     });
     setActiveSongIdx(wrappedIdx);
-    setModalUrl('cancionero', songs[wrappedIdx].id.toString());
+    setModalUrl('cancionero', { cancion: songs[wrappedIdx].id.toString() });
 
     setTimeout(() => {
       setSongTransition({
@@ -1054,7 +1067,8 @@ export default function Landing() {
 
     triggerHaptic('light');
     setActiveMisaSectionIdx(wrappedIdx);
-    setModalUrl('guia_misa_interactiva', massResponses[wrappedIdx].title.es.toLowerCase().replace(/\s+/g, '-'));
+    const slug = massResponses[wrappedIdx].title.es.toLowerCase().replace(/\s+/g, '-');
+    setModalUrl('guia_misa_interactiva', { seccion: slug });
   };
 
 
@@ -1331,6 +1345,27 @@ export default function Landing() {
               </div>
             </div>
 
+            {/* CARD 3 — Donaciones de la Comunidad */}
+            <div className="info-card donaciones-card anim-fadeup anim-delay-2" style={{ display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+              <div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
+                  <span style={{ fontSize: '1.4rem' }}>🕊️</span>
+                  <h3 style={{ fontSize: "1.25rem", fontWeight: 700, color: "var(--text-dark)", margin: 0 }}>Donaciones de la Comunidad</h3>
+                </div>
+                <p style={{ fontSize: "0.9rem", lineHeight: "1.55", color: "var(--text-body)", marginBottom: "1.25rem" }}>
+                  Apoya las misiones, retiros Kerigma, convivencias y apostolados juveniles de La Pandilla de Jesús.
+                </p>
+                <Link 
+                  href="/donaciones" 
+                  className="btn-ver-eventos"
+                  style={{ display: "flex", justifyContent: "center", textDecoration: "none", width: "100%" }}
+                  data-tooltip="Conocer cómo apoyar a las misiones y actividades de la comunidad"
+                >
+                  Apoyar a la Comunidad
+                </Link>
+              </div>
+            </div>
+
           </div>
 
           {/* RIGHT COLUMN — Eventos & Recursos */}
@@ -1477,7 +1512,7 @@ export default function Landing() {
               <div className="recursos-buttons-grid">
                 <button 
                   className={`recursos-btn btn-cancionero ${bounceBtn === 'cancionero' ? 'bounce-active' : ''}`} 
-                  onClick={() => { setModalUrl('cancionero'); triggerHaptic('medium'); }}
+                  onClick={() => { setModalUrl('cancionero', { cancion: songs[activeSongIdx]?.id?.toString() || '1' }); triggerHaptic('medium'); }}
                   data-tooltip="Abrir el cancionero de Horas Santas con letras de cantos"
                 >
                   <div className="recursos-icon-circle">
@@ -1488,7 +1523,7 @@ export default function Landing() {
 
                 <button 
                   className={`recursos-btn btn-oraciones ${bounceBtn === 'oraciones' ? 'bounce-active' : ''}`} 
-                  onClick={() => { setModalUrl('oraciones'); triggerHaptic('medium'); }}
+                  onClick={() => { setModalUrl('oraciones', { deck: activeOracionDeck }); triggerHaptic('medium'); }}
                   data-tooltip="Abrir el tarjetero interactivo de oraciones diarias y comunitarias"
                 >
                   <div className="recursos-icon-circle">
@@ -1503,7 +1538,7 @@ export default function Landing() {
 
                 <button 
                   className={`recursos-btn btn-guia ${bounceBtn === 'guia' ? 'bounce-active' : ''}`} 
-                  onClick={() => { setModalUrl('guia'); triggerHaptic('medium'); }}
+                  onClick={() => { setModalUrl('guia', { seccion: activeGuiaTab }); triggerHaptic('medium'); }}
                   data-tooltip="Abrir Guía de Misa para principiantes"
                 >
                   <div className="recursos-icon-circle">
@@ -1740,32 +1775,31 @@ export default function Landing() {
         isClosing={isClosingModal === 'oraciones'}
         onClose={() => closeModalWithAnimation('oraciones')}
       >
-        {/* Compact Deck Switcher Bar with Arrow Buttons */}
+        {/* Compact & Intelligent Pill Switcher */}
         <div className="oracion-deck-switcher-bar">
           <button 
             type="button"
             className="deck-switch-arrow-btn"
             onClick={handlePrevDeck}
             aria-label="Mazo anterior"
+            title="Mazo anterior"
           >
             ◀
           </button>
           <div className="deck-switch-info">
-            <div className="deck-switch-header-top">
-              <span className="deck-switch-badge">Mazo {DECKS_ORDER.indexOf(activeOracionDeck) + 1} de {DECKS_ORDER.length}</span>
-              <span className="mobile-counter-badge">{activeOracionIdx + 1} de {currentOracionesList.length}</span>
-            </div>
-            <h3 className="deck-switch-title">
+            <span className="deck-switch-badge">Mazo {DECKS_ORDER.indexOf(activeOracionDeck) + 1}/3</span>
+            <span className="deck-switch-title">
               {activeOracionDeck === 'comunidad' && "Oraciones de la Comunidad"}
               {activeOracionDeck === 'basicas' && "Oraciones Básicas"}
               {activeOracionDeck === 'rosario' && `Santo Rosario (${MISTERIOS_DATA[selectedMysteryType].name})`}
-            </h3>
+            </span>
           </div>
           <button 
             type="button"
             className="deck-switch-arrow-btn"
             onClick={handleNextDeck}
             aria-label="Siguiente mazo"
+            title="Siguiente mazo"
           >
             ▶
           </button>
@@ -1887,29 +1921,29 @@ export default function Landing() {
         onClose={() => closeModalWithAnimation('guia')}
         style={{ maxWidth: '650px' }}
       >
-        {/* Compact Guía Switcher Bar with Arrow Buttons */}
+        {/* Compact & Intelligent Pill Switcher */}
         <div className="oracion-deck-switcher-bar">
           <button 
             type="button"
             className="deck-switch-arrow-btn"
             onClick={handlePrevGuia}
             aria-label="Sección anterior"
+            title="Sección anterior"
           >
             ◀
           </button>
           <div className="deck-switch-info">
-            <div className="deck-switch-header-top">
-              <span className="deck-switch-badge">Sección {GUIA_SECTIONS.findIndex(s => s.id === activeGuiaTab) + 1} de {GUIA_SECTIONS.length}</span>
-            </div>
-            <h3 className="deck-switch-title">
+            <span className="deck-switch-badge">Sección {GUIA_SECTIONS.findIndex(s => s.id === activeGuiaTab) + 1}/5</span>
+            <span className="deck-switch-title">
               {GUIA_SECTIONS.find(s => s.id === activeGuiaTab)?.title}
-            </h3>
+            </span>
           </div>
           <button 
             type="button"
             className="deck-switch-arrow-btn"
             onClick={handleNextGuia}
             aria-label="Siguiente sección"
+            title="Siguiente sección"
           >
             ▶
           </button>
@@ -1926,7 +1960,10 @@ export default function Landing() {
                 type="button"
                 className="recursos-btn btn-guia"
                 style={{ margin: '0 auto', maxWidth: '320px', display: 'inline-flex', padding: '1rem 1.75rem', justifyContent: 'center', fontSize: '0.95rem' }}
-                onClick={() => setModalUrl('guia_misa_interactiva')}
+                onClick={() => {
+                  const slug = massResponses[activeMisaSectionIdx]?.title?.es?.toLowerCase().replace(/\s+/g, '-') || 'introductory-rites';
+                  setModalUrl('guia_misa_interactiva', { seccion: slug });
+                }}
               >
                 Abrir Modo Interactivo (Lyrics) ▶
               </button>
@@ -2278,7 +2315,7 @@ export default function Landing() {
           onClose={() => setModalUrl(null)}
           onPrev={() => handleMisaNav(activeMisaSectionIdx - 1)}
           onNext={() => handleMisaNav(activeMisaSectionIdx + 1)}
-          onSectionChange={(sectionName) => setModalUrl('guia_misa_interactiva', sectionName.toLowerCase().replace(/\s+/g, '-'))}
+          onSectionChange={(sectionName) => setModalUrl('guia_misa_interactiva', { seccion: sectionName.toLowerCase().replace(/\s+/g, '-') })}
           initialSection={initialSection}
           lines={[
             { text: `---SECTION---${massResponses[activeMisaSectionIdx].title[guiaLang]}` },
