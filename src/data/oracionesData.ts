@@ -11,6 +11,7 @@ export interface PrayerCard {
   text: string;
   textEn?: string;
   isRosaryGuide?: boolean;
+  isConfigCard?: boolean;
   isMysteryCard?: boolean;
   mysteryNumber?: number;
   mysteryName?: string;
@@ -642,6 +643,7 @@ export function getSantoRosarioDeck(manualType?: MysteryType, variant: RosaryVar
         subtitle: `Hoy: ${info.name}`,
         category: 'Santo Rosario Misionero',
         isRosaryGuide: true,
+        isConfigCard: true,
         text: `El Rosario Misionero es una oración universal que abraza a toda la humanidad a través de los 5 colores simbólicos:
 
 🟢 1er Misterio: Verde por África (selvas y fe naciente)
@@ -786,6 +788,7 @@ En el nombre del Padre, y del Hijo, y del Espíritu Santo. Amén.`
         subtitle: `Hodie: ${latinInfo.name}`,
         category: 'Rosarium Latine',
         isRosaryGuide: true,
+        isConfigCard: true,
         text: `Rosarium est oratio contemplativa Christi mysteriorum cum Maria Virgine.
 
 Ordo orationis:
@@ -891,6 +894,7 @@ In nomine Patris, et Filii, et Spiritus Sancti. Amen.`
         subtitle: `Hoy: ${info.name} (${info.days})`,
         category: 'Santo Rosario Universal',
         isRosaryGuide: true,
+        isConfigCard: true,
         text: `Estructura Universal del Santo Rosario según la tradición de la Iglesia:
 1. Señal de la Cruz y Credo Apostólico
 2. Padre Nuestro y 3 Ave Marías (Fe, Esperanza, Caridad)
@@ -987,6 +991,7 @@ En el nombre del Padre, y del Hijo, y del Espíritu Santo. Amén.`
       subtitle: `Hoy: ${info.name} (${info.days})`,
       category: 'Santo Rosario',
       isRosaryGuide: true,
+      isConfigCard: true,
       text: `Estructura del Santo Rosario en la Tradición Mexicana:
 1. Señal de la Cruz, Acto de Contrición y Ofrecimiento
 2. Credo de los Apóstoles
