@@ -36,44 +36,6 @@ export interface MysteryInfo {
 // ─────────────────────────────────────────────────────────────────────────────
 export const oracionesComunidad: PrayerCard[] = [
   {
-    id: 'comunidad-angelus',
-    title: "El Ángelus",
-    titleEn: "The Angelus",
-    category: "Comunidad",
-    text: `V. El Ángel del Señor anunció a María.
-R. Y concibió por obra del Espíritu Santo.
-(Dios te salve, María...)
-
-V. He aquí la esclava del Señor.
-R. Hágase en mí según tu palabra.
-(Dios te salve, María...)
-
-V. Y el Verbo se hizo carne.
-R. Y habitó entre nosotros.
-(Dios te salve, María...)
-
-V. Ruega por nosotros, Santa Madre de Dios.
-R. Para que seamos dignos de alcanzar las promesas de Nuestro Señor Jesucristo.
-
-Oremos: Derrama, Señor, tu gracia sobre nosotros, que, por el anuncio del Ángel, hemos conocido la encarnación de tu Hijo, para que lleguemos, por su pasión y su cruz, a la gloria de la resurrección. Por Jesucristo Nuestro Señor. Amén.`,
-    textEn: `V. The Angel of the Lord declared to Mary:
-R. And she conceived of the Holy Spirit.
-(Hail Mary...)
-
-V. Behold the handmaid of the Lord:
-R. Be it done unto me according to Thy word.
-(Hail Mary...)
-
-V. And the Word was made Flesh:
-R. And dwelt among us.
-(Hail Mary...)
-
-V. Pray for us, O Holy Mother of God,
-R. that we may be made worthy of the promises of Christ.
-
-Let us pray: Pour forth, we beseech Thee, O Lord, Thy grace into our hearts; that we, to whom the incarnation of Christ, Thy Son, was made known by the message of an angel, may by His Passion and Cross be brought to the glory of His Resurrection, through the same Christ Our Lord. Amen.`
-  },
-  {
     id: 'comunidad-pandilla',
     title: "Oración de la Pandilla de Jesús",
     category: "Comunidad",
