@@ -238,24 +238,44 @@ export default function AppleMusicLyrics({
       <div className="lyric-modal-backdrop" style={combinedStyle} />
       
       <div className="lyric-header">
-        <div>
+        <div className="lyric-header-title-wrap">
           <h3 className="lyric-title">{title}</h3>
-          {subtitle && <p style={{ fontSize: '0.8rem', opacity: 0.8 }}>{subtitle}</p>}
+          {subtitle && <p className="lyric-subtitle">{subtitle}</p>}
         </div>
-        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', position: 'relative', zIndex: 10 }}>
+        <div className="lyric-header-actions">
           {langToggle}
           {(onPrev || onNext) && (
-            <div style={{ display: 'flex', gap: '0.5rem' }}>
-              {onPrev && <button onClick={onPrev} className="lang-toggle-btn">◀</button>}
-              {onNext && <button onClick={onNext} className="lang-toggle-btn">▶</button>}
+            <div className="lyric-nav-arrows">
+              {onPrev && (
+                <button 
+                  type="button" 
+                  onClick={onPrev} 
+                  className="lang-toggle-btn"
+                  aria-label="Anterior"
+                  title="Anterior"
+                >
+                  ◀
+                </button>
+              )}
+              {onNext && (
+                <button 
+                  type="button" 
+                  onClick={onNext} 
+                  className="lang-toggle-btn"
+                  aria-label="Siguiente"
+                  title="Siguiente"
+                >
+                  ▶
+                </button>
+              )}
             </div>
           )}
           <button 
             type="button"
             className="apple-music-close-btn" 
-            onClick={(e) => { e.stopPropagation(); onClose(); }}
-            onTouchEnd={(e) => { e.stopPropagation(); onClose(); }}
-            aria-label="Cerrar"
+            onClick={onClose}
+            aria-label="Cerrar letras"
+            title="Cerrar"
           >
             ✕
           </button>
