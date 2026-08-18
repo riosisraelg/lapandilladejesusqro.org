@@ -372,6 +372,42 @@ export default function Calendario() {
         <ul className="nav-links">
           <li><Link href="/">Inicio</Link></li>
           <li>
+            <a 
+              href="https://instagram.com/lapandilladejesusqro" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="nav-social-icon-link"
+              aria-label="Instagram"
+              title="Instagram: @lapandilladejesusqro"
+            >
+              <InstagramIcon size={17} />
+            </a>
+          </li>
+          <li>
+            <a 
+              href="https://threads.net/@lapandilladejesusqro" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="nav-social-icon-link"
+              aria-label="Threads"
+              title="Threads: @lapandilladejesusqro"
+            >
+              <ThreadsIcon size={17} />
+            </a>
+          </li>
+          <li>
+            <a 
+              href="https://facebook.com/lapandilladejesusqro" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="nav-social-icon-link"
+              aria-label="Facebook"
+              title="Facebook: @lapandilladejesusqro"
+            >
+              <FacebookIcon size={17} />
+            </a>
+          </li>
+          <li>
             <a href="https://wa.me/5214422497485" target="_blank" rel="noopener noreferrer" className="nav-cta-wa" data-tooltip="Escríbenos por WhatsApp para unirte o resolver tus dudas">
               <WhatsAppIcon size={16} /> WhatsApp
             </a>
@@ -394,6 +430,18 @@ export default function Calendario() {
         <div className={`nav-mobile-overlay ${mobileMenuOpen ? "open" : ""}`}>
           <ul className="nav-mobile-links">
             <li><Link href="/" onClick={() => setMobileMenuOpen(false)}>Inicio</Link></li>
+            <li><Link href="/donaciones" onClick={() => setMobileMenuOpen(false)}>Donaciones</Link></li>
+            <li className="nav-mobile-social-row">
+              <a href="https://instagram.com/lapandilladejesusqro" target="_blank" rel="noopener noreferrer" className="nav-mobile-social-icon" title="Instagram">
+                <InstagramIcon size={18} />
+              </a>
+              <a href="https://threads.net/@lapandilladejesusqro" target="_blank" rel="noopener noreferrer" className="nav-mobile-social-icon" title="Threads">
+                <ThreadsIcon size={18} />
+              </a>
+              <a href="https://facebook.com/lapandilladejesusqro" target="_blank" rel="noopener noreferrer" className="nav-mobile-social-icon" title="Facebook">
+                <FacebookIcon size={18} />
+              </a>
+            </li>
             <li>
               <a 
                 href="https://wa.me/5214422497485" 

@@ -127,6 +127,23 @@ body.landing-body {
   color: var(--gold);
 }
 
+.nav-social-icon-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  color: var(--text-body);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.nav-social-icon-link:hover {
+  color: var(--gold);
+  transform: translateY(-2px);
+  background: rgba(197, 148, 78, 0.08);
+}
+
 .nav-cta-wa {
   display: inline-flex;
   align-items: center;
@@ -226,6 +243,33 @@ body.landing-body {
 
 .nav-mobile-links a:hover {
   color: var(--gold);
+}
+
+.nav-mobile-social-row {
+  display: flex;
+  gap: 1.25rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-mobile-social-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--cream);
+  border: 1px solid var(--border-subtle);
+  color: var(--coffee);
+  transition: all 0.25s ease;
+}
+
+.nav-mobile-social-icon:hover {
+  background: var(--gold);
+  color: var(--white);
+  border-color: var(--gold);
+  transform: translateY(-2px);
 }
 
 .nav-mobile-cta-wa {
@@ -637,6 +681,38 @@ body.landing-body {
 .dynamic-buttons-row:hover .dynamic-btn:not(:hover) {
   flex: 0.8;
   opacity: 0.85;
+}
+
+.dashboard-social-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.dashboard-social-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: var(--white);
+  border: 1px solid var(--border-subtle);
+  color: var(--coffee);
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 1px 2px rgba(45, 27, 14, 0.03);
+}
+
+.dashboard-social-chip:hover {
+  background: var(--coffee);
+  color: var(--white);
+  border-color: var(--coffee);
+  transform: translateY(-1.5px);
+  box-shadow: 0 3px 8px rgba(45, 27, 14, 0.1);
 }
 
 /* ── CENTRO DE EVENTOS (Calendar page) ──── */
