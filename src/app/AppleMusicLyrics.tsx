@@ -39,33 +39,89 @@ interface PaletteDef {
 }
 
 const DAY_PALETTES: PaletteDef[] = [
-  // Warm sand/amber
-  { hues: [35, 45, 20], sat: [40, 50], light: [55, 65] },
-  // Ocean teal
-  { hues: [175, 190, 160], sat: [35, 45], light: [50, 60] },
-  // Coral sunset
-  { hues: [15, 5, 25], sat: [55, 65], light: [60, 70] },
-  // Forest green
-  { hues: [130, 145, 115], sat: [30, 40], light: [45, 55] },
-  // Rose gold
-  { hues: [350, 10, 340], sat: [40, 50], light: [60, 68] },
-  // Sky blue
-  { hues: [210, 220, 200], sat: [45, 55], light: [55, 65] },
+  // 1. Arena Cálida & Ámbar
+  { hues: [38, 48, 24], sat: [40, 50], light: [55, 65] },
+  // 2. Bracero de Terracota
+  { hues: [18, 28, 12], sat: [50, 60], light: [58, 68] },
+  // 3. Miel de Alba
+  { hues: [44, 54, 32], sat: [45, 55], light: [60, 70] },
+  // 4. Atardecer Coral
+  { hues: [12, 4, 22], sat: [55, 65], light: [62, 72] },
+  // 5. Rosa Aurora
+  { hues: [352, 6, 342], sat: [42, 52], light: [60, 70] },
+  // 6. Olivares al Sol
+  { hues: [82, 94, 70], sat: [35, 45], light: [52, 62] },
+  // 7. Jardín de Salvia
+  { hues: [118, 130, 105], sat: [30, 40], light: [54, 64] },
+  // 8. Esmeralda Matutina
+  { hues: [145, 160, 130], sat: [35, 45], light: [48, 58] },
+  // 9. Brisa de Mar Turquesa
+  { hues: [175, 190, 162], sat: [40, 50], light: [52, 62] },
+  // 10. Laguna Caribeña
+  { hues: [182, 198, 170], sat: [45, 55], light: [54, 64] },
+  // 11. Cielo Cerúleo
+  { hues: [205, 218, 195], sat: [42, 52], light: [56, 66] },
+  // 12. Azul Océano Pacífico
+  { hues: [215, 228, 202], sat: [40, 50], light: [52, 62] },
+  // 13. Zafiro Mediterráneo
+  { hues: [222, 235, 210], sat: [45, 55], light: [50, 60] },
+  // 14. Caramelo & Vainilla
+  { hues: [32, 42, 22], sat: [48, 58], light: [58, 68] },
+  // 15. Canela & Cedro
+  { hues: [24, 34, 16], sat: [42, 52], light: [56, 66] },
+  // 16. Oro Imperial
+  { hues: [48, 58, 38], sat: [50, 60], light: [60, 70] },
+  // 17. Cobre Radiante
+  { hues: [16, 26, 8], sat: [52, 62], light: [58, 68] },
+  // 18. Prado Primaveral
+  { hues: [132, 146, 120], sat: [38, 48], light: [50, 60] },
+  // 19. Papiro & Lino
+  { hues: [42, 50, 30], sat: [32, 42], light: [62, 72] },
+  // 20. Manantial Glaciar
+  { hues: [195, 208, 185], sat: [38, 48], light: [58, 68] },
 ];
 
 const NIGHT_PALETTES: PaletteDef[] = [
-  // Deep amber/coffee
-  { hues: [25, 35, 15], sat: [35, 50], light: [18, 28] },
-  // Midnight teal
-  { hues: [180, 195, 170], sat: [25, 40], light: [15, 25] },
-  // Dark cherry
-  { hues: [350, 5, 340], sat: [30, 45], light: [15, 25] },
-  // Deep emerald
-  { hues: [140, 155, 125], sat: [25, 35], light: [12, 22] },
-  // Charcoal blue
-  { hues: [215, 225, 205], sat: [20, 35], light: [12, 22] },
-  // Dark bronze
-  { hues: [30, 40, 20], sat: [40, 55], light: [14, 24] },
+  // 1. Espresso & Brasas
+  { hues: [24, 34, 14], sat: [35, 50], light: [16, 26] },
+  // 2. Obsidiana & Oro Antiguo
+  { hues: [40, 50, 28], sat: [38, 52], light: [14, 24] },
+  // 3. Cedro Ahumado
+  { hues: [18, 28, 10], sat: [32, 46], light: [15, 25] },
+  // 4. Cereza Negra & Caoba
+  { hues: [348, 2, 338], sat: [30, 45], light: [14, 24] },
+  // 5. Esmeralda Abisal
+  { hues: [142, 156, 128], sat: [28, 40], light: [12, 22] },
+  // 6. Pino Nocturno
+  { hues: [154, 168, 140], sat: [26, 38], light: [13, 23] },
+  // 7. Turquesa de Medianoche
+  { hues: [178, 192, 165], sat: [30, 44], light: [14, 24] },
+  // 8. Fosa Oceánica
+  { hues: [186, 200, 172], sat: [32, 46], light: [12, 22] },
+  // 9. Zafiro Nocturno
+  { hues: [216, 228, 204], sat: [30, 44], light: [12, 22] },
+  // 10. Pizarra & Carbón Azul
+  { hues: [208, 220, 196], sat: [24, 36], light: [13, 23] },
+  // 11. Cobalto Profundo
+  { hues: [224, 236, 212], sat: [32, 45], light: [12, 22] },
+  // 12. Bronce Sagrado
+  { hues: [34, 44, 22], sat: [40, 55], light: [15, 25] },
+  // 13. Cacao & Canela Oscura
+  { hues: [26, 36, 16], sat: [36, 48], light: [14, 24] },
+  // 14. Selva en Tinieblas
+  { hues: [136, 150, 122], sat: [25, 38], light: [12, 22] },
+  // 15. Musgo Umbrío
+  { hues: [88, 100, 76], sat: [26, 38], light: [13, 23] },
+  // 16. Basalto Volcánico & Rubí
+  { hues: [354, 8, 344], sat: [34, 48], light: [13, 23] },
+  // 17. Cobre Ancestral
+  { hues: [14, 24, 6], sat: [38, 52], light: [15, 25] },
+  // 18. Arrecife Abisal
+  { hues: [170, 184, 158], sat: [28, 42], light: [13, 23] },
+  // 19. Noche Polar Ártica
+  { hues: [198, 212, 186], sat: [26, 40], light: [13, 23] },
+  // 20. Índigo Profundo & Ocre
+  { hues: [230, 240, 36], sat: [30, 45], light: [12, 22] },
 ];
 
 function generateGradientColors(): string[] {
