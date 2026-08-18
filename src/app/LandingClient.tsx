@@ -1909,58 +1909,6 @@ export default function Landing() {
           </button>
         </div>
 
-        {/* Sub-selectors for Rosary: Variants and Mystery Types */}
-        {activeOracionDeck === 'rosario' && (
-          <div className="rosario-sub-selectors">
-            {/* Variant Selector Pills */}
-            <div className="rosario-pill-group">
-              <span className="rosario-pill-label">{activeLang === 'en' ? 'Style:' : 'Variante:'}</span>
-              {(['mexicana', 'misionera', 'universal', 'latin'] as RosaryVariant[]).map((v) => {
-                const labels: Record<RosaryVariant, string> = {
-                  mexicana: '🇲🇽 Tradicional',
-                  misionera: '🌍 Misionero',
-                  universal: '🇻🇦 Universal',
-                  latin: '🏛️ Latín'
-                };
-                return (
-                  <button
-                    key={v}
-                    type="button"
-                    className={`rosario-selector-pill ${selectedRosaryVariant === v ? 'active' : ''}`}
-                    onClick={() => handleSwitchRosaryVariant(v)}
-                  >
-                    {labels[v]}
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* Mystery Selector Pills */}
-            <div className="rosario-pill-group">
-              <span className="rosario-pill-label">{activeLang === 'en' ? 'Mystery:' : 'Misterio:'}</span>
-              {(['gozosos', 'luminosos', 'dolorosos', 'gloriosos'] as MysteryType[]).map((mType) => {
-                const isToday = getMysteryTypeForDay() === mType;
-                const mLabels: Record<MysteryType, string> = {
-                  gozosos: activeLang === 'en' ? 'Joyful' : 'Gozosos',
-                  luminosos: activeLang === 'en' ? 'Luminous' : 'Luminosos',
-                  dolorosos: activeLang === 'en' ? 'Sorrowful' : 'Dolorosos',
-                  gloriosos: activeLang === 'en' ? 'Glorious' : 'Gloriosos'
-                };
-                return (
-                  <button
-                    key={mType}
-                    type="button"
-                    className={`rosario-selector-pill ${selectedMysteryType === mType ? 'active' : ''}`}
-                    onClick={() => handleSwitchMystery(mType)}
-                  >
-                    {mLabels[mType]} {isToday ? (activeLang === 'en' ? '• Today' : '• Hoy') : ''}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        )}
-
         <div className="recursos-modal-body">
           <div className="stacked-deck-container">
             {currentOracionesList.map((oracion, idx) => {
@@ -2010,41 +1958,149 @@ export default function Landing() {
                   <h4>{oracion.titleEn && activeLang === 'en' ? oracion.titleEn : oracion.title}</h4>
                   {oracion.subtitle && <p className="song-artist">{oracion.subtitle}</p>}
                   
-                  {/* Visual Guide Rosary Diagram Card */}
-                  {oracion.isRosaryGuide && <RosaryVisualDiagram />}
+                  {oracion.isConfigCard ? (
+                    <div className="rosario-config-box" onClick={(e) => e.stopPropagation()}>
+                      {/* Section 1: Selector de Versión / Estilo */}
+                      <div className="rosario-config-section">
+                        <div className="rosario-config-heading">
+                          <span className="rosario-config-step">1</span>
+                          <span className="rosario-config-label">
+                            {activeLang === 'en' ? 'Choose Rosary Version:' : 'Elige la Variante del Rosario:'}
+                          </span>
+                        </div>
+                        <div className="rosario-variant-cards-grid">
+                          {(['mexicana', 'misionera', 'universal', 'latin'] as RosaryVariant[]).map((v) => {
+                            const variantMeta: Record<RosaryVariant, { title: string; subtitle: string; icon: string }> = {
+                              mexicana: { 
+                                title: activeLang === 'en' ? 'Mexican Tradition' : 'Tradición Mexicana', 
+                                subtitle: activeLang === 'en' ? 'Popular Devotion & Faithful Departed' : 'Devoción Popular y Difuntos',
+                                icon: '🇲🇽'
+                              },
+                              misionera: { 
+                                title: activeLang === 'en' ? 'Missionary Rosary' : 'Rosario Misionero', 
+                                subtitle: activeLang === 'en' ? '5 Continents for World Evangelization' : '5 Continentes por las Misiones',
+                                icon: '🌍'
+                              },
+                              universal: { 
+                                title: activeLang === 'en' ? 'Universal Roman' : 'Universal / Romano', 
+                                subtitle: activeLang === 'en' ? 'Standard Catholic Church Structure' : 'Estructura Canónica Estándar',
+                                icon: '🇻🇦'
+                              },
+                              latin: { 
+                                title: activeLang === 'en' ? 'Traditional Latin' : 'Latín Clásico', 
+                                subtitle: activeLang === 'en' ? 'Rosarium Virginis Mariae in Latine' : 'Rosarium Virginis Mariae',
+                                icon: '🏛️'
+                              }
+                            };
+                            const meta = variantMeta[v];
+                            const isSelected = selectedRosaryVariant === v;
 
-                  {/* Decade Beads Interactive Tracker for Rosary Mysteries */}
-                  {oracion.isMysteryCard && (
-                    <div className="rosario-beads-container" onClick={(e) => e.stopPropagation()}>
-                      <div className="rosario-beads-title">{activeLang === 'en' ? 'Decade: 10 Hail Marys' : 'Decena: 10 Ave Marías'}</div>
-                      <div className="rosario-beads-row">
-                        {Array.from({ length: 10 }).map((_, bIdx) => {
-                          const isDone = bIdx < decadeBeadsCount;
-                          return (
-                            <button
-                              key={bIdx}
-                              type="button"
-                              className={`rosario-bead ${isDone ? 'completed' : ''}`}
-                              onClick={() => {
-                                setDecadeBeadsCount(bIdx + 1 === decadeBeadsCount ? bIdx : bIdx + 1);
-                                triggerHaptic('light');
-                              }}
-                              title={`Ave María ${bIdx + 1}`}
-                            >
-                              {bIdx + 1}
-                            </button>
-                          );
-                        })}
+                            return (
+                              <button
+                                key={v}
+                                type="button"
+                                className={`rosario-variant-card-btn ${isSelected ? 'selected' : ''}`}
+                                onClick={() => handleSwitchRosaryVariant(v)}
+                              >
+                                <div className="rosario-variant-icon">{meta.icon}</div>
+                                <div className="rosario-variant-text-wrap">
+                                  <div className="rosario-variant-btn-title">{meta.title}</div>
+                                  <div className="rosario-variant-btn-sub">{meta.subtitle}</div>
+                                </div>
+                                {isSelected && <div className="rosario-variant-check">✓</div>}
+                              </button>
+                            );
+                          })}
+                        </div>
                       </div>
-                      <span className="rosario-bead-counter-text">
-                        {activeLang === 'en' ? `${decadeBeadsCount} of 10 prayed` : `${decadeBeadsCount} de 10 rezadas`}
-                      </span>
-                    </div>
-                  )}
 
-                  <div className="oracion-card-body-text" style={{ whiteSpace: 'pre-wrap' }}>
-                    {(oracion.textEn && activeLang === 'en' ? oracion.textEn : oracion.text)}
-                  </div>
+                      {/* Section 2: Selector de Misterio (con selección inteligente del día) */}
+                      <div className="rosario-config-section">
+                        <div className="rosario-config-heading">
+                          <span className="rosario-config-step">2</span>
+                          <span className="rosario-config-label">
+                            {activeLang === 'en' ? 'Mystery of the Day (Auto-Selected):' : 'Misterio del Día (Selección Inteligente):'}
+                          </span>
+                        </div>
+                        <div className="rosario-mystery-chips-row">
+                          {(['gozosos', 'luminosos', 'dolorosos', 'gloriosos'] as MysteryType[]).map((mType) => {
+                            const isToday = getMysteryTypeForDay() === mType;
+                            const isSelected = selectedMysteryType === mType;
+                            const mLabels: Record<MysteryType, { name: string; days: string }> = {
+                              gozosos: { name: activeLang === 'en' ? 'Joyful' : 'Gozosos', days: 'Lun / Sáb' },
+                              luminosos: { name: activeLang === 'en' ? 'Luminous' : 'Luminosos', days: 'Jue' },
+                              dolorosos: { name: activeLang === 'en' ? 'Sorrowful' : 'Dolorosos', days: 'Mar / Vie' },
+                              gloriosos: { name: activeLang === 'en' ? 'Glorious' : 'Gloriosos', days: 'Mié / Dom' }
+                            };
+                            const meta = mLabels[mType];
+
+                            return (
+                              <button
+                                key={mType}
+                                type="button"
+                                className={`rosario-mystery-chip-btn ${isSelected ? 'selected' : ''} ${isToday ? 'today-highlight' : ''}`}
+                                onClick={() => handleSwitchMystery(mType)}
+                              >
+                                <span className="mystery-chip-title">{meta.name}</span>
+                                <span className="mystery-chip-sub">{isToday ? (activeLang === 'en' ? '★ Today' : '★ Hoy') : meta.days}</span>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                      {/* Section 3: Botón de Acción Principal para Iniciar */}
+                      <button
+                        type="button"
+                        className="rosario-start-prayer-btn"
+                        onClick={() => {
+                          triggerHaptic('medium');
+                          handleOracionNav(1);
+                        }}
+                      >
+                        <span>{activeLang === 'en' ? 'Start Praying Rosary' : 'Comenzar Santo Rosario'}</span>
+                        <span style={{ fontSize: '1.1rem' }}>▶</span>
+                      </button>
+                    </div>
+                  ) : (
+                    <>
+                      {/* Visual Guide Rosary Diagram Card */}
+                      {oracion.isRosaryGuide && <RosaryVisualDiagram />}
+
+                      {/* Decade Beads Interactive Tracker for Rosary Mysteries */}
+                      {oracion.isMysteryCard && (
+                        <div className="rosario-beads-container" onClick={(e) => e.stopPropagation()}>
+                          <div className="rosario-beads-title">{activeLang === 'en' ? 'Decade: 10 Hail Marys' : 'Decena: 10 Ave Marías'}</div>
+                          <div className="rosario-beads-row">
+                            {Array.from({ length: 10 }).map((_, bIdx) => {
+                              const isDone = bIdx < decadeBeadsCount;
+                              return (
+                                <button
+                                  key={bIdx}
+                                  type="button"
+                                  className={`rosario-bead ${isDone ? 'completed' : ''}`}
+                                  onClick={() => {
+                                    setDecadeBeadsCount(bIdx + 1 === decadeBeadsCount ? bIdx : bIdx + 1);
+                                    triggerHaptic('light');
+                                  }}
+                                  title={`Ave María ${bIdx + 1}`}
+                                >
+                                  {bIdx + 1}
+                                </button>
+                              );
+                            })}
+                          </div>
+                          <span className="rosario-bead-counter-text">
+                            {activeLang === 'en' ? `${decadeBeadsCount} of 10 prayed` : `${decadeBeadsCount} de 10 rezadas`}
+                          </span>
+                        </div>
+                      )}
+
+                      <div className="oracion-card-body-text" style={{ whiteSpace: 'pre-wrap' }}>
+                        {(oracion.textEn && activeLang === 'en' ? oracion.textEn : oracion.text)}
+                      </div>
+                    </>
+                  )}
                 </div>
               );
             })}
