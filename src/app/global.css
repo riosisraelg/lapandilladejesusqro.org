@@ -40,9 +40,22 @@ body.landing-body {
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
 
+@keyframes gradientBgAnimation {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
 body.landing-body {
-  
-  background: var(--cream);
+  background: linear-gradient(
+    -45deg, 
+    var(--cream), 
+    var(--beige), 
+    #e3d8c5,
+    #f0e9d8
+  );
+  background-size: 400% 400%;
+  animation: gradientBgAnimation 25s ease infinite;
   color: var(--text-body);
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
@@ -2032,6 +2045,13 @@ body.modal-open [data-tooltip]::after {
   background: #735948;
 }
 
+.btn-confesion {
+  background: #0f172a; /* Deep slate blue for high accessibility contrast */
+}
+.btn-confesion:hover {
+  background: #020617;
+}
+
 /* Modals layout */
 .recursos-modal-card {
   background: var(--white);
@@ -2522,8 +2542,8 @@ body.modal-open [data-tooltip]::after {
   }
 
   .recursos-modal-card.modal-large {
-    height: 95dvh; /* Exactly 95% dynamic height */
-    max-height: 95dvh;
+    height: calc(100dvh - 2rem); /* Occupy full space minus top gap */
+    max-height: calc(100dvh - 2rem);
     width: 100%;
     max-width: 100%;
     border-radius: 24px 24px 0 0; /* Rounded top, flat bottom */
@@ -2633,8 +2653,12 @@ body.modal-open [data-tooltip]::after {
 .lyric-modal-backdrop {
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
-  background: radial-gradient(circle at 50% 50%, rgba(107,76,138,0.8), rgba(92,61,46,0.9), #1a1a1a);
-  background-size: 200% 200%;
+  background: radial-gradient(circle at 30% 30%, 
+    var(--gradient-c1, hsl(30, 40%, 20%)),
+    var(--gradient-c2, hsl(40, 35%, 25%)),
+    var(--gradient-c3, hsl(20, 30%, 15%))
+  );
+  background-size: 300% 300%;
   animation: gradientShift 15s ease infinite;
   z-index: -1;
   border-radius: inherit;
@@ -2660,7 +2684,10 @@ body.modal-open [data-tooltip]::after {
 .lyric-scroll-container {
   height: 100%;
   overflow-y: auto;
-  padding: 50vh 1.5rem; /* Huge padding to allow first and last line to center */
+  padding: 2rem 1.5rem 50vh;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none;  /* IE and Edge */
   scroll-behavior: smooth;
@@ -2691,6 +2718,11 @@ body.modal-open [data-tooltip]::after {
   color: rgba(255, 255, 255, 1);
   transform: scale(1);
   text-shadow: 0 4px 20px rgba(0,0,0,0.5);
+}
+
+.lyric-line.first-of-stanza {
+  font-weight: 900;
+  font-size: 2.2rem;
 }
 
 /* Duet Style (Guia Misa) */
