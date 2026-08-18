@@ -1872,7 +1872,7 @@ export default function Landing() {
               <span className="deck-switch-title">
                 {activeOracionDeck === 'comunidad' && (activeLang === 'en' ? "Community Prayers" : "Oraciones de la Comunidad")}
                 {activeOracionDeck === 'basicas' && (activeLang === 'en' ? "Basic Prayers" : "Oraciones Básicas")}
-                {activeOracionDeck === 'rosario' && (activeLang === 'en' ? `Holy Rosary (${MISTERIOS_DATA[selectedMysteryType].name})` : `Santo Rosario (${MISTERIOS_DATA[selectedMysteryType].name})`)}
+                {activeOracionDeck === 'rosario' && (activeLang === 'en' ? `Holy Rosary (${MISTERIOS_DATA[selectedMysteryType].nameEn || MISTERIOS_DATA[selectedMysteryType].name})` : `Santo Rosario (${MISTERIOS_DATA[selectedMysteryType].name})`)}
               </span>
             </div>
             <button 
@@ -1956,7 +1956,11 @@ export default function Landing() {
                   onTouchCancel={isActive ? () => handleCardTouchEnd('oraciones') : undefined}
                 >
                   <h4>{oracion.titleEn && activeLang === 'en' ? oracion.titleEn : oracion.title}</h4>
-                  {oracion.subtitle && <p className="song-artist">{oracion.subtitle}</p>}
+                  {oracion.subtitle && (
+                    <p className="song-artist">
+                      {activeLang === 'en' && oracion.subtitleEn ? oracion.subtitleEn : oracion.subtitle}
+                    </p>
+                  )}
                   
                   {oracion.isConfigCard ? (
                     <div className="rosario-config-box" onClick={(e) => e.stopPropagation()}>
