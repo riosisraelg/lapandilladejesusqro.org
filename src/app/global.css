@@ -2944,33 +2944,65 @@ body.modal-open [data-tooltip]::after {
    ORACIONES DECK SYSTEM (Comunidad, Básicas, Santo Rosario)
    ========================================================================== */
 
+.oracion-top-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  width: calc(100% - 46px); /* Dedicated clearance for top-right close button */
+  margin: 0 0 0.5rem 0;
+}
+
 /* Compact & Intelligent Pill Switcher */
 .oracion-deck-switcher-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 0.5rem;
+  gap: 0.35rem;
   background: var(--cream);
   border: 1px solid var(--border-subtle);
   border-radius: 999px; /* Pill design */
-  padding: 4px 6px;
-  margin: 0 0 0.75rem 0;
-  width: calc(100% - 48px); /* Clear space for top-right X close button */
-  max-width: calc(100% - 48px);
+  padding: 3px 5px;
+  flex: 1;
+  min-width: 0;
   box-shadow: 0 1px 3px rgba(45, 27, 14, 0.04);
+}
+
+.oracion-lang-toggle-btn {
+  background: var(--cream);
+  border: 1px solid var(--border-subtle);
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--coffee);
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 2px rgba(45, 27, 14, 0.04);
+}
+
+.oracion-lang-toggle-btn:hover {
+  background: var(--gold);
+  color: var(--white);
+  border-color: var(--gold);
 }
 
 .deck-switch-arrow-btn {
   background: var(--white);
   border: 1px solid var(--border-subtle);
   border-radius: 50%;
-  width: 30px;
-  height: 30px;
-  min-width: 30px;
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   color: var(--coffee);
   cursor: pointer;
   touch-action: manipulation;
@@ -2994,33 +3026,104 @@ body.modal-open [data-tooltip]::after {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.45rem;
+  gap: 0.4rem;
   flex: 1;
   min-width: 0;
   overflow: hidden;
   text-align: center;
-  padding: 0 4px;
+  padding: 0 2px;
 }
 
 .deck-switch-badge {
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   font-weight: 700;
   color: var(--coffee);
   background: rgba(92, 61, 46, 0.1);
-  padding: 2px 8px;
+  padding: 2px 7px;
   border-radius: 999px;
   white-space: nowrap;
   flex-shrink: 0;
 }
 
 .deck-switch-title {
-  font-size: 0.86rem;
+  font-size: 0.84rem;
   font-weight: 700;
   color: var(--text-dark);
   margin: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+/* Rosary Sub-Selectors (Variants & Mysteries) */
+.rosario-sub-selectors {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 0.65rem;
+  width: 100%;
+}
+
+.rosario-pill-group {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding-bottom: 2px;
+}
+
+.rosario-pill-group::-webkit-scrollbar {
+  display: none;
+}
+
+.rosario-pill-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--text-light);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-right: 0.15rem;
+  flex-shrink: 0;
+}
+
+.rosario-selector-pill {
+  background: var(--white);
+  border: 1px solid var(--border-subtle);
+  border-radius: 999px;
+  padding: 3px 9px;
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--text-body);
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.rosario-selector-pill:hover {
+  border-color: var(--gold);
+  color: var(--text-dark);
+}
+
+.rosario-selector-pill.active {
+  background: var(--coffee);
+  color: var(--white);
+  border-color: var(--coffee);
+  box-shadow: 0 1px 4px rgba(92, 61, 46, 0.2);
+}
+
+/* Justified text formatting for all decks */
+.oracion-card-body-text,
+.stacked-card > div[style*="pre-wrap"] {
+  text-align: justify;
+  text-justify: inter-word;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+  line-height: 1.65;
+  font-size: 0.94rem;
+  color: var(--text-dark);
 }
 
 /* Rosary Visual Guide Container */
