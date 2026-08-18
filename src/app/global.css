@@ -2257,9 +2257,11 @@ body.modal-open [data-tooltip]::after {
 .stacked-deck-container {
   position: relative;
   width: 100%;
-  max-width: 520px;
-  height: 330px; /* Shorter default height for mobile */
-  margin: 0.75rem auto;
+  max-width: 600px;
+  height: 60vh;
+  min-height: 480px;
+  max-height: 720px;
+  margin: 0.5rem auto 1rem auto;
   perspective: 1000px;
   order: 1; /* Shows above the nav by default (mobile/tablet) */
 }
@@ -2273,8 +2275,8 @@ body.modal-open [data-tooltip]::after {
   background: var(--cream);
   border: 1px solid rgba(45, 27, 14, 0.12);
   border-radius: var(--radius);
-  padding: 1.5rem 1.75rem;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65), 0 4px 10px rgba(45, 27, 14, 0.08);
+  padding: 1.75rem 2rem;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65), 0 6px 16px rgba(45, 27, 14, 0.08);
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -2411,17 +2413,20 @@ body.modal-open [data-tooltip]::after {
 /* On Desktop (Computer) */
 @media (min-width: 768px) {
   .recursos-modal-card.modal-large {
-    max-width: 750px;
-    padding: 2.25rem 2.5rem;
+    max-width: 780px;
+    padding: 2rem 2.5rem;
   }
   
   .deck-nav {
     order: -1; /* Pushes the nav to the top of the body */
     margin-top: 0;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.25rem;
   }
   
   .stacked-deck-container {
+    height: 64vh;
+    min-height: 520px;
+    max-height: 760px;
     order: 1;
   }
 }
@@ -2619,9 +2624,9 @@ body.modal-open [data-tooltip]::after {
   }
 
   .stacked-deck-container {
-    height: 68vh; /* Cards container expanded to occupy saved vertical space */
-    min-height: 420px;
-    max-height: 640px;
+    height: 72vh; /* Cards container expanded to occupy saved vertical space */
+    min-height: 480px;
+    max-height: 700px;
     margin: 0.5rem auto 1rem auto;
   }
 

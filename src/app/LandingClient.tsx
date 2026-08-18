@@ -778,7 +778,30 @@ export default function Landing() {
   };
 
   // Guía de Misa state
-  const [activeGuiaTab, setActiveGuiaTab] = useState<'misterio' | 'liturgia' | 'biblia' | 'precepto'>('misterio');
+  const GUIA_SECTIONS: Array<{ id: 'misterio' | 'respuestas' | 'liturgia' | 'biblia' | 'precepto'; title: string }> = [
+    { id: 'misterio', title: 'El Misterio Pascual' },
+    { id: 'respuestas', title: 'Respuestas y Posturas' },
+    { id: 'liturgia', title: 'Año Litúrgico' },
+    { id: 'biblia', title: 'Citas Bíblicas' },
+    { id: 'precepto', title: 'Misas de Precepto' },
+  ];
+
+  const [activeGuiaTab, setActiveGuiaTab] = useState<'misterio' | 'respuestas' | 'liturgia' | 'biblia' | 'precepto'>('misterio');
+  
+  const handlePrevGuia = () => {
+    const currentIdx = GUIA_SECTIONS.findIndex(s => s.id === activeGuiaTab);
+    const newIdx = (currentIdx - 1 + GUIA_SECTIONS.length) % GUIA_SECTIONS.length;
+    setActiveGuiaTab(GUIA_SECTIONS[newIdx].id);
+    triggerHaptic('light');
+  };
+
+  const handleNextGuia = () => {
+    const currentIdx = GUIA_SECTIONS.findIndex(s => s.id === activeGuiaTab);
+    const newIdx = (currentIdx + 1) % GUIA_SECTIONS.length;
+    setActiveGuiaTab(GUIA_SECTIONS[newIdx].id);
+    triggerHaptic('light');
+  };
+
   const [guiaLang, setGuiaLang] = useState<'es' | 'en'>('es');
   
   useEffect(() => {
@@ -1864,45 +1887,52 @@ export default function Landing() {
         onClose={() => closeModalWithAnimation('guia')}
         style={{ maxWidth: '650px' }}
       >
-        <h3 className="recursos-title">Guía de Misa para Principiantes</h3>
-        <p className="recursos-desc">
-          Aprende el significado, respuestas y la liturgia del año.
-        </p>
-
-        <div className="guia-tabs">
+        {/* Compact Guía Switcher Bar with Arrow Buttons */}
+        <div className="oracion-deck-switcher-bar">
           <button 
-            className={`guia-tab-btn ${activeGuiaTab === 'misterio' ? 'active' : ''}`}
-            onClick={() => setActiveGuiaTab('misterio')}
+            type="button"
+            className="deck-switch-arrow-btn"
+            onClick={handlePrevGuia}
+            aria-label="Sección anterior"
           >
-            El Misterio
+            ◀
           </button>
+          <div className="deck-switch-info">
+            <div className="deck-switch-header-top">
+              <span className="deck-switch-badge">Sección {GUIA_SECTIONS.findIndex(s => s.id === activeGuiaTab) + 1} de {GUIA_SECTIONS.length}</span>
+            </div>
+            <h3 className="deck-switch-title">
+              {GUIA_SECTIONS.find(s => s.id === activeGuiaTab)?.title}
+            </h3>
+          </div>
           <button 
-            className="guia-tab-btn"
-            onClick={() => setModalUrl('guia_misa_interactiva')}
+            type="button"
+            className="deck-switch-arrow-btn"
+            onClick={handleNextGuia}
+            aria-label="Siguiente sección"
           >
-            Respuestas y Posturas
-          </button>
-          <button 
-            className={`guia-tab-btn ${activeGuiaTab === 'liturgia' ? 'active' : ''}`}
-            onClick={() => setActiveGuiaTab('liturgia')}
-          >
-            Año Litúrgico
-          </button>
-          <button 
-            className={`guia-tab-btn ${activeGuiaTab === 'biblia' ? 'active' : ''}`}
-            onClick={() => setActiveGuiaTab('biblia')}
-          >
-            Citas Bíblicas
-          </button>
-          <button 
-            className={`guia-tab-btn ${activeGuiaTab === 'precepto' ? 'active' : ''}`}
-            onClick={() => setActiveGuiaTab('precepto')}
-          >
-            Misas de Precepto
+            ▶
           </button>
         </div>
 
         <div className="recursos-modal-body">
+          {activeGuiaTab === 'respuestas' && (
+            <div className="guia-content-panel" style={{ textAlign: 'center', padding: '1.5rem 0.5rem' }}>
+              <h4>Respuestas y Posturas de la Misa</h4>
+              <p style={{ marginBottom: '1.5rem', lineHeight: 1.6 }}>
+                Sigue cada diálogo sacerdote-asamblea y las posturas litúrgicas (de pie, sentados, de rodillas) con nuestra guía interactiva paso a paso.
+              </p>
+              <button
+                type="button"
+                className="recursos-btn btn-guia"
+                style={{ margin: '0 auto', maxWidth: '320px', display: 'inline-flex', padding: '1rem 1.75rem', justifyContent: 'center', fontSize: '0.95rem' }}
+                onClick={() => setModalUrl('guia_misa_interactiva')}
+              >
+                Abrir Modo Interactivo (Lyrics) ▶
+              </button>
+            </div>
+          )}
+
           {activeGuiaTab === 'misterio' && (
             <div className="guia-content-panel">
               <h4>¿Por qué la Misa y sus Ritos?</h4>
