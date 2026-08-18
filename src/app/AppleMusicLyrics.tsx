@@ -194,7 +194,15 @@ export default function AppleMusicLyrics({
               {onNext && <button onClick={onNext} className="lang-toggle-btn">▶</button>}
             </div>
           )}
-          <button className="calendar-modal-close-btn recursos-close" onClick={onClose}>✕</button>
+          <button 
+            type="button"
+            className="apple-music-close-btn" 
+            onClick={(e) => { e.stopPropagation(); onClose(); }}
+            onTouchEnd={(e) => { e.stopPropagation(); onClose(); }}
+            aria-label="Cerrar"
+          >
+            ✕
+          </button>
         </div>
       </div>
 

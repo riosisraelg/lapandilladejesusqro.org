@@ -7,6 +7,15 @@ import { ICAL_FEED_URL } from "../config";
 import AppleMusicLyrics from "./AppleMusicLyrics";
 import GlobalModal from '../components/GlobalModal';
 import { massResponses } from "./massResponses";
+import { 
+  oracionesComunidad, 
+  oracionesBasicas, 
+  getSantoRosarioDeck, 
+  getMysteryTypeForDay, 
+  MISTERIOS_DATA, 
+  MysteryType, 
+  PrayerCard 
+} from '../data/oracionesData';
 
 // ── SVG Icon Components ──
 const ClockIcon = () => (
@@ -583,122 +592,83 @@ Sólo gracias papá, por un año tan maravilloso.
   }
 ];
 
-const oraciones = [
-  {
-    title: "El Ángelus",
-    titleEn: "The Angelus",
-    text: `V. El Ángel del Señor anunció a María.
-R. Y concibió por obra del Espíritu Santo.
-(Dios te salve, María...)
+// ── Diagrama Vectorial del Santo Rosario ──
+const RosaryVisualDiagram = () => (
+  <div className="rosario-diagram-container">
+    <svg className="rosario-diagram-svg" viewBox="0 0 340 440" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="goldBead" cx="30%" cy="30%" r="70%">
+          <stop offset="0%" stopColor="#FAF7F2" />
+          <stop offset="60%" stopColor="#C5944E" />
+          <stop offset="100%" stopColor="#8A6028" />
+        </radialGradient>
+        <radialGradient id="largeBead" cx="30%" cy="30%" r="70%">
+          <stop offset="0%" stopColor="#FAF7F2" />
+          <stop offset="60%" stopColor="#5C3D2E" />
+          <stop offset="100%" stopColor="#2D1B0E" />
+        </radialGradient>
+      </defs>
 
-V. He aquí la esclava del Señor.
-R. Hágase en mí según tu palabra.
-(Dios te salve, María...)
+      {/* Decade Loop */}
+      <ellipse cx="170" cy="150" rx="125" ry="105" stroke="#C5944E" strokeWidth="2" strokeDasharray="3 3" opacity="0.6" />
 
-V. Y el Verbo se hizo carne.
-R. Y habitó entre nosotros.
-(Dios te salve, María...)
+      {/* 5 Decade Mystery Beads */}
+      {/* 3er Misterio (Top) */}
+      <circle cx="170" cy="45" r="9" fill="url(#largeBead)" stroke="#C5944E" strokeWidth="1.5" />
+      <text x="170" y="30" textAnchor="middle" fill="#5C3D2E" fontSize="9.5" fontWeight="bold">3er Misterio</text>
 
-V. Ruega por nosotros, Santa Madre de Dios.
-R. Para que seamos dignos de alcanzar las promesas de Nuestro Señor Jesucristo.
+      {/* 2do Misterio (Top Right) */}
+      <circle cx="285" cy="100" r="9" fill="url(#largeBead)" stroke="#C5944E" strokeWidth="1.5" />
+      <text x="292" y="92" textAnchor="start" fill="#5C3D2E" fontSize="9.5" fontWeight="bold">2do Misterio</text>
 
-Oremos: Derrama, Señor, tu gracia sobre nosotros, que, por el anuncio del Ángel, hemos conocido la encarnación de tu Hijo, para que lleguemos, por su pasión y su cruz, a la gloria de la resurrección. Por Jesucristo Nuestro Señor. Amén.`,
-    textEn: `V. The Angel of the Lord declared to Mary:
-R. And she conceived of the Holy Spirit.
-(Hail Mary...)
+      {/* 1er Misterio (Bottom Right) */}
+      <circle cx="275" cy="210" r="9" fill="url(#largeBead)" stroke="#C5944E" strokeWidth="1.5" />
+      <text x="282" y="224" textAnchor="start" fill="#5C3D2E" fontSize="9.5" fontWeight="bold">1er Misterio</text>
 
-V. Behold the handmaid of the Lord:
-R. Be it done unto me according to Thy word.
-(Hail Mary...)
+      {/* 5to Misterio (Bottom Left) */}
+      <circle cx="65" cy="210" r="9" fill="url(#largeBead)" stroke="#C5944E" strokeWidth="1.5" />
+      <text x="58" y="224" textAnchor="end" fill="#5C3D2E" fontSize="9.5" fontWeight="bold">5to Misterio</text>
 
-V. And the Word was made Flesh:
-R. And dwelt among us.
-(Hail Mary...)
+      {/* 4to Misterio (Top Left) */}
+      <circle cx="55" cy="100" r="9" fill="url(#largeBead)" stroke="#C5944E" strokeWidth="1.5" />
+      <text x="48" y="92" textAnchor="end" fill="#5C3D2E" fontSize="9.5" fontWeight="bold">4to Misterio</text>
 
-V. Pray for us, O Holy Mother of God,
-R. that we may be made worthy of the promises of Christ.
+      {/* Decade Bead Sample */}
+      <circle cx="293" cy="155" r="4.5" fill="url(#goldBead)" />
+      <text x="302" y="158" fill="#8C7B6B" fontSize="8" fontStyle="italic">10 Ave Marías</text>
 
-Let us pray: Pour forth, we beseech Thee, O Lord, Thy grace into our hearts; that we, to whom the incarnation of Christ, Thy Son, was made known by the message of an angel, may by His Passion and Cross be brought to the glory of His Resurrection, through the same Christ Our Lord. Amen.`
-  },
-  {
-    title: "Oración de la Pandilla de Jesús",
-    text: `Jesús, sé el Señor de mi vida.
-Toma mi libertad, mi historia,
-mi voluntad y mi juventud;
-porque tu gracia vale más que la vida.
+      {/* Centerpiece (Medal) */}
+      <polygon points="170,255 182,274 158,274" fill="#C5944E" stroke="#5C3D2E" strokeWidth="1" />
+      <circle cx="170" cy="268" r="3.5" fill="#FAF7F2" />
+      <text x="170" y="290" textAnchor="middle" fill="#5C3D2E" fontSize="9.5" fontWeight="bold">La Salve</text>
 
-Quiero seguirte sin mirar atrás,
-atreverme a tu plan,
-ser tus manos y tus pies.
+      {/* Lower Chain */}
+      <line x1="170" y1="274" x2="170" y2="370" stroke="#C5944E" strokeWidth="2" />
 
-Enséñame a distinguir el bien del mal,
-porque de nada sirve ganar el mundo
-si te pierdo a Ti.
+      {/* Gloria / Fatima Bead */}
+      <circle cx="170" cy="302" r="6.5" fill="url(#largeBead)" stroke="#C5944E" strokeWidth="1" />
+      <text x="183" y="305" fill="#5C3D2E" fontSize="8.5" fontWeight="600">Gloria / Fátima</text>
 
-Sé que te basta mi debilidad,
-y aún así quiero entregarte siempre
-un poco más.
+      {/* 3 Ave Marías (Faith, Hope, Charity) */}
+      <circle cx="170" cy="322" r="5" fill="url(#goldBead)" />
+      <circle cx="170" cy="336" r="5" fill="url(#goldBead)" />
+      <circle cx="170" cy="350" r="5" fill="url(#goldBead)" />
+      <text x="183" y="339" fill="#8C7B6B" fontSize="8">3 Ave Marías (Fe, Esperanza, Caridad)</text>
 
-Gracias por amarme, escucharme
-y confiar en mí.
+      {/* Our Father Bead */}
+      <circle cx="170" cy="368" r="6.5" fill="url(#largeBead)" stroke="#C5944E" strokeWidth="1" />
+      <text x="183" y="371" fill="#5C3D2E" fontSize="8.5" fontWeight="600">Padre Nuestro</text>
 
-Tuyo soy, Señor, tuyo para siempre.
-Amén.`
-  },
-  {
-    title: "Oración por la paz",
-    text: `Señor Jesús, Tú eres nuestra paz,
-mira nuestra Patria dañada por la violencia
-y dispersa por el miedo y la inseguridad.
-Consuela el dolor de quienes sufren.
-Da acierto a las decisiones de quienes nos gobiernan.
-Toca el corazón de quienes olvidan que somos hermanos
-y provocan sufrimiento y muerte.
-Dales el don de la conversión.
-Protege a las familias, a nuestros niños, adolescentes
-y jóvenes, a nuestros pueblos y comunidades.
-Que, como discípulos misioneros tuyos,
-ciudadanos responsables,
-sepamos ser promotores de justicia y de paz,
-para que, en Ti, nuestro pueblo tenga vida digna. AMÉN.
-
-María, Reina de la paz, ruega por nosotros.
-
-Septiembre 2025`
-  },
-  {
-    title: "Oración a la Sagrada Familia",
-    text: `Jesús, María y José
-en ustedes contemplamos
-el esplendor del verdadero amor,
-a ustedes, confiados, nos dirigimos.
-
-Santa Familia de Nazaret,
-haz también de nuestras familias
-lugar de comunión y cenáculo de oración,
-auténticas escuelas del Evangelio
-y pequeñas iglesias domésticas.
-
-Santa Familia de Nazaret,
-que nunca más haya en las familias episodios de violencia,
-de cerrazón y división;
-que quien haya sido herido o escandalizado
-sea pronto consolado y curado.
-
-Santa Familia de Nazaret,
-haz tomar conciencia a todos
-del carácter sagrado e inviolable de la familia,
-de su belleza en el proyecto de Dios.
-
-Jesús, María y José,
-escuchen, acojan nuestra súplica.
-Amén.
-
-(Papa Francisco, Amoris Laetitia, 325)
-
-Septiembre 2025`
-  }
-];
+      {/* Crucifix */}
+      <g transform="translate(170, 400)">
+        <rect x="-3.5" y="-16" width="7" height="30" rx="1.5" fill="#5C3D2E" stroke="#C5944E" strokeWidth="1" />
+        <rect x="-12" y="-9" width="24" height="7" rx="1.5" fill="#5C3D2E" stroke="#C5944E" strokeWidth="1" />
+        <circle cx="0" cy="-5.5" r="2" fill="#FAF7F2" />
+        <text x="0" y="24" textAnchor="middle" fill="#5C3D2E" fontSize="9" fontWeight="bold">Cruz: Señal de la Cruz y Credo</text>
+      </g>
+    </svg>
+  </div>
+);
 
 // Apple-style premium haptic vibration helper
 const triggerHaptic = (type: 'light' | 'medium' | 'success' = 'light') => {
@@ -758,13 +728,54 @@ export default function Landing() {
   // Cancionero state
   const [songs] = useState<Array<{ id: string; title: string; artist: string; lyrics: string }>>(defaultSongs);
 
-  // Oraciones state
+  // Oraciones state & Deck Architecture
+  const [activeOracionDeck, setActiveOracionDeck] = useState<'comunidad' | 'basicas' | 'rosario'>('comunidad');
   const [activeOracionIdx, setActiveOracionIdx] = useState(0);
+  const [selectedMysteryType, setSelectedMysteryType] = useState<MysteryType>(() => getMysteryTypeForDay());
+  const [decadeBeadsCount, setDecadeBeadsCount] = useState<number>(0);
   const [oracionTransition, setOracionTransition] = useState<{
     prevIdx: number | null;
     action: 'next' | 'prev' | null;
     isTransitioning: boolean;
   }>({ prevIdx: null, action: null, isTransitioning: false });
+
+  // Get current active deck cards list
+  const currentOracionesList = useMemo<PrayerCard[]>(() => {
+    switch (activeOracionDeck) {
+      case 'basicas':
+        return oracionesBasicas;
+      case 'rosario':
+        return getSantoRosarioDeck(selectedMysteryType);
+      case 'comunidad':
+      default:
+        return oracionesComunidad;
+    }
+  }, [activeOracionDeck, selectedMysteryType]);
+
+  const DECKS_ORDER: Array<'comunidad' | 'basicas' | 'rosario'> = ['comunidad', 'basicas', 'rosario'];
+
+  const handleSwitchOracionDeck = (deck: 'comunidad' | 'basicas' | 'rosario') => {
+    if (deck === activeOracionDeck) return;
+    triggerHaptic('light');
+    setActiveOracionDeck(deck);
+    setActiveOracionIdx(0);
+    setDecadeBeadsCount(0);
+    if (deck === 'rosario') {
+      setSelectedMysteryType(getMysteryTypeForDay());
+    }
+  };
+
+  const handlePrevDeck = () => {
+    const currentIdx = DECKS_ORDER.indexOf(activeOracionDeck);
+    const newIdx = (currentIdx - 1 + DECKS_ORDER.length) % DECKS_ORDER.length;
+    handleSwitchOracionDeck(DECKS_ORDER[newIdx]);
+  };
+
+  const handleNextDeck = () => {
+    const currentIdx = DECKS_ORDER.indexOf(activeOracionDeck);
+    const newIdx = (currentIdx + 1) % DECKS_ORDER.length;
+    handleSwitchOracionDeck(DECKS_ORDER[newIdx]);
+  };
 
   // Guía de Misa state
   const [activeGuiaTab, setActiveGuiaTab] = useState<'misterio' | 'liturgia' | 'biblia' | 'precepto'>('misterio');
@@ -830,7 +841,7 @@ export default function Landing() {
       const savedIdx = localStorage.getItem("active_oracion_index");
       if (savedIdx) {
         const idx = parseInt(savedIdx, 10);
-        if (idx >= 0 && idx < oraciones.length) {
+        if (idx >= 0 && idx < oracionesComunidad.length) {
           setActiveOracionIdx(idx);
         }
       }
@@ -939,11 +950,13 @@ export default function Landing() {
   };
 
   const handleOracionNav = (newIdx: number) => {
-    const N = oraciones.length;
+    const N = currentOracionesList.length;
+    if (N <= 0) return;
     const wrappedIdx = (newIdx + N) % N;
     if (wrappedIdx === activeOracionIdx) return;
 
     triggerHaptic('light');
+    setDecadeBeadsCount(0); // Reset beads tracker for new card
 
     let action: 'next' | 'prev' = 'next';
     if (newIdx < activeOracionIdx) {
@@ -961,7 +974,9 @@ export default function Landing() {
       isTransitioning: true
     });
     setActiveOracionIdx(wrappedIdx);
-    localStorage.setItem("active_oracion_index", String(wrappedIdx));
+    if (activeOracionDeck === 'comunidad') {
+      localStorage.setItem("active_oracion_index", String(wrappedIdx));
+    }
 
     setTimeout(() => {
       setOracionTransition({
@@ -1681,15 +1696,15 @@ export default function Landing() {
       {/* Cancionero Modal */}
       <GlobalModal
         isOpen={showCancionero}
-        isClosing={isClosingModal === 'cancionero'}
-        onClose={() => closeModalWithAnimation('cancionero')}
+        isClosing={false}
+        onClose={() => setModalUrl(null)}
         className="apple-music-mode"
         hideCloseBtn={true}
       >
         <AppleMusicLyrics
           title={songs[activeSongIdx]?.title || "Cancionero"}
           subtitle={`de ${songs[activeSongIdx]?.artist || "Desconocido"} (${activeSongIdx + 1} de ${songs.length})`}
-          onClose={() => closeModalWithAnimation('cancionero')}
+          onClose={() => setModalUrl(null)}
           onPrev={() => handleSongNav(activeSongIdx - 1)}
           onNext={() => handleSongNav(activeSongIdx + 1)}
           lines={songs[activeSongIdx]?.lyrics.split('\n').map(l => ({ text: l, isLeft: true })) || []}
@@ -1697,39 +1712,52 @@ export default function Landing() {
       </GlobalModal>
 
       {/* Oraciones Modal */}
-      {/* Oraciones Modal */}
       <GlobalModal
         isOpen={showOraciones}
         isClosing={isClosingModal === 'oraciones'}
         onClose={() => closeModalWithAnimation('oraciones')}
       >
-        <div className="recursos-title-container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-          <div>
-            <h3 className="recursos-title">Oraciones de la Comunidad</h3>
-            <span className="mobile-counter-badge">{activeOracionIdx + 1} de {oraciones.length}</span>
+        {/* Compact Deck Switcher Bar with Arrow Buttons */}
+        <div className="oracion-deck-switcher-bar">
+          <button 
+            type="button"
+            className="deck-switch-arrow-btn"
+            onClick={handlePrevDeck}
+            aria-label="Mazo anterior"
+          >
+            ◀
+          </button>
+          <div className="deck-switch-info">
+            <div className="deck-switch-header-top">
+              <span className="deck-switch-badge">Mazo {DECKS_ORDER.indexOf(activeOracionDeck) + 1} de {DECKS_ORDER.length}</span>
+              <span className="mobile-counter-badge">{activeOracionIdx + 1} de {currentOracionesList.length}</span>
+            </div>
+            <h3 className="deck-switch-title">
+              {activeOracionDeck === 'comunidad' && "Oraciones de la Comunidad"}
+              {activeOracionDeck === 'basicas' && "Oraciones Básicas"}
+              {activeOracionDeck === 'rosario' && `Santo Rosario (${MISTERIOS_DATA[selectedMysteryType].name})`}
+            </h3>
           </div>
           <button 
-            className="lang-toggle-btn" 
-            style={{ margin: 0, marginTop: '0.2rem' }}
-            onClick={(e) => { e.stopPropagation(); setGuiaLang(l => l === 'es' ? 'en' : 'es'); }}
+            type="button"
+            className="deck-switch-arrow-btn"
+            onClick={handleNextDeck}
+            aria-label="Siguiente mazo"
           >
-            {guiaLang === 'es' ? '🇺🇸 English' : '🇲🇽 Español'}
+            ▶
           </button>
         </div>
-        <p className="recursos-desc" style={{ marginBottom: '1rem' }}>
-          Tarjetero de oraciones para adoración y preparación espiritual.
-        </p>
 
         <div className="recursos-modal-body">
           <div className="stacked-deck-container">
-            {oraciones.map((oracion, idx) => {
+            {currentOracionesList.map((oracion, idx) => {
               let cardClass = "stacked-card";
               const { prevIdx, action, isTransitioning } = oracionTransition;
 
               if (isTransitioning && idx === prevIdx) {
                 cardClass += action === 'next' ? ' swiped-left' : ' swiped-right';
               } else {
-                const N = oraciones.length;
+                const N = currentOracionesList.length;
                 const diff = (idx - activeOracionIdx + N) % N;
                 
                 if (diff === 0) {
@@ -1743,7 +1771,7 @@ export default function Landing() {
                 }
               }
               
-              const N = oraciones.length;
+              const N = currentOracionesList.length;
               const diff = (idx - activeOracionIdx + N) % N;
               const isActive = diff === 0 && !isTransitioning;
 
@@ -1758,7 +1786,7 @@ export default function Landing() {
               
               return (
                 <div 
-                  key={idx} 
+                  key={oracion.id || idx} 
                   className={cardClass}
                   style={activeCardStyle || undefined}
                   onTouchStart={isActive ? handleCardTouchStart : undefined}
@@ -1767,6 +1795,40 @@ export default function Landing() {
                   onTouchCancel={isActive ? () => handleCardTouchEnd('oraciones') : undefined}
                 >
                   <h4>{oracion.titleEn && guiaLang === 'en' ? oracion.titleEn : oracion.title}</h4>
+                  {oracion.subtitle && <p className="song-artist">{oracion.subtitle}</p>}
+                  
+                  {/* Visual Guide Rosary Diagram Card */}
+                  {oracion.isRosaryGuide && <RosaryVisualDiagram />}
+
+                  {/* Decade Beads Interactive Tracker for Rosary Mysteries */}
+                  {oracion.isMysteryCard && (
+                    <div className="rosario-beads-container" onClick={(e) => e.stopPropagation()}>
+                      <div className="rosario-beads-title">Decena: 10 Ave Marías</div>
+                      <div className="rosario-beads-row">
+                        {Array.from({ length: 10 }).map((_, bIdx) => {
+                          const isDone = bIdx < decadeBeadsCount;
+                          return (
+                            <button
+                              key={bIdx}
+                              type="button"
+                              className={`rosario-bead ${isDone ? 'completed' : ''}`}
+                              onClick={() => {
+                                setDecadeBeadsCount(bIdx + 1 === decadeBeadsCount ? bIdx : bIdx + 1);
+                                triggerHaptic('light');
+                              }}
+                              title={`Ave María ${bIdx + 1}`}
+                            >
+                              {bIdx + 1}
+                            </button>
+                          );
+                        })}
+                      </div>
+                      <span className="rosario-bead-counter-text">
+                        {decadeBeadsCount} de 10 rezadas
+                      </span>
+                    </div>
+                  )}
+
                   <div style={{ whiteSpace: 'pre-wrap', lineHeight: 1.6 }}>
                     {(oracion.textEn && guiaLang === 'en' ? oracion.textEn : oracion.text)}
                   </div>
@@ -1783,7 +1845,7 @@ export default function Landing() {
               ◀ Anterior
             </button>
             <span className="deck-counter">
-              {activeOracionIdx + 1} de {oraciones.length}
+              {activeOracionIdx + 1} de {currentOracionesList.length}
             </span>
             <button 
               className="deck-nav-btn" 
@@ -2167,8 +2229,8 @@ export default function Landing() {
       {/* Guia de Misa Apple Music Style */}
       <GlobalModal
         isOpen={showAppleMusicGuia}
-        isClosing={isClosingModal === 'guia_misa_interactiva'}
-        onClose={() => closeModalWithAnimation('guia_misa_interactiva')}
+        isClosing={false}
+        onClose={() => setModalUrl(null)}
         className="apple-music-mode"
         hideCloseBtn={true}
       >
@@ -2183,7 +2245,7 @@ export default function Landing() {
               {guiaLang === 'es' ? '🇺🇸 English' : '🇲🇽 Español'}
             </button>
           }
-          onClose={() => closeModalWithAnimation('guia_misa_interactiva')}
+          onClose={() => setModalUrl(null)}
           onPrev={() => handleMisaNav(activeMisaSectionIdx - 1)}
           onNext={() => handleMisaNav(activeMisaSectionIdx + 1)}
           onSectionChange={(sectionName) => setModalUrl('guia_misa_interactiva', sectionName.toLowerCase().replace(/\s+/g, '-'))}
