@@ -1852,6 +1852,7 @@ export default function Landing() {
         isOpen={showOraciones}
         isClosing={isClosingModal === 'oraciones'}
         onClose={() => closeModalWithAnimation('oraciones')}
+        className="deck-modal-layout"
       >
         {/* Top Control Bar with Deck Switcher & Non-Overlapping Language Toggle */}
         <div className="oracion-top-bar">
