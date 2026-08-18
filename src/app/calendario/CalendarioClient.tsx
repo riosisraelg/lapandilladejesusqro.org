@@ -36,6 +36,26 @@ const WhatsAppIcon = ({ size = 16 }: { size?: number }) => (
   </svg>
 );
 
+const InstagramIcon = ({ size = 16 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+  </svg>
+);
+
+const ThreadsIcon = ({ size = 16 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12.186 24C5.454 24 0 18.618 0 12.006 0 5.394 5.454.012 12.186.012c6.732 0 12.186 5.382 12.186 11.994 0 2.274-.636 4.416-1.848 6.276l-2.028-1.344c.948-1.44 1.44-3.09 1.44-4.932 0-5.268-4.32-9.558-9.75-9.558-5.43 0-9.75 4.29-9.75 9.558 0 5.268 4.32 9.558 9.75 9.558 2.652 0 5.166-1.044 7.026-2.922l1.74 1.704C18.57 22.68 15.486 24 12.186 24zm4.818-12.87c-.078-3.09-2.316-5.55-5.004-5.55-2.778 0-5.046 2.586-5.046 5.766 0 3.18 2.268 5.766 5.046 5.766 1.83 0 3.444-1.122 4.314-2.82l-2.052-1.092c-.528.984-1.398 1.548-2.262 1.548-1.47 0-2.658-1.44-2.658-3.402 0-.252.018-.504.06-.744 1.05-.18 2.232-.27 3.51-.27 1.494 0 2.658.12 3.468.348.06-.522.084-1.032.084-1.546h-.46zm-2.43 1.902c-.636-.18-1.542-.27-2.622-.27-.996 0-1.926.066-2.748.192.198 1.47 1.152 2.574 2.37 2.574.978 0 1.956-.708 2.352-1.896l.648-.6z"/>
+  </svg>
+);
+
+const FacebookIcon = ({ size = 16 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
+    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+  </svg>
+);
+
 const CloseIcon = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
@@ -515,12 +535,61 @@ export default function Calendario() {
           <div className="footer-brand-container">
             <div className="footer-brand-name">La Pandilla de Jesús</div>
             <div className="footer-brand-sub">Grupo Juvenil Católico · Parroquia de La Sagrada Familia, Querétaro</div>
+            
+            <div className="footer-social-row">
+              <a 
+                href="https://instagram.com/lapandilladejesusqro" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="footer-social-icon-btn"
+                aria-label="Instagram @lapandilladejesusqro"
+                title="Instagram @lapandilladejesusqro"
+              >
+                <InstagramIcon size={18} />
+              </a>
+              <a 
+                href="https://threads.net/@lapandilladejesusqro" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="footer-social-icon-btn"
+                aria-label="Threads @lapandilladejesusqro"
+                title="Threads @lapandilladejesusqro"
+              >
+                <ThreadsIcon size={18} />
+              </a>
+              <a 
+                href="https://facebook.com/lapandilladejesusqro" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="footer-social-icon-btn"
+                aria-label="Facebook @lapandilladejesusqro"
+                title="Facebook @lapandilladejesusqro"
+              >
+                <FacebookIcon size={18} />
+              </a>
+              <a 
+                href="https://wa.me/5214422497485" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="footer-social-icon-btn"
+                aria-label="WhatsApp Comunidad"
+                title="WhatsApp Comunidad"
+              >
+                <WhatsAppIcon size={18} />
+              </a>
+            </div>
           </div>
           <div className="footer-divider"></div>
           <div className="footer-meta-container">
-            <span className="footer-copy">© 2026 La Pandilla de Jesús</span>
+            <span className="footer-copy">© 2026 La Pandilla de Jesús · lapandilladejesusqro.org</span>
             <ul className="footer-links">
               <li><Link href="/">Inicio</Link></li>
+              <li><Link href="/donaciones">Donaciones</Link></li>
+              <li>
+                <a href="https://instagram.com/lapandilladejesusqro" target="_blank" rel="noopener noreferrer">
+                  Instagram
+                </a>
+              </li>
               <li>
                 <a href="https://wa.me/5214422497485" target="_blank" rel="noopener noreferrer">
                   WhatsApp
