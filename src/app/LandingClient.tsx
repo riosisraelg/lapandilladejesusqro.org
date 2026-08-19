@@ -17,6 +17,7 @@ import {
   RosaryVariant,
   PrayerCard 
 } from '../data/oracionesData';
+import { CONFESION_DATA } from '../data/confesionData';
 
 // ── SVG Icon Components ──
 const ClockIcon = () => (
@@ -770,6 +771,7 @@ export default function Landing() {
   const [showOraciones, setShowOraciones] = useState(false);
   const [showGuiaMisa, setShowGuiaMisa] = useState(false);
   const [showConfesion, setShowConfesion] = useState(false);
+  const [activeConfesionTab, setActiveConfesionTab] = useState<'pasos' | 'mandamientos' | 'iglesia' | 'capitales' | 'oraciones' | 'todos'>('pasos');
 
   // Cancionero state
   const [songs] = useState<Array<{ id: string; title: string; artist: string; lyrics: string }>>(defaultSongs);
@@ -2529,164 +2531,260 @@ export default function Landing() {
         isOpen={showConfesion}
         isClosing={isClosingModal === 'confesion'}
         onClose={() => closeModalWithAnimation('confesion')}
-        style={{ maxWidth: '650px', padding: '2rem 1.5rem' }}
+        className="confesion-modal-layout"
       >
-        <div className="recursos-title-container" style={{ textAlign: 'center', marginBottom: '1.5rem', display: 'flex', flexDirection: 'column' }}>
-          <h3 className="recursos-title" style={{ fontSize: '1.5rem', color: 'var(--gold)', marginBottom: '0.5rem' }}>
-            Guía Práctica para la Confesión
-          </h3>
-          <p style={{ fontSize: '0.9rem', color: 'var(--text-light)', margin: 0 }}>
-            Bienvenido al encuentro con la Misericordia de Dios
-          </p>
+        {/* Top Control Bar with Tab Switcher & Language Toggle */}
+        <div className="oracion-top-bar">
+          <div className="confesion-tab-switcher-bar">
+            {[
+              { id: 'pasos', label: activeLang === 'en' ? '5 Steps' : '5 Pasos', icon: '🕊️' },
+              { id: 'mandamientos', label: activeLang === 'en' ? '10 Commandments' : '10 Mandamientos', icon: '📜' },
+              { id: 'iglesia', label: activeLang === 'en' ? 'Church' : 'Iglesia', icon: '⛪' },
+              { id: 'capitales', label: activeLang === 'en' ? 'Capital Sins' : 'Pecados Capitales', icon: '⚠️' },
+              { id: 'oraciones', label: activeLang === 'en' ? 'Prayers' : 'Oraciones', icon: '🙏' },
+              { id: 'todos', label: activeLang === 'en' ? 'All' : 'Todo', icon: '📖' }
+            ].map(tab => (
+              <button
+                key={tab.id}
+                type="button"
+                className={`confesion-nav-pill ${activeConfesionTab === tab.id ? 'active' : ''}`}
+                onClick={() => {
+                  setActiveConfesionTab(tab.id as any);
+                  triggerHaptic('light');
+                }}
+              >
+                <span className="pill-icon">{tab.icon}</span>
+                <span className="pill-text">{tab.label}</span>
+              </button>
+            ))}
+          </div>
+
+          <button 
+            type="button"
+            className="oracion-lang-toggle-btn"
+            onClick={() => {
+              const nextLang = activeLang === 'es' ? 'en' : 'es';
+              setActiveLang(nextLang);
+              setGuiaLang(nextLang);
+              triggerHaptic('light');
+              setModalUrl('confesion', { lang: nextLang });
+            }}
+            aria-label="Cambiar idioma / Switch language"
+            title={activeLang === 'es' ? "Switch to English" : "Cambiar a Español"}
+          >
+            {activeLang === 'es' ? '🇲🇽 ES' : '🇺🇸 EN'}
+          </button>
         </div>
 
-        <div className="recursos-modal-body" style={{ 
-          overflowY: 'auto', 
-          maxHeight: 'calc(80vh - 120px)', 
-          paddingRight: '10px',
-          color: 'var(--text-color)',
-          fontSize: '0.95rem',
-          lineHeight: '1.6'
-        }}>
-          
-          <div style={{ marginBottom: '2rem', textAlign: 'center', fontStyle: 'italic', backgroundColor: 'var(--bg-card)', padding: '1.5rem', borderRadius: '12px' }}>
-            "Yo te daré las llaves del Reino de los cielos. Todo lo que ates en la tierra, quedará atado en el cielo, y todo lo que desates en la tierra, quedará desatado en el cielo." 
-            <br /><strong style={{ color: 'var(--gold)' }}>Mt. 16, 19</strong>
-          </div>
-
-          <h4 style={{ color: 'var(--gold)', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '0.5rem', marginBottom: '1rem' }}>Oración Preparatoria</h4>
-          <p style={{ marginBottom: '2rem' }}>
-            Ven Espíritu Santo, ilumina mi mente y mi corazón para que pueda reconocer mis pecados, mueve mi conciencia al dolor sincero, ayúdame a hacer una buena confesión. Santa María, Madre de Dios, ruega por mí que soy un pecador. Amén.
-          </p>
-
-          <h4 style={{ color: 'var(--gold)', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '0.5rem', marginBottom: '1rem' }}>Cinco Pasos para una Buena Confesión</h4>
-          <ol style={{ paddingLeft: '1.5rem', marginBottom: '2rem' }}>
-            <li style={{ marginBottom: '1rem' }}><strong>Examen de Conciencia.</strong><br/>Esfuerzo sincero de recordar todos y cada uno de los pecados.</li>
-            <li style={{ marginBottom: '1rem' }}><strong>Dolor de los Pecados.</strong><br/>Reconocer que ante todo se ha ofendido a Dios que nos ama tanto.</li>
-            <li style={{ marginBottom: '1rem' }}><strong>Propósito de no volver a pecar.</strong><br/>La simple y sincera determinación de no volver a pecar por amor a Dios.</li>
-            <li style={{ marginBottom: '1rem' }}><strong>Decir los pecados al Sacerdote.</strong><br/>
-              El Sacerdote es instrumento de la Misericordia de Dios (In Persona Christi).
-              <ul style={{ marginTop: '0.5rem', listStyleType: 'disc' }}>
-                <li><strong>Concisa:</strong> Ir al punto, sin detalles innecesarios.</li>
-                <li><strong>Clara:</strong> Expresar los pecados sin rodeos ni ambigüedades.</li>
-                <li><strong>Completa:</strong> No omitir voluntariamente ningún pecado grave.</li>
-              </ul>
-            </li>
-            <li><strong>Cumplir la Penitencia.</strong><br/>Cumplirla cuanto antes con humildad y dolor en desagravio a Dios.</li>
-          </ol>
-
-          <div style={{ backgroundColor: 'rgba(255, 215, 0, 0.05)', borderLeft: '4px solid var(--gold)', padding: '1rem', marginBottom: '2rem', borderRadius: '0 8px 8px 0' }}>
-            <p style={{ margin: 0, fontSize: '0.9rem' }}>
-              Ten en cuenta que la Confesión no es una charla, pero si necesitas explicar de manera detallada algunos aspectos de tu vida que te llevan al pecado, puedes solicitar Acompañamiento espiritual en la oficina parroquial.
+        {/* Modal Scrollable Body */}
+        <div className="confesion-modal-body">
+          {/* Hero Banner: Title, Subtitle, Biblical Quote & Sanctuary Environment */}
+          <div className="confesion-hero-card">
+            <div className="confesion-hero-badge">
+              {activeLang === 'en' ? 'Sacrament of Reconciliation' : 'Sacramento de la Reconciliación'}
+            </div>
+            <h3 className="confesion-hero-title">
+              {CONFESION_DATA.header.title[activeLang]}
+            </h3>
+            <p className="confesion-hero-sub">
+              {CONFESION_DATA.header.subtitle[activeLang]}
             </p>
+
+            <div className="confesion-biblical-box">
+              <span className="confesion-quote-mark">“</span>
+              <p className="confesion-quote-text">
+                {CONFESION_DATA.header.biblicalQuote.text[activeLang]}
+              </p>
+              <span className="confesion-quote-ref">
+                — {CONFESION_DATA.header.biblicalQuote.ref}
+              </span>
+            </div>
+
+            <div className="confesion-sanctuary-notice">
+              <span className="sanctuary-icon">🏛️</span>
+              <div>
+                <strong>{CONFESION_DATA.header.sanctuaryContext.title[activeLang]}:</strong>{" "}
+                {CONFESION_DATA.header.sanctuaryContext.text[activeLang]}
+              </div>
+            </div>
           </div>
 
-          <h4 style={{ color: 'var(--gold)', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '0.5rem', marginBottom: '1rem' }}>Examen de Conciencia</h4>
-          <p style={{ marginBottom: '1rem', fontSize: '0.9rem', color: 'var(--text-light)' }}>
-            A continuación, los Mandamientos de la Ley de Dios y algunas faltas que pueden ayudar a recordar:
-          </p>
-          
-          <ul style={{ listStyleType: 'none', padding: 0, margin: 0 }}>
-            <li style={{ marginBottom: '1.5rem' }}>
-              <strong style={{ color: 'var(--text-color)' }}>1°. Amarás a Dios sobre todas las cosas.</strong>
-              <ul style={{ listStyleType: 'circle', paddingLeft: '1.5rem', marginTop: '0.5rem', fontSize: '0.9rem' }}>
-                <li>Creo en amuletos, supersticiones, horóscopos o tarot.</li>
-                <li>Doy más importancia al trabajo, estudio, o diversión antes que a Dios (faltando a Misa en domingo).</li>
-                <li>Me olvido de orar o me avergüenzo de la fe.</li>
-              </ul>
-            </li>
-            <li style={{ marginBottom: '1.5rem' }}>
-              <strong style={{ color: 'var(--text-color)' }}>2°. No tomarás el nombre de Dios en vano.</strong>
-              <ul style={{ listStyleType: 'circle', paddingLeft: '1.5rem', marginTop: '0.5rem', fontSize: '0.9rem' }}>
-                <li>Uso el nombre de Dios, Jesús o María sin respeto. He jurado con mentira.</li>
-                <li>He faltado a alguna promesa o compromiso.</li>
-              </ul>
-            </li>
-            <li style={{ marginBottom: '1.5rem' }}>
-              <strong style={{ color: 'var(--text-color)' }}>3°. Santificarás las fiestas.</strong>
-              <ul style={{ listStyleType: 'circle', paddingLeft: '1.5rem', marginTop: '0.5rem', fontSize: '0.9rem' }}>
-                <li>He faltado a Misa los domingos o festivos por flojera.</li>
-                <li>He llegado tarde a Misa o salgo antes de que termine.</li>
-              </ul>
-            </li>
-            <li style={{ marginBottom: '1.5rem' }}>
-              <strong style={{ color: 'var(--text-color)' }}>4°. Honrarás a tu padre y a tu madre.</strong>
-              <ul style={{ listStyleType: 'circle', paddingLeft: '1.5rem', marginTop: '0.5rem', fontSize: '0.9rem' }}>
-                <li>He desobedecido, mentido o faltado al respeto a mis padres.</li>
-                <li>No les ayudo, no les muestro gratitud.</li>
-              </ul>
-            </li>
-            <li style={{ marginBottom: '1.5rem' }}>
-              <strong style={{ color: 'var(--text-color)' }}>5°. No matarás.</strong>
-              <ul style={{ listStyleType: 'circle', paddingLeft: '1.5rem', marginTop: '0.5rem', fontSize: '0.9rem' }}>
-                <li>He deseado la muerte o maltratado a otros.</li>
-                <li>Perjudico mi salud con excesos o expongo mi vida sin necesidad.</li>
-                <li>He dañado la vida de otros o practicado el aborto.</li>
-              </ul>
-            </li>
-            <li style={{ marginBottom: '1.5rem' }}>
-              <strong style={{ color: 'var(--text-color)' }}>6°. No cometerás actos impuros.</strong>
-              <ul style={{ listStyleType: 'circle', paddingLeft: '1.5rem', marginTop: '0.5rem', fontSize: '0.9rem' }}>
-                <li>He pensado, visto (pornografía) o compartido cosas deshonestas.</li>
-                <li>He cometido actos impuros solo o con otros.</li>
-                <li>He tenido relaciones sexuales sin estar casado.</li>
-              </ul>
-            </li>
-            <li style={{ marginBottom: '1.5rem' }}>
-              <strong style={{ color: 'var(--text-color)' }}>7°. No robarás.</strong>
-              <ul style={{ listStyleType: 'circle', paddingLeft: '1.5rem', marginTop: '0.5rem', fontSize: '0.9rem' }}>
-                <li>He robado, dañado o tomado cosas que no son mías.</li>
-                <li>He perdido el tiempo en el trabajo/estudio.</li>
-                <li>No he sido honesto en la administración de bienes.</li>
-              </ul>
-            </li>
-            <li style={{ marginBottom: '1.5rem' }}>
-              <strong style={{ color: 'var(--text-color)' }}>8°. No levantar falso testimonio ni mentir.</strong>
-              <ul style={{ listStyleType: 'circle', paddingLeft: '1.5rem', marginTop: '0.5rem', fontSize: '0.9rem' }}>
-                <li>He dicho mentiras, criticado o calumniado.</li>
-                <li>He divulgado pecados ajenos o sembrado discordia.</li>
-              </ul>
-            </li>
-            <li style={{ marginBottom: '1.5rem' }}>
-              <strong style={{ color: 'var(--text-color)' }}>9°. No consentirás pensamientos ni deseos impuros.</strong>
-              <ul style={{ listStyleType: 'circle', paddingLeft: '1.5rem', marginTop: '0.5rem', fontSize: '0.9rem' }}>
-                <li>He consentido deseos con una persona casada o cometido adulterio de pensamiento.</li>
-              </ul>
-            </li>
-            <li style={{ marginBottom: '1.5rem' }}>
-              <strong style={{ color: 'var(--text-color)' }}>10°. No codiciarás los bienes ajenos.</strong>
-              <ul style={{ listStyleType: 'circle', paddingLeft: '1.5rem', marginTop: '0.5rem', fontSize: '0.9rem' }}>
-                <li>He tenido envidia, deseo lo ajeno o he sido avaricioso.</li>
-              </ul>
-            </li>
-          </ul>
+          {/* Section: Oración Preparatoria (when tab is 'oraciones' or 'todos') */}
+          {(activeConfesionTab === 'oraciones' || activeConfesionTab === 'todos') && (
+            <div className="confesion-card prayer-card">
+              <div className="confesion-card-header">
+                <span className="confesion-card-icon">🙏</span>
+                <h4>{CONFESION_DATA.oracionPreparatoria.title[activeLang]}</h4>
+              </div>
+              <p className="confesion-prayer-body">
+                {CONFESION_DATA.oracionPreparatoria.text[activeLang]}
+              </p>
+            </div>
+          )}
 
-          <h4 style={{ color: 'var(--gold)', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '0.5rem', marginBottom: '1rem' }}>Mandamientos de la Iglesia</h4>
-          <p style={{ marginBottom: '1rem', fontSize: '0.9rem', color: 'var(--text-light)' }}>Es pecado no cumplirlos:</p>
-          <ol style={{ paddingLeft: '1.5rem', marginBottom: '2rem' }}>
-            <li>Participar en <strong>MISA</strong> entera los Domingos y Fiestas de guardar.</li>
-            <li><strong>CONFESARSE</strong> cuando menos una vez al año o cuando se ha de comulgar y no se está en gracia.</li>
-            <li><strong>COMULGAR</strong> por lo menos una vez al año, por Pascua de Resurrección.</li>
-            <li><strong>AYUNAR</strong> y abstenerse de comer carne cuando lo manda la Iglesia.</li>
-            <li>Aportar el <strong>DIEZMO</strong>. Contribuir económicamente al sostenimiento de la Iglesia.</li>
-          </ol>
+          {/* Section: 5 Pasos para una Buena Confesión */}
+          {(activeConfesionTab === 'pasos' || activeConfesionTab === 'todos') && (
+            <div className="confesion-section-group">
+              <div className="confesion-section-header">
+                <span className="confesion-section-badge">🕊️</span>
+                <h4>
+                  {activeLang === 'en' ? '5 Steps for a Good Confession' : 'Cinco Pasos para una Buena Confesión'}
+                </h4>
+              </div>
 
-          <h4 style={{ color: 'var(--gold)', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '0.5rem', marginBottom: '1rem' }}>Pecados Capitales</h4>
-          <ul style={{ paddingLeft: '1.5rem', marginBottom: '2rem' }}>
-            <li style={{ marginBottom: '0.5rem' }}><strong>Soberbia:</strong> Amor desordenado de nuestra propia excelencia. (Vanidad, Orgullo, Hipocresía).</li>
-            <li style={{ marginBottom: '0.5rem' }}><strong>Avaricia:</strong> Amor desordenado de los bienes materiales. Ambición.</li>
-            <li style={{ marginBottom: '0.5rem' }}><strong>Lujuria:</strong> Apetito de deleites carnales.</li>
-            <li style={{ marginBottom: '0.5rem' }}><strong>Ira:</strong> Acaloramiento de ánimo, deseo de venganza, odio.</li>
-            <li style={{ marginBottom: '0.5rem' }}><strong>Gula:</strong> Apetito desordenado en el comer y beber.</li>
-            <li style={{ marginBottom: '0.5rem' }}><strong>Envidia:</strong> Pesar por el bien ajeno, deseo desordenado por lo del otro.</li>
-            <li style={{ marginBottom: '0.5rem' }}><strong>Pereza:</strong> Decaimiento de ánimo en el buen obrar, pérdida de tiempo.</li>
-          </ul>
+              <div className="confesion-steps-grid">
+                {CONFESION_DATA.cincoPasos.map((step) => (
+                  <div key={step.number} className="confesion-step-card">
+                    <div className="step-header">
+                      <span className="step-number-bubble">{step.number}</span>
+                      <h5 className="step-title">{step.title[activeLang]}</h5>
+                    </div>
+                    <p className="step-summary">{step.summary[activeLang]}</p>
 
-          <h4 style={{ color: 'var(--gold)', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '0.5rem', marginBottom: '1rem', textAlign: 'center' }}>Oración Final</h4>
-          <p style={{ fontStyle: 'italic', textAlign: 'center', marginBottom: '2rem', fontSize: '1rem' }}>
-            Señor Jesús, me arrepiento sinceramente de haberte ofendido, porque eres infinitamente bueno, padeciste y moriste por mí clavado en la cruz, te amo con todo el corazón - y si no fuere cierto, concédeme que lo sea -, me propongo firmemente con tu ayuda y gracia no volver a pecar. Amén.
-          </p>
+                    {step.qualities && (
+                      <div className="step-qualities-box">
+                        <div className="step-qualities-label">
+                          {step.inPersonaChristi?.[activeLang]}
+                        </div>
+                        <div className="qualities-chips-row">
+                          {step.qualities.map((q) => (
+                            <div key={q.name.es} className="quality-card">
+                              <div className="quality-head">
+                                <span className="quality-icon">{q.icon}</span>
+                                <span className="quality-name">{q.name[activeLang]}</span>
+                              </div>
+                              <div className="quality-desc">{q.desc[activeLang]}</div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
 
+                    {step.pastoralNote && (
+                      <div className="step-pastoral-note">
+                        <span className="note-icon">📌</span>
+                        <p>{step.pastoralNote[activeLang]}</p>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Section: 10 Mandamientos de la Ley de Dios */}
+          {(activeConfesionTab === 'mandamientos' || activeConfesionTab === 'todos') && (
+            <div className="confesion-section-group">
+              <div className="confesion-section-header">
+                <span className="confesion-section-badge">📜</span>
+                <div>
+                  <h4>
+                    {activeLang === 'en' ? '10 Commandments of God' : '10 Mandamientos de la Ley de Dios'}
+                  </h4>
+                  <p className="confesion-section-desc">
+                    {activeLang === 'en' ? 'Examination of Conscience: reflect on each fault to prepare your heart.' : 'Examen de Conciencia: reflexiona en cada falta para disponer el corazón.'}
+                  </p>
+                </div>
+              </div>
+
+              <div className="confesion-mandamientos-grid">
+                {CONFESION_DATA.examenMandamientos.map((m) => (
+                  <div key={m.number} className="confesion-mandamiento-card">
+                    <div className="mandamiento-card-head">
+                      <span className="mandamiento-badge">{m.number}</span>
+                      <h5>{m.title[activeLang]}</h5>
+                    </div>
+                    <ul className="mandamiento-faltas-list">
+                      {m.faltas[activeLang].map((falta, fIdx) => (
+                        <li key={fIdx}>{falta}</li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Section: Mandamientos de la Iglesia */}
+          {(activeConfesionTab === 'iglesia' || activeConfesionTab === 'todos') && (
+            <div className="confesion-section-group">
+              <div className="confesion-section-header">
+                <span className="confesion-section-badge">⛪</span>
+                <div>
+                  <h4>{CONFESION_DATA.mandamientosIglesia.title[activeLang]}</h4>
+                  <span className="confesion-alert-badge">
+                    ⚠️ {CONFESION_DATA.mandamientosIglesia.warning[activeLang]}
+                  </span>
+                </div>
+              </div>
+
+              <div className="confesion-iglesia-grid">
+                {CONFESION_DATA.mandamientosIglesia.items.map((item) => (
+                  <div key={item.number} className="confesion-iglesia-card">
+                    <div className="iglesia-card-head">
+                      <span className="iglesia-badge">{item.number}º</span>
+                      <h5>{item.title[activeLang]}</h5>
+                    </div>
+                    <p className="iglesia-card-desc">{item.desc[activeLang]}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Section: Pecados Capitales */}
+          {(activeConfesionTab === 'capitales' || activeConfesionTab === 'todos') && (
+            <div className="confesion-section-group">
+              <div className="confesion-section-header">
+                <span className="confesion-section-badge">⚠️</span>
+                <div>
+                  <h4>{CONFESION_DATA.pecadosCapitales.title[activeLang]}</h4>
+                  <p className="confesion-section-desc">
+                    {activeLang === 'en' ? 'Recognize root vices and disorderly tendencies to confess them with sincerity.' : 'Reconoce las raíces del pecado y tendencias desordenadas para confesarlas con sincero dolor.'}
+                  </p>
+                </div>
+              </div>
+
+              <div className="confesion-capitales-grid">
+                {CONFESION_DATA.pecadosCapitales.items.map((sin) => (
+                  <div key={sin.number} className="confesion-capital-card">
+                    <div className="capital-card-head">
+                      <span className="capital-icon">{sin.icon}</span>
+                      <h5>{sin.name[activeLang]}</h5>
+                    </div>
+                    <p className="capital-definition">{sin.definition[activeLang]}</p>
+                    <div className="capital-manifestations">
+                      <strong>{activeLang === 'en' ? 'Manifestations / Sins:' : 'Manifestaciones / Faltas:'}</strong>
+                      <ul>
+                        {sin.manifestations[activeLang].map((man, mIdx) => (
+                          <li key={mIdx}>{man}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Section: Oración Final (Acto de Arrepentimiento) */}
+          {(activeConfesionTab === 'oraciones' || activeConfesionTab === 'todos') && (
+            <div className="confesion-card prayer-card final-prayer">
+              <div className="confesion-card-header">
+                <span className="confesion-card-icon">✨</span>
+                <h4>{CONFESION_DATA.oracionFinal.title[activeLang]}</h4>
+              </div>
+              <p className="confesion-prayer-body">
+                {CONFESION_DATA.oracionFinal.text[activeLang]}
+              </p>
+            </div>
+          )}
+
+          {/* Ecclesiastical Seal */}
+          <div className="confesion-seal">
+            <span className="seal-cross">✠</span>
+            <p>{CONFESION_DATA.sello[activeLang]}</p>
+          </div>
         </div>
       </GlobalModal>
 
