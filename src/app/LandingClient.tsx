@@ -6,18 +6,24 @@ import { fetchICalFeed } from "../utils/icalParser";
 import { ICAL_FEED_URL } from "../config";
 import AppleMusicLyrics from "./AppleMusicLyrics";
 import GlobalModal from '../components/GlobalModal';
-import { massResponses } from "./massResponses";
+import { massResponses, MEXICAN_SUNG_HYMNS } from "./massResponses";
+import type { MassReadingsResponse } from "./api/mass-readings/route";
 import { 
   oracionesComunidad, 
   oracionesBasicas, 
+  oracionesAlimentos,
+  getFoodPrayersDeck,
   getSantoRosarioDeck, 
   getMysteryTypeForDay, 
   MISTERIOS_DATA, 
   MysteryType, 
   RosaryVariant,
-  PrayerCard 
+  PrayerCard,
+  FoodPrayerDay 
 } from '../data/oracionesData';
+import MysteryArtworkIcon from '../components/RosarioArtworkIcons';
 import { CONFESION_DATA } from '../data/confesionData';
+import { calculateDeckHSL } from '../utils/deckColors';
 
 // ── SVG Icon Components ──
 const ClockIcon = () => (
@@ -735,6 +741,82 @@ export default function Landing() {
     }
   }, []);
 
+  // Global 450ms Long-Press Tooltip & Tactile Vibration Handler
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    let longPressTimer: NodeJS.Timeout | null = null;
+    let startX = 0;
+    let startY = 0;
+    let activeElement: HTMLElement | null = null;
+
+    const handleTouchStart = (e: TouchEvent) => {
+      const target = (e.target as HTMLElement)?.closest('[data-tooltip]') as HTMLElement;
+      if (!target) return;
+
+      if (longPressTimer) {
+        clearTimeout(longPressTimer);
+        longPressTimer = null;
+      }
+
+      activeElement = target;
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+
+      longPressTimer = setTimeout(() => {
+        if (typeof navigator !== 'undefined' && 'vibrate' in navigator && typeof navigator.vibrate === 'function') {
+          try {
+            navigator.vibrate([20]);
+          } catch {}
+        }
+        target.classList.add('tooltip-active');
+      }, 450);
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      if (!longPressTimer) return;
+      const currentX = e.touches[0].clientX;
+      const currentY = e.touches[0].clientY;
+      const distance = Math.hypot(currentX - startX, currentY - startY);
+
+      if (distance > 10) {
+        clearTimeout(longPressTimer);
+        longPressTimer = null;
+        if (activeElement) {
+          activeElement.classList.remove('tooltip-active');
+          activeElement = null;
+        }
+      }
+    };
+
+    const handleTouchEnd = () => {
+      if (longPressTimer) {
+        clearTimeout(longPressTimer);
+        longPressTimer = null;
+      }
+      if (activeElement) {
+        const el = activeElement;
+        setTimeout(() => {
+          el?.classList.remove('tooltip-active');
+        }, 1500);
+        activeElement = null;
+      }
+    };
+
+    document.addEventListener('touchstart', handleTouchStart, { passive: true });
+    document.addEventListener('touchmove', handleTouchMove, { passive: true });
+    document.addEventListener('touchend', handleTouchEnd, { passive: true });
+    document.addEventListener('touchcancel', handleTouchEnd, { passive: true });
+
+    return () => {
+      document.removeEventListener('touchstart', handleTouchStart);
+      document.removeEventListener('touchmove', handleTouchMove);
+      document.removeEventListener('touchend', handleTouchEnd);
+      document.removeEventListener('touchcancel', handleTouchEnd);
+      if (longPressTimer) clearTimeout(longPressTimer);
+    };
+  }, []);
+
   // Helper to update URL with clean query parameters without page refresh
   const setModalUrl = useCallback((
     modal: string | null, 
@@ -777,38 +859,89 @@ export default function Landing() {
   const [songs] = useState<Array<{ id: string; title: string; artist: string; lyrics: string }>>(defaultSongs);
 
   // Oraciones state & Deck Architecture
-  const [activeOracionDeck, setActiveOracionDeck] = useState<'comunidad' | 'basicas' | 'rosario'>('comunidad');
+  const [activeOracionDeck, setActiveOracionDeck] = useState<'comunidad' | 'basicas' | 'alimentos' | 'rosario'>('comunidad');
   const [activeOracionIdx, setActiveOracionIdx] = useState(0);
   const [selectedMysteryType, setSelectedMysteryType] = useState<MysteryType>(() => getMysteryTypeForDay());
   const [selectedRosaryVariant, setSelectedRosaryVariant] = useState<RosaryVariant>('mexicana');
+  const [activeRosarioSubDeck, setActiveRosarioSubDeck] = useState<'all' | 'opening' | 'mysteries' | 'concluding'>('all');
   const [decadeBeadsCount, setDecadeBeadsCount] = useState<number>(0);
+  const [openRepeatsState, setOpenRepeatsState] = useState<Record<string, boolean>>({});
   const [oracionTransition, setOracionTransition] = useState<{
     prevIdx: number | null;
     action: 'next' | 'prev' | null;
     isTransitioning: boolean;
   }>({ prevIdx: null, action: null, isTransitioning: false });
 
+  // Increment decade counter with native vibration feedback (25ms bead, 15-30-15ms completion)
+  const handleIncrementDecadeCounter = useCallback(() => {
+    setDecadeBeadsCount(prev => {
+      const next = (prev + 1) % 11; // 0 -> 1 -> ... -> 10 -> 0
+      if (typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function') {
+        try {
+          if (next === 10) {
+            navigator.vibrate([15, 30, 15]);
+          } else if (next > 0) {
+            navigator.vibrate([25]);
+          }
+        } catch {
+          // Ignore
+        }
+      }
+      return next;
+    });
+  }, []);
+
+  const toggleRepeatItem = useCallback((key: string) => {
+    setOpenRepeatsState(prev => ({
+      ...prev,
+      [key]: prev[key] === false ? true : false
+    }));
+  }, []);
+
+  const toggleAllRepeats = useCallback((cardId: string) => {
+    setOpenRepeatsState(prev => {
+      const keys = Object.keys(prev).filter(k => k.startsWith(cardId));
+      const anyClosed = keys.some(k => prev[k] === false);
+      const nextVal = anyClosed;
+      const updated = { ...prev };
+      for (let i = 0; i < 4; i++) {
+        updated[`${cardId}-rp-${i}`] = nextVal;
+      }
+      return updated;
+    });
+  }, []);
+
   // Get current active deck cards list
   const currentOracionesList = useMemo<PrayerCard[]>(() => {
     switch (activeOracionDeck) {
       case 'basicas':
         return oracionesBasicas;
+      case 'alimentos':
+        return getFoodPrayersDeck();
       case 'rosario':
-        return getSantoRosarioDeck(selectedMysteryType, selectedRosaryVariant);
+        return getSantoRosarioDeck(selectedMysteryType, selectedRosaryVariant, activeRosarioSubDeck);
       case 'comunidad':
       default:
         return oracionesComunidad;
     }
-  }, [activeOracionDeck, selectedMysteryType, selectedRosaryVariant]);
+  }, [activeOracionDeck, selectedMysteryType, selectedRosaryVariant, activeRosarioSubDeck]);
 
-  const DECKS_ORDER: Array<'comunidad' | 'basicas' | 'rosario'> = ['comunidad', 'basicas', 'rosario'];
+  const DECKS_ORDER: Array<'comunidad' | 'basicas' | 'alimentos' | 'rosario'> = ['comunidad', 'basicas', 'alimentos', 'rosario'];
+  const activeDeckIndex = useMemo(() => DECKS_ORDER.indexOf(activeOracionDeck), [activeOracionDeck]);
+  const activeDeckColorTone = useMemo(() => calculateDeckHSL(activeDeckIndex), [activeDeckIndex]);
 
-  const handleSwitchOracionDeck = (deck: 'comunidad' | 'basicas' | 'rosario') => {
+  const handleSwitchOracionDeck = (deck: 'comunidad' | 'basicas' | 'alimentos' | 'rosario') => {
     if (deck === activeOracionDeck) return;
     triggerHaptic('light');
     setActiveOracionDeck(deck);
-    setActiveOracionIdx(0);
     setDecadeBeadsCount(0);
+
+    let targetIdx = 0;
+    if (deck === 'alimentos') {
+      targetIdx = new Date().getDay(); // 0: Domingo, 1: Lunes, ..., 6: Sábado
+    }
+    setActiveOracionIdx(targetIdx);
+
     if (deck === 'rosario') {
       setSelectedMysteryType(getMysteryTypeForDay());
     }
@@ -816,7 +949,7 @@ export default function Landing() {
       deck,
       misterio: deck === 'rosario' ? selectedMysteryType : undefined,
       variante: deck === 'rosario' ? selectedRosaryVariant : undefined,
-      etapa: 1,
+      etapa: targetIdx + 1,
       lang: activeLang
     });
   };
@@ -864,15 +997,44 @@ export default function Landing() {
   };
 
   // Guía de Misa state
-  const GUIA_SECTIONS: Array<{ id: 'misterio' | 'respuestas' | 'liturgia' | 'biblia' | 'precepto'; title: string }> = [
+  type GuiaSectionId = 'lecturas' | 'respuestas' | 'cantos' | 'misterio' | 'liturgia' | 'biblia' | 'precepto';
+
+  const GUIA_SECTIONS: Array<{ id: GuiaSectionId; title: string }> = [
+    { id: 'lecturas', title: 'Lecturas del Día' },
+    { id: 'respuestas', title: 'Respuestas y Diálogos' },
+    { id: 'cantos', title: 'Cantos Litúrgicos' },
     { id: 'misterio', title: 'El Misterio Pascual' },
-    { id: 'respuestas', title: 'Respuestas y Posturas' },
     { id: 'liturgia', title: 'Año Litúrgico' },
     { id: 'biblia', title: 'Citas Bíblicas' },
     { id: 'precepto', title: 'Misas de Precepto' },
   ];
 
-  const [activeGuiaTab, setActiveGuiaTab] = useState<'misterio' | 'respuestas' | 'liturgia' | 'biblia' | 'precepto'>('misterio');
+  const [activeGuiaTab, setActiveGuiaTab] = useState<GuiaSectionId>('lecturas');
+  const [dailyReadings, setDailyReadings] = useState<MassReadingsResponse | null>(null);
+  const [isLoadingReadings, setIsLoadingReadings] = useState(false);
+  const [selectedMexicanHymn, setSelectedMexicanHymn] = useState<string>('gloriaMejia');
+
+  const fetchDailyReadings = useCallback(async (force = false) => {
+    if (dailyReadings && !force) return;
+    setIsLoadingReadings(true);
+    try {
+      const res = await fetch('/api/mass-readings');
+      if (res.ok) {
+        const data: MassReadingsResponse = await res.json();
+        setDailyReadings(data);
+      }
+    } catch (err) {
+      console.error('Error fetching daily mass readings:', err);
+    } finally {
+      setIsLoadingReadings(false);
+    }
+  }, [dailyReadings]);
+
+  useEffect(() => {
+    if (showGuiaMisa || activeGuiaTab === 'lecturas') {
+      fetchDailyReadings();
+    }
+  }, [showGuiaMisa, activeGuiaTab, fetchDailyReadings]);
   
   const handlePrevGuia = () => {
     const currentIdx = GUIA_SECTIONS.findIndex(s => s.id === activeGuiaTab);
@@ -926,7 +1088,8 @@ export default function Landing() {
       }
     } else if (modal === 'oraciones') {
       setShowOraciones(true);
-      if (deck && (deck === 'comunidad' || deck === 'basicas' || deck === 'rosario')) {
+      const isAlimentos = deck === 'alimentos';
+      if (deck && (deck === 'comunidad' || deck === 'basicas' || deck === 'alimentos' || deck === 'rosario')) {
         setActiveOracionDeck(deck);
       }
       if (misterio && ['gozosos', 'dolorosos', 'gloriosos', 'luminosos'].includes(misterio)) {
@@ -940,11 +1103,15 @@ export default function Landing() {
         if (!isNaN(parsedEtapa) && parsedEtapa >= 1) {
           setActiveOracionIdx(parsedEtapa - 1);
         }
+      } else if (isAlimentos || (!deck && activeOracionDeck === 'alimentos')) {
+        setActiveOracionIdx(new Date().getDay());
       }
     } else if (modal === 'guia') {
       setShowGuiaMisa(true);
       if (seccion && GUIA_SECTIONS.some(s => s.id === seccion)) {
         setActiveGuiaTab(seccion as any);
+      } else {
+        setActiveGuiaTab('lecturas');
       }
     } else if (modal === 'guia_misa_interactiva') {
       setShowAppleMusicGuia(true);
@@ -1001,10 +1168,11 @@ export default function Landing() {
   const [isClosingModal, setIsClosingModal] = useState<string | null>(null);
   const [bounceBtn, setBounceBtn] = useState<string | null>(null);
 
-  // Fidget-style touch tracking for active cards
+  // Fidget-style touch and mouse tracking for active cards
   const cardTouchStartX = useRef<number | null>(null);
   const cardTouchStartY = useRef<number | null>(null);
   const cardDragIntent = useRef<'horizontal' | 'vertical' | null>(null);
+  const isCardMouseDown = useRef<boolean>(false);
   const [cardDragX, setCardDragX] = useState(0);
 
   const handleCardTouchStart = (e: React.TouchEvent) => {
@@ -1042,14 +1210,14 @@ export default function Landing() {
       const thresholdX = 80; // 80px horizontal swipe threshold
       
       if (cardDragX > thresholdX) {
-        // Swipe right -> previous card
+        // Swipe right -> previous card (infinite modulo)
         if (modalType === 'cancionero') {
           handleSongNav(activeSongIdx - 1);
         } else {
           handleOracionNav(activeOracionIdx - 1);
         }
       } else if (cardDragX < -thresholdX) {
-        // Swipe left -> next card
+        // Swipe left -> next card (infinite modulo)
         if (modalType === 'cancionero') {
           handleSongNav(activeSongIdx + 1);
         } else {
@@ -1064,6 +1232,61 @@ export default function Landing() {
     cardTouchStartX.current = null;
     cardTouchStartY.current = null;
     cardDragIntent.current = null;
+    isCardMouseDown.current = false;
+  };
+
+  const handleCardMouseDown = (e: React.MouseEvent) => {
+    if (e.button !== 0) return; // Only left-click
+    cardTouchStartX.current = e.clientX;
+    cardTouchStartY.current = e.clientY;
+    cardDragIntent.current = null;
+    isCardMouseDown.current = true;
+    setCardDragX(0);
+  };
+
+  const handleCardMouseMove = (e: React.MouseEvent) => {
+    if (!isCardMouseDown.current || cardTouchStartX.current === null || cardTouchStartY.current === null) return;
+    const deltaX = e.clientX - cardTouchStartX.current;
+    const deltaY = e.clientY - cardTouchStartY.current;
+    if (!cardDragIntent.current) {
+      if (Math.abs(deltaX) > 8 || Math.abs(deltaY) > 8) {
+        cardDragIntent.current = Math.abs(deltaX) > Math.abs(deltaY) ? 'horizontal' : 'vertical';
+      }
+    }
+    if (cardDragIntent.current === 'horizontal') {
+      setCardDragX(deltaX);
+    }
+  };
+
+  const handleCardMouseUp = (modalType: string) => {
+    if (!isCardMouseDown.current) return;
+    isCardMouseDown.current = false;
+    handleCardTouchEnd(modalType);
+  };
+
+  // Deck Switcher Bar Swipe Navigation
+  const switcherTouchStartX = useRef<number | null>(null);
+  const isSwitcherDragging = useRef<boolean>(false);
+
+  const handleSwitcherTouchStart = (e: React.TouchEvent | React.MouseEvent) => {
+    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+    switcherTouchStartX.current = clientX;
+    isSwitcherDragging.current = true;
+  };
+
+  const handleSwitcherTouchEnd = (e: React.TouchEvent | React.MouseEvent) => {
+    if (!isSwitcherDragging.current || switcherTouchStartX.current === null) return;
+    const clientX = 'changedTouches' in e ? e.changedTouches[0].clientX : ('clientX' in e ? e.clientX : null);
+    if (clientX !== null) {
+      const deltaX = clientX - switcherTouchStartX.current;
+      if (deltaX < -35) {
+        handleNextDeck();
+      } else if (deltaX > 35) {
+        handlePrevDeck();
+      }
+    }
+    switcherTouchStartX.current = null;
+    isSwitcherDragging.current = false;
   };
 
   const closeModalWithAnimation = (modalType: string) => {
@@ -1380,7 +1603,43 @@ export default function Landing() {
         {/* Mobile Dropdown Overlay */}
         <div className={`nav-mobile-overlay ${mobileMenuOpen ? "open" : ""}`}>
           <ul className="nav-mobile-links">
-            <li><Link href="/calendario" onClick={() => setMobileMenuOpen(false)}>Eventos</Link></li>
+            <li><Link href="/calendario" onClick={() => setMobileMenuOpen(false)}>Eventos y Preceptos</Link></li>
+            <li>
+              <button 
+                type="button"
+                onClick={() => { setMobileMenuOpen(false); setModalUrl('guia'); triggerHaptic('medium'); }}
+                style={{ background: 'none', border: 'none', color: 'inherit', font: 'inherit', cursor: 'pointer', padding: 0, textAlign: 'left', width: '100%' }}
+              >
+                Guía de Misa y Lecturas
+              </button>
+            </li>
+            <li>
+              <button 
+                type="button"
+                onClick={() => { setMobileMenuOpen(false); setModalUrl('oraciones'); triggerHaptic('medium'); }}
+                style={{ background: 'none', border: 'none', color: 'inherit', font: 'inherit', cursor: 'pointer', padding: 0, textAlign: 'left', width: '100%' }}
+              >
+                Oraciones y Santo Rosario
+              </button>
+            </li>
+            <li>
+              <button 
+                type="button"
+                onClick={() => { setMobileMenuOpen(false); setModalUrl('cancionero'); triggerHaptic('medium'); }}
+                style={{ background: 'none', border: 'none', color: 'inherit', font: 'inherit', cursor: 'pointer', padding: 0, textAlign: 'left', width: '100%' }}
+              >
+                Cancionero de Horas Santas
+              </button>
+            </li>
+            <li>
+              <button 
+                type="button"
+                onClick={() => { setMobileMenuOpen(false); setModalUrl('confesion'); triggerHaptic('medium'); }}
+                style={{ background: 'none', border: 'none', color: 'inherit', font: 'inherit', cursor: 'pointer', padding: 0, textAlign: 'left', width: '100%' }}
+              >
+                Guía de Confesión
+              </button>
+            </li>
             <li><Link href="/donaciones" onClick={() => setMobileMenuOpen(false)}>Donaciones</Link></li>
             <li className="nav-mobile-social-row">
               <a href="https://instagram.com/lapandilladejesusqro" target="_blank" rel="noopener noreferrer" className="nav-mobile-social-icon" title="Instagram">
@@ -2033,33 +2292,112 @@ export default function Landing() {
         isClosing={isClosingModal === 'oraciones'}
         onClose={() => closeModalWithAnimation('oraciones')}
         className="deck-modal-layout"
+        headerAction={
+          activeOracionDeck === 'rosario' ? (
+            <button
+              type="button"
+              className="rosario-top-counter-btn"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleIncrementDecadeCounter();
+              }}
+              aria-label={activeLang === 'en' ? `Decade bead counter: ${decadeBeadsCount} of 10` : `Contador de cuentas del misterio: ${decadeBeadsCount} de 10`}
+              title={activeLang === 'en' ? `Decade counter: ${decadeBeadsCount}/10 (Tap to count)` : `Contador de cuentas: ${decadeBeadsCount}/10 (Toca para contar)`}
+            >
+              <span className="rosario-top-counter-icon">📿</span>
+              <span className="rosario-top-counter-value">{decadeBeadsCount}/10</span>
+              {decadeBeadsCount === 10 && <span className="rosario-top-counter-badge">✓</span>}
+            </button>
+          ) : undefined
+        }
+        style={{
+          ['--deck-active-hsl' as any]: activeDeckColorTone.hslString,
+          ['--deck-active-gradient' as any]: activeDeckColorTone.gradientString,
+          ['--deck-active-border' as any]: activeDeckColorTone.accentBorder,
+          ['--deck-active-badge-bg' as any]: activeDeckColorTone.badgeBg,
+          ['--deck-active-badge-text' as any]: activeDeckColorTone.badgeText,
+          ['--deck-active-indicator' as any]: activeDeckColorTone.indicatorActive,
+          ...activeDeckColorTone.cssVariables,
+        }}
       >
         {/* Top Control Bar with Deck Switcher & Non-Overlapping Language Toggle */}
         <div className="oracion-top-bar">
-          <div className="oracion-deck-switcher-bar">
+          <div 
+            className="oracion-deck-switcher-bar"
+            style={{
+              borderColor: activeDeckColorTone.accentBorder,
+              boxShadow: `0 2px 8px ${activeDeckColorTone.badgeBg}`,
+            }}
+            onTouchStart={handleSwitcherTouchStart}
+            onTouchEnd={handleSwitcherTouchEnd}
+            onMouseDown={handleSwitcherTouchStart}
+            onMouseUp={handleSwitcherTouchEnd}
+          >
             <button 
               type="button"
               className="deck-switch-arrow-btn"
               onClick={handlePrevDeck}
+              style={{ color: activeDeckColorTone.hslString }}
               aria-label={activeLang === 'en' ? "Previous deck" : "Mazo anterior"}
               title={activeLang === 'en' ? "Previous deck" : "Mazo anterior"}
             >
               ◀
             </button>
             <div className="deck-switch-info">
-              <span className="deck-switch-badge">
-                {activeLang === 'en' ? `Deck ${DECKS_ORDER.indexOf(activeOracionDeck) + 1}/3` : `Mazo ${DECKS_ORDER.indexOf(activeOracionDeck) + 1}/3`}
+              <span 
+                className="deck-switch-badge"
+                style={{
+                  background: activeDeckColorTone.badgeBg,
+                  color: activeDeckColorTone.badgeText,
+                }}
+              >
+                {activeLang === 'en' ? `Deck ${activeDeckIndex + 1}/${DECKS_ORDER.length}` : `Mazo ${activeDeckIndex + 1}/${DECKS_ORDER.length}`}
               </span>
               <span className="deck-switch-title">
                 {activeOracionDeck === 'comunidad' && (activeLang === 'en' ? "Community Prayers" : "Oraciones de la Comunidad")}
                 {activeOracionDeck === 'basicas' && (activeLang === 'en' ? "Basic Prayers" : "Oraciones Básicas")}
+                {activeOracionDeck === 'alimentos' && (activeLang === 'en' ? "Food & Meal Prayers" : "Bendición de Alimentos")}
                 {activeOracionDeck === 'rosario' && (activeLang === 'en' ? `Holy Rosary (${MISTERIOS_DATA[selectedMysteryType].nameEn || MISTERIOS_DATA[selectedMysteryType].name})` : `Santo Rosario (${MISTERIOS_DATA[selectedMysteryType].name})`)}
               </span>
+              <div className="deck-switch-indicators" role="tablist" aria-label="Deck navigation indicators">
+                {DECKS_ORDER.map((deckName, dIdx) => {
+                  const isCurrent = dIdx === activeDeckIndex;
+                  const tone = calculateDeckHSL(dIdx);
+                  const deckLabels: Record<typeof deckName, { es: string; en: string }> = {
+                    comunidad: { es: 'Comunidad', en: 'Community' },
+                    basicas: { es: 'Básicas', en: 'Basics' },
+                    alimentos: { es: 'Alimentos', en: 'Food' },
+                    rosario: { es: 'Rosario', en: 'Rosary' }
+                  };
+                  const label = activeLang === 'en' ? deckLabels[deckName].en : deckLabels[deckName].es;
+
+                  return (
+                    <button
+                      key={deckName}
+                      type="button"
+                      role="tab"
+                      aria-selected={isCurrent}
+                      className={`deck-indicator-dot ${isCurrent ? 'active' : ''}`}
+                      style={{
+                        backgroundColor: isCurrent ? tone.hslString : 'rgba(92, 61, 46, 0.25)',
+                        borderColor: isCurrent ? tone.accentBorder : 'transparent'
+                      }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleSwitchOracionDeck(deckName);
+                      }}
+                      aria-label={`${activeLang === 'en' ? 'Go to deck' : 'Ir al mazo'} ${label}`}
+                      title={label}
+                    />
+                  );
+                })}
+              </div>
             </div>
             <button 
               type="button"
               className="deck-switch-arrow-btn"
               onClick={handleNextDeck}
+              style={{ color: activeDeckColorTone.hslString }}
               aria-label={activeLang === 'en' ? "Next deck" : "Siguiente mazo"}
               title={activeLang === 'en' ? "Next deck" : "Siguiente mazo"}
             >
@@ -2090,8 +2428,44 @@ export default function Landing() {
           </button>
         </div>
 
+        {/* Dedicated Sub-Deck Switcher for Holy Rosary */}
+        {activeOracionDeck === 'rosario' && (
+          <div className="rosario-subdeck-chips-bar" onClick={(e) => e.stopPropagation()}>
+            {[
+              { id: 'all', labelEs: 'Completo', labelEn: 'Complete (All)' },
+              { id: 'opening', labelEs: '1. Iniciales', labelEn: '1. Opening' },
+              { id: 'mysteries', labelEs: '2. 5 Misterios', labelEn: '2. 5 Mysteries' },
+              { id: 'concluding', labelEs: '3. Finales', labelEn: '3. Concluding' }
+            ].map((sub) => {
+              const isSelected = activeRosarioSubDeck === sub.id;
+              return (
+                <button
+                  key={sub.id}
+                  type="button"
+                  className={`rosario-subdeck-chip-btn ${isSelected ? 'selected' : ''}`}
+                  onClick={() => {
+                    triggerHaptic('light');
+                    setActiveRosarioSubDeck(sub.id as any);
+                    setActiveOracionIdx(0);
+                    setDecadeBeadsCount(0);
+                  }}
+                >
+                  {activeLang === 'en' ? sub.labelEn : sub.labelEs}
+                </button>
+              );
+            })}
+          </div>
+        )}
+
         <div className="recursos-modal-body">
-          <div className="stacked-deck-container">
+          <div 
+            className="stacked-deck-container"
+            style={{
+              ['--deck-active-hsl' as any]: activeDeckColorTone.hslString,
+              ['--deck-active-gradient' as any]: activeDeckColorTone.gradientString,
+              ['--deck-active-border' as any]: activeDeckColorTone.accentBorder,
+            }}
+          >
             {currentOracionesList.map((oracion, idx) => {
               let cardClass = "stacked-card";
               const { prevIdx, action, isTransitioning } = oracionTransition;
@@ -2117,24 +2491,33 @@ export default function Landing() {
               const diff = (idx - activeOracionIdx + N) % N;
               const isActive = diff === 0 && !isTransitioning;
 
-              const activeCardStyle = isActive && (cardDragX !== 0) ? {
-                transform: `translate3d(${cardDragX}px, 0, 0) rotate(${cardDragX * 0.04}deg) scale(1)`,
-                boxShadow: '0 24px 48px rgba(45, 27, 14, 0.22), 0 8px 18px rgba(45, 27, 14, 0.12)',
-                zIndex: 20,
-                transition: 'none'
-              } : (isActive && cardDragX === 0 ? {
-                transition: 'transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.35s ease'
-              } : undefined);
+              const activeCardStyle: React.CSSProperties = {
+                ...(isActive && (cardDragX !== 0) ? {
+                  transform: `translate3d(${cardDragX}px, 0, 0) rotate(${cardDragX * 0.04}deg) scale(1)`,
+                  boxShadow: '0 24px 48px rgba(45, 27, 14, 0.22), 0 8px 18px rgba(45, 27, 14, 0.12)',
+                  zIndex: 20,
+                  transition: 'none',
+                  cursor: 'grabbing'
+                } : (isActive && cardDragX === 0 ? {
+                  transition: 'transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.35s ease, border-color 0.3s ease',
+                  cursor: 'grab'
+                } : {})),
+                borderTop: `3px solid ${activeDeckColorTone.hslString}`,
+              };
               
               return (
                 <div 
                   key={oracion.id || idx} 
                   className={cardClass}
-                  style={activeCardStyle || undefined}
+                  style={activeCardStyle}
                   onTouchStart={isActive ? handleCardTouchStart : undefined}
                   onTouchMove={isActive ? handleCardTouchMove : undefined}
                   onTouchEnd={isActive ? () => handleCardTouchEnd('oraciones') : undefined}
                   onTouchCancel={isActive ? () => handleCardTouchEnd('oraciones') : undefined}
+                  onMouseDown={isActive ? handleCardMouseDown : undefined}
+                  onMouseMove={isActive ? handleCardMouseMove : undefined}
+                  onMouseUp={isActive ? () => handleCardMouseUp('oraciones') : undefined}
+                  onMouseLeave={isActive ? () => handleCardMouseUp('oraciones') : undefined}
                 >
                   <h4>{oracion.titleEn && activeLang === 'en' ? oracion.titleEn : oracion.title}</h4>
                   {oracion.subtitle && (
@@ -2252,38 +2635,161 @@ export default function Landing() {
                       {/* Visual Guide Rosary Diagram Card */}
                       {oracion.isRosaryGuide && <RosaryVisualDiagram />}
 
-                      {/* Decade Beads Interactive Tracker for Rosary Mysteries */}
-                      {oracion.isMysteryCard && (
-                        <div className="rosario-beads-container" onClick={(e) => e.stopPropagation()}>
-                          <div className="rosario-beads-title">{activeLang === 'en' ? 'Decade: 10 Hail Marys' : 'Decena: 10 Ave Marías'}</div>
-                          <div className="rosario-beads-row">
-                            {Array.from({ length: 10 }).map((_, bIdx) => {
-                              const isDone = bIdx < decadeBeadsCount;
-                              return (
-                                <button
-                                  key={bIdx}
-                                  type="button"
-                                  className={`rosario-bead ${isDone ? 'completed' : ''}`}
-                                  onClick={() => {
-                                    setDecadeBeadsCount(bIdx + 1 === decadeBeadsCount ? bIdx : bIdx + 1);
-                                    triggerHaptic('light');
-                                  }}
-                                  title={`Ave María ${bIdx + 1}`}
-                                >
-                                  {bIdx + 1}
-                                </button>
-                              );
-                            })}
+                      {/* 5-Element Mystery Card Structure */}
+                      {oracion.isMysteryCard ? (
+                        <div className="rosario-mystery-5elements-container">
+                          {/* Element 1: Curated SVG Artwork / Indicator */}
+                          <div className="rosario-artwork-container">
+                            <MysteryArtworkIcon iconKey={oracion.image} size={56} />
+                            <span className="rosario-artwork-caption">
+                              {activeLang === 'en' 
+                                ? `Mystery ${oracion.mysteryNumber || ''}` 
+                                : `Misterio ${oracion.mysteryNumber || ''}`}
+                            </span>
                           </div>
-                          <span className="rosario-bead-counter-text">
-                            {activeLang === 'en' ? `${decadeBeadsCount} of 10 prayed` : `${decadeBeadsCount} de 10 rezadas`}
-                          </span>
+
+                          {/* Element 2: Scriptural Citation Reference */}
+                          {oracion.biblicalRef && (
+                            <div className="rosario-element-section rosario-element-citation">
+                              <span className="rosario-element-badge">
+                                📖 {activeLang === 'en' ? 'Biblical Citation' : 'Cita Bíblica'}
+                              </span>
+                              <span className="rosario-citation-text">{oracion.biblicalRef}</span>
+                            </div>
+                          )}
+
+                          {/* Element 3: Direct Scripture Text */}
+                          {(oracion.scriptureText || oracion.scriptureTextEn) && (
+                            <div className="rosario-element-section rosario-element-scripture">
+                              <span className="rosario-element-badge">
+                                📜 {activeLang === 'en' ? 'Scripture Reading' : 'Lectura de la Palabra'}
+                              </span>
+                              <blockquote className="rosario-scripture-quote">
+                                «{activeLang === 'en' && oracion.scriptureTextEn ? oracion.scriptureTextEn : oracion.scriptureText}»
+                              </blockquote>
+                            </div>
+                          )}
+
+                          {/* Element 4: Deep Meditation */}
+                          {(oracion.mysteryMeditation || oracion.mysteryMeditationEn) && (
+                            <div className="rosario-element-section rosario-element-meditation">
+                              <span className="rosario-element-badge">
+                                🕊️ {activeLang === 'en' ? 'Contemplative Meditation' : 'Meditación Contemplativa'}
+                              </span>
+                              <p className="rosario-meditation-text">
+                                {activeLang === 'en' && oracion.mysteryMeditationEn ? oracion.mysteryMeditationEn : oracion.mysteryMeditation}
+                              </p>
+                            </div>
+                          )}
+
+                          {/* Element 5: Reflection Question for the Decade */}
+                          {(oracion.reflectionQuestion || oracion.reflectionQuestionEn) && (
+                            <div className="rosario-element-section rosario-element-reflection">
+                              <span className="rosario-element-badge">
+                                💭 {activeLang === 'en' ? 'Decade Reflection Question' : 'Pregunta de Reflexión para la Decena'}
+                              </span>
+                              <p className="rosario-reflection-question">
+                                {activeLang === 'en' && oracion.reflectionQuestionEn ? oracion.reflectionQuestionEn : oracion.reflectionQuestion}
+                              </p>
+                            </div>
+                          )}
+
+                          {/* Decade Beads Interactive Tracker */}
+                          <div className="rosario-beads-container" onClick={(e) => e.stopPropagation()}>
+                            <div className="rosario-beads-title">
+                              {activeLang === 'en' ? 'Decade Beads (10 Hail Marys)' : 'Cuentas de la Decena (10 Ave Marías)'}
+                            </div>
+                            <div className="rosario-beads-row">
+                              {Array.from({ length: 10 }).map((_, bIdx) => {
+                                const isDone = bIdx < decadeBeadsCount;
+                                return (
+                                  <button
+                                    key={bIdx}
+                                    type="button"
+                                    className={`rosario-bead ${isDone ? 'completed' : ''}`}
+                                    onClick={() => {
+                                      const nextVal = bIdx + 1 === decadeBeadsCount ? bIdx : bIdx + 1;
+                                      setDecadeBeadsCount(nextVal);
+                                      if (typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function') {
+                                        try {
+                                          if (nextVal === 10) {
+                                            navigator.vibrate([15, 30, 15]);
+                                          } else if (nextVal > 0) {
+                                            navigator.vibrate([25]);
+                                          }
+                                        } catch {
+                                          // Ignore
+                                        }
+                                      }
+                                    }}
+                                    title={`Ave María ${bIdx + 1}`}
+                                  >
+                                    {bIdx + 1}
+                                  </button>
+                                );
+                              })}
+                            </div>
+                            <span className="rosario-bead-counter-text">
+                              {activeLang === 'en' ? `${decadeBeadsCount} of 10 prayed` : `${decadeBeadsCount} de 10 rezadas`}
+                            </span>
+                          </div>
+
+                          {/* Collapsible Nested Repeats Accordion (Padre Nuestro, 10 Ave Marías, Gloria, Jaculatorias) */}
+                          {oracion.repeatedPrayers && oracion.repeatedPrayers.length > 0 && (
+                            <div className="rosario-repeats-accordion" onClick={(e) => e.stopPropagation()}>
+                              <div className="rosario-repeats-header">
+                                <span className="rosario-repeats-header-title">
+                                  📿 {activeLang === 'en' ? 'Decade Prayers (Untruncated)' : 'Oraciones de la Decena (Completas)'}
+                                </span>
+                                <button
+                                  type="button"
+                                  className="rosario-repeats-toggle-all-btn"
+                                  onClick={() => toggleAllRepeats(oracion.id || `m-${idx}`)}
+                                >
+                                  {activeLang === 'en' ? 'Toggle All' : 'Plegar / Desplegar'}
+                                </button>
+                              </div>
+
+                              <div className="rosario-repeats-list">
+                                {oracion.repeatedPrayers.map((rp, rpIdx) => {
+                                  const itemKey = `${oracion.id || idx}-rp-${rpIdx}`;
+                                  const isOpen = openRepeatsState[itemKey] !== false;
+
+                                  return (
+                                    <div key={rpIdx} className={`rosario-repeat-item ${isOpen ? 'open' : 'collapsed'}`}>
+                                      <button
+                                        type="button"
+                                        className="rosario-repeat-item-header"
+                                        onClick={() => toggleRepeatItem(itemKey)}
+                                        aria-expanded={isOpen}
+                                      >
+                                        <div className="rosario-repeat-item-info">
+                                          <span className="rosario-repeat-pill">{rp.count > 1 ? `x${rp.count}` : 'x1'}</span>
+                                          <span className="rosario-repeat-item-title">
+                                            {activeLang === 'en' && rp.titleEn ? rp.titleEn : rp.title}
+                                          </span>
+                                        </div>
+                                        <span className={`rosario-repeat-arrow ${isOpen ? 'open' : ''}`}>▼</span>
+                                      </button>
+                                      {isOpen && (
+                                        <div className="rosario-repeat-item-body">
+                                          <p className="rosario-repeat-text">
+                                            {activeLang === 'en' && rp.textEn ? rp.textEn : rp.text}
+                                          </p>
+                                        </div>
+                                      )}
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="oracion-card-body-text" style={{ whiteSpace: 'pre-wrap' }}>
+                          {(oracion.textEn && activeLang === 'en' ? oracion.textEn : oracion.text)}
                         </div>
                       )}
-
-                      <div className="oracion-card-body-text" style={{ whiteSpace: 'pre-wrap' }}>
-                        {(oracion.textEn && activeLang === 'en' ? oracion.textEn : oracion.text)}
-                      </div>
                     </>
                   )}
                 </div>
@@ -2331,7 +2837,7 @@ export default function Landing() {
               ◀
             </button>
             <div className="deck-switch-info">
-              <span className="deck-switch-badge">Sección {GUIA_SECTIONS.findIndex(s => s.id === activeGuiaTab) + 1}/5</span>
+              <span className="deck-switch-badge">Sección {GUIA_SECTIONS.findIndex(s => s.id === activeGuiaTab) + 1}/{GUIA_SECTIONS.length}</span>
               <span className="deck-switch-title">
                 {GUIA_SECTIONS.find(s => s.id === activeGuiaTab)?.title}
               </span>
@@ -2349,26 +2855,254 @@ export default function Landing() {
         </div>
 
         <div className="recursos-modal-body">
-          {activeGuiaTab === 'respuestas' && (
-            <div className="guia-content-panel" style={{ textAlign: 'center', padding: '1.5rem 0.5rem' }}>
-              <h4>Respuestas y Posturas de la Misa</h4>
-              <p style={{ marginBottom: '1.5rem', lineHeight: 1.6 }}>
-                Sigue cada diálogo sacerdote-asamblea y las posturas litúrgicas (de pie, sentados, de rodillas) con nuestra guía interactiva paso a paso.
-              </p>
+          {/* Quick tab switcher pills */}
+          <div className="guia-tabs">
+            {GUIA_SECTIONS.map((sec) => (
               <button
+                key={sec.id}
                 type="button"
-                className="recursos-btn btn-guia"
-                style={{ margin: '0 auto', maxWidth: '320px', display: 'inline-flex', padding: '1rem 1.75rem', justifyContent: 'center', fontSize: '0.95rem' }}
+                className={`guia-tab-btn ${activeGuiaTab === sec.id ? 'active' : ''}`}
                 onClick={() => {
-                  const slug = massResponses[activeMisaSectionIdx]?.title?.es?.toLowerCase().replace(/\s+/g, '-') || 'introductory-rites';
-                  setModalUrl('guia_misa_interactiva', { seccion: slug });
+                  setActiveGuiaTab(sec.id);
+                  setModalUrl('guia', { seccion: sec.id });
+                  triggerHaptic('light');
                 }}
               >
-                Abrir Modo Interactivo (Lyrics) ▶
+                {sec.title}
               </button>
+            ))}
+          </div>
+
+          {/* TAB 1: Lecturas del Día (Live Scraper) */}
+          {activeGuiaTab === 'lecturas' && (
+            <div className="guia-content-panel">
+              <div className="lecturas-header-banner">
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
+                  <h4 className="lecturas-day-title" style={{ margin: 0, border: 'none', padding: 0 }}>
+                    {dailyReadings?.liturgicalDay || 'Liturgia Cotidiana de la Palabra'}
+                  </h4>
+                  <button
+                    type="button"
+                    onClick={() => fetchDailyReadings(true)}
+                    disabled={isLoadingReadings}
+                    style={{ background: 'var(--surface-card, #fff)', border: '1px solid var(--gold)', borderRadius: '4px', padding: '0.25rem 0.6rem', fontSize: '0.78rem', color: 'var(--text-dark)', cursor: 'pointer', fontWeight: 600 }}
+                    title="Actualizar lecturas de hoy"
+                  >
+                    {isLoadingReadings ? 'Cargando...' : '↻ Actualizar'}
+                  </button>
+                </div>
+                {dailyReadings?.saint && (
+                  <div className="lecturas-saint-badge">
+                    <span>✝</span> {dailyReadings.saint}
+                  </div>
+                )}
+                {dailyReadings?.isFallback && (
+                  <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>
+                    (Liturgia común / modo sin conexión)
+                  </div>
+                )}
+              </div>
+
+              {isLoadingReadings && !dailyReadings ? (
+                <div style={{ padding: '2.5rem', textAlign: 'center', color: 'var(--gold-dark)' }}>
+                  <p style={{ fontWeight: 600 }}>Cargando la Liturgia de la Palabra de hoy...</p>
+                </div>
+              ) : (
+                <div className="lecturas-container">
+                  {/* Primera Lectura */}
+                  <div className="lecturas-reading-card">
+                    <div className="lecturas-card-header">
+                      <span className="lecturas-card-label">Primera Lectura</span>
+                      <span className="lecturas-citation">{dailyReadings?.firstReading?.citation || 'Primera Lectura'}</span>
+                    </div>
+                    <div className="lecturas-text">
+                      {dailyReadings?.firstReading?.text}
+                    </div>
+                    <div className="lecturas-acclamation">
+                      Palabra de Dios. — <strong>Te alabamos, Señor.</strong>
+                    </div>
+                  </div>
+
+                  {/* Salmo Responsorial */}
+                  <div className="lecturas-reading-card">
+                    <div className="lecturas-card-header">
+                      <span className="lecturas-card-label">Salmo Responsorial</span>
+                      <span className="lecturas-citation">{dailyReadings?.psalm?.citation || 'Salmo'}</span>
+                    </div>
+                    {dailyReadings?.psalm?.response && (
+                      <div className="lecturas-response-box">
+                        <strong>R.</strong> {dailyReadings.psalm.response}
+                      </div>
+                    )}
+                    <div className="lecturas-text">
+                      {dailyReadings?.psalm?.text}
+                    </div>
+                  </div>
+
+                  {/* Segunda Lectura (si existe en domingos/solemnidades) */}
+                  {dailyReadings?.secondReading && (
+                    <div className="lecturas-reading-card">
+                      <div className="lecturas-card-header">
+                        <span className="lecturas-card-label">Segunda Lectura</span>
+                        <span className="lecturas-citation">{dailyReadings.secondReading.citation}</span>
+                      </div>
+                      <div className="lecturas-text">
+                        {dailyReadings.secondReading.text}
+                      </div>
+                      <div className="lecturas-acclamation">
+                        Palabra de Dios. — <strong>Te alabamos, Señor.</strong>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Santo Evangelio */}
+                  <div className="lecturas-reading-card" style={{ borderColor: 'rgba(212, 160, 23, 0.5)', background: 'rgba(255, 252, 245, 0.95)' }}>
+                    <div className="lecturas-card-header">
+                      <span className="lecturas-card-label" style={{ color: 'var(--gold-dark)', fontWeight: 800 }}>✠ Santo Evangelio</span>
+                      <span className="lecturas-citation">{dailyReadings?.gospel?.citation || 'Santo Evangelio'}</span>
+                    </div>
+                    <div className="lecturas-text" style={{ fontWeight: 500 }}>
+                      {dailyReadings?.gospel?.text}
+                    </div>
+                    <div className="lecturas-acclamation">
+                      Palabra del Señor. — <strong>Gloria a ti, Señor Jesús.</strong>
+                    </div>
+                  </div>
+
+                  {/* Meditación Patrística */}
+                  {dailyReadings?.meditation && (
+                    <div className="lecturas-reading-card" style={{ background: 'rgba(245, 240, 232, 0.6)' }}>
+                      <div className="lecturas-card-header">
+                        <span className="lecturas-card-label">Meditación y Reflexión</span>
+                        <span className="lecturas-citation" style={{ fontSize: '0.85rem' }}>{dailyReadings.meditation.author}</span>
+                      </div>
+                      <div className="lecturas-text" style={{ fontStyle: 'italic', fontSize: '0.88rem' }}>
+                        «{dailyReadings.meditation.text}»
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           )}
 
+          {/* TAB 2: Respuestas y Diálogos de la Misa */}
+          {activeGuiaTab === 'respuestas' && (
+            <div className="guia-content-panel">
+              <h4>Respuestas y Diálogos de la Santa Misa</h4>
+              <p style={{ marginBottom: '1.25rem', lineHeight: 1.6 }}>
+                Sigue cada diálogo entre el celebrante y la asamblea, las oraciones privadas del sacerdote y las posturas litúrgicas (de pie, sentados, de rodillas) estructuradas en los 5 momentos del Misal Romano:
+              </p>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem', marginBottom: '1.5rem' }}>
+                {massResponses.map((sec, sIdx) => (
+                  <div 
+                    key={sIdx}
+                    style={{ 
+                      background: 'var(--surface-card, #fdfbf7)', 
+                      border: '1px solid var(--border-subtle)', 
+                      borderRadius: 'var(--radius-xs)', 
+                      padding: '0.85rem 1rem',
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      gap: '0.5rem',
+                      flexWrap: 'wrap'
+                    }}
+                  >
+                    <div>
+                      <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--gold-dark)', textTransform: 'uppercase' }}>
+                        Parte {sIdx + 1} de {massResponses.length}
+                      </span>
+                      <h5 style={{ margin: '0.15rem 0 0', fontSize: '1rem', color: 'var(--text-dark)' }}>
+                        {sec.title[guiaLang]}
+                      </h5>
+                      <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                        {sec.parts.length} momentos litúrgicos
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      className="recursos-btn btn-guia"
+                      style={{ padding: '0.45rem 0.9rem', fontSize: '0.82rem', borderRadius: 'var(--radius-xs)', display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
+                      onClick={() => {
+                        setActiveMisaSectionIdx(sIdx);
+                        const slug = sec.title.es.toLowerCase().replace(/\s+/g, '-');
+                        setModalUrl('guia_misa_interactiva', { seccion: slug });
+                      }}
+                    >
+                      Abrir en Letras ▶
+                    </button>
+                  </div>
+                ))}
+              </div>
+
+              <div style={{ textAlign: 'center', padding: '0.5rem 0' }}>
+                <button
+                  type="button"
+                  className="recursos-btn btn-guia"
+                  style={{ margin: '0 auto', maxWidth: '340px', display: 'inline-flex', padding: '0.9rem 1.6rem', justifyContent: 'center', fontSize: '0.95rem', fontWeight: 700 }}
+                  onClick={() => {
+                    setActiveMisaSectionIdx(0);
+                    const slug = massResponses[0]?.title?.es?.toLowerCase().replace(/\s+/g, '-') || 'ritos-iniciales';
+                    setModalUrl('guia_misa_interactiva', { seccion: slug });
+                  }}
+                >
+                  Abrir Modo Interactivo Completo ▶
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* TAB 3: Cantos Litúrgicos Mexicanos */}
+          {activeGuiaTab === 'cantos' && (
+            <div className="guia-content-panel">
+              <h4>Cantos Litúrgicos Mexicanos</h4>
+              <p style={{ marginBottom: '1rem', lineHeight: 1.6 }}>
+                Versiones cantadas tradicionales de la liturgia en México (música de Alejandro Mejía y tradición litúrgica nacional):
+              </p>
+
+              <div className="cantos-selector-grid">
+                {Object.entries(MEXICAN_SUNG_HYMNS).map(([key, hymn]) => (
+                  <button
+                    key={key}
+                    type="button"
+                    className={`canto-select-btn ${selectedMexicanHymn === key ? 'active' : ''}`}
+                    onClick={() => {
+                      setSelectedMexicanHymn(key);
+                      triggerHaptic('light');
+                    }}
+                  >
+                    {hymn.title}
+                  </button>
+                ))}
+              </div>
+
+              {MEXICAN_SUNG_HYMNS[selectedMexicanHymn] && (
+                <div className="canto-lyrics-card">
+                  <div className="canto-card-meta">
+                    <div>
+                      <h5 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--text-dark)' }}>
+                        {MEXICAN_SUNG_HYMNS[selectedMexicanHymn].title}
+                      </h5>
+                      <span className="canto-composer-tag">
+                        Compositor: {MEXICAN_SUNG_HYMNS[selectedMexicanHymn].composer}
+                      </span>
+                    </div>
+                    <span className="canto-moment-badge">
+                      {MEXICAN_SUNG_HYMNS[selectedMexicanHymn].liturgicalMoment}
+                    </span>
+                  </div>
+
+                  <div className="canto-lyrics-text">
+                    {MEXICAN_SUNG_HYMNS[selectedMexicanHymn].lyrics}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* TAB 4: El Misterio Pascual */}
           {activeGuiaTab === 'misterio' && (
             <div className="guia-content-panel">
               <h4>¿Por qué la Misa y sus Ritos?</h4>
@@ -2390,6 +3124,7 @@ export default function Landing() {
             </div>
           )}
 
+          {/* TAB 5: Año Litúrgico */}
           {activeGuiaTab === 'liturgia' && (
             <div className="guia-content-panel">
               <h4>El Año Litúrgico</h4>
@@ -2425,6 +3160,7 @@ export default function Landing() {
             </div>
           )}
 
+          {/* TAB 6: Citas Bíblicas */}
           {activeGuiaTab === 'biblia' && (
             <div className="guia-content-panel">
               <h4>Citas Bíblicas sobre la Eucaristía</h4>
@@ -2464,6 +3200,7 @@ export default function Landing() {
             </div>
           )}
 
+          {/* TAB 7: Misas de Precepto */}
           {activeGuiaTab === 'precepto' && (
             <div className="guia-content-panel">
               <h4>Calendario de Misas de Precepto</h4>
