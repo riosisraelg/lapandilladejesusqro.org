@@ -3,6 +3,14 @@ import { NextRequest } from 'next/server';
 
 export const runtime = 'edge';
 
+function hashStringToHue(str: string): number {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return Math.abs(hash % 360);
+}
+
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
@@ -12,6 +20,10 @@ export async function GET(req: NextRequest) {
     const date = searchParams.get('date') || '';
     const time = searchParams.get('time') || '';
     const location = searchParams.get('location') || 'Parroquia de la Sagrada Familia, Querétaro';
+
+    // Unique random color based on event title
+    const hue1 = hashStringToHue(title);
+    const hue2 = (hue1 + 120) % 360;
 
     // Format display date if YYYY-MM-DD
     let displayDate = date;
@@ -40,7 +52,7 @@ export async function GET(req: NextRequest) {
             justifyContent: 'space-between',
             padding: '60px 70px',
             backgroundColor: '#0d1322',
-            backgroundImage: 'radial-gradient(circle at 85% 15%, rgba(212, 163, 89, 0.18) 0%, transparent 60%), radial-gradient(circle at 10% 90%, rgba(41, 74, 110, 0.25) 0%, transparent 60%)',
+            backgroundImage: `radial-gradient(circle at 85% 15%, hsla(${hue1}, 70%, 40%, 0.4) 0%, transparent 60%), radial-gradient(circle at 10% 90%, hsla(${hue2}, 60%, 30%, 0.5) 0%, transparent 60%)`,
             fontFamily: 'system-ui, -apple-system, sans-serif',
             color: '#FFFFFF',
             position: 'relative',
@@ -58,15 +70,15 @@ export async function GET(req: NextRequest) {
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
               <div
                 style={{
-                  width: '44px',
-                  height: '44px',
+                  width: '54px',
+                  height: '54px',
                   borderRadius: '12px',
                   background: 'linear-gradient(135deg, #d4a359 0%, #b88636 100%)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   color: '#1a1309',
-                  fontSize: '26px',
+                  fontSize: '32px',
                   fontWeight: 'bold',
                   boxShadow: '0 4px 14px rgba(212, 163, 89, 0.4)',
                 }}
@@ -76,7 +88,7 @@ export async function GET(req: NextRequest) {
               <div style={{ display: 'flex', flexDirection: 'column' }}>
                 <span
                   style={{
-                    fontSize: '22px',
+                    fontSize: '28px',
                     fontWeight: 800,
                     letterSpacing: '1px',
                     color: '#FFFFFF',
@@ -87,7 +99,7 @@ export async function GET(req: NextRequest) {
                 </span>
                 <span
                   style={{
-                    fontSize: '14px',
+                    fontSize: '18px',
                     fontWeight: 500,
                     color: '#d4a359',
                     letterSpacing: '0.5px',
@@ -103,12 +115,12 @@ export async function GET(req: NextRequest) {
               style={{
                 display: 'flex',
                 alignItems: 'center',
-                padding: '8px 20px',
+                padding: '10px 24px',
                 borderRadius: '999px',
                 backgroundColor: 'rgba(212, 163, 89, 0.15)',
                 border: '1.5px solid rgba(212, 163, 89, 0.45)',
                 color: '#f3d99f',
-                fontSize: '16px',
+                fontSize: '22px',
                 fontWeight: 700,
                 letterSpacing: '0.8px',
                 textTransform: 'uppercase',
@@ -125,20 +137,20 @@ export async function GET(req: NextRequest) {
               flexDirection: 'column',
               gap: '16px',
               maxWidth: '1060px',
-              marginTop: '20px',
-              marginBottom: '20px',
+              marginTop: '40px',
+              marginBottom: '40px',
             }}
           >
             <h1
               style={{
-                fontSize: title.length > 50 ? '48px' : '58px',
+                fontSize: title.length > 50 ? '72px' : '96px',
                 fontWeight: 800,
                 lineHeight: 1.15,
                 color: '#FFFFFF',
                 margin: 0,
-                textShadow: '0 2px 10px rgba(0,0,0,0.5)',
+                textShadow: '0 4px 15px rgba(0,0,0,0.6)',
                 display: '-webkit-box',
-                WebkitLineClamp: 2,
+                WebkitLineClamp: 3,
                 WebkitBoxOrient: 'vertical',
                 overflow: 'hidden',
               }}
@@ -154,26 +166,26 @@ export async function GET(req: NextRequest) {
               justifyContent: 'space-between',
               alignItems: 'flex-end',
               width: '100%',
-              paddingTop: '24px',
-              borderTop: '1px solid rgba(255, 255, 255, 0.12)',
+              paddingTop: '32px',
+              borderTop: '2px solid rgba(255, 255, 255, 0.2)',
             }}
           >
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
                 {displayDate && (
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#FFFFFF', fontSize: '20px', fontWeight: 600 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: '#FFFFFF', fontSize: '32px', fontWeight: 600 }}>
                     <span style={{ color: '#d4a359' }}>📅</span>
                     <span>{displayDate}</span>
                   </div>
                 )}
                 {time && time !== 'Todo el día' && (
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#FFFFFF', fontSize: '20px', fontWeight: 600 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: '#FFFFFF', fontSize: '32px', fontWeight: 600 }}>
                     <span style={{ color: '#d4a359' }}>⏰</span>
                     <span>{time}</span>
                   </div>
                 )}
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#c4cbdb', fontSize: '17px', fontWeight: 500 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: '#c4cbdb', fontSize: '28px', fontWeight: 500 }}>
                 <span style={{ color: '#d4a359' }}>📍</span>
                 <span>{location}</span>
               </div>
@@ -185,12 +197,12 @@ export async function GET(req: NextRequest) {
                 flexDirection: 'column',
                 alignItems: 'flex-end',
                 color: '#8e9aaf',
-                fontSize: '15px',
+                fontSize: '22px',
                 fontWeight: 500,
               }}
             >
               <span>lapandilladejesusqro.org</span>
-              <span style={{ color: '#d4a359', fontSize: '13px' }}>Parroquia de La Sagrada Familia</span>
+              <span style={{ color: '#d4a359', fontSize: '18px' }}>Parroquia de La Sagrada Familia</span>
             </div>
           </div>
         </div>

@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import Link from "next/link";
+import GlobalModal from "../../components/GlobalModal";
 import { useSearchParams } from "next/navigation";
 import { fetchICalFeed } from "../../utils/icalParser";
 import { ICAL_FEED_URL } from "../../config";
@@ -651,47 +652,48 @@ export default function Calendario() {
       </footer>
 
       {/* ── ADD TO CALENDAR MODAL ── */}
-      {selectedEvent && (
-        <div className="calendar-modal-overlay" onClick={() => setSelectedEvent(null)}>
-          <div className="calendar-modal-card" onClick={(e) => e.stopPropagation()}>
-            <button
-              className="calendar-modal-close-btn"
-              onClick={() => setSelectedEvent(null)}
-              data-tooltip="Cerrar esta ventana emergente"
-            >
-              <CloseIcon />
-            </button>
-            <div className="calendar-modal-icon-wrap">
+      <GlobalModal
+        isOpen={!!selectedEvent}
+        onClose={() => setSelectedEvent(null)}
+        style={{ maxWidth: '500px', padding: '2rem' }}
+      >
+        {selectedEvent && (
+          <>
+            <div className="calendar-modal-icon-wrap" style={{ textAlign: 'center', marginBottom: '1rem' }}>
               <CalendarCheckIcon />
             </div>
-            <h3 className="calendar-modal-title">{selectedEvent.title}</h3>
+            <h3 className="calendar-modal-title" style={{ textAlign: 'center', fontSize: '1.5rem', marginBottom: '0.5rem' }}>
+              {selectedEvent.title}
+            </h3>
             {selectedEvent.isPrecepto && (
-              <div style={{ marginBottom: "0.5rem" }}>
+              <div style={{ marginBottom: "1rem", textAlign: "center" }}>
                 <span className="event-type-badge precepto">
                   ✝ Misa de Precepto Obligatorio
                 </span>
               </div>
             )}
-            <p className="calendar-modal-desc">
+            <p className="calendar-modal-desc" style={{ textAlign: 'center', color: 'var(--text-light)', marginBottom: '1.5rem', fontSize: '0.95rem' }}>
               {selectedEvent.description || "Sincroniza este evento directamente con tu proveedor de calendario personal o compártelo."}
             </p>
-            <div style={{ fontSize: "0.82rem", color: "var(--text-light)", marginBottom: "1rem", textAlign: "center" }}>
+            <div style={{ fontSize: "0.9rem", color: "var(--text-dark)", marginBottom: "1.5rem", textAlign: "center", background: 'var(--bg-secondary)', padding: '1rem', borderRadius: '12px' }}>
               📅 <strong>{formatDate(selectedEvent.date)}</strong>
               {selectedEvent.time && ` · ${selectedEvent.time}`}
               <br />
-              📍 {selectedEvent.location || "Parroquia de la Sagrada Familia, Querétaro"}
+              <div style={{ marginTop: '0.5rem' }}>📍 {selectedEvent.location || "Parroquia de la Sagrada Familia, Querétaro"}</div>
             </div>
 
-            <div className="calendar-modal-buttons">
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px', marginBottom: '1rem' }}>
               <a
                 href={generateGoogleCalendarUrl(selectedEvent)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="calendar-btn calendar-btn-google"
                 onClick={() => setSelectedEvent(null)}
-                data-tooltip="Sincronizar este evento individual en Google Calendar (Web)"
+                data-tooltip="Sincronizar este evento en Google Calendar"
+                style={{ aspectRatio: '1', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center', padding: '10px', fontSize: '0.85rem' }}
               >
-                <GoogleIcon /> Google Calendar
+                <div style={{ transform: 'scale(1.5)', marginBottom: '8px' }}><GoogleIcon /></div>
+                <span>Google</span>
               </a>
               <a
                 href={generateOutlookWebUrl(selectedEvent)}
@@ -699,9 +701,11 @@ export default function Calendario() {
                 rel="noopener noreferrer"
                 className="calendar-btn calendar-btn-outlook"
                 onClick={() => setSelectedEvent(null)}
-                data-tooltip="Sincronizar este evento en tu calendario de Outlook.com (Web)"
+                data-tooltip="Sincronizar este evento en Outlook.com"
+                style={{ aspectRatio: '1', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center', padding: '10px', fontSize: '0.85rem' }}
               >
-                <OutlookIcon /> Outlook.com
+                <div style={{ transform: 'scale(1.5)', marginBottom: '8px' }}><OutlookIcon /></div>
+                <span>Outlook</span>
               </a>
               <a
                 href={generateYahooCalendarUrl(selectedEvent)}
@@ -709,9 +713,11 @@ export default function Calendario() {
                 rel="noopener noreferrer"
                 className="calendar-btn calendar-btn-yahoo"
                 onClick={() => setSelectedEvent(null)}
-                data-tooltip="Sincronizar este evento en Yahoo Calendar (Web)"
+                data-tooltip="Sincronizar este evento en Yahoo Calendar"
+                style={{ aspectRatio: '1', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center', padding: '10px', fontSize: '0.85rem' }}
               >
-                <YahooIcon /> Yahoo Calendar
+                <div style={{ transform: 'scale(1.5)', marginBottom: '8px' }}><YahooIcon /></div>
+                <span>Yahoo</span>
               </a>
               <button
                 onClick={() => {
@@ -719,89 +725,77 @@ export default function Calendario() {
                   setSelectedEvent(null);
                 }}
                 className="calendar-btn calendar-btn-ical"
-                data-tooltip="Descargar archivo universal .ics compatible con Apple Calendar y Outlook Desktop"
+                data-tooltip="Descargar archivo universal .ics (Apple / Outlook Desktop)"
+                style={{ aspectRatio: '1', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center', padding: '10px', fontSize: '0.85rem' }}
               >
-                <AppleIcon /> iCal (Apple / Outlook)
-              </button>
-              <button
-                onClick={() => handleCopyEventLink(selectedEvent)}
-                className="calendar-btn calendar-btn-share"
-                data-tooltip="Copiar enlace compartible con vista previa dinámica de imagen OG"
-              >
-                <ShareIcon /> {copiedEventLink ? "¡Enlace Copiado!" : "Compartir Enlace del Evento"}
-              </button>
-              <button
-                onClick={() => setSelectedEvent(null)}
-                className="calendar-btn calendar-btn-cancel"
-                data-tooltip="Cerrar esta ventana emergente"
-              >
-                Cerrar
+                <div style={{ transform: 'scale(1.5)', marginBottom: '8px' }}><AppleIcon /></div>
+                <span>iCal / Apple</span>
               </button>
             </div>
-          </div>
-        </div>
-      )}
+            
+            <button
+              onClick={() => handleCopyEventLink(selectedEvent)}
+              className="calendar-btn calendar-btn-share"
+              data-tooltip="Copiar enlace compartible con vista previa dinámica de imagen OG"
+              style={{ width: '100%', padding: '12px', fontSize: '1rem', fontWeight: 'bold', justifyContent: 'center' }}
+            >
+              <ShareIcon /> {copiedEventLink ? "¡Enlace Copiado!" : "Compartir Enlace del Evento"}
+            </button>
+          </>
+        )}
+      </GlobalModal>
 
       {/* ── SUBSCRIBE TO CALENDAR FEED MODAL ── */}
-      {showSubscribeModal && (
-        <div className="calendar-modal-overlay" onClick={() => setShowSubscribeModal(false)}>
-          <div className="calendar-modal-card" onClick={(e) => e.stopPropagation()}>
-            <button
-              className="calendar-modal-close-btn"
-              onClick={() => setShowSubscribeModal(false)}
-              data-tooltip="Cerrar esta ventana emergente"
-            >
-              <CloseIcon />
-            </button>
-            <div className="calendar-modal-icon-wrap">
-              <CalendarCheckIcon />
-            </div>
-            <h3 className="calendar-modal-title">Suscribirse al Calendario</h3>
-            <p className="calendar-modal-desc">
-              Sincroniza <strong>todos los eventos</strong> de La Pandilla de Jesús en tu dispositivo. Cualquier cambio en la agenda se actualizará automáticamente.
-            </p>
-            <div className="calendar-modal-buttons">
-              <a
-                href={googleSubscribeLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="calendar-btn calendar-btn-google"
-                onClick={() => setShowSubscribeModal(false)}
-                data-tooltip="Añadir suscripción automatizada del calendario completo en tu Google Calendar (Web)"
-              >
-                <GoogleIcon /> Google Calendar (Web)
-              </a>
-              <a
-                href={appleOutlookSubscribeLink}
-                className="calendar-btn calendar-btn-ical"
-                onClick={() => setShowSubscribeModal(false)}
-                data-tooltip="Añadir suscripción en la app nativa de tu dispositivo (Apple Calendar en iPhone/Mac o Outlook)"
-              >
-                <AppleIcon /> Apple Calendar / Outlook (Celular/PC)
-              </a>
-              <button
-                onClick={handleCopyLink}
-                className="calendar-btn calendar-btn-outlook"
-                style={{
-                  background: copiedLink ? "#20ba5a" : "",
-                  color: copiedLink ? "#fff" : "",
-                  transition: "all 0.3s",
-                }}
-                data-tooltip="Copiar la URL del feed de eventos (.ics) para pegarlo e importarlo manualmente"
-              >
-                <CopyIcon /> {copiedLink ? "¡Enlace Copiado!" : "Copiar Enlace iCal"}
-              </button>
-              <button
-                onClick={() => setShowSubscribeModal(false)}
-                className="calendar-btn calendar-btn-cancel"
-                data-tooltip="Cerrar esta ventana emergente"
-              >
-                Cancelar
-              </button>
-            </div>
-          </div>
+      <GlobalModal
+        isOpen={showSubscribeModal}
+        onClose={() => setShowSubscribeModal(false)}
+        style={{ maxWidth: '500px', padding: '2rem' }}
+      >
+        <div className="calendar-modal-icon-wrap" style={{ textAlign: 'center', marginBottom: '1rem' }}>
+          <CalendarCheckIcon />
         </div>
-      )}
+        <h3 className="calendar-modal-title" style={{ textAlign: 'center', fontSize: '1.5rem', marginBottom: '0.5rem' }}>Suscribirse al Calendario</h3>
+        <p className="calendar-modal-desc" style={{ textAlign: 'center', color: 'var(--text-light)', marginBottom: '1.5rem', fontSize: '0.95rem' }}>
+          Sincroniza <strong>todos los eventos</strong> de La Pandilla de Jesús en tu dispositivo. Cualquier cambio en la agenda se actualizará automáticamente.
+        </p>
+        <div className="calendar-modal-buttons">
+          <a
+            href={googleSubscribeLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="calendar-btn calendar-btn-google"
+            onClick={() => setShowSubscribeModal(false)}
+            data-tooltip="Añadir suscripción automatizada del calendario completo en tu Google Calendar (Web)"
+            style={{ display: 'flex', justifyContent: 'center', padding: '12px' }}
+          >
+            <GoogleIcon /> Google Calendar (Web)
+          </a>
+          <a
+            href={appleOutlookSubscribeLink}
+            className="calendar-btn calendar-btn-ical"
+            onClick={() => setShowSubscribeModal(false)}
+            data-tooltip="Añadir suscripción en la app nativa de tu dispositivo (Apple Calendar en iPhone/Mac o Outlook)"
+            style={{ display: 'flex', justifyContent: 'center', padding: '12px' }}
+          >
+            <AppleIcon /> Apple Calendar / Outlook
+          </a>
+          <button
+            onClick={handleCopyLink}
+            className="calendar-btn calendar-btn-outlook"
+            style={{
+              background: copiedLink ? "#20ba5a" : "",
+              color: copiedLink ? "#fff" : "",
+              transition: "all 0.3s",
+              display: 'flex',
+              justifyContent: 'center',
+              padding: '12px'
+            }}
+            data-tooltip="Copiar la URL del feed de eventos (.ics) para pegarlo e importarlo manualmente"
+          >
+            <CopyIcon /> {copiedLink ? "¡Enlace Copiado!" : "Copiar Enlace iCal"}
+          </button>
+        </div>
+      </GlobalModal>
     </>
   );
 }

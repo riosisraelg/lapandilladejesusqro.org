@@ -204,3 +204,8 @@ v1.0.0-m7.misas-precepto     -> Computus Holy Days engine & multi-calendar expor
 v1.0.0-m8.e2e-verified       -> 100% passing across 5-tier test suite
 v1.0.0                       -> Final production release tag pushed to remote repository
 ```
+
+## Iteration: Events Modal & OG Image Updates
+- [ ] Task 1: Update OG Image generation to use larger fonts and a unique color hash per event.
+- [ ] Task 2: Refactor CalendarioClient.tsx to use GlobalModal for the event details.
+- [ ] Task 3: Style calendar compatibility buttons as a grid of square buttons.
