@@ -8,6 +8,7 @@ interface GlobalModalProps {
   className?: string;
   style?: React.CSSProperties;
   hideCloseBtn?: boolean;
+  headerAction?: React.ReactNode;
 }
 
 export default function GlobalModal({ 
@@ -16,7 +17,8 @@ export default function GlobalModal({
   children, 
   className = '', 
   style = {},
-  hideCloseBtn = false
+  hideCloseBtn = false,
+  headerAction
 }: GlobalModalProps) {
   if (!isOpen) return null;
 
@@ -30,16 +32,19 @@ export default function GlobalModal({
         style={style}
         onClick={(e) => e.stopPropagation()}
       >
-        {!hideCloseBtn && (
-          <button 
-            type="button"
-            className="calendar-modal-close-btn" 
-            onClick={onClose}
-            aria-label="Cerrar modal"
-          >
-            ✕
-          </button>
-        )}
+        <div className="global-modal-header-actions">
+          {headerAction}
+          {!hideCloseBtn && (
+            <button 
+              type="button"
+              className="calendar-modal-close-btn" 
+              onClick={onClose}
+              aria-label="Cerrar modal"
+            >
+              ✕
+            </button>
+          )}
+        </div>
         {children}
       </div>
     </div>
