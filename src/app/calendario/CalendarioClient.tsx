@@ -1,9 +1,16 @@
 "use client";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { fetchICalFeed } from "../../utils/icalParser";
 import { ICAL_FEED_URL } from "../../config";
-;
+import { getMisasDePrecepto, PreceptoEvent } from "../../data/preceptoData";
+import {
+  generateGoogleCalendarUrl,
+  generateOutlookWebUrl,
+  generateYahooCalendarUrl,
+  downloadICSFile,
+} from "../../utils/calendarExport";
 
 // ── SVG Icons ──
 const ClockSmIcon = () => (
@@ -98,6 +105,12 @@ const OutlookIcon = () => (
   </svg>
 );
 
+const YahooIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M4 4l6 8v8h4v-8l6-8h-4l-4 6-4-6z" />
+  </svg>
+);
+
 const AppleIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
     <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 4.17c.66-.81 1.11-1.93.99-3.06-1 .04-2.21.67-2.93 1.49-.62.69-1.16 1.84-1.01 2.96 1.1.09 2.23-.58 2.95-1.39z"/>
@@ -111,8 +124,16 @@ const CopyIcon = () => (
   </svg>
 );
 
+const ShareIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+  </svg>
+);
+
 const EVENT_FILTERS = [
   { key: "all", label: "Todos" },
+  { key: "Precepto", label: "Preceptos" },
   { key: "Retiro", label: "Retiros" },
   { key: "Oración", label: "Misas" },
   { key: "Colecta", label: "Colectas" },
@@ -123,6 +144,7 @@ const EVENT_FILTERS = [
 ];
 
 export default function Calendario() {
+  const searchParams = useSearchParams();
   const [events, setEvents] = useState<Array<any>>([]);
   const [activeFilter, setActiveFilter] = useState("all");
   const [selectedEvent, setSelectedEvent] = useState<any | null>(null);
@@ -130,6 +152,7 @@ export default function Calendario() {
   const icalUrl = ICAL_FEED_URL;
   const [showSubscribeModal, setShowSubscribeModal] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
+  const [copiedEventLink, setCopiedEventLink] = useState(false);
 
   const googleSubscribeLink = useMemo(() => {
     return `https://calendar.google.com/calendar/render?cid=${encodeURIComponent(ICAL_FEED_URL)}`;
@@ -150,31 +173,69 @@ export default function Calendario() {
     setTimeout(() => setCopiedLink(false), 2000);
   };
 
+  const handleCopyEventLink = (ev: any) => {
+    if (typeof window !== "undefined") {
+      const shareUrl = `${window.location.origin}/calendario?evento=${encodeURIComponent(ev.id)}`;
+      navigator.clipboard.writeText(shareUrl);
+      setCopiedEventLink(true);
+      setTimeout(() => setCopiedEventLink(false), 2500);
+    }
+  };
+
   useEffect(() => {
     document.body.classList.add("landing-body");
     return () => document.body.classList.remove("landing-body");
   }, []);
 
+  // Fetch external Google Calendar events & generate Misas de Precepto
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        // Fetch and parse external iCal events
+        const currentYear = new Date().getFullYear();
+        const preceptoList = [
+          ...getMisasDePrecepto(currentYear),
+          ...getMisasDePrecepto(currentYear + 1),
+        ];
+
         let icsEvents: any[] = [];
         if (icalUrl) {
-          icsEvents = await fetchICalFeed(icalUrl);
+          try {
+            icsEvents = await fetchICalFeed(icalUrl);
+          } catch (feedErr) {
+            console.error("Error fetching iCal feed:", feedErr);
+          }
         }
 
-        // Sort by date
-        const sorted = icsEvents.sort(
+        const map = new Map<string, any>();
+        icsEvents.forEach((e) => map.set(e.id, e));
+        preceptoList.forEach((e) => {
+          if (!map.has(e.id)) {
+            map.set(e.id, e);
+          }
+        });
+
+        const combined = Array.from(map.values()).sort(
           (a, b) => new Date(a.date + "T00:00:00").getTime() - new Date(b.date + "T00:00:00").getTime()
         );
-        setEvents(sorted);
+
+        setEvents(combined);
       } catch (err) {
         console.error("Error loading events", err);
       }
     };
     fetchEvents();
-  }, []);
+  }, [icalUrl]);
+
+  // Deep-link auto open modal when ?evento=[id] is present
+  useEffect(() => {
+    const targetId = searchParams.get("evento");
+    if (targetId && events.length > 0) {
+      const found = events.find((e) => e.id === targetId);
+      if (found) {
+        setSelectedEvent(found);
+      }
+    }
+  }, [searchParams, events]);
 
   const embedSrc = useMemo(() => {
     if (icalUrl && icalUrl.includes("calendar.google.com")) {
@@ -183,7 +244,6 @@ export default function Calendario() {
         return `https://calendar.google.com/calendar/embed?src=${match[1]}&ctz=America%2FMexico_City&mode=MONTH&showPrint=0&showTabs=0&showCalendars=0&showTz=0`;
       }
     }
-    // Fallback embed src
     return `https://calendar.google.com/calendar/embed?src=en.usa%23holiday%40group.v.calendar.google.com&ctz=America%2FMexico_City&mode=MONTH&showPrint=0&showTabs=0&showCalendars=0&showTz=0`;
   }, [icalUrl]);
 
@@ -191,37 +251,36 @@ export default function Calendario() {
     const today = new Date();
     const year = today.getFullYear();
     const month = today.getMonth();
-    
-    // El primer día del siguiente mes menos 1 día nos da el último día del mes corriente
     const lastDay = new Date(year, month + 1, 0);
-    
+
     const getLocalDateString = (dateObj: Date) => {
       const y = dateObj.getFullYear();
-      const m = String(dateObj.getMonth() + 1).padStart(2, '0');
-      const d = String(dateObj.getDate()).padStart(2, '0');
+      const m = String(dateObj.getMonth() + 1).padStart(2, "0");
+      const d = String(dateObj.getDate()).padStart(2, "0");
       return `${y}-${m}-${d}`;
     };
-    
+
     const todayStr = getLocalDateString(today);
     const endOfMonthStr = getLocalDateString(lastDay);
-    
     const monthName = today.toLocaleDateString("es-ES", { month: "long" });
     const rangeStr = `del ${today.getDate()} al ${lastDay.getDate()} de ${monthName}`;
-    
+
     return {
       todayStr,
       endOfMonthStr,
-      rangeStr
+      rangeStr,
     };
   }, []);
 
   const filteredEvents = useMemo(() => {
-    // Filtrar únicamente los eventos comprendidos entre hoy y el fin del mes corriente
     const currentMonthList = events.filter(
       (e) => e.date >= currentMonthEventsInfo.todayStr && e.date <= currentMonthEventsInfo.endOfMonthStr
     );
     if (activeFilter === "all") return currentMonthList;
     return currentMonthList.filter((e) => {
+      if (activeFilter === "Precepto") {
+        return e.isPrecepto || (e.types && e.types.includes("Precepto"));
+      }
       if (e.types && e.types.length > 0) {
         return e.types.includes(activeFilter);
       }
@@ -231,129 +290,10 @@ export default function Calendario() {
 
   const formatDate = (d: string) =>
     new Date(d + "T12:00:00").toLocaleDateString("es-ES", {
-      day: "numeric", month: "long", year: "numeric",
+      day: "numeric",
+      month: "long",
+      year: "numeric",
     });
-
-  const cleanICalDate = (dtLine: string) => {
-    if (!dtLine) return "";
-    const colonIdx = dtLine.indexOf(":");
-    return colonIdx !== -1 ? dtLine.substring(colonIdx + 1).trim() : dtLine.trim();
-  };
-
-  const buildGCalLink = (ev: any) => {
-    let datesStr = "";
-    if (ev.dtstart && ev.dtend) {
-      const start = cleanICalDate(ev.dtstart);
-      const end = cleanICalDate(ev.dtend);
-      datesStr = `${start}/${end}`;
-    } else {
-      const dc = ev.date.replace(/-/g, "");
-      datesStr = `${dc}/${dc}`;
-    }
-    const p = new URLSearchParams({
-      action: "TEMPLATE", text: ev.title, dates: datesStr,
-      details: ev.description || "", location: ev.location || "",
-    });
-    return `https://calendar.google.com/calendar/render?${p.toString()}`;
-  };
-
-  const buildOutlookLink = (ev: any) => {
-    let startdt = ev.date;
-    let enddt = ev.date;
-    let allday = "true";
-    
-    if (ev.dtstart && ev.dtend) {
-      const cleanStart = cleanICalDate(ev.dtstart);
-      const cleanEnd = cleanICalDate(ev.dtend);
-      
-      if (cleanStart.includes("T")) {
-        const formatISO = (val: string) => {
-          const y = val.substring(0, 4);
-          const m = val.substring(4, 6);
-          const d = val.substring(6, 8);
-          const hh = val.substring(9, 11);
-          const mm = val.substring(11, 13);
-          const ss = val.substring(13, 15) || "00";
-          return `${y}-${m}-${d}T${hh}:${mm}:${ss}Z`;
-        };
-        startdt = formatISO(cleanStart);
-        enddt = formatISO(cleanEnd);
-        allday = "false";
-      }
-    }
-    
-    const p = new URLSearchParams({
-      path: "/calendar/action/compose", rru: "addevent",
-      subject: ev.title, startdt, enddt, allday,
-      body: ev.description || "", location: ev.location || "",
-    });
-    return `https://outlook.live.com/calendar/0/deeplink/compose?${p.toString()}`;
-  };
-
-  const downloadICSFile = (ev: any) => {
-    const titleEscaped = ev.title.replace(/[,;]/g, '\\$&').replace(/\n/g, '\\n');
-    const descEscaped = (ev.description || '').replace(/[,;]/g, '\\$&').replace(/\n/g, '\\n');
-    const locEscaped = (ev.location || '').replace(/[,;]/g, '\\$&').replace(/\n/g, '\\n');
-
-    let dtStartLine = "";
-    let dtEndLine = "";
-
-    if (ev.dtstart && ev.dtend) {
-      const start = cleanICalDate(ev.dtstart);
-      const end = cleanICalDate(ev.dtend);
-      
-      if (start.includes("T")) {
-        dtStartLine = `DTSTART:${start}`;
-        dtEndLine = `DTEND:${end}`;
-      } else {
-        dtStartLine = `DTSTART;VALUE=DATE:${start}`;
-        dtEndLine = `DTEND;VALUE=DATE:${end}`;
-      }
-    } else {
-      const d = new Date(ev.date + "T12:00:00");
-      const nextDay = new Date(d);
-      nextDay.setDate(d.getDate() + 1);
-
-      const formatDateICS = (dateObj: Date) => {
-        const y = dateObj.getFullYear();
-        const m = String(dateObj.getMonth() + 1).padStart(2, '0');
-        const day = String(dateObj.getDate()).padStart(2, '0');
-        return `${y}${m}${day}`;
-      };
-
-      const dtStart = formatDateICS(d);
-      const dtEnd = formatDateICS(nextDay);
-      dtStartLine = `DTSTART;VALUE=DATE:${dtStart}`;
-      dtEndLine = `DTEND;VALUE=DATE:${dtEnd}`;
-    }
-
-    const icsLines = [
-      'BEGIN:VCALENDAR',
-      'VERSION:2.0',
-      'PRODID:-//La Pandilla de Jesus//Eventos//ES',
-      'CALSCALE:GREGORIAN',
-      'BEGIN:VEVENT',
-      `SUMMARY:${titleEscaped}`,
-      dtStartLine,
-      dtEndLine,
-      `DESCRIPTION:${descEscaped}`,
-      `LOCATION:${locEscaped}`,
-      'STATUS:CONFIRMED',
-      'SEQUENCE:0',
-      'END:VEVENT',
-      'END:VCALENDAR'
-    ];
-
-    const icsString = icsLines.join('\r\n');
-    const blob = new Blob([icsString], { type: 'text/calendar;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute('download', `${ev.title.toLowerCase().replace(/[^a-z0-9]/g, '_')}.ics`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
 
   return (
     <>
@@ -367,15 +307,17 @@ export default function Calendario() {
             <span className="nav-brand-sub">Comunidad católica · Querétaro</span>
           </div>
         </div>
-        
+
         {/* Desktop Links */}
         <ul className="nav-links">
-          <li><Link href="/">Inicio</Link></li>
           <li>
-            <a 
-              href="https://instagram.com/lapandilladejesusqro" 
-              target="_blank" 
-              rel="noopener noreferrer" 
+            <Link href="/">Inicio</Link>
+          </li>
+          <li>
+            <a
+              href="https://instagram.com/lapandilladejesusqro"
+              target="_blank"
+              rel="noopener noreferrer"
               className="nav-social-icon-link"
               aria-label="Instagram"
               title="Instagram: @lapandilladejesusqro"
@@ -384,10 +326,10 @@ export default function Calendario() {
             </a>
           </li>
           <li>
-            <a 
-              href="https://threads.net/@lapandilladejesusqro" 
-              target="_blank" 
-              rel="noopener noreferrer" 
+            <a
+              href="https://threads.net/@lapandilladejesusqro"
+              target="_blank"
+              rel="noopener noreferrer"
               className="nav-social-icon-link"
               aria-label="Threads"
               title="Threads: @lapandilladejesusqro"
@@ -396,10 +338,10 @@ export default function Calendario() {
             </a>
           </li>
           <li>
-            <a 
-              href="https://facebook.com/lapandilladejesusqro" 
-              target="_blank" 
-              rel="noopener noreferrer" 
+            <a
+              href="https://facebook.com/lapandilladejesusqro"
+              target="_blank"
+              rel="noopener noreferrer"
               className="nav-social-icon-link"
               aria-label="Facebook"
               title="Facebook: @lapandilladejesusqro"
@@ -408,15 +350,21 @@ export default function Calendario() {
             </a>
           </li>
           <li>
-            <a href="https://wa.me/5214422497485" target="_blank" rel="noopener noreferrer" className="nav-cta-wa" data-tooltip="Escríbenos por WhatsApp para unirte o resolver tus dudas">
+            <a
+              href="https://wa.me/5214422497485"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="nav-cta-wa"
+              data-tooltip="Escríbenos por WhatsApp para unirte o resolver tus dudas"
+            >
               <WhatsAppIcon size={16} /> WhatsApp
             </a>
           </li>
         </ul>
 
         {/* Mobile Hamburger Button */}
-        <button 
-          className={`nav-mobile-btn ${mobileMenuOpen ? "active" : ""}`} 
+        <button
+          className={`nav-mobile-btn ${mobileMenuOpen ? "active" : ""}`}
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           aria-label="Toggle menu"
           data-tooltip="Abrir menú de navegación móvil"
@@ -429,24 +377,50 @@ export default function Calendario() {
         {/* Mobile Dropdown Overlay */}
         <div className={`nav-mobile-overlay ${mobileMenuOpen ? "open" : ""}`}>
           <ul className="nav-mobile-links">
-            <li><Link href="/" onClick={() => setMobileMenuOpen(false)}>Inicio</Link></li>
-            <li><Link href="/donaciones" onClick={() => setMobileMenuOpen(false)}>Donaciones</Link></li>
+            <li>
+              <Link href="/" onClick={() => setMobileMenuOpen(false)}>
+                Inicio
+              </Link>
+            </li>
+            <li>
+              <Link href="/donaciones" onClick={() => setMobileMenuOpen(false)}>
+                Donaciones
+              </Link>
+            </li>
             <li className="nav-mobile-social-row">
-              <a href="https://instagram.com/lapandilladejesusqro" target="_blank" rel="noopener noreferrer" className="nav-mobile-social-icon" title="Instagram">
+              <a
+                href="https://instagram.com/lapandilladejesusqro"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="nav-mobile-social-icon"
+                title="Instagram"
+              >
                 <InstagramIcon size={18} />
               </a>
-              <a href="https://threads.net/@lapandilladejesusqro" target="_blank" rel="noopener noreferrer" className="nav-mobile-social-icon" title="Threads">
+              <a
+                href="https://threads.net/@lapandilladejesusqro"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="nav-mobile-social-icon"
+                title="Threads"
+              >
                 <ThreadsIcon size={18} />
               </a>
-              <a href="https://facebook.com/lapandilladejesusqro" target="_blank" rel="noopener noreferrer" className="nav-mobile-social-icon" title="Facebook">
+              <a
+                href="https://facebook.com/lapandilladejesusqro"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="nav-mobile-social-icon"
+                title="Facebook"
+              >
                 <FacebookIcon size={18} />
               </a>
             </li>
             <li>
-              <a 
-                href="https://wa.me/5214422497485" 
-                target="_blank" 
-                rel="noopener noreferrer" 
+              <a
+                href="https://wa.me/5214422497485"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="nav-mobile-cta-wa"
                 onClick={() => setMobileMenuOpen(false)}
                 data-tooltip="Escríbenos por WhatsApp para unirte o resolver tus dudas"
@@ -463,11 +437,11 @@ export default function Calendario() {
         <section className="events-section" style={{ marginTop: "1rem" }}>
           <div className="events-section-header">
             <div>
-              <h2>Centro de Eventos</h2>
-              <p>Consulta el calendario completo para ver detalles de cada actividad y apuntarte.</p>
+              <h2>Centro de Eventos & Misas de Precepto</h2>
+              <p>Consulta el calendario completo con solemnidades litúrgicas y actividades parroquiales.</p>
             </div>
-            <button 
-              className="btn-insta" 
+            <button
+              className="btn-insta"
               onClick={() => setShowSubscribeModal(true)}
               style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem" }}
               data-tooltip="Suscripción automatizada de todo el calendario en tu celular o computadora"
@@ -479,19 +453,16 @@ export default function Calendario() {
           <div className="events-layout">
             {/* Google Calendar Embed */}
             <div className="calendar-embed-wrapper">
-              <iframe
-                src={embedSrc}
-                title="Calendario de La Pandilla de Jesús"
-              ></iframe>
+              <iframe src={embedSrc} title="Calendario de La Pandilla de Jesús"></iframe>
             </div>
 
             {/* Event Sidebar */}
             <div className="event-sidebar">
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginBottom: '0.75rem' }}>
-                <h3 style={{ fontSize: '1rem',  fontWeight: '700', color: 'var(--text-dark)', margin: 0 }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: "4px", marginBottom: "0.75rem" }}>
+                <h3 style={{ fontSize: "1rem", fontWeight: "700", color: "var(--text-dark)", margin: 0 }}>
                   Eventos Próximos
                 </h3>
-                <p style={{ fontSize: '0.78rem', color: 'var(--text-light)', margin: 0 }}>
+                <p style={{ fontSize: "0.78rem", color: "var(--text-light)", margin: 0 }}>
                   Mostrando agenda mensual {currentMonthEventsInfo.rangeStr && `(${currentMonthEventsInfo.rangeStr})`}
                 </p>
               </div>
@@ -517,15 +488,26 @@ export default function Calendario() {
                   <div key={ev.id} className="event-detail-card">
                     <div className="event-detail-top">
                       <div className="event-type-badges-container">
-                        {(ev.types && ev.types.length > 0 ? ev.types : [ev.type || "Otro"]).map((t: string) => (
-                          <span key={t} className={`event-type-badge ${t.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")}`}>
-                            {t}
+                        {ev.isPrecepto && (
+                          <span className="event-type-badge precepto">
+                            ✝ Precepto
                           </span>
-                        ))}
+                        )}
+                        {(ev.types && ev.types.length > 0 ? ev.types : [ev.type || "Otro"])
+                          .filter((t: string) => t !== "Precepto")
+                          .map((t: string) => (
+                            <span
+                              key={t}
+                              className={`event-type-badge ${t.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")}`}
+                            >
+                              {t}
+                            </span>
+                          ))}
                       </div>
                       <span className="event-detail-time">
                         <ClockSmIcon />
-                        {formatDate(ev.date)}{ev.time && ev.time !== "Todo el día" && ` · ${ev.time}`}
+                        {formatDate(ev.date)}
+                        {ev.time && ev.time !== "Todo el día" && ` · ${ev.time}`}
                       </span>
                     </div>
                     <h4>{ev.title}</h4>
@@ -536,24 +518,44 @@ export default function Calendario() {
                       </div>
                     )}
                     <div className="event-detail-actions">
-                      <button onClick={() => setSelectedEvent(ev)} className="btn-agendar" style={{ background: 'transparent' }} data-tooltip="Sincronizar esta actividad individual con tu Google Calendar, Outlook o Apple Calendar">
+                      <button
+                        onClick={() => setSelectedEvent(ev)}
+                        className="btn-agendar"
+                        style={{ background: "transparent" }}
+                        data-tooltip="Sincronizar esta actividad individual con tu Google Calendar, Outlook o Apple Calendar"
+                      >
                         <CalendarSmIcon /> Agendar
                       </button>
+                      <button
+                        onClick={() => handleCopyEventLink(ev)}
+                        className="btn-agendar"
+                        style={{ background: "transparent", maxWidth: "44px", padding: "0.5rem" }}
+                        data-tooltip="Copiar enlace directo compartible de este evento"
+                        aria-label="Compartir evento"
+                      >
+                        <ShareIcon />
+                      </button>
                       {ev.lumaLink && (
-                        <a href={ev.lumaLink} target="_blank" rel="noopener noreferrer" className="btn-luma-sm" data-tooltip="Ver detalles y registro de asistencia en la plataforma Luma">
-                           Info Luma <ExternalLinkIcon />
+                        <a
+                          href={ev.lumaLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="btn-luma-sm"
+                          data-tooltip="Ver detalles y registro de asistencia en la plataforma Luma"
+                        >
+                          Info Luma <ExternalLinkIcon />
                         </a>
                       )}
                     </div>
                   </div>
                 ))
               )}
-              <div className="upcoming-info-note" style={{ marginTop: '1.5rem' }}>
+              <div className="upcoming-info-note" style={{ marginTop: "1.5rem" }}>
                 <p>
-                  * Esta sección muestra la planeación completa de eventos programados en nuestro calendario. Puedes hacer clic en "Agendar" en cualquier actividad para sincronizarla en tiempo real con tu dispositivo móvil o calendario personal.
+                  * Esta sección muestra la planeación completa de eventos y Misas de Precepto según las normas de la Conferencia del Episcopado Mexicano (CEM) y el Código de Derecho Canónico (Canon 1246).
                 </p>
-                <p style={{ marginTop: '8px' }}>
-                  Nos esforzamos por mantener la información actualizada. Si no ves eventos programados o son muy pocos, ¡escríbenos directamente por <a href="https://wa.me/5214422497485" target="_blank" rel="noopener noreferrer" style={{ color: "var(--gold)", textDecoration: "underline", fontWeight: "600" }}>WhatsApp</a> para resolver cualquier duda al instante!
+                <p style={{ marginTop: "8px" }}>
+                  Haz clic en "Agendar" en cualquier evento para sincronizarlo con tu cuenta de Google, Apple o Outlook personal.
                 </p>
               </div>
             </div>
@@ -561,6 +563,7 @@ export default function Calendario() {
         </section>
       </main>
 
+      {/* ── FOOTER ── */}
       <footer className="landing-footer">
         <div className="footer-sparkles-container">
           <div className="sparkle sparkle-1">✦</div>
@@ -573,21 +576,16 @@ export default function Calendario() {
           <div className="sparkle sparkle-8">✧</div>
           <div className="sparkle sparkle-9">✦</div>
           <div className="sparkle sparkle-10">✧</div>
-          <div className="bubble bubble-1"></div>
-          <div className="bubble bubble-2"></div>
-          <div className="bubble bubble-3"></div>
-          <div className="bubble bubble-4"></div>
-          <div className="bubble bubble-5"></div>
         </div>
         <div className="footer-inner">
           <div className="footer-brand-container">
             <div className="footer-brand-name">La Pandilla de Jesús</div>
             <div className="footer-brand-sub">Grupo Juvenil Católico · Parroquia de La Sagrada Familia, Querétaro</div>
-            
+
             <div className="footer-social-row">
-              <a 
-                href="https://instagram.com/lapandilladejesusqro" 
-                target="_blank" 
+              <a
+                href="https://instagram.com/lapandilladejesusqro"
+                target="_blank"
                 rel="noopener noreferrer"
                 className="footer-social-icon-btn"
                 aria-label="Instagram @lapandilladejesusqro"
@@ -595,9 +593,9 @@ export default function Calendario() {
               >
                 <InstagramIcon size={18} />
               </a>
-              <a 
-                href="https://threads.net/@lapandilladejesusqro" 
-                target="_blank" 
+              <a
+                href="https://threads.net/@lapandilladejesusqro"
+                target="_blank"
                 rel="noopener noreferrer"
                 className="footer-social-icon-btn"
                 aria-label="Threads @lapandilladejesusqro"
@@ -605,9 +603,9 @@ export default function Calendario() {
               >
                 <ThreadsIcon size={18} />
               </a>
-              <a 
-                href="https://facebook.com/lapandilladejesusqro" 
-                target="_blank" 
+              <a
+                href="https://facebook.com/lapandilladejesusqro"
+                target="_blank"
                 rel="noopener noreferrer"
                 className="footer-social-icon-btn"
                 aria-label="Facebook @lapandilladejesusqro"
@@ -615,9 +613,9 @@ export default function Calendario() {
               >
                 <FacebookIcon size={18} />
               </a>
-              <a 
-                href="https://wa.me/5214422497485" 
-                target="_blank" 
+              <a
+                href="https://wa.me/5214422497485"
+                target="_blank"
                 rel="noopener noreferrer"
                 className="footer-social-icon-btn"
                 aria-label="WhatsApp Comunidad"
@@ -631,8 +629,12 @@ export default function Calendario() {
           <div className="footer-meta-container">
             <span className="footer-copy">© 2026 La Pandilla de Jesús · lapandilladejesusqro.org</span>
             <ul className="footer-links">
-              <li><Link href="/">Inicio</Link></li>
-              <li><Link href="/donaciones">Donaciones</Link></li>
+              <li>
+                <Link href="/">Inicio</Link>
+              </li>
+              <li>
+                <Link href="/donaciones">Donaciones</Link>
+              </li>
               <li>
                 <a href="https://instagram.com/lapandilladejesusqro" target="_blank" rel="noopener noreferrer">
                   Instagram
@@ -652,19 +654,37 @@ export default function Calendario() {
       {selectedEvent && (
         <div className="calendar-modal-overlay" onClick={() => setSelectedEvent(null)}>
           <div className="calendar-modal-card" onClick={(e) => e.stopPropagation()}>
-            <button className="calendar-modal-close-btn" onClick={() => setSelectedEvent(null)} data-tooltip="Cerrar esta ventana emergente">
+            <button
+              className="calendar-modal-close-btn"
+              onClick={() => setSelectedEvent(null)}
+              data-tooltip="Cerrar esta ventana emergente"
+            >
               <CloseIcon />
             </button>
             <div className="calendar-modal-icon-wrap">
               <CalendarCheckIcon />
             </div>
-            <h3 className="calendar-modal-title">Agregar al Calendario</h3>
+            <h3 className="calendar-modal-title">{selectedEvent.title}</h3>
+            {selectedEvent.isPrecepto && (
+              <div style={{ marginBottom: "0.5rem" }}>
+                <span className="event-type-badge precepto">
+                  ✝ Misa de Precepto Obligatorio
+                </span>
+              </div>
+            )}
             <p className="calendar-modal-desc">
-              Sincroniza <strong>"{selectedEvent.title}"</strong> directamente con tu proveedor de calendario o descarga el archivo.
+              {selectedEvent.description || "Sincroniza este evento directamente con tu proveedor de calendario personal o compártelo."}
             </p>
+            <div style={{ fontSize: "0.82rem", color: "var(--text-light)", marginBottom: "1rem", textAlign: "center" }}>
+              📅 <strong>{formatDate(selectedEvent.date)}</strong>
+              {selectedEvent.time && ` · ${selectedEvent.time}`}
+              <br />
+              📍 {selectedEvent.location || "Parroquia de la Sagrada Familia, Querétaro"}
+            </div>
+
             <div className="calendar-modal-buttons">
               <a
-                href={buildGCalLink(selectedEvent)}
+                href={generateGoogleCalendarUrl(selectedEvent)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="calendar-btn calendar-btn-google"
@@ -674,7 +694,7 @@ export default function Calendario() {
                 <GoogleIcon /> Google Calendar
               </a>
               <a
-                href={buildOutlookLink(selectedEvent)}
+                href={generateOutlookWebUrl(selectedEvent)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="calendar-btn calendar-btn-outlook"
@@ -682,6 +702,16 @@ export default function Calendario() {
                 data-tooltip="Sincronizar este evento en tu calendario de Outlook.com (Web)"
               >
                 <OutlookIcon /> Outlook.com
+              </a>
+              <a
+                href={generateYahooCalendarUrl(selectedEvent)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="calendar-btn calendar-btn-yahoo"
+                onClick={() => setSelectedEvent(null)}
+                data-tooltip="Sincronizar este evento en Yahoo Calendar (Web)"
+              >
+                <YahooIcon /> Yahoo Calendar
               </a>
               <button
                 onClick={() => {
@@ -694,11 +724,18 @@ export default function Calendario() {
                 <AppleIcon /> iCal (Apple / Outlook)
               </button>
               <button
+                onClick={() => handleCopyEventLink(selectedEvent)}
+                className="calendar-btn calendar-btn-share"
+                data-tooltip="Copiar enlace compartible con vista previa dinámica de imagen OG"
+              >
+                <ShareIcon /> {copiedEventLink ? "¡Enlace Copiado!" : "Compartir Enlace del Evento"}
+              </button>
+              <button
                 onClick={() => setSelectedEvent(null)}
                 className="calendar-btn calendar-btn-cancel"
                 data-tooltip="Cerrar esta ventana emergente"
               >
-                Cancelar
+                Cerrar
               </button>
             </div>
           </div>
@@ -709,7 +746,11 @@ export default function Calendario() {
       {showSubscribeModal && (
         <div className="calendar-modal-overlay" onClick={() => setShowSubscribeModal(false)}>
           <div className="calendar-modal-card" onClick={(e) => e.stopPropagation()}>
-            <button className="calendar-modal-close-btn" onClick={() => setShowSubscribeModal(false)} data-tooltip="Cerrar esta ventana emergente">
+            <button
+              className="calendar-modal-close-btn"
+              onClick={() => setShowSubscribeModal(false)}
+              data-tooltip="Cerrar esta ventana emergente"
+            >
               <CloseIcon />
             </button>
             <div className="calendar-modal-icon-wrap">
@@ -741,7 +782,11 @@ export default function Calendario() {
               <button
                 onClick={handleCopyLink}
                 className="calendar-btn calendar-btn-outlook"
-                style={{ background: copiedLink ? '#20ba5a' : '', color: copiedLink ? '#fff' : '', transition: 'all 0.3s' }}
+                style={{
+                  background: copiedLink ? "#20ba5a" : "",
+                  color: copiedLink ? "#fff" : "",
+                  transition: "all 0.3s",
+                }}
                 data-tooltip="Copiar la URL del feed de eventos (.ics) para pegarlo e importarlo manualmente"
               >
                 <CopyIcon /> {copiedLink ? "¡Enlace Copiado!" : "Copiar Enlace iCal"}
