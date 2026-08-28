@@ -45,8 +45,12 @@ const guessEventTypes = (title: string): string[] => {
     t.includes("acopio")
   ) matchedTypes.push("Colecta");
   if (
-    t.includes("oracion") || 
     t.includes("misa") || 
+    t.includes("eucaristia") || 
+    t.includes("celebracion eucaristica")
+  ) matchedTypes.push("Misa");
+  if (
+    t.includes("oracion") || 
     t.includes("hora santa") || 
     t.includes("sagrario") || 
     t.includes("rosario") || 
