@@ -2617,7 +2617,7 @@ export default function Landing() {
                           {/* Element 1: AI Generated Artwork */}
                           <div className="rosario-artwork-container" style={{ padding: '0 0 16px 0', border: 'none', background: 'transparent' }}>
                             <img 
-                              src={`/rosario-art/${oracion.image}.png`} 
+                              src={`/rosary-art/${oracion.image}.png`} 
                               alt="Mystery Artwork" 
                               style={{ width: '100%', height: '260px', objectFit: 'cover', borderRadius: '16px', boxShadow: '0 4px 20px rgba(0,0,0,0.25)' }} 
                             />
