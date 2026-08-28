@@ -4,15 +4,17 @@ import { NextRequest } from 'next/server';
 export const runtime = 'edge';
 
 function getDynamicTitleSize(len: number): string {
-  if (len < 35) return '95px';
-  if (len < 60) return '75px';
-  if (len < 90) return '60px';
-  if (len < 120) return '50px';
-  return '42px';
+  if (len < 30) return '85px';
+  if (len < 55) return '65px';
+  if (len < 85) return '55px';
+  if (len < 115) return '45px';
+  return '38px';
 }
 
 function getDynamicLocationSize(len: number): string {
-  return len > 60 ? '22px' : '30px';
+  if (len < 50) return '28px';
+  if (len < 90) return '24px';
+  return '20px';
 }
 
 function hashStringToHue(str: string): number {
@@ -173,14 +175,11 @@ export async function GET(req: NextRequest) {
               style={{
                 fontSize: getDynamicTitleSize(title.length),
                 fontWeight: 900,
-                lineHeight: 1.1,
+                lineHeight: 1.25, // increased line height prevents bottom cropping
                 color: '#FFFFFF',
                 margin: 0,
                 textShadow: '0 4px 20px rgba(0,0,0,0.7)',
-                display: '-webkit-box',
-                WebkitLineClamp: title.length > 90 ? 5 : 4,
-                WebkitBoxOrient: 'vertical',
-                overflow: 'hidden',
+                // Removed overflow: hidden and line-clamp so Satori never clips letters
               }}
             >
               {title}
@@ -220,6 +219,7 @@ export async function GET(req: NextRequest) {
                 WebkitLineClamp: 2,
                 WebkitBoxOrient: 'vertical',
                 overflow: 'hidden',
+                lineHeight: 1.3,
               }}>{location}</span>
             </div>
           </div>
