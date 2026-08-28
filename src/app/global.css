@@ -3354,7 +3354,7 @@ body.modal-open [data-tooltip]::after {
   display: flex;
   align-items: center;
   gap: 0.45rem;
-  width: calc(100% - 46px); /* Dedicated clearance for top-right close button */
+  width: calc(100% - 190px); /* Dedicated clearance for counter, language button, and close button */
   margin: 0 0 0.5rem 0;
 }
 

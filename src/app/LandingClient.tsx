@@ -2431,34 +2431,7 @@ export default function Landing() {
           </button>
         </div>
 
-        {/* Dedicated Sub-Deck Switcher for Holy Rosary */}
-        {activeOracionDeck === 'rosario' && (
-          <div className="rosario-subdeck-chips-bar" onClick={(e) => e.stopPropagation()}>
-            {[
-              { id: 'all', labelEs: 'Completo', labelEn: 'Complete (All)' },
-              { id: 'opening', labelEs: '1. Iniciales', labelEn: '1. Opening' },
-              { id: 'mysteries', labelEs: '2. 5 Misterios', labelEn: '2. 5 Mysteries' },
-              { id: 'concluding', labelEs: '3. Finales', labelEn: '3. Concluding' }
-            ].map((sub) => {
-              const isSelected = activeRosarioSubDeck === sub.id;
-              return (
-                <button
-                  key={sub.id}
-                  type="button"
-                  className={`rosario-subdeck-chip-btn ${isSelected ? 'selected' : ''}`}
-                  onClick={() => {
-                    triggerHaptic('light');
-                    setActiveRosarioSubDeck(sub.id as any);
-                    setActiveOracionIdx(0);
-                    setDecadeBeadsCount(0);
-                  }}
-                >
-                  {activeLang === 'en' ? sub.labelEn : sub.labelEs}
-                </button>
-              );
-            })}
-          </div>
-        )}
+        
 
         <div className="recursos-modal-body">
           <div 
@@ -2641,10 +2614,14 @@ export default function Landing() {
                       {/* 5-Element Mystery Card Structure */}
                       {oracion.isMysteryCard ? (
                         <div className="rosario-mystery-5elements-container">
-                          {/* Element 1: Curated SVG Artwork / Indicator */}
-                          <div className="rosario-artwork-container">
-                            <MysteryArtworkIcon iconKey={oracion.image} size={56} />
-                            <span className="rosario-artwork-caption">
+                          {/* Element 1: AI Generated Artwork */}
+                          <div className="rosario-artwork-container" style={{ padding: '0 0 16px 0', border: 'none', background: 'transparent' }}>
+                            <img 
+                              src={`/rosario-art/${oracion.image}.png`} 
+                              alt="Mystery Artwork" 
+                              style={{ width: '100%', height: '260px', objectFit: 'cover', borderRadius: '16px', boxShadow: '0 4px 20px rgba(0,0,0,0.25)' }} 
+                            />
+                            <span className="rosario-artwork-caption" style={{ marginTop: '12px', fontSize: '1rem' }}>
                               {activeLang === 'en' 
                                 ? `Mystery ${oracion.mysteryNumber || ''}` 
                                 : `Misterio ${oracion.mysteryNumber || ''}`}
@@ -2697,96 +2674,7 @@ export default function Landing() {
                             </div>
                           )}
 
-                          {/* Decade Beads Interactive Tracker */}
-                          <div className="rosario-beads-container" onClick={(e) => e.stopPropagation()}>
-                            <div className="rosario-beads-title">
-                              {activeLang === 'en' ? 'Decade Beads (10 Hail Marys)' : 'Cuentas de la Decena (10 Ave Marías)'}
-                            </div>
-                            <div className="rosario-beads-row">
-                              {Array.from({ length: 10 }).map((_, bIdx) => {
-                                const isDone = bIdx < decadeBeadsCount;
-                                return (
-                                  <button
-                                    key={bIdx}
-                                    type="button"
-                                    className={`rosario-bead ${isDone ? 'completed' : ''}`}
-                                    onClick={() => {
-                                      const nextVal = bIdx + 1 === decadeBeadsCount ? bIdx : bIdx + 1;
-                                      setDecadeBeadsCount(nextVal);
-                                      if (typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function') {
-                                        try {
-                                          if (nextVal === 10) {
-                                            navigator.vibrate([15, 30, 15]);
-                                          } else if (nextVal > 0) {
-                                            navigator.vibrate([25]);
-                                          }
-                                        } catch {
-                                          // Ignore
-                                        }
-                                      }
-                                    }}
-                                    title={`Ave María ${bIdx + 1}`}
-                                  >
-                                    {bIdx + 1}
-                                  </button>
-                                );
-                              })}
-                            </div>
-                            <span className="rosario-bead-counter-text">
-                              {activeLang === 'en' ? `${decadeBeadsCount} of 10 prayed` : `${decadeBeadsCount} de 10 rezadas`}
-                            </span>
-                          </div>
-
-                          {/* Collapsible Nested Repeats Accordion (Padre Nuestro, 10 Ave Marías, Gloria, Jaculatorias) */}
-                          {oracion.repeatedPrayers && oracion.repeatedPrayers.length > 0 && (
-                            <div className="rosario-repeats-accordion" onClick={(e) => e.stopPropagation()}>
-                              <div className="rosario-repeats-header">
-                                <span className="rosario-repeats-header-title">
-                                  📿 {activeLang === 'en' ? 'Decade Prayers (Untruncated)' : 'Oraciones de la Decena (Completas)'}
-                                </span>
-                                <button
-                                  type="button"
-                                  className="rosario-repeats-toggle-all-btn"
-                                  onClick={() => toggleAllRepeats(oracion.id || `m-${idx}`)}
-                                >
-                                  {activeLang === 'en' ? 'Toggle All' : 'Plegar / Desplegar'}
-                                </button>
-                              </div>
-
-                              <div className="rosario-repeats-list">
-                                {oracion.repeatedPrayers.map((rp, rpIdx) => {
-                                  const itemKey = `${oracion.id || idx}-rp-${rpIdx}`;
-                                  const isOpen = openRepeatsState[itemKey] !== false;
-
-                                  return (
-                                    <div key={rpIdx} className={`rosario-repeat-item ${isOpen ? 'open' : 'collapsed'}`}>
-                                      <button
-                                        type="button"
-                                        className="rosario-repeat-item-header"
-                                        onClick={() => toggleRepeatItem(itemKey)}
-                                        aria-expanded={isOpen}
-                                      >
-                                        <div className="rosario-repeat-item-info">
-                                          <span className="rosario-repeat-pill">{rp.count > 1 ? `x${rp.count}` : 'x1'}</span>
-                                          <span className="rosario-repeat-item-title">
-                                            {activeLang === 'en' && rp.titleEn ? rp.titleEn : rp.title}
-                                          </span>
-                                        </div>
-                                        <span className={`rosario-repeat-arrow ${isOpen ? 'open' : ''}`}>▼</span>
-                                      </button>
-                                      {isOpen && (
-                                        <div className="rosario-repeat-item-body">
-                                          <p className="rosario-repeat-text">
-                                            {activeLang === 'en' && rp.textEn ? rp.textEn : rp.text}
-                                          </p>
-                                        </div>
-                                      )}
-                                    </div>
-                                  );
-                                })}
-                              </div>
-                            </div>
-                          )}
+                          
                         </div>
                       ) : (
                         <div className="oracion-card-body-text" style={{ whiteSpace: 'pre-wrap' }}>
