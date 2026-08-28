@@ -2296,22 +2296,45 @@ export default function Landing() {
         onClose={() => closeModalWithAnimation('oraciones')}
         className="deck-modal-layout"
         headerAction={
-          activeOracionDeck === 'rosario' ? (
-            <button
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', alignItems: 'flex-end', marginRight: '4px' }}>
+            <button 
               type="button"
-              className="rosario-top-counter-btn"
-              onClick={(e) => {
-                e.stopPropagation();
-                handleIncrementDecadeCounter();
+              className="oracion-lang-toggle-btn"
+              style={{ margin: 0, padding: '2px 8px', fontSize: '0.75rem', height: '26px' }}
+              onClick={() => {
+                const nextLang = activeLang === 'es' ? 'en' : 'es';
+                setActiveLang(nextLang);
+                setGuiaLang(nextLang);
+                triggerHaptic('light');
+                setModalUrl('oraciones', {
+                  deck: activeOracionDeck,
+                  misterio: activeOracionDeck === 'rosario' ? selectedMysteryType : undefined,
+                  variante: activeOracionDeck === 'rosario' ? selectedRosaryVariant : undefined,
+                  etapa: activeOracionIdx + 1,
+                  lang: nextLang
+                });
               }}
-              aria-label={activeLang === 'en' ? `Decade bead counter: ${decadeBeadsCount} of 10` : `Contador de cuentas del misterio: ${decadeBeadsCount} de 10`}
-              title={activeLang === 'en' ? `Decade counter: ${decadeBeadsCount}/10 (Tap to count)` : `Contador de cuentas: ${decadeBeadsCount}/10 (Toca para contar)`}
+              aria-label="Cambiar idioma / Switch language"
+              title={activeLang === 'es' ? "Switch to English" : "Cambiar a Español"}
             >
-              <span className="rosario-top-counter-icon">📿</span>
-              <span className="rosario-top-counter-value">{decadeBeadsCount}/10</span>
-              {decadeBeadsCount === 10 && <span className="rosario-top-counter-badge">✓</span>}
+              {activeLang === 'es' ? '🇲🇽 ES' : '🇺🇸 EN'}
             </button>
-          ) : undefined
+            {activeOracionDeck === 'rosario' && (
+              <button
+                type="button"
+                className="rosario-top-counter-btn"
+                style={{ margin: 0, padding: '2px 8px', fontSize: '0.75rem', height: '26px' }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleIncrementDecadeCounter();
+                }}
+                aria-label={activeLang === 'en' ? `Decade bead counter: ${decadeBeadsCount} of 10` : `Contador de cuentas del misterio: ${decadeBeadsCount} de 10`}
+                title={activeLang === 'en' ? `Decade counter: ${decadeBeadsCount}/10 (Tap to count)` : `Contador de cuentas: ${decadeBeadsCount}/10 (Toca para contar)`}
+              >
+                📿 {decadeBeadsCount}/10
+              </button>
+            )}
+          </div>
         }
         style={{
           ['--deck-active-hsl' as any]: activeDeckColorTone.hslString,
