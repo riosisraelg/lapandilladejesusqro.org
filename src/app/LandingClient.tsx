@@ -575,6 +575,23 @@ export default function Landing() {
   const [activeOracionIdx, setActiveOracionIdx] = useState(0);
   const [selectedMysteryType, setSelectedMysteryType] = useState<MysteryType>(() => getMysteryTypeForDay());
   const [selectedRosaryVariant, setSelectedRosaryVariant] = useState<RosaryVariant>('mexicana');
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const prefs = JSON.parse(localStorage.getItem('rosaryVariantPrefs') || '{"mexicana":0,"misionera":0,"universal":0,"latin":0}');
+        let highestVariant = 'mexicana' as RosaryVariant;
+        let highestScore = -1;
+        (Object.keys(prefs) as RosaryVariant[]).forEach(k => {
+          if (prefs[k as RosaryVariant] > highestScore) {
+            highestScore = prefs[k as RosaryVariant];
+            highestVariant = k as RosaryVariant;
+          }
+        });
+        setSelectedRosaryVariant(highestVariant);
+      } catch (e) { }
+    }
+  }, []);
   const [activeRosarioSubDeck, setActiveRosarioSubDeck] = useState<'all' | 'opening' | 'mysteries' | 'concluding'>('all');
   const [decadeBeadsCount, setDecadeBeadsCount] = useState<number>(0);
   const [openRepeatsState, setOpenRepeatsState] = useState<Record<string, boolean>>({});
@@ -685,6 +702,15 @@ export default function Landing() {
     if (variant === selectedRosaryVariant) return;
     triggerHaptic('light');
     setSelectedRosaryVariant(variant);
+    
+    if (typeof window !== 'undefined') {
+      try {
+        const prefs = JSON.parse(localStorage.getItem('rosaryVariantPrefs') || '{"mexicana":0,"misionera":0,"universal":0,"latin":0}');
+        prefs[variant] = (prefs[variant] || 0) + 1;
+        localStorage.setItem('rosaryVariantPrefs', JSON.stringify(prefs));
+      } catch (e) {}
+    }
+
     setActiveOracionIdx(0);
     setDecadeBeadsCount(0);
     setModalUrl('oraciones', {
@@ -2195,107 +2221,56 @@ export default function Landing() {
                   
                   {oracion.isConfigCard ? (
                     <div className="rosario-config-box" onClick={(e) => e.stopPropagation()}>
-                      {/* Section 1: Selector de Versión / Estilo */}
-                      <div className="rosario-config-section">
-                        <div className="rosario-config-heading">
-                          <span className="rosario-config-step">1</span>
-                          <span className="rosario-config-label">
-                            {activeLang === 'en' ? 'Choose Rosary Version:' : 'Elige la Variante del Rosario:'}
-                          </span>
+                      {/* Minimalist Rosary Config */}
+                      <div className="minimal-rosary-config">
+                        
+                        {/* Selector de Tradición */}
+                        <div className="minimal-rosary-dropdown-wrapper">
+                          <label htmlFor="rosary-variant-select" className="minimal-rosary-label">
+                            {activeLang === 'en' ? 'Rosary Tradition' : 'Tradición del Rosario'}
+                          </label>
+                          <div className="custom-select-wrapper">
+                            <select 
+                              id="rosary-variant-select"
+                              value={selectedRosaryVariant} 
+                              onChange={(e) => handleSwitchRosaryVariant(e.target.value as RosaryVariant)}
+                              className="minimal-rosary-select"
+                            >
+                              <option value="mexicana">{activeLang === 'en' ? '🇲🇽 Mexican Tradition' : '🇲🇽 Tradición Mexicana'}</option>
+                              <option value="misionera">{activeLang === 'en' ? '🌍 Missionary Rosary' : '🌍 Rosario Misionero'}</option>
+                              <option value="universal">{activeLang === 'en' ? '🇻🇦 Universal Roman' : '🇻🇦 Universal / Romano'}</option>
+                              <option value="latin">{activeLang === 'en' ? '🏛️ Traditional Latin' : '🏛️ Latín Clásico'}</option>
+                            </select>
+                            <span className="custom-select-arrow">▾</span>
+                          </div>
                         </div>
-                        <div className="rosario-variant-cards-grid">
-                          {(['mexicana', 'misionera', 'universal', 'latin'] as RosaryVariant[]).map((v) => {
-                            const variantMeta: Record<RosaryVariant, { title: string; subtitle: string; icon: string }> = {
-                              mexicana: { 
-                                title: activeLang === 'en' ? 'Mexican Tradition' : 'Tradición Mexicana', 
-                                subtitle: activeLang === 'en' ? 'Popular Devotion & Faithful Departed' : 'Devoción Popular y Difuntos',
-                                icon: '🇲🇽'
-                              },
-                              misionera: { 
-                                title: activeLang === 'en' ? 'Missionary Rosary' : 'Rosario Misionero', 
-                                subtitle: activeLang === 'en' ? '5 Continents for World Evangelization' : '5 Continentes por las Misiones',
-                                icon: '🌍'
-                              },
-                              universal: { 
-                                title: activeLang === 'en' ? 'Universal Roman' : 'Universal / Romano', 
-                                subtitle: activeLang === 'en' ? 'Standard Catholic Church Structure' : 'Estructura Canónica Estándar',
-                                icon: '🇻🇦'
-                              },
-                              latin: { 
-                                title: activeLang === 'en' ? 'Traditional Latin' : 'Latín Clásico', 
-                                subtitle: activeLang === 'en' ? 'Rosarium Virginis Mariae in Latine' : 'Rosarium Virginis Mariae',
-                                icon: '🏛️'
-                              }
-                            };
-                            const meta = variantMeta[v];
-                            const isSelected = selectedRosaryVariant === v;
 
-                            return (
-                              <button
-                                key={v}
-                                type="button"
-                                className={`rosario-variant-card-btn ${isSelected ? 'selected' : ''}`}
-                                onClick={() => handleSwitchRosaryVariant(v)}
-                              >
-                                <div className="rosario-variant-icon">{meta.icon}</div>
-                                <div className="rosario-variant-text-wrap">
-                                  <div className="rosario-variant-btn-title">{meta.title}</div>
-                                  <div className="rosario-variant-btn-sub">{meta.subtitle}</div>
-                                </div>
-                                {isSelected && <div className="rosario-variant-check">✓</div>}
-                              </button>
-                            );
-                          })}
+                        {/* Misterio del Día (Solo texto informativo, selección automática) */}
+                        <div className="minimal-rosary-mystery-info">
+                          <div className="minimal-mystery-icon">✨</div>
+                          <div className="minimal-mystery-text">
+                            <div className="minimal-mystery-title">
+                              {activeLang === 'en' ? MISTERIOS_DATA[selectedMysteryType].nameEn : MISTERIOS_DATA[selectedMysteryType].name}
+                            </div>
+                            <div className="minimal-mystery-subtitle">
+                              {activeLang === 'en' ? 'Auto-selected for today' : 'Misterio correspondiente de hoy'}
+                            </div>
+                          </div>
                         </div>
+
+                        {/* Botón Iniciar */}
+                        <button
+                          type="button"
+                          className="rosario-start-prayer-btn minimal-start-btn"
+                          onClick={() => {
+                            triggerHaptic('medium');
+                            handleOracionNav(1);
+                          }}
+                        >
+                          <span>{activeLang === 'en' ? 'Start Praying' : 'Comenzar a Rezar'}</span>
+                          <span style={{ fontSize: '1.1rem' }}>▶</span>
+                        </button>
                       </div>
-
-                      {/* Section 2: Selector de Misterio (con selección inteligente del día) */}
-                      <div className="rosario-config-section">
-                        <div className="rosario-config-heading">
-                          <span className="rosario-config-step">2</span>
-                          <span className="rosario-config-label">
-                            {activeLang === 'en' ? 'Mystery of the Day (Auto-Selected):' : 'Misterio del Día (Selección Inteligente):'}
-                          </span>
-                        </div>
-                        <div className="rosario-mystery-chips-row">
-                          {(['gozosos', 'luminosos', 'dolorosos', 'gloriosos'] as MysteryType[]).map((mType) => {
-                            const isToday = getMysteryTypeForDay() === mType;
-                            const isSelected = selectedMysteryType === mType;
-                            const mLabels: Record<MysteryType, { name: string; days: string }> = {
-                              gozosos: { name: activeLang === 'en' ? 'Joyful' : 'Gozosos', days: 'Lun / Sáb' },
-                              luminosos: { name: activeLang === 'en' ? 'Luminous' : 'Luminosos', days: 'Jue' },
-                              dolorosos: { name: activeLang === 'en' ? 'Sorrowful' : 'Dolorosos', days: 'Mar / Vie' },
-                              gloriosos: { name: activeLang === 'en' ? 'Glorious' : 'Gloriosos', days: 'Mié / Dom' }
-                            };
-                            const meta = mLabels[mType];
-
-                            return (
-                              <button
-                                key={mType}
-                                type="button"
-                                className={`rosario-mystery-chip-btn ${isSelected ? 'selected' : ''} ${isToday ? 'today-highlight' : ''}`}
-                                onClick={() => handleSwitchMystery(mType)}
-                              >
-                                <span className="mystery-chip-title">{meta.name}</span>
-                                <span className="mystery-chip-sub">{isToday ? (activeLang === 'en' ? '★ Today' : '★ Hoy') : meta.days}</span>
-                              </button>
-                            );
-                          })}
-                        </div>
-                      </div>
-
-                      {/* Section 3: Botón de Acción Principal para Iniciar */}
-                      <button
-                        type="button"
-                        className="rosario-start-prayer-btn"
-                        onClick={() => {
-                          triggerHaptic('medium');
-                          handleOracionNav(1);
-                        }}
-                      >
-                        <span>{activeLang === 'en' ? 'Start Praying Rosary' : 'Comenzar Santo Rosario'}</span>
-                        <span style={{ fontSize: '1.1rem' }}>▶</span>
-                      </button>
                     </div>
                   ) : (
                     <>

@@ -1259,8 +1259,25 @@ export const MISTERIOS_DATA: Record<MysteryType, MysteryInfo> = {
 /**
  * Determina automáticamente el tipo de misterio según el día de la semana
  */
-export function getMysteryTypeForDay(day?: number): MysteryType {
+export function getMysteryTypeForDay(day?: number, date?: Date): MysteryType {
   const d = day !== undefined ? day : new Date().getDay();
+  const currentDate = date || new Date();
+  const month = currentDate.getMonth() + 1; // 1-12
+  const dayOfMonth = currentDate.getDate();
+
+  // Extraordinary cases (System for special feasts/seasons)
+  // Christmas Day (Dec 25) -> Joyful
+  if (month === 12 && dayOfMonth === 25) return 'gozosos';
+  // Annunciation (Mar 25) -> Joyful
+  if (month === 3 && dayOfMonth === 25) return 'gozosos';
+  // Assumption (Aug 15) -> Glorious
+  if (month === 8 && dayOfMonth === 15) return 'gloriosos';
+  // All Saints (Nov 1) -> Glorious
+  if (month === 11 && dayOfMonth === 1) return 'gloriosos';
+  // Our Lady of Sorrows (Sep 15) -> Sorrowful
+  if (month === 9 && dayOfMonth === 15) return 'dolorosos';
+
+  // Default weekly cycle
   switch (d) {
     case 1: // Lunes
     case 6: // Sábado
