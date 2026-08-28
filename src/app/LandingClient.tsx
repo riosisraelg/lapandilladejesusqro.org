@@ -563,6 +563,7 @@ export default function Landing() {
   const [showCancionero, setShowCancionero] = useState(false);
   const [showOraciones, setShowOraciones] = useState(false);
   const [showGuiaMisa, setShowGuiaMisa] = useState(false);
+  const [showLecturasInResponses, setShowLecturasInResponses] = useState(false);
   const [showConfesion, setShowConfesion] = useState(false);
   const [activeConfesionTab, setActiveConfesionTab] = useState<'pasos' | 'mandamientos' | 'iglesia' | 'capitales' | 'oraciones' | 'todos'>('pasos');
 
@@ -1715,6 +1716,21 @@ export default function Landing() {
                   </div>
                   Guía de Confesión
                 </button>
+
+                <button 
+                  className={`recursos-btn btn-rosario ${bounceBtn === 'rosario' ? 'bounce-active' : ''}`} 
+                  onClick={() => { 
+                    setActiveOracionDeck('rosario'); 
+                    setModalUrl('oraciones', { deck: 'rosario' }); 
+                    triggerHaptic('medium'); 
+                  }}
+                  data-tooltip="Rezar el Santo Rosario con guía interactiva"
+                >
+                  <div className="recursos-icon-circle">
+                    <span style={{ fontSize: '18px' }}>📿</span>
+                  </div>
+                  Santo Rosario
+                </button>
               </div>
             </div>
           </div>
@@ -2541,6 +2557,66 @@ export default function Landing() {
               <p style={{ marginBottom: '1.25rem', lineHeight: 1.6 }}>
                 Sigue cada diálogo entre el celebrante y la asamblea, las oraciones privadas del sacerdote y las posturas litúrgicas (de pie, sentados, de rodillas) estructuradas en los 5 momentos del Misal Romano:
               </p>
+
+              {/* Lecturas del Día (duplicated summary) */}
+              {dailyReadings && (
+                <div style={{ marginBottom: '1.5rem', background: 'rgba(255, 252, 245, 0.7)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-xs)', overflow: 'hidden' }}>
+                  <button
+                    type="button"
+                    onClick={() => setShowLecturasInResponses(prev => !prev)}
+                    style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.85rem 1rem', background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--text-dark)' }}
+                  >
+                    <div style={{ textAlign: 'left' }}>
+                      <span style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--gold-dark)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>📖 Lecturas del Día</span>
+                      <div style={{ fontSize: '0.85rem', fontWeight: 600, marginTop: '2px' }}>{dailyReadings.liturgicalDay || 'Liturgia de la Palabra'}</div>
+                    </div>
+                    <span style={{ fontSize: '1.2rem', color: 'var(--text-muted)', transition: 'transform 0.2s', transform: showLecturasInResponses ? 'rotate(180deg)' : 'rotate(0deg)' }}>▾</span>
+                  </button>
+                  {showLecturasInResponses && (
+                    <div style={{ padding: '0 1rem 1rem 1rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                      {dailyReadings.saint && (
+                        <div style={{ fontSize: '0.8rem', color: 'var(--gold-dark)', fontStyle: 'italic' }}>✝ {dailyReadings.saint}</div>
+                      )}
+                      <div className="lecturas-reading-card">
+                        <div className="lecturas-card-header">
+                          <span className="lecturas-card-label">Primera Lectura</span>
+                          <span className="lecturas-citation">{dailyReadings.firstReading?.citation}</span>
+                        </div>
+                        <div className="lecturas-text">{dailyReadings.firstReading?.text}</div>
+                        <div className="lecturas-acclamation">Palabra de Dios. — <strong>Te alabamos, Señor.</strong></div>
+                      </div>
+                      <div className="lecturas-reading-card">
+                        <div className="lecturas-card-header">
+                          <span className="lecturas-card-label">Salmo Responsorial</span>
+                          <span className="lecturas-citation">{dailyReadings.psalm?.citation}</span>
+                        </div>
+                        {dailyReadings.psalm?.response && (
+                          <div className="lecturas-response-box"><strong>R.</strong> {dailyReadings.psalm.response}</div>
+                        )}
+                        <div className="lecturas-text">{dailyReadings.psalm?.text}</div>
+                      </div>
+                      {dailyReadings.secondReading && (
+                        <div className="lecturas-reading-card">
+                          <div className="lecturas-card-header">
+                            <span className="lecturas-card-label">Segunda Lectura</span>
+                            <span className="lecturas-citation">{dailyReadings.secondReading.citation}</span>
+                          </div>
+                          <div className="lecturas-text">{dailyReadings.secondReading.text}</div>
+                          <div className="lecturas-acclamation">Palabra de Dios. — <strong>Te alabamos, Señor.</strong></div>
+                        </div>
+                      )}
+                      <div className="lecturas-reading-card" style={{ borderColor: 'rgba(212, 160, 23, 0.5)', background: 'rgba(255, 252, 245, 0.95)' }}>
+                        <div className="lecturas-card-header">
+                          <span className="lecturas-card-label" style={{ color: 'var(--gold-dark)', fontWeight: 800 }}>✠ Santo Evangelio</span>
+                          <span className="lecturas-citation">{dailyReadings.gospel?.citation}</span>
+                        </div>
+                        <div className="lecturas-text" style={{ fontWeight: 500 }}>{dailyReadings.gospel?.text}</div>
+                        <div className="lecturas-acclamation">Palabra del Señor. — <strong>Gloria a ti, Señor Jesús.</strong></div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem', marginBottom: '1.5rem' }}>
                 {massResponses.map((sec, sIdx) => (

@@ -2292,6 +2292,13 @@ body.modal-open [data-tooltip]::after {
   background: #020617;
 }
 
+.btn-rosario {
+  background: #4a1942; /* Deep purple for the Rosary */
+}
+.btn-rosario:hover {
+  background: #3a1035;
+}
+
 /* Modals layout */
 .recursos-modal-card {
   background: var(--white);
