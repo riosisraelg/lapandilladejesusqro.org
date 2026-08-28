@@ -174,24 +174,57 @@ export function generateICSContent(event: CalendarEventPayload): string {
 }
 
 /**
- * Inicia la descarga en el navegador del archivo .ics para Apple Calendar / Outlook Desktop
+ * Inicia la acción de guardar o abrir el archivo .ics
  */
 export function downloadICSFile(event: CalendarEventPayload): void {
   if (typeof window === 'undefined') return;
 
   const icsString = generateICSContent(event);
-  const blob = new Blob([icsString], { type: 'text/calendar;charset=utf-8;' });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
   const safeName = (event.title || 'evento')
     .toLowerCase()
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
     .replace(/[^a-z0-9]/g, '_');
-  link.setAttribute('download', `${safeName}.ics`);
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  URL.revokeObjectURL(url);
+  const filename = `${safeName}.ics`;
+
+  const blob = new Blob([icsString], { type: 'text/calendar;charset=utf-8' });
+
+  // Web Share API: El sistema operativo abrirá su menú nativo y sugerirá la app de Calendario!
+  // Esto evita la descarga pasiva a la carpeta "Descargas".
+  if (navigator.canShare) {
+    const file = new File([blob], filename, { type: 'text/calendar' });
+    if (navigator.canShare({ files: [file] })) {
+      navigator.share({
+        files: [file],
+        title: event.title,
+      }).catch((err) => {
+        console.warn('Share failed, falling back to data URI / download', err);
+        executeFallback(blob, filename, icsString);
+      });
+      return;
+    }
+  }
+
+  // Fallback if Web Share is not supported for files
+  executeFallback(blob, filename, icsString);
+}
+
+function executeFallback(blob: Blob, filename: string, icsString: string) {
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
+  
+  if (isIOS) {
+    // For iOS without Web Share (rare on modern iOS, but just in case)
+    // using data URI forces Safari to hand it over to Calendar app instead of saving.
+    window.location.assign(`data:text/calendar;charset=utf-8,${encodeURIComponent(icsString)}`);
+  } else {
+    // Standard download fallback for desktop browsers
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', filename);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }
 }
