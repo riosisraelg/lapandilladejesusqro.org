@@ -14,6 +14,8 @@ function hashStringToHue(str: string): number {
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
+    const origin = req.nextUrl.origin;
+    const logoUrl = `${origin}/logo-pandilla.png`;
 
     const title = searchParams.get('title') || 'La Pandilla de Jesús • Querétaro';
     const category = searchParams.get('category') || 'Evento Parroquial';
@@ -84,23 +86,17 @@ export async function GET(req: NextRequest) {
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-              <div
+              <img
+                src={logoUrl}
+                alt="La Pandilla de Jesús"
                 style={{
-                  width: '60px',
-                  height: '60px',
+                  width: '80px',
+                  height: '80px',
                   borderRadius: '16px',
-                  background: 'linear-gradient(135deg, #d4a359 0%, #b88636 100%)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: '#1a1309',
-                  fontSize: '36px',
-                  fontWeight: 'bold',
-                  boxShadow: '0 4px 15px rgba(212, 163, 89, 0.4)',
+                  objectFit: 'cover',
+                  boxShadow: '0 4px 15px rgba(0, 0, 0, 0.4)',
                 }}
-              >
-                ✝
-              </div>
+              />
               <div style={{ display: 'flex', flexDirection: 'column' }}>
                 <span
                   style={{
