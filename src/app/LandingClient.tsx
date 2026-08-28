@@ -2221,47 +2221,40 @@ export default function Landing() {
                   
                   {oracion.isConfigCard ? (
                     <div className="rosario-config-box" onClick={(e) => e.stopPropagation()}>
-                      {/* Minimalist Rosary Config */}
+                      {/* Ultra-Minimalist Rosary Config */}
                       <div className="minimal-rosary-config">
                         
-                        {/* Selector de Tradición */}
-                        <div className="minimal-rosary-dropdown-wrapper">
-                          <label htmlFor="rosary-variant-select" className="minimal-rosary-label">
-                            {activeLang === 'en' ? 'Rosary Tradition' : 'Tradición del Rosario'}
+                        {/* Selector de Tradición (System Native) */}
+                        <div className="minimal-rosary-dropdown-wrapper" style={{ marginTop: '0.5rem', marginBottom: '1.5rem' }}>
+                          <label htmlFor="rosary-variant-select" className="minimal-rosary-label" style={{ marginBottom: '0.5rem', display: 'block' }}>
+                            {activeLang === 'en' ? 'Choose Tradition' : 'Tradición a rezar'}
                           </label>
-                          <div className="custom-select-wrapper">
-                            <select 
-                              id="rosary-variant-select"
-                              value={selectedRosaryVariant} 
-                              onChange={(e) => handleSwitchRosaryVariant(e.target.value as RosaryVariant)}
-                              className="minimal-rosary-select"
-                            >
-                              <option value="mexicana">{activeLang === 'en' ? '🇲🇽 Mexican Tradition' : '🇲🇽 Tradición Mexicana'}</option>
-                              <option value="misionera">{activeLang === 'en' ? '🌍 Missionary Rosary' : '🌍 Rosario Misionero'}</option>
-                              <option value="universal">{activeLang === 'en' ? '🇻🇦 Universal Roman' : '🇻🇦 Universal / Romano'}</option>
-                              <option value="latin">{activeLang === 'en' ? '🏛️ Traditional Latin' : '🏛️ Latín Clásico'}</option>
-                            </select>
-                            <span className="custom-select-arrow">▾</span>
-                          </div>
-                        </div>
-
-                        {/* Misterio del Día (Solo texto informativo, selección automática) */}
-                        <div className="minimal-rosary-mystery-info">
-                          <div className="minimal-mystery-icon">✨</div>
-                          <div className="minimal-mystery-text">
-                            <div className="minimal-mystery-title">
-                              {activeLang === 'en' ? MISTERIOS_DATA[selectedMysteryType].nameEn : MISTERIOS_DATA[selectedMysteryType].name}
-                            </div>
-                            <div className="minimal-mystery-subtitle">
-                              {activeLang === 'en' ? 'Auto-selected for today' : 'Misterio correspondiente de hoy'}
-                            </div>
-                          </div>
+                          <select 
+                            id="rosary-variant-select"
+                            value={selectedRosaryVariant} 
+                            onChange={(e) => handleSwitchRosaryVariant(e.target.value as RosaryVariant)}
+                            className="system-native-select"
+                            style={{ 
+                              width: '100%', 
+                              padding: '0.5rem', 
+                              fontSize: '1rem', 
+                              borderRadius: '8px',
+                              border: '1px solid var(--border-subtle)',
+                              background: 'var(--surface-card)',
+                              color: 'var(--text-dark)'
+                            }}
+                          >
+                            <option value="mexicana">{activeLang === 'en' ? '🇲🇽 Mexican Tradition' : '🇲🇽 Tradición Mexicana'}</option>
+                            <option value="misionera">{activeLang === 'en' ? '🌍 Missionary Rosary' : '🌍 Rosario Misionero'}</option>
+                            <option value="universal">{activeLang === 'en' ? '🇻🇦 Universal Roman' : '🇻🇦 Universal / Romano'}</option>
+                            <option value="latin">{activeLang === 'en' ? '🏛️ Traditional Latin' : '🏛️ Latín Clásico'}</option>
+                          </select>
                         </div>
 
                         {/* Botón Iniciar */}
                         <button
                           type="button"
-                          className="rosario-start-prayer-btn minimal-start-btn"
+                          className="rosario-start-prayer-btn minimal-start-btn" 
                           onClick={() => {
                             triggerHaptic('medium');
                             handleOracionNav(1);
