@@ -1536,9 +1536,12 @@ export default function Landing() {
       {/* ── NAVBAR ── */}
       <nav className={`nav ${mobileMenuOpen ? "nav-expanded" : ""}`}>
         <div className="nav-left">
-          <div className="nav-brand">
-            <span className="nav-brand-name">La Pandilla de Jesús</span>
-            <span className="nav-brand-sub">Grupo Juvenil Catolico . Queretaro</span>
+          <div className="nav-brand" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '12px' }}>
+            <img src="/logo-pandilla.png" alt="Logo La Pandilla de Jesús" style={{ width: '40px', height: '40px', borderRadius: '8px', objectFit: 'cover' }} />
+            <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.2 }}>
+              <span className="nav-brand-name">La Pandilla de Jesús</span>
+              <span className="nav-brand-sub">Grupo Juvenil Catolico . Queretaro</span>
+            </div>
           </div>
         </div>
         

@@ -302,11 +302,16 @@ export default function Calendario() {
       {/* ── NAVBAR ── */}
       <nav className={`nav ${mobileMenuOpen ? "nav-expanded" : ""}`}>
         <div className="nav-left">
-          <div className="nav-brand">
-            <Link href="/" style={{ textDecoration: "none" }}>
-              <span className="nav-brand-name">La Pandilla de Jesús</span>
+          <div className="nav-brand" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '12px' }}>
+            <Link href="/" style={{ display: 'block' }}>
+              <img src="/logo-pandilla.png" alt="Logo La Pandilla de Jesús" style={{ width: '40px', height: '40px', borderRadius: '8px', objectFit: 'cover' }} />
             </Link>
-            <span className="nav-brand-sub">Comunidad católica · Querétaro</span>
+            <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.2 }}>
+              <Link href="/" style={{ textDecoration: "none" }}>
+                <span className="nav-brand-name">La Pandilla de Jesús</span>
+              </Link>
+              <span className="nav-brand-sub">Comunidad católica · Querétaro</span>
+            </div>
           </div>
         </div>
 
