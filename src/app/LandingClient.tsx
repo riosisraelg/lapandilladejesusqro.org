@@ -152,471 +152,182 @@ Siempre que me mires quiero que me encuentres con fuego en el corazón.
 ¡VEN ESPÍRITU SANTO!`
   },
   {
-    id: "alabo",
-    title: "A ti te alabo",
-    artist: "Hakuna",
-    lyrics: `[Estrofa 1]
-A Ti te alabo, Señor, en tu templo,
-A Ti te alabo con todo el firmamento,
-A Ti te alabo con todo lo que Tú has hecho,
-A Ti te alabo, Padre, Hijo, amor eterno,
-A Ti te alabo con trompas y flautas,
-A Ti te alabo con tambores y danzas,
-A Ti te alaban criaturas y animales,
-A Ti te alaban las montañas y los mares.
-
-[Estrofa 2]
-A ese ser que creó este mundo por amor
-No lo encontraba
-No creía que fuera posible este don: Un Dios
-Todo lo que veo a mi alrededor
-Grita que aquí estás y esconde mi temor
-Todo ser que aliente, alabe al Señor
-Y grite bien fuerte
-
-[Estrofa 3]
-A Ti te alabo aunque te escondas, aunque yo no pueda verte,
-A Ti te alabo que me salvas de la muerte,
-A Ti te alabo en el silencio de un amor que ya no siente,
-A Ti te alabo, eres mi Dios, eres mi vida, eres mi fuerte,
-A Ti te alabo en lo sencillo, cotidiano, indiferente
-A Ti te alabo con el vivo que te busca ansiadamente,
-A Ti te alabo con el muerto que te espera nuevamente,
-A Ti te alabo, eres mi Dios, eres mi Vida.
-A ti te alabo (x4)`
-  },
-  {
-    id: "corazon",
-    title: "Mira este corazón",
-    artist: "Hakuna",
-    lyrics: `[Estrofa 1]
-Mira este corazón
-No desea nada más que encontrarse con tu amor
-Envíanos tu Espíritu, oh Dios,
-Derrámalo, derrámalo
-
-[Estrofa 2]
-Mira este corazón
-Solo tú puedes llenar ese vacío, ese dolor
-Envíanos tu Espíritu, oh Dios
-Derrámalo, derrámalo
-
-[Estrofa 3]
-Sé que ahora escuchas tú mi voz
-Ven, date prisa en socorrer a este grito, a este clamor
-Ven ahora a mi interior
-Ven a irrumpir con tu gran fuerza y tu poder transformador
-Envíanos tu Espíritu, oh Dios
-Derrámalo
-Derrámalo`
-  },
-  {
-    id: "ruah",
-    title: "Ruah",
-    artist: "Jesse Demara",
-    lyrics: `[Estrofa 1]
-¡Oh, Ruah!
-¡Oh, Ruah!
-Con poder
-Ruah (x2)
-
-[Estrofa 2]
-Estamos llenos de valor
-Salimos a anunciar tu resurrección
-Señales hoy nos acompañan
-De tu majestad, tu sanación.
-
-[Estrofa 3]
-Fuego abrazador
-Quema nuestro ser
-Echa fuera el temor de una vez.
-
-[Estrofa 4]
-Ruah
-¡Oh, Ruah!
-¡Oh, Ruah!
-Con poder (x2)
-
-[Estrofa 5]
-Estamos llenos de valor
-Salimos a anunciar tu resurrección
-Señales hoy nos acompañan
-De tu majestad, tu sanación.
-
-[Estrofa 6]
-Derama tu poder
-En mi debilidad
-Llena los corazones de tu paz.
-
-Ruah
-¡Oh, Ruah!
-¡Oh, Ruah!
-Con poder`
-  },
-  {
-    id: "gracias",
-    title: "Gracias",
-    artist: "Tuyo",
-    lyrics: `[Estrofa 1]
-Gracias por dejarme estar tan cerca de ti,
-Qué ganas tenía de que llegara este momento.
-Gracias por esconderte en este trozo de pan,
-Y poderte escuchar en el silencio.
-
-[Estrofa 2]
-Gracias, Señor, muchas gracias, Jesús,
-Gracias, Señor, muchas gracias, Jesús.
-
-[Estrofa 3]
-Por amarme, escucharme, y confiar en mí,
-Y por darme lo que tengo, aunque no me lo merezcO.
-Gracias, Señor, muchas gracias, Jesús,
-Gracias, Señor, muchas gracias, Jesús.`
-  },
-  {
-    id: "tantum",
-    title: "Tantum Ergo",
-    artist: "Himno Eucarístico",
-    lyrics: `Latín
-
-[Estrofa 1]
-Tantum Ergo Sacraméntum,
-Venerémur cérnui:
-Et antíquum documéntum
-Novo cedat rítui;
-Præstet fides suppleméntum
-Sénsuum deféctui.
-
-[Estrofa 2]
-Genitóri Genitóque,
-Laus et jubilátio;
-Salus, honor, virtus quoque,
-Sit et benedíctio;
-Procedénti ab utróque
-Compar sit laudátio.
-Amen.
-
-Español
-
-[Estrofa 1]
-Veneremos, pues, inclinados
-A tan grande Sacramento;
-Y la antigua figura ceda el puesto
-Al nuevo rito;
-La fe supla
-La incapacidad de los sentidos.
-
-[Estrofa 2]
-Al Padre y al Hijo
-Sean dadas alabanza y júbilo,
-Salud, honor, poder y bendición;
-Una gloria igual sea dada
-Al que del uno y del otro procede.
-Amén.`
-  },
-  {
-    id: "yeshua",
-    title: "Yeshua",
-    artist: "Harpa Dei",
-    lyrics: `Yeshua,
-Yeshua,
-Yeshua.`
-  },
-  {
-    id: "guadalupana",
-    title: "La Guadalupana",
-    artist: "Tradicional",
-    lyrics: `[Estrofa 1]
-Desde el cielo, una hermosa mañana
-Desde el cielo, una hermosa mañana
-La Guadalupana, la Guadalupana
-La Guadalupana bajó al Tepeyac
-La Guadalupana, la Guadalupana
-La Guadalupana bajó al Tepeyac
-
-[Estrofa 2]
-Suplicante, juntaba sus manos
-Suplicante, juntaba sus manos
-Y eran mexicanos, y eran mexicanos
-Y eran mexicanos, su porte y su faz
-Y eran mexicanos, y eran mexicanos
-Y eran mexicanos, su porte y su faz.
-
-[Estrofa 3]
-Su llegada llenó de alegría
-Su llegada llenó de alegría
-De luz y armonía, de luz y armonía
-De luz y armonía todo el Anáhuac
-De luz y armonía, de luz y armonía
-De luz y armonía todo el Anáhuac
-
-[Estrofa 4]
-Desde entonces, para el mexicano
-Desde entonces, para el mexicano
-Ser Guadalupano, ser Guadalupano
-Ser Guadalupano es algo esencial
-Ser Guadalupano, ser Guadalupano
-Ser Guadalupano es algo esencial.`
-  },
-  {
-    id: "adorandote",
-    title: "Adorándote, Amándote",
-    artist: "Coro RUAH",
-    lyrics: `Uh… Adorándote, Amándote,
-Uh… Adorándote, Amándote,
-Aquí estoy Señor entrando en tu presencia
-Adorándote, amándote (x2)
-Tu Espíritu
-Está aquí
-Tu poderoso amor
-Actúa en mi
-Tu santidad
-Llena el lugar
-Reinas con autoridad
-Y yo...
-Uh… Adorándote, Amándote
-Aquí estás, Aquí estás,
-Sanándome, Liberándome //
-Uh… Adorándote, Amándote
-Uh… Adorándote, Amándote
-¡GRACIAS! -Coro RUAH.`
-  },
-  {
     id: "gloria_martin_valverde",
     title: "Gloria",
     artist: "Martín Valverde",
-    lyrics: `Gloria, Gloria,
+    lyrics: `Gloria,  Gloria,
 Gloria, Gloria.
-
-a Jesús el Señor,
+A Jesús El Señor,
 al Cordero de Dios.
 Al Nombre sobre todo nombre. (x2)
-
 Gloria, Glo- ria,
 Gloria, Glo- ria,
-
-a Jesús el Señor,
+A Jesús El Señor,
 al Cordero de Dios.
 Al Nombre sobre todo nombre. (x2)
-
 Al Nombre sobre
 todo nombre.`
   },
   {
-    id: "espiritu_santo_athenas",
-    title: "Espíritu Santo",
-    artist: "Athenas",
-    lyrics: `Espíritu de Dios, Espíritu Santo
-Espíritu de Dios, Espíritu Santo
-Mi alma tiene sed de Ti,
-mi alma tiene sed
-X2
-
-Espíritu Santo ven a arder
-Derrama tu fuego y tu poder
-Actúa en mí
-Actúa en mí
-Actúa en mí
-X2
-
-Espíritu de Dios, Espíritu Santo
-Espíritu de Dios, Espíritu Santo`
+    id: "surge_valentia_berit",
+    title: "Surge Valentía",
+    artist: "Berit",
+    lyrics: `Hoy acepto seguirte
+dejar viejas certezas atrás.
+Arriesgar mis verdades,
+abrazar la inquietud
+ir más allá.
+Tus brazos extendidos
+marcan el horizonte al final.
+Encuentro tu mirada,
+escapo del temor
+que me ancla en mi barca.
+Pero dudo y espero
+que el viento sople menos,
+que el sol alumbre más.
+Surge valentía, disipa las dudas
+de este corazón que teme al cruzar
+las fronteras que limitan lo conocido
+allá mar adentro
+y sobre el agua caminar.
+En tus huellas mis pasos
+en tus manos la fuerza del mar
+como tú quiero amar
+las miserias del mundo
+como tú, a mi debilidad.
+Pero dudo y espero
+que el viento sople menos,
+que el sol alumbre más.
+Surge valentía, disipa las dudas
+de este corazón que teme al cruzar
+las fronteras que limitan lo conocido
+allá mar adentro
+y sobre el agua caminar.
+Surge valentía
+y despunta en mí tu modo,
+tus huellas, tus llagas,
+tu forma de amar.
+Y cuando cansado,
+peligre tropezaaar…
+Surge valentiiiiiiiiaaaaa
+Surge valentiiiiiiiiaaaaa.`
   },
   {
-    id: "ganarte_a_ti_tuyo",
-    title: "Ganarte a Ti",
-    artist: "Tuyo",
-    lyrics: `Miro a la cruz como un loco enamorado
-Y no puedo resistirme a preguntar
-Por qué te diste Jesús por mis pecados
-Por qué quisiste salvarme así
-
-Tú has querido contar conmigo
-Aún sabiendo como soy
-Sé que me miras con paciencia y con cariño
-Esperando a que lo deje todo por Ti
-
-Te lo entrego todo,
-todo lo que tengo es para Ti
-Te lo entrego todo Jesús,
-todo lo que soy es para Ti
-
-Te lo entrego todo,
-todo lo que tengo es para Ti
-Te lo entrego todo,
-todo lo que soy es para Ti
-
-De nada sirve la vida,
-si no la vivo contigo
-De nada sirve ganar el mundo
-si te pierdo a Ti
-
-De nada sirve la vida,
-si no la vivo contigo
-De nada sirve ganar el mundo
-si te pierdo a Ti
-
-Ya no quiero nada
-que no venga de Ti
-No me interesa nada
-que no salga de Ti
-No hay nada en este mundo
-que se compare a Ti
-Lo perdería todo por ganarte a Ti
-
-Ya no quiero nada
-que no venga de Ti
-No me interesa nada
-que no salga de Ti
-No hay nada en este mundo
-que se compare a Ti
-Lo dejaría todo
-Por ganarte a Ti
-Lo dejaría todo
-Por ganarte a Ti
-Tu eres mi tesoro, Jesús
-
-De nada sirve mi vida,
-si no la vivo contigo
-De nada sirve ganar el mundo
-si te pierdo a Ti
-
-Sabiendo todo lo que me puedes dar,
-cómo me voy a conformar con el mundo.`
-  },
-  {
-    id: "nada_hakuna",
-    title: "Nada",
+    id: "noche_hakuna",
+    title: "Noche",
     artist: "Hakuna",
-    lyrics: `Deja de herirte
-Deja de poner en mi boca
-Palabras que nunca dije
-
-Deja de pensar que estoy enfadado
-Deja de decir
-Que soy yo el que se está
-Alejando de ti
-
-Y es que no lo ves
-Me entrego por ti
-Una y otra vez
-Tú siempre serás mi favorita
-
-Nunca te dejaré
-Nunca te dejaré
-
-Y es que no hay nada
-Nada, nada, nada
-Que puedas hacer
-Para que te deje de querer
-
-Y es que no hay nada
-Hagas lo que hagas
-Por favor
-Deja de decir
-Que no eres amada por mí
-
-No hay nada en tu alma
-Que haga que en ti
-Deje de pensar
-
-Estos muros que te destrozan
-Son entre tú y tu libertad
-Házme caso hija mía
-Yo solo quiero verte feliz
-
-Tú siempre tendrás mi perdón
-Te falta perdonarte a ti
-
-Y es que no hay nada
-Nada, nada, nada
-Que puedas hacer
-Para que te deje de querer
-
-Y es que no hay nada
-Hagas lo que hagas
-Por favor
-Deja de decir
-Que no eres amada por mí
-
-Y es que aunque peques y me cambies
-Por las cosas terrenales
-Aunque te alejes y me olvides
-Y me borres de tu planes
-Aunque te rindas y te caigas
-Y no sepas levantarte
-Si estás perdido pide ayuda (X 2)
-
-Y es que no hay nada
-Nada, nada, nada
-Que puedas hacer
-Para que te deje de querer
-
-Y es que no hay nada
-Hagas lo que hagas
-Por favor
-Deja de decir
-Que no eres amada por mí.`
+    lyrics: `Por tu iglesia, que te espera a oscuras
+Por tu pueblo, que te reza guardando la
+aurora.
+Te rogamos, te rogamos.
+Por las naciones paganas
+que tienen sed de ti sin saberlo,
+Ten piedad, ten piedad.
+Por los pueblos oprimidos,
+por el totalitarismo y la opresión de la
+mentira.
+Por aquellos perseguidos por tu nombre
+que se ocultan para orar
+y aquellos extraídos de su hogar.
+Por sus perseguidores,
+cegados por el odio.
+Perdónales, Padre,
+no saben lo que hacen.
+Por los que no nos aman,
+por los que no sabemos amar.
+Por los que sufren y agonizan,
+y hoy duermen en el hospital.
+Por los que hoy es su última noche
+cuyos ojos no verán el nuevo día.
+Ten piedad, ten piedad.
+Por todos los que sufren la tentación del
+suicidio.
+Por los dispuestos a dejar ganar al mal.
+Por aquellos cuyas noches son interminables
+Y a los que en la angustia les ha quitado la
+paz.
+Kyrie Eleison, Kyrie Eleison,
+Kyrie Eleison, Kyrie Eleison, Kyrie Eleison.
+Por aquellos que trabajan
+en la prostitución
+y se ven obligados a vender su amor.
+Por los que caen en la trampa,
+del vicio y las drogas.
+Por los que hoy duermen en prisión,
+por los que hoy esperan su ejecución.
+Por aquellos a los que torturan.
+Por criminales, por los ladrones,
+por los que erran en soledad.
+Por los que sufren
+a indiferencia de los demás.
+Kyrie Eleison, Kyrie Eleison.
+Por la ciudad, por todos sus habitantes,
+que en sus sueños, solo existas Tú.
+Por nuestros difuntos,
+que aún no han visto Tu rostro.
+Por los alejados entre la multitud
+Por los niños que descansan
+en el seno de su madre.
+Por las mujeres que van a dar a luz.
+Para que reine tu paz en cada hogar.
+Por los que quieren saciar tu sed de amar
+Kyrie Eleison, Kyrie Eleison Kyrie Eleison,
+Kyrie Eleison, Kyrie Eleison, Kyrie Eleison,
+Ten piedad, ten piedad, ten piedad.
+Ten piedad, ten piedad, ten piedad.
+Ten piedad, ten piedad, ten piedad
+Ten piedad, Señor, ten piedad.`
+  },
+  {
+    id: "anima_christi",
+    title: "Anima Christi",
+    artist: "Tradicional",
+    lyrics: `Anima Christi, sanctifica me.
+Corpus Christi, salva me.
+Sanguis Christi, inebria me.
+Aqua lateris Christi, lava me.`
   },
   {
     id: "tu_el_unico_rey_tuyo",
     title: "TÚ el único REY",
-    artist: "tuyo",
-    lyrics: `Tú, el Único Rey que tiene que reinar
-El Único Señor al que voy a alabar
-Hoy levanto el corazón al que lo conquistó
-Simplemente porque Tú eres Dios
-
-Y a Ti, toda la alabanza
-Todo el poder y el honor
-Toda la gloria al Señor (x3)
-
-Tú, el Único Rey que tiene que reinar
-El Único Señor al que voy a alabar
-Hoy levanto el corazón al que lo conquistó
-Simplemente porque Tú eres Dios (x2)`
+    artist: "Tuyo",
+    lyrics: `Tú, el Único Rey que tiene que reinar,
+El Único Señor al que voy a alabar.
+Hoy levanto el corazón al que lo conquistó,
+simplemente porque Tú eres Dios.
+Tú, el Único Rey que tiene que reinar,
+El Único Señor al que voy a alabar.
+Hoy levanto el corazón al que lo conquistó,
+simplemente porque Tú eres Dios.`
   },
   {
-    id: "consagracion_a_maria",
-    title: "Consagración a María",
-    artist: "Oración",
-    lyrics: `Oh Señora mía,
-Oh Madre mía,
-Yo me ofrezco todo a ti,
-Y en prueba de mi filial afecto,
-Te consagro en este día,
-Mis ojos,
-Mis oídos,
-Mi lengua,
-Y mi corazón,
-En una palabra,
-Todo mi ser.
-Ya que soy todo tuyo,
-Oh Madre de bondad,
-Guárdame, defiéndeme,
-Y utilízame como instrumento,
-Y posesión tuya (x2)
-Amén.`
-  },
-  {
-    id: "agradecimiento",
-    title: "Agradecimiento Especial",
-    artist: "Coro RUAH",
-    lyrics: `Jesús,
-Gracias por permitirnos estar tan cerca de Ti, y por regalarnos la gracia de tener sed de Ti.
-Por tocar la puerta (nuestro corazón) y llamarnos a tu encuentro.
-Gracias por llenar de Ti estos corazones heridos y vacíos, por sanarlos y transformarlos.
-Gracias por todas las bendiciones que nos has dado en este gran año, y, por si fuera poco, gracias por darnos la VIDA.
-
-Hoy no queremos más que encontrarnos con tu AMOR, hoy sabemos que sólo TÚ puedes llenar ese vacío, hoy ya no concebimos vida más allá de esta medida.
-
-Sólo gracias papá, por un año tan maravilloso.
-
-¡TE AMAMOS CON LOCURA!
-
--Tus hijos muy amados.
-
-¡GRACIAS!`
+    id: "la_guadalupana",
+    title: "La Guadalupana",
+    artist: "M. Esperón, E. Cortázar",
+    lyrics: `Desde el cielo, una hermosa mañana
+desde el cielo, una hermosa mañana,
+la Guadalupana, la Guadalupana,
+la Guadalupana bajó al Tepeyac.
+La Guadalupana, la Guadalupana,
+la Guadalupana bajó al Tepeyac.
+Suplicante, juntaba sus manos
+Suplicante, juntaba sus manos.
+Y eran mexicanos, y eran mexicanos
+Y eran mexicanos, su porte y su faz.
+Y eran mexicanos, y eran mexicanos
+Y eran mexicanos, su porte y su faz.
+Su llegada llenó de alegría,
+su llegada llenó de alegría.
+De luz y armonía, de luz y armonía,
+de luz y armonía todo el Anáhuac
+de luz y armonía, de luz y armonía
+de luz y armonía todo el Anáhuac.
+Desde entonces, para el mexicano,
+desde entonces, para el mexicano.
+Ser Guadalupano, ser Guadalupano,
+ser Guadalupano es algo esencial.
+Ser Guadalupano, ser Guadalupano,
+ser Guadalupano es algo esencial.`
   }
 ];
 

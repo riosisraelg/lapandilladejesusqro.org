@@ -1,0 +1,61 @@
+{
+  "songs": [
+    {
+      "id": "lema",
+      "title": "Coro RUAH (Lema)",
+      "artist": "Coro RUAH",
+      "category": "Lema / Entrada",
+      "lyrics": "Al cielo llegamos en equipo\nSiempre que me mires quiero que me encuentres con fuego en el corazón.\n¡VEN ESPÍRITU SANTO!",
+      "page": 1
+    },
+    {
+      "id": "gloria_martin_valverde",
+      "title": "Gloria",
+      "artist": "Martín Valverde",
+      "category": "Gloria",
+      "lyrics": "Gloria,  Gloria,\nGloria, Gloria.\nA Jesús El Señor,\nal Cordero de Dios.\nAl Nombre sobre todo nombre. (x2)\nGloria, Glo- ria,\nGloria, Glo- ria,\nA Jesús El Señor,\nal Cordero de Dios.\nAl Nombre sobre todo nombre. (x2)\nAl Nombre sobre\ntodo nombre.",
+      "page": 3
+    },
+    {
+      "id": "surge_valentia_berit",
+      "title": "Surge Valentía",
+      "artist": "Berit",
+      "category": "Alabanza / Meditación",
+      "lyrics": "Hoy acepto seguirte\ndejar viejas certezas atrás.\nArriesgar mis verdades,\nabrazar la inquietud\nir más allá.\nTus brazos extendidos\nmarcan el horizonte al final.\nEncuentro tu mirada,\nescapo del temor\nque me ancla en mi barca.\nPero dudo y espero\nque el viento sople menos,\nque el sol alumbre más.\nSurge valentía, disipa las dudas\nde este corazón que teme al cruzar\nlas fronteras que limitan lo conocido\nallá mar adentro\ny sobre el agua caminar.\nEn tus huellas mis pasos\nen tus manos la fuerza del mar\ncomo tú quiero amar\nlas miserias del mundo\ncomo tú, a mi debilidad.\nPero dudo y espero\nque el viento sople menos,\nque el sol alumbre más.\nSurge valentía, disipa las dudas\nde este corazón que teme al cruzar\nlas fronteras que limitan lo conocido\nallá mar adentro\ny sobre el agua caminar.\nSurge valentía\ny despunta en mí tu modo,\ntus huellas, tus llagas,\ntu forma de amar.\nY cuando cansado,\npeligre tropezaaar…\nSurge valentiiiiiiiiaaaaa\nSurge valentiiiiiiiiaaaaa.",
+      "page": 4
+    },
+    {
+      "id": "noche_hakuna",
+      "title": "Noche",
+      "artist": "Hakuna",
+      "category": "Piedad / Intercesión",
+      "lyrics": "Por tu iglesia, que te espera a oscuras\nPor tu pueblo, que te reza guardando la\naurora.\nTe rogamos, te rogamos.\nPor las naciones paganas\nque tienen sed de ti sin saberlo,\nTen piedad, ten piedad.\nPor los pueblos oprimidos,\npor el totalitarismo y la opresión de la\nmentira.\nPor aquellos perseguidos por tu nombre\nque se ocultan para orar\ny aquellos extraídos de su hogar.\nPor sus perseguidores,\ncegados por el odio.\nPerdónales, Padre,\nno saben lo que hacen.\nPor los que no nos aman,\npor los que no sabemos amar.\nPor los que sufren y agonizan,\ny hoy duermen en el hospital.\nPor los que hoy es su última noche\ncuyos ojos no verán el nuevo día.\nTen piedad, ten piedad.\nPor todos los que sufren la tentación del\nsuicidio.\nPor los dispuestos a dejar ganar al mal.\nPor aquellos cuyas noches son interminables\nY a los que en la angustia les ha quitado la\npaz.\nKyrie Eleison, Kyrie Eleison,\nKyrie Eleison, Kyrie Eleison, Kyrie Eleison.\nPor aquellos que trabajan\nen la prostitución\ny se ven obligados a vender su amor.\nPor los que caen en la trampa,\ndel vicio y las drogas.\nPor los que hoy duermen en prisión,\npor los que hoy esperan su ejecución.\nPor aquellos a los que torturan.\nPor criminales, por los ladrones,\npor los que erran en soledad.\nPor los que sufren\na indiferencia de los demás.\nKyrie Eleison, Kyrie Eleison.\nPor la ciudad, por todos sus habitantes,\nque en sus sueños, solo existas Tú.\nPor nuestros difuntos,\nque aún no han visto Tu rostro.\nPor los alejados entre la multitud\nPor los niños que descansan\nen el seno de su madre.\nPor las mujeres que van a dar a luz.\nPara que reine tu paz en cada hogar.\nPor los que quieren saciar tu sed de amar\nKyrie Eleison, Kyrie Eleison Kyrie Eleison,\nKyrie Eleison, Kyrie Eleison, Kyrie Eleison,\nTen piedad, ten piedad, ten piedad.\nTen piedad, ten piedad, ten piedad.\nTen piedad, ten piedad, ten piedad\nTen piedad, Señor, ten piedad.",
+      "page": 5
+    },
+    {
+      "id": "anima_christi",
+      "title": "Anima Christi",
+      "artist": "Tradicional",
+      "category": "Comunión / Eucarístico",
+      "lyrics": "Anima Christi, sanctifica me.\nCorpus Christi, salva me.\nSanguis Christi, inebria me.\nAqua lateris Christi, lava me.",
+      "page": 6
+    },
+    {
+      "id": "tu_el_unico_rey_tuyo",
+      "title": "TÚ el único REY",
+      "artist": "Tuyo",
+      "category": "Alabanza / Adoración",
+      "lyrics": "Tú, el Único Rey que tiene que reinar,\nEl Único Señor al que voy a alabar.\nHoy levanto el corazón al que lo conquistó,\nsimplemente porque Tú eres Dios.\nTú, el Único Rey que tiene que reinar,\nEl Único Señor al que voy a alabar.\nHoy levanto el corazón al que lo conquistó,\nsimplemente porque Tú eres Dios.",
+      "page": 7
+    },
+    {
+      "id": "la_guadalupana",
+      "title": "La Guadalupana",
+      "artist": "M. Esperón, E. Cortázar",
+      "category": "Salida / Mariano",
+      "lyrics": "Desde el cielo, una hermosa mañana\ndesde el cielo, una hermosa mañana,\nla Guadalupana, la Guadalupana,\nla Guadalupana bajó al Tepeyac.\nLa Guadalupana, la Guadalupana,\nla Guadalupana bajó al Tepeyac.\nSuplicante, juntaba sus manos\nSuplicante, juntaba sus manos.\nY eran mexicanos, y eran mexicanos\nY eran mexicanos, su porte y su faz.\nY eran mexicanos, y eran mexicanos\nY eran mexicanos, su porte y su faz.\nSu llegada llenó de alegría,\nsu llegada llenó de alegría.\nDe luz y armonía, de luz y armonía,\nde luz y armonía todo el Anáhuac\nde luz y armonía, de luz y armonía\nde luz y armonía todo el Anáhuac.\nDesde entonces, para el mexicano,\ndesde entonces, para el mexicano.\nSer Guadalupano, ser Guadalupano,\nser Guadalupano es algo esencial.\nSer Guadalupano, ser Guadalupano,\nser Guadalupano es algo esencial.",
+      "page": 8
+    }
+  ],
+  "total": 7
+}
