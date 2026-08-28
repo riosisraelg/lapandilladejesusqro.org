@@ -153,7 +153,7 @@ export default function Calendario() {
   const icalUrl = ICAL_FEED_URL;
   const [showSubscribeModal, setShowSubscribeModal] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
-  const [copiedEventLink, setCopiedEventLink] = useState(false);
+  const [copiedEventId, setCopiedEventId] = useState<string | null>(null);
 
   const googleSubscribeLink = useMemo(() => {
     return `https://calendar.google.com/calendar/render?cid=${encodeURIComponent(ICAL_FEED_URL)}`;
@@ -178,8 +178,8 @@ export default function Calendario() {
     if (typeof window !== "undefined") {
       const shareUrl = `${window.location.origin}/calendario?evento=${encodeURIComponent(ev.id)}`;
       navigator.clipboard.writeText(shareUrl);
-      setCopiedEventLink(true);
-      setTimeout(() => setCopiedEventLink(false), 2500);
+      setCopiedEventId(ev.id);
+      setTimeout(() => setCopiedEventId(null), 2500);
     }
   };
 
@@ -530,11 +530,28 @@ export default function Calendario() {
                       <button
                         onClick={() => handleCopyEventLink(ev)}
                         className="btn-agendar"
-                        style={{ background: "transparent", maxWidth: "44px", padding: "0.5rem" }}
-                        data-tooltip="Copiar enlace directo compartible de este evento"
+                        style={{ 
+                          background: copiedEventId === ev.id ? "#20ba5a" : "transparent",
+                          color: copiedEventId === ev.id ? "#fff" : "inherit",
+                          maxWidth: copiedEventId === ev.id ? "120px" : "44px",
+                          padding: "0.5rem",
+                          transition: "all 0.3s ease",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: "6px"
+                        }}
+                        data-tooltip={copiedEventId === ev.id ? "¡Enlace copiado al portapapeles!" : "Copiar enlace directo compartible de este evento"}
                         aria-label="Compartir evento"
                       >
-                        <ShareIcon />
+                        {copiedEventId === ev.id ? (
+                          <>
+                            <CopyIcon />
+                            <span style={{ fontSize: '0.8rem', fontWeight: 'bold' }}>Copiado</span>
+                          </>
+                        ) : (
+                          <ShareIcon />
+                        )}
                       </button>
                       {ev.lumaLink && (
                         <a
@@ -732,9 +749,20 @@ export default function Calendario() {
             <button
               onClick={() => handleCopyEventLink(selectedEvent)}
               className="calendar-btn calendar-btn-share"
-              style={{ width: '100%', padding: '8px', fontSize: '0.9rem', fontWeight: 'bold', justifyContent: 'center', borderRadius: '8px' }}
+              style={{ 
+                width: '100%', 
+                padding: '8px', 
+                fontSize: '0.9rem', 
+                fontWeight: 'bold', 
+                justifyContent: 'center', 
+                borderRadius: '8px',
+                background: copiedEventId === selectedEvent.id ? "#20ba5a" : "",
+                color: copiedEventId === selectedEvent.id ? "#fff" : "",
+                transition: "all 0.3s"
+              }}
             >
-              <ShareIcon /> {copiedEventLink ? "¡Enlace Copiado!" : "Compartir Evento"}
+              {copiedEventId === selectedEvent.id ? <CopyIcon /> : <ShareIcon />} 
+              {copiedEventId === selectedEvent.id ? "¡Enlace Copiado!" : "Compartir Evento"}
             </button>
           </div>
         )}
