@@ -3,6 +3,18 @@ import { NextRequest } from 'next/server';
 
 export const runtime = 'edge';
 
+function getDynamicTitleSize(len: number): string {
+  if (len < 35) return '95px';
+  if (len < 60) return '75px';
+  if (len < 90) return '60px';
+  if (len < 120) return '50px';
+  return '42px';
+}
+
+function getDynamicLocationSize(len: number): string {
+  return len > 60 ? '22px' : '30px';
+}
+
 function hashStringToHue(str: string): number {
   let hash = 0;
   for (let i = 0; i < str.length; i++) {
@@ -159,12 +171,16 @@ export async function GET(req: NextRequest) {
           >
             <h1
               style={{
-                fontSize: title.length > 40 ? '75px' : '95px',
+                fontSize: getDynamicTitleSize(title.length),
                 fontWeight: 900,
                 lineHeight: 1.1,
                 color: '#FFFFFF',
                 margin: 0,
                 textShadow: '0 4px 20px rgba(0,0,0,0.7)',
+                display: '-webkit-box',
+                WebkitLineClamp: title.length > 90 ? 5 : 4,
+                WebkitBoxOrient: 'vertical',
+                overflow: 'hidden',
               }}
             >
               {title}
@@ -197,9 +213,14 @@ export async function GET(req: NextRequest) {
                 </div>
               )}
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', color: '#e2e8f0', fontSize: '30px', fontWeight: 500 }}>
-              <span style={{ color: '#d4a359' }}>📍</span>
-              <span>{location}</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', color: '#e2e8f0', fontSize: getDynamicLocationSize(location.length), fontWeight: 500 }}>
+              <span style={{ color: '#d4a359', flexShrink: 0 }}>📍</span>
+              <span style={{
+                display: '-webkit-box',
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: 'vertical',
+                overflow: 'hidden',
+              }}>{location}</span>
             </div>
           </div>
         </div>
