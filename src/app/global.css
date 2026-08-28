@@ -2630,20 +2630,14 @@ body.modal-open [data-tooltip]::after {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 0;
-  padding: 0.85rem 1.25rem;
+  margin: 0.5rem 0 0 0;
+  padding: 0 0.25rem;
   order: 2;
   flex-shrink: 0;
   width: 100%;
-  background: var(--white);
-  border-top: 1px solid var(--border-subtle);
-  border-radius: 0 0 24px 24px;
-}
-
-@media (min-width: 768px) {
-  .deck-nav {
-    padding: 1.15rem 1.75rem;
-  }
+  max-width: 660px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .deck-nav-btn {
@@ -2989,24 +2983,8 @@ body.modal-open [data-tooltip]::after {
   /* Hide description and old deck nav line on mobile/tablet to save space */
   .recursos-desc,
   .deck-nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 0;
-  padding: 0.85rem 1.25rem;
-  order: 2;
-  flex-shrink: 0;
-  width: 100%;
-  background: var(--white);
-  border-top: 1px solid var(--border-subtle);
-  border-radius: 0 0 24px 24px;
-}
-
-@media (min-width: 768px) {
-  .deck-nav {
-    padding: 1.15rem 1.75rem;
+    display: none !important;
   }
-}
 
   .recursos-title-container {
     margin-bottom: 0.5rem;
@@ -3378,7 +3356,7 @@ body.modal-open [data-tooltip]::after {
   gap: 0.45rem;
   width: calc(100% - 190px);
   margin: 0;
-  padding: 1.25rem 1.25rem 0.5rem 1.25rem;
+  padding: 1.15rem 1.25rem 0.5rem 1.25rem;
 }
 
 @media (min-width: 768px) {
