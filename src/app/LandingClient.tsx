@@ -1731,6 +1731,24 @@ export default function Landing() {
                   </div>
                   Santo Rosario
                 </button>
+
+                <button 
+                  className={`recursos-btn btn-seguir-misa ${bounceBtn === 'seguir-misa' ? 'bounce-active' : ''}`} 
+                  onClick={() => { 
+                    setActiveGuiaTab('respuestas'); 
+                    setModalUrl('guia', { seccion: 'respuestas' }); 
+                    triggerHaptic('medium'); 
+                  }}
+                  data-tooltip="Seguir la Misa: lecturas, salmos, respuestas y cantos litúrgicos"
+                >
+                  <div className="recursos-icon-circle">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20" />
+                      <path d="M12 6v7l3-3" />
+                    </svg>
+                  </div>
+                  Seguir la Misa
+                </button>
               </div>
             </div>
           </div>

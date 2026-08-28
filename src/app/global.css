@@ -2299,6 +2299,13 @@ body.modal-open [data-tooltip]::after {
   background: #3a1035;
 }
 
+.btn-seguir-misa {
+  background: #7c2d12; /* Warm liturgical red-brown */
+}
+.btn-seguir-misa:hover {
+  background: #6b2710;
+}
+
 /* Modals layout */
 .recursos-modal-card {
   background: var(--white);
