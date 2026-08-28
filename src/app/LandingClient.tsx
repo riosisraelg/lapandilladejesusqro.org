@@ -566,6 +566,20 @@ export default function Landing() {
   const [showLecturasInResponses, setShowLecturasInResponses] = useState(false);
   const [showConfesion, setShowConfesion] = useState(false);
   const [activeConfesionTab, setActiveConfesionTab] = useState<'pasos' | 'mandamientos' | 'iglesia' | 'capitales' | 'oraciones' | 'todos'>('pasos');
+  
+  const CONFESION_TABS = ['pasos', 'mandamientos', 'iglesia', 'capitales', 'oraciones', 'todos'] as const;
+  const handlePrevConfesion = () => {
+    const idx = CONFESION_TABS.indexOf(activeConfesionTab);
+    const newIdx = (idx - 1 + CONFESION_TABS.length) % CONFESION_TABS.length;
+    setActiveConfesionTab(CONFESION_TABS[newIdx]);
+    triggerHaptic('light');
+  };
+  const handleNextConfesion = () => {
+    const idx = CONFESION_TABS.indexOf(activeConfesionTab);
+    const newIdx = (idx + 1) % CONFESION_TABS.length;
+    setActiveConfesionTab(CONFESION_TABS[newIdx]);
+    triggerHaptic('light');
+  };
 
   // Cancionero state
   const [songs] = useState<Array<{ id: string; title: string; artist: string; lyrics: string }>>(defaultSongs);
@@ -2416,54 +2430,37 @@ export default function Landing() {
         onClose={() => closeModalWithAnimation('guia')}
         style={{ maxWidth: '650px' }}
       >
-        {/* Top Control Bar with clearance for top-right close button */}
+        {/* Top Control Bar with Grouped Deck Switcher */}
         <div className="oracion-top-bar">
-          <div className="oracion-deck-switcher-bar">
-            <button 
-              type="button"
-              className="deck-switch-arrow-btn"
-              onClick={handlePrevGuia}
-              aria-label="Sección anterior"
-              title="Sección anterior"
-            >
-              ◀
-            </button>
-            <div className="deck-switch-info">
-              <span className="deck-switch-badge">Sección {GUIA_SECTIONS.findIndex(s => s.id === activeGuiaTab) + 1}/{GUIA_SECTIONS.length}</span>
-              <span className="deck-switch-title">
+          <div className="oracion-deck-switcher-new" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <div className="deck-arrows-group">
+              <button 
+                onClick={handlePrevGuia} 
+                style={{ color: 'var(--gold-dark)' }}
+                aria-label="Sección anterior"
+              >
+                ◀
+              </button>
+              <button 
+                onClick={handleNextGuia} 
+                style={{ color: 'var(--gold-dark)' }}
+                aria-label="Siguiente sección"
+              >
+                ▶
+              </button>
+            </div>
+            <div className="deck-title-row">
+              <span className="title">
                 {GUIA_SECTIONS.find(s => s.id === activeGuiaTab)?.title}
               </span>
+              <span className="indicator" style={{ color: 'var(--gold-dark)' }}>
+                • {GUIA_SECTIONS.findIndex(s => s.id === activeGuiaTab) + 1}/{GUIA_SECTIONS.length}
+              </span>
             </div>
-            <button 
-              type="button"
-              className="deck-switch-arrow-btn"
-              onClick={handleNextGuia}
-              aria-label="Siguiente sección"
-              title="Siguiente sección"
-            >
-              ▶
-            </button>
           </div>
         </div>
 
         <div className="recursos-modal-body">
-          {/* Quick tab switcher pills */}
-          <div className="guia-tabs">
-            {GUIA_SECTIONS.map((sec) => (
-              <button
-                key={sec.id}
-                type="button"
-                className={`guia-tab-btn ${activeGuiaTab === sec.id ? 'active' : ''}`}
-                onClick={() => {
-                  setActiveGuiaTab(sec.id);
-                  setModalUrl('guia', { seccion: sec.id });
-                  triggerHaptic('light');
-                }}
-              >
-                {sec.title}
-              </button>
-            ))}
-          </div>
 
           {/* TAB 1: Lecturas del Día (Live Scraper) */}
           {activeGuiaTab === 'lecturas' && (
