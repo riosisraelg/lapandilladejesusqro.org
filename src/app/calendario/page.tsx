@@ -51,19 +51,37 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
     ...getMisasDePrecepto(currentYear),
     ...getMisasDePrecepto(currentYear + 1),
   ];
-  const found = allPreceptos.find((e) => e.id === eventId);
+  let found: any = allPreceptos.find((e) => e.id === eventId);
+  
+  // Try fetching iCal feed to find the event if not found in preceptos
+  if (!found) {
+    try {
+      const { fetchICalFeed } = await import('../../utils/icalParser');
+      const { ICAL_FEED_URL } = await import('../../config');
+      if (ICAL_FEED_URL) {
+        const iCalEvents = await fetchICalFeed(ICAL_FEED_URL);
+        found = iCalEvents.find((e: any) => e.id === eventId);
+      }
+    } catch (e) {
+      console.error("Error fetching iCal for OG generation:", e);
+    }
+  }
 
   const eventTitle = found ? found.title : 'Evento de la Comunidad';
-  const eventDesc = found
-    ? `${found.description} (${found.date} en ${found.location})`
-    : baseDescription;
-  const eventCategory = found && found.isPrecepto ? 'Misa de Precepto' : 'Evento Parroquial';
+  let eventDesc = baseDescription;
+  if (found) {
+    eventDesc = found.description ? `${found.description}` : '';
+    eventDesc += ` (${found.date} en ${found.location || 'Parroquia de la Sagrada Familia'})`;
+  }
+  const eventCategory = found && found.isPrecepto ? 'Misa de Precepto' : (found && found.type ? found.type : 'Evento Parroquial');
   const eventDate = found ? found.date : '';
+  const eventTime = found && found.time ? found.time : '';
+  const eventLocation = found && found.location ? found.location : 'Parroquia de la Sagrada Familia, Querétaro';
 
   const ogImageUrl = `/api/og?title=${encodeURIComponent(eventTitle)}&category=${encodeURIComponent(
     eventCategory
-  )}&date=${encodeURIComponent(eventDate)}&location=${encodeURIComponent(
-    found?.location || 'Parroquia de la Sagrada Familia, Querétaro'
+  )}&date=${encodeURIComponent(eventDate)}&time=${encodeURIComponent(eventTime)}&location=${encodeURIComponent(
+    eventLocation
   )}`;
 
   const pageTitle = `${eventTitle} • La Pandilla de Jesús`;

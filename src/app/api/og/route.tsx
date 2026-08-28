@@ -21,9 +21,11 @@ export async function GET(req: NextRequest) {
     const time = searchParams.get('time') || '';
     const location = searchParams.get('location') || 'Parroquia de la Sagrada Familia, Querétaro';
 
-    // Unique random color based on event title
-    const hue1 = hashStringToHue(title);
-    const hue2 = (hue1 + 120) % 360;
+    // Truly unique random colors based on event title/date
+    const seed = title + date;
+    const hue1 = hashStringToHue(seed);
+    const hue2 = (hue1 + 140) % 360;
+    const hue3 = (hue1 + 220) % 360;
 
     // Format display date if YYYY-MM-DD
     let displayDate = date;
@@ -51,13 +53,26 @@ export async function GET(req: NextRequest) {
             flexDirection: 'column',
             justifyContent: 'space-between',
             padding: '60px 70px',
-            backgroundColor: '#0d1322',
-            backgroundImage: `radial-gradient(circle at 85% 15%, hsla(${hue1}, 70%, 40%, 0.4) 0%, transparent 60%), radial-gradient(circle at 10% 90%, hsla(${hue2}, 60%, 30%, 0.5) 0%, transparent 60%)`,
+            backgroundColor: '#0a0f18',
+            backgroundImage: `radial-gradient(circle at 10% 20%, hsla(${hue1}, 80%, 45%, 0.6) 0%, transparent 50%), radial-gradient(circle at 90% 80%, hsla(${hue2}, 75%, 40%, 0.6) 0%, transparent 50%), radial-gradient(circle at 50% 50%, hsla(${hue3}, 70%, 30%, 0.3) 0%, transparent 60%)`,
             fontFamily: 'system-ui, -apple-system, sans-serif',
             color: '#FFFFFF',
             position: 'relative',
           }}
         >
+          {/* Background pattern overlay to make it look even more unique */}
+          <div
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              opacity: 0.15,
+              backgroundImage: 'radial-gradient(#ffffff 1px, transparent 1px)',
+              backgroundSize: '30px 30px',
+            }}
+          />
           {/* Top Bar / Header */}
           <div
             style={{
@@ -65,22 +80,23 @@ export async function GET(req: NextRequest) {
               justifyContent: 'space-between',
               alignItems: 'center',
               width: '100%',
+              zIndex: 1,
             }}
           >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
               <div
                 style={{
-                  width: '54px',
-                  height: '54px',
-                  borderRadius: '12px',
+                  width: '60px',
+                  height: '60px',
+                  borderRadius: '16px',
                   background: 'linear-gradient(135deg, #d4a359 0%, #b88636 100%)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   color: '#1a1309',
-                  fontSize: '32px',
+                  fontSize: '36px',
                   fontWeight: 'bold',
-                  boxShadow: '0 4px 14px rgba(212, 163, 89, 0.4)',
+                  boxShadow: '0 4px 15px rgba(212, 163, 89, 0.4)',
                 }}
               >
                 ✝
@@ -88,7 +104,7 @@ export async function GET(req: NextRequest) {
               <div style={{ display: 'flex', flexDirection: 'column' }}>
                 <span
                   style={{
-                    fontSize: '28px',
+                    fontSize: '30px',
                     fontWeight: 800,
                     letterSpacing: '1px',
                     color: '#FFFFFF',
@@ -99,9 +115,9 @@ export async function GET(req: NextRequest) {
                 </span>
                 <span
                   style={{
-                    fontSize: '18px',
+                    fontSize: '20px',
                     fontWeight: 500,
-                    color: '#d4a359',
+                    color: '#f3d99f',
                     letterSpacing: '0.5px',
                   }}
                 >
@@ -115,15 +131,16 @@ export async function GET(req: NextRequest) {
               style={{
                 display: 'flex',
                 alignItems: 'center',
-                padding: '10px 24px',
+                padding: '12px 28px',
                 borderRadius: '999px',
-                backgroundColor: 'rgba(212, 163, 89, 0.15)',
-                border: '1.5px solid rgba(212, 163, 89, 0.45)',
-                color: '#f3d99f',
-                fontSize: '22px',
+                backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                border: '2px solid rgba(255, 255, 255, 0.25)',
+                color: '#FFFFFF',
+                fontSize: '24px',
                 fontWeight: 700,
-                letterSpacing: '0.8px',
+                letterSpacing: '1px',
                 textTransform: 'uppercase',
+                backdropFilter: 'blur(10px)',
               }}
             >
               {category}
@@ -135,74 +152,58 @@ export async function GET(req: NextRequest) {
             style={{
               display: 'flex',
               flexDirection: 'column',
+              justifyContent: 'center',
+              flex: 1,
               gap: '16px',
-              maxWidth: '1060px',
+              maxWidth: '1000px',
               marginTop: '40px',
               marginBottom: '40px',
+              zIndex: 1,
             }}
           >
             <h1
               style={{
-                fontSize: title.length > 50 ? '72px' : '96px',
-                fontWeight: 800,
-                lineHeight: 1.15,
+                fontSize: title.length > 40 ? '75px' : '95px',
+                fontWeight: 900,
+                lineHeight: 1.1,
                 color: '#FFFFFF',
                 margin: 0,
-                textShadow: '0 4px 15px rgba(0,0,0,0.6)',
-                display: '-webkit-box',
-                WebkitLineClamp: 3,
-                WebkitBoxOrient: 'vertical',
-                overflow: 'hidden',
+                textShadow: '0 4px 20px rgba(0,0,0,0.7)',
               }}
             >
               {title}
             </h1>
           </div>
 
-          {/* Bottom Bar: Date, Time, Location & Footer */}
+          {/* Bottom Bar: Date, Time, Location */}
           <div
             style={{
               display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'flex-end',
+              flexDirection: 'column',
+              gap: '20px',
               width: '100%',
-              paddingTop: '32px',
+              paddingTop: '35px',
               borderTop: '2px solid rgba(255, 255, 255, 0.2)',
+              zIndex: 1,
             }}
           >
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
-                {displayDate && (
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: '#FFFFFF', fontSize: '32px', fontWeight: 600 }}>
-                    <span style={{ color: '#d4a359' }}>📅</span>
-                    <span>{displayDate}</span>
-                  </div>
-                )}
-                {time && time !== 'Todo el día' && (
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: '#FFFFFF', fontSize: '32px', fontWeight: 600 }}>
-                    <span style={{ color: '#d4a359' }}>⏰</span>
-                    <span>{time}</span>
-                  </div>
-                )}
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: '#c4cbdb', fontSize: '28px', fontWeight: 500 }}>
-                <span style={{ color: '#d4a359' }}>📍</span>
-                <span>{location}</span>
-              </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '30px' }}>
+              {displayDate && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', color: '#FFFFFF', fontSize: '36px', fontWeight: 700 }}>
+                  <span style={{ color: '#d4a359' }}>📅</span>
+                  <span>{displayDate}</span>
+                </div>
+              )}
+              {time && time !== 'Todo el día' && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', color: '#FFFFFF', fontSize: '36px', fontWeight: 700 }}>
+                  <span style={{ color: '#d4a359' }}>⏰</span>
+                  <span>{time}</span>
+                </div>
+              )}
             </div>
-
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'flex-end',
-                color: '#8e9aaf',
-                fontSize: '22px',
-                fontWeight: 500,
-              }}
-            >
-              <span>lapandilladejesusqro.org</span>
-              <span style={{ color: '#d4a359', fontSize: '18px' }}>Parroquia de La Sagrada Familia</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', color: '#e2e8f0', fontSize: '30px', fontWeight: 500 }}>
+              <span style={{ color: '#d4a359' }}>📍</span>
+              <span>{location}</span>
             </div>
           </div>
         </div>
