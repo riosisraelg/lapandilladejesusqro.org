@@ -4784,17 +4784,18 @@ body.modal-open [data-tooltip]::after {
 .deck-title-row {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.35rem;
   margin-top: 0.25rem;
 }
 .deck-title-row .title {
-  font-weight: 800;
-  color: var(--text-dark);
-  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--text-muted, #737373);
+  font-size: 0.85rem;
 }
 .deck-title-row .indicator {
-  font-size: 0.75rem;
-  font-weight: 700;
-  padding: 3px 8px;
-  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted, #737373);
+  padding: 0;
+  background: transparent;
 }

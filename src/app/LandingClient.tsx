@@ -2349,8 +2349,8 @@ export default function Landing() {
                 {activeOracionDeck === 'alimentos' && (activeLang === 'en' ? "Food & Meal Prayers" : "Bendición de Alimentos")}
                 {activeOracionDeck === 'rosario' && (activeLang === 'en' ? `Holy Rosary (${MISTERIOS_DATA[selectedMysteryType].nameEn || MISTERIOS_DATA[selectedMysteryType].name})` : `Santo Rosario (${MISTERIOS_DATA[selectedMysteryType].name})`)}
               </span>
-              <span className="indicator" style={{ background: activeDeckColorTone.badgeBg, color: activeDeckColorTone.badgeText }}>
-                {activeLang === 'en' ? `Deck ${activeDeckIndex + 1}/${DECKS_ORDER.length}` : `Mazo ${activeDeckIndex + 1}/${DECKS_ORDER.length}`}
+              <span className="indicator" style={{ color: activeDeckColorTone.hslString }}>
+                • {activeOracionIdx + 1}/{currentOracionesList.length}
               </span>
             </div>
           </div>
