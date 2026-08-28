@@ -2323,115 +2323,38 @@ export default function Landing() {
           ...activeDeckColorTone.cssVariables,
         }}
       >
-        {/* Top Control Bar with Deck Switcher & Non-Overlapping Language Toggle */}
+        {/* Top Control Bar with Grouped Deck Switcher */}
         <div className="oracion-top-bar">
-          <div 
-            className="oracion-deck-switcher-bar"
-            style={{
-              borderColor: activeDeckColorTone.accentBorder,
-              boxShadow: `0 2px 8px ${activeDeckColorTone.badgeBg}`,
-            }}
-            onTouchStart={handleSwitcherTouchStart}
-            onTouchEnd={handleSwitcherTouchEnd}
-            onMouseDown={handleSwitcherTouchStart}
-            onMouseUp={handleSwitcherTouchEnd}
-          >
-            <button 
-              type="button"
-              className="deck-switch-arrow-btn"
-              onClick={handlePrevDeck}
-              style={{ color: activeDeckColorTone.hslString }}
-              aria-label={activeLang === 'en' ? "Previous deck" : "Mazo anterior"}
-              title={activeLang === 'en' ? "Previous deck" : "Mazo anterior"}
-            >
-              ◀
-            </button>
-            <div className="deck-switch-info">
-              <span 
-                className="deck-switch-badge"
-                style={{
-                  background: activeDeckColorTone.badgeBg,
-                  color: activeDeckColorTone.badgeText,
-                }}
+          <div className="oracion-deck-switcher-new" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <div className="deck-arrows-group">
+              <button 
+                onClick={handlePrevDeck} 
+                style={{ color: activeDeckColorTone.hslString }}
+                aria-label={activeLang === 'en' ? "Previous deck" : "Mazo anterior"}
               >
-                {activeLang === 'en' ? `Deck ${activeDeckIndex + 1}/${DECKS_ORDER.length}` : `Mazo ${activeDeckIndex + 1}/${DECKS_ORDER.length}`}
-              </span>
-              <span className="deck-switch-title">
+                ◀
+              </button>
+              <button 
+                onClick={handleNextDeck} 
+                style={{ color: activeDeckColorTone.hslString }}
+                aria-label={activeLang === 'en' ? "Next deck" : "Siguiente mazo"}
+              >
+                ▶
+              </button>
+            </div>
+            <div className="deck-title-row">
+              <span className="title">
                 {activeOracionDeck === 'comunidad' && (activeLang === 'en' ? "Community Prayers" : "Oraciones de la Comunidad")}
                 {activeOracionDeck === 'basicas' && (activeLang === 'en' ? "Basic Prayers" : "Oraciones Básicas")}
                 {activeOracionDeck === 'alimentos' && (activeLang === 'en' ? "Food & Meal Prayers" : "Bendición de Alimentos")}
                 {activeOracionDeck === 'rosario' && (activeLang === 'en' ? `Holy Rosary (${MISTERIOS_DATA[selectedMysteryType].nameEn || MISTERIOS_DATA[selectedMysteryType].name})` : `Santo Rosario (${MISTERIOS_DATA[selectedMysteryType].name})`)}
               </span>
-              <div className="deck-switch-indicators" role="tablist" aria-label="Deck navigation indicators">
-                {DECKS_ORDER.map((deckName, dIdx) => {
-                  const isCurrent = dIdx === activeDeckIndex;
-                  const tone = calculateDeckHSL(dIdx);
-                  const deckLabels: Record<typeof deckName, { es: string; en: string }> = {
-                    comunidad: { es: 'Comunidad', en: 'Community' },
-                    basicas: { es: 'Básicas', en: 'Basics' },
-                    alimentos: { es: 'Alimentos', en: 'Food' },
-                    rosario: { es: 'Rosario', en: 'Rosary' }
-                  };
-                  const label = activeLang === 'en' ? deckLabels[deckName].en : deckLabels[deckName].es;
-
-                  return (
-                    <button
-                      key={deckName}
-                      type="button"
-                      role="tab"
-                      aria-selected={isCurrent}
-                      className={`deck-indicator-dot ${isCurrent ? 'active' : ''}`}
-                      style={{
-                        backgroundColor: isCurrent ? tone.hslString : 'rgba(92, 61, 46, 0.25)',
-                        borderColor: isCurrent ? tone.accentBorder : 'transparent'
-                      }}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleSwitchOracionDeck(deckName);
-                      }}
-                      aria-label={`${activeLang === 'en' ? 'Go to deck' : 'Ir al mazo'} ${label}`}
-                      title={label}
-                    />
-                  );
-                })}
-              </div>
+              <span className="indicator" style={{ background: activeDeckColorTone.badgeBg, color: activeDeckColorTone.badgeText }}>
+                {activeLang === 'en' ? `Deck ${activeDeckIndex + 1}/${DECKS_ORDER.length}` : `Mazo ${activeDeckIndex + 1}/${DECKS_ORDER.length}`}
+              </span>
             </div>
-            <button 
-              type="button"
-              className="deck-switch-arrow-btn"
-              onClick={handleNextDeck}
-              style={{ color: activeDeckColorTone.hslString }}
-              aria-label={activeLang === 'en' ? "Next deck" : "Siguiente mazo"}
-              title={activeLang === 'en' ? "Next deck" : "Siguiente mazo"}
-            >
-              ▶
-            </button>
           </div>
-
-          <button 
-            type="button"
-            className="oracion-lang-toggle-btn"
-            onClick={() => {
-              const nextLang = activeLang === 'es' ? 'en' : 'es';
-              setActiveLang(nextLang);
-              setGuiaLang(nextLang);
-              triggerHaptic('light');
-              setModalUrl('oraciones', {
-                deck: activeOracionDeck,
-                misterio: activeOracionDeck === 'rosario' ? selectedMysteryType : undefined,
-                variante: activeOracionDeck === 'rosario' ? selectedRosaryVariant : undefined,
-                etapa: activeOracionIdx + 1,
-                lang: nextLang
-              });
-            }}
-            aria-label="Cambiar idioma / Switch language"
-            title={activeLang === 'es' ? "Switch to English" : "Cambiar a Español"}
-          >
-            {activeLang === 'es' ? '🇲🇽 ES' : '🇺🇸 EN'}
-          </button>
         </div>
-
-        
 
         <div className="recursos-modal-body">
           <div 
