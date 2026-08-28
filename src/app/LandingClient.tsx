@@ -2333,6 +2333,48 @@ export default function Landing() {
                             </div>
                           )}
 
+                          {/* Element 6: Repeated Prayers Accordion (Padre Nuestro, Ave Maria, Gloria, etc.) */}
+                          {oracion.repeatedPrayers && oracion.repeatedPrayers.length > 0 && (
+                            <div className="rosario-element-section rosario-element-prayers" style={{ marginTop: '1rem', borderTop: '1px solid var(--border-subtle)', paddingTop: '1rem' }}>
+                              <span className="rosario-element-badge">
+                                🙏 {activeLang === 'en' ? 'Prayers for this Decade' : 'Oraciones de esta Decena'}
+                              </span>
+                              
+                              <div className="repeated-prayers-container" style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginTop: '0.75rem' }}>
+                                {oracion.repeatedPrayers.map((rp, rpIdx) => {
+                                  const repeatId = `${oracion.id}-rp-${rpIdx}`;
+                                  const isOpen = openRepeatsState[repeatId] || false;
+                                  
+                                  return (
+                                    <div key={rpIdx} className="repeated-prayer-accordion" style={{ border: '1px solid var(--border-subtle)', borderRadius: '8px', overflow: 'hidden' }}>
+                                      <button 
+                                        type="button"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          setOpenRepeatsState(prev => ({ ...prev, [repeatId]: !isOpen }));
+                                        }}
+                                        style={{ width: '100%', padding: '0.75rem 1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: isOpen ? 'var(--cream)' : 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left' }}
+                                      >
+                                        <span style={{ fontWeight: 600, color: 'var(--text-dark)', fontSize: '0.9rem' }}>
+                                          {activeLang === 'en' && rp.titleEn ? rp.titleEn : rp.title} 
+                                        </span>
+                                        <span style={{ color: 'var(--text-muted)', transform: isOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}>▾</span>
+                                      </button>
+                                      
+                                      {isOpen && (
+                                        <div style={{ padding: '0 1rem 1rem 1rem', background: 'var(--cream)' }}>
+                                          <p style={{ margin: 0, fontSize: '0.9rem', color: 'var(--text-dark)', lineHeight: 1.6, whiteSpace: 'pre-wrap', fontStyle: 'italic' }}>
+                                            {activeLang === 'en' && rp.textEn ? rp.textEn : rp.text}
+                                          </p>
+                                        </div>
+                                      )}
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          )}
+
                           
                         </div>
                       ) : (
