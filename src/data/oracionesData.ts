@@ -970,65 +970,67 @@ export const MISTERIOS_DATA: Record<MysteryType, MysteryInfo> = {
         title: 'La Encarnación del Hijo de Dios',
         titleEn: 'The Annunciation of the Lord',
         image: 'icon-annunciation',
-        biblicalRef: 'Lucas 1, 26-38',
+        biblicalRef: "Luke 1:26-27",
         scriptureText: 'El ángel, entrando en su presencia, dijo: «Alégrate, llena de gracia, el Señor está contigo»... María contestó: «He aquí la esclava del Señor; hágase en mí según tu palabra».',
-        scriptureTextEn: 'The angel said to her: "Rejoice, full of grace, the Lord is with you."... Mary said: "Behold, I am the handmaid of the Lord; let it be done to me according to your word."',
+        scriptureTextEn: `In the sixth month, the angel Gabriel was sent from God to a town of Galilee called Nazareth, to a virgin betrothed to a man named Joseph, of the house of David, and the virgin’s name was Mary.`Rejoice, full of grace, the Lord is with you."... Mary said: "Behold, I am the handmaid of the Lord; let it be done to me according to your word."',
         meditation: 'El Ángel Gabriel anuncia a la Santísima Virgen María que concebirá por obra del Espíritu Santo al Salvador del mundo. Contemplamos la profunda humildad y disponibilidad de María ante el plan divino.',
         meditationEn: 'The Angel Gabriel announces to Mary that she will conceive the Savior of the world through the Holy Spirit. We contemplate Mary\'s profound humility and readiness before God\'s divine plan.',
         reflectionQuestion: '¿Estoy dispuesto a acoger la voluntad de Dios en mi vida diaria con un "sí" generoso y confiado?',
-        reflectionQuestionEn: 'Am I willing to welcome God\'s will in my daily life with a generous and trusting "yes"?'
+        reflectionQuestionEn: "Fruit of the mystery: Humility"s will in my daily life with a generous and trusting "yes"?'
       },
       {
         number: 2,
         title: 'La Visitación de María a su prima Santa Isabel',
         titleEn: 'The Visitation of Mary to Elizabeth',
         image: 'icon-visitation',
-        biblicalRef: 'Lucas 1, 39-56',
+        biblicalRef: "Luke 1:39-42",
         scriptureText: 'En cuanto Isabel oyó el saludo de María, saltó la criatura en su vientre. Se llenó Isabel del Espíritu Santo y exclamó: «¡Bendita tú entre las mujeres y bendito el fruto de tu vientre!»',
-        scriptureTextEn: 'When Elizabeth heard Mary\'s greeting, the infant leaped in her womb, and Elizabeth, filled with the Holy Spirit, cried out: "Blessed are you among women, and blessed is the fruit of your womb!"',
+        scriptureTextEn: `During those days Mary set out and traveled to the hill country in haste to a town of Judah, where she entered the house of Zechariah and greeted Elizabeth. When Elizabeth heard Mary’s greeting, the infant leaped in her womb, and Elizabeth, filled with the holy Spirit, cried out in a loud voice and said, 'Most blessed are you among women, and blessed is the fruit of your womb.'`s greeting, the infant leaped in her womb, and Elizabeth, filled with the Holy Spirit, cried out: "Blessed are you among women, and blessed is the fruit of your womb!"',
         meditation: 'María viaja con prontitud a la montaña de Judea para servir a su prima Isabel. Al escuchar el saludo de María, Juan salta de gozo en el vientre y la Virgen proclama el Magníficat alabando la grandeza del Señor.',
         meditationEn: 'Mary travels with haste to visit and serve her cousin Elizabeth. John leaps for joy in Elizabeth\'s womb, and Mary proclaims the Magnificat, praising the greatness of the Lord.',
         reflectionQuestion: '¿Llevo la alegría de Cristo a los demás a través de un servicio humilde, caritativo y oportuno?',
-        reflectionQuestionEn: 'Do I bring the joy of Christ to others through humble, charitable, and timely service?'
+        reflectionQuestionEn: "Fruit of the mystery: Love of Neighbor"
       },
       {
         number: 3,
         title: 'El Nacimiento de Jesús en el Portal de Belén',
         titleEn: 'The Nativity of the Lord',
         image: 'icon-nativity',
-        biblicalRef: 'Lucas 2, 1-20',
+        biblicalRef: "Luke 2:1-7",
         scriptureText: 'Y dio a luz a su hijo primogénito, lo envolvió en pañales y lo recostó en un pesebre, porque no había sitio para ellos en la posada.',
-        scriptureTextEn: 'And she gave birth to her firstborn son and wrapped him in swaddling clothes and laid him in a manger, because there was no room for them in the inn.',
+        scriptureTextEn: `In those days a decree went out from Caesar Augustus that the whole world should be enrolled. This was the first enrollment, when Quirinius was governor of Syria. So all went to be enrolled, each to his own town. And Joseph too went up from Galilee from the town of Nazareth to Judea, to the city of David that is called Bethlehem, because he was of the house and family of David, to be enrolled with Mary, his betrothed, who was with child. While they were there, the time came for her to have her child, and she gave birth to her firstborn son. She wrapped him in swaddling clothes and laid him in a manger, because there was no room for them in the inn.`,
         meditation: 'En la pobreza de un pesebre nace el Rey del Universo. Los ángeles cantan gloria en las alturas y los pastores acuden a adorar al Niño envuelto en pañales, luz del mundo.',
         meditationEn: 'The King of the Universe is born in the poverty of a stable. Angels sing glory in the highest and shepherds come to adore the Infant Jesus wrapped in swaddling clothes.',
         reflectionQuestion: '¿Hago espacio en mi corazón y en mi vida cotidiana para que Jesús reine en medio de la sencillez?',
-        reflectionQuestionEn: 'Do I make room in my heart and daily life for Jesus to reign in simplicity and truth?'
+        reflectionQuestionEn: "Fruit of the mystery: Poverty"
       },
       {
         number: 4,
         title: 'La Presentación del Niño Jesús en el Templo',
         titleEn: 'The Presentation of Jesus in the Temple',
         image: 'icon-presentation',
-        biblicalRef: 'Lucas 2, 22-38',
+        biblicalRef: "Luke 2:21-24",
         scriptureText: 'Simeón lo tomó en brazos y bendijo a Dios diciendo: «Ahora, Señor, según tu promesa, puedes dejar a tu siervo irse en paz, porque mis ojos han visto a tu Salvador».',
-        scriptureTextEn: 'Simeon took him into his arms and blessed God, saying: "Now, Master, you may let your servant go in peace, according to your word, for my eyes have seen your salvation."',
+        scriptureTextEn: `When eight days were completed for his circumcision, he was named Jesus, the name given him by the angel before he was conceived in the womb.
+
+When the days were completed for their purification according to the law of Moses, they took him up to Jerusalem to present him to the Lord, just as it is written in the law of the Lord, 'Every male that opens the womb shall be consecrated to the Lord,' and to offer the sacrifice of 'a pair of turtledoves or two young pigeons,' in accordance with the dictate in the law of the Lord.`Now, Master, you may let your servant go in peace, according to your word, for my eyes have seen your salvation."',
         meditation: 'María y José presentan al Niño en el Templo según la Ley de Moisés. El anciano Simeón lo toma en sus brazos bendiciendo a Dios y profetiza a María que una espada atravesará su corazón.',
         meditationEn: 'Mary and Joseph present Jesus in the Temple according to the Law of Moses. Simeon takes the Child in his arms, blessing God and prophesying that a sword will pierce Mary\'s soul.',
         reflectionQuestion: '¿Consagro a Dios mis planes, mi vocación y mis sacrificios con obediencia filial y confianza?',
-        reflectionQuestionEn: 'Do I consecrate my plans, vocation, and sacrifices to God with filial obedience and trust?'
+        reflectionQuestionEn: "Fruit of the mystery: Purity of Heart and Body"
       },
       {
         number: 5,
         title: 'El Niño Jesús perdido y hallado en el Templo',
         titleEn: 'The Finding of Jesus in the Temple',
         image: 'icon-finding',
-        biblicalRef: 'Lucas 2, 41-52',
+        biblicalRef: "Luke 2:41-47",
         scriptureText: 'Al cabo de tres días lo encontraron en el templo, sentado en medio de los maestros, escuchándolos y haciéndoles preguntas.',
-        scriptureTextEn: 'After three days they found him in the temple, sitting in the midst of the teachers, listening to them and asking them questions.',
+        scriptureTextEn: `Each year his parents went to Jerusalem for the feast of Passover, and when he was twelve years old, they went up according to festival custom. After they had completed its days, as they were returning, the boy Jesus remained behind in Jerusalem, but his parents did not know it. Thinking that he was in the caravan, they journeyed for a day and looked for him among their relatives and acquaintances, but not finding him, they returned to Jerusalem to look for him. After three days they found him in the temple, sitting in the midst of the teachers, listening to them and asking them questions, and all who heard him were astounded at his understanding and his answers.`,
         meditation: 'A los doce años, Jesús permanece en el Templo de Jerusalén entre los maestros. Tras tres días de angustia, sus padres lo encuentran y Jesús les recuerda que debe ocuparse de las cosas de su Padre celestial.',
         meditationEn: 'At age twelve, Jesus remains in the Temple among the teachers. After three days of searching, His parents find Him, and Jesus gently reminds them He must be in His Father\'s house.',
         reflectionQuestion: 'Cuando me siento distraído o alejado de Dios, ¿lo busco con perseverancia y prioridad en la oración y los sacramentos?',
-        reflectionQuestionEn: 'When I feel distracted or distant from God, do I seek Him with perseverance and priority in prayer and the sacraments?'
+        reflectionQuestionEn: "Fruit of the mystery: Devotion to Jesus"
       }
     ]
   },
@@ -1044,65 +1046,67 @@ export const MISTERIOS_DATA: Record<MysteryType, MysteryInfo> = {
         title: 'La Oración de Jesús en el Huerto de Getsemaní',
         titleEn: 'The Agony in the Garden of Gethsemane',
         image: 'icon-agony',
-        biblicalRef: 'Mateo 26, 36-46',
+        biblicalRef: "Matthew 26:36-39",
         scriptureText: 'Cayó rostro en tierra y oraba diciendo: «Padre mío, si es posible, que pase de mí este cáliz; pero no sea como yo quiero, sino como quieres tú».',
-        scriptureTextEn: 'He fell prostrate in prayer, saying: "My Father, if it is possible, let this cup pass from me; yet, not as I will, but as you will."',
+        scriptureTextEn: `Then Jesus came with them to a place called Gethsemane, and he said to his disciples, 'Sit here while I go over there and pray.' He took along Peter and the two sons of Zebedee, and began to feel sorrow and distress. Then he said to them, 'My soul is sorrowful even to death. Remain here and keep watch with me.' He advanced a little and fell prostrate in prayer, saying, 'My Father, if it is possible, let this cup pass from me; yet, not as I will, but as you will.'`My Father, if it is possible, let this cup pass from me; yet, not as I will, but as you will."',
         meditation: 'En la agonía de Getsemaní, Jesús experimenta la soledad y suda gotas de sangre por el peso de nuestros pecados, sometiéndose amorosamente a la santa voluntad del Padre.',
         meditationEn: 'In Gethsemane, Jesus prays in sorrow and sweat like drops of blood, completely submitting to the Father: "Not my will, but yours be done."',
         reflectionQuestion: 'En mis momentos de prueba o dolor, ¿acudo confiadamente a la oración para abrazar la voluntad de Dios?',
-        reflectionQuestionEn: 'In times of trial or sorrow, do I turn faithfully to prayer to embrace God\'s holy will?'
+        reflectionQuestionEn: "Fruit of the mystery: Obedience to God’s Will"
       },
       {
         number: 2,
         title: 'La Flagelación de Nuestro Señor atado a la Columna',
         titleEn: 'The Scourging at the Pillar',
         image: 'icon-scourging',
-        biblicalRef: 'Juan 19, 1-3',
+        biblicalRef: "Matthew 27:26",
         scriptureText: 'Entonces Pilato tomó a Jesús y mandó azotarlo. Y por sus llagas fuimos nosotros curados.',
-        scriptureTextEn: 'Then Pilate took Jesus and had him scourged. And by his wounds we are healed.',
+        scriptureTextEn: `Then he released Barabbas to them, but after he had Jesus scourged, he handed him over to be crucified.`,
         meditation: 'Pilato manda azotar a Jesús cruelmente. El Cordero de Dios sufre en silencio y mansedumbre las heridas que sanan nuestras rebeliones e impurezas.',
         meditationEn: 'Pilate orders Jesus to be scourged. The Lamb of God endures the brutal lashes in meek silence, healing our transgressions by His holy wounds.',
         reflectionQuestion: '¿Ofrezco sacrificios y practico la templanza para purificar mi corazón de apegos y pasiones desordenadas?',
-        reflectionQuestionEn: 'Do I offer sacrifices and practice self-control to purify my heart from worldly attachments?'
+        reflectionQuestionEn: "Fruit of the mystery: Mortification"
       },
       {
         number: 3,
         title: 'La Coronación de Espinas',
         titleEn: 'The Crowning with Thorns',
         image: 'icon-crowning',
-        biblicalRef: 'Mateo 27, 27-31',
+        biblicalRef: "Matthew 27:27-29",
         scriptureText: 'Los soldados trenzaron una corona de espinas y se la pusieron en la cabeza, y una caña en su mano derecha; y burlándose decían: «¡Salve, rey de los judíos!»',
-        scriptureTextEn: 'Weaving a crown out of thorns, they placed it on his head, and a reed in his right hand, mocking him, saying: "Hail, King of the Jews!"',
+        scriptureTextEn: `Then the soldiers of the governor took Jesus inside the praetorium and gathered the whole cohort around him. They stripped off his clothes and threw a scarlet military cloak about him. Weaving a crown out of thorns, they placed it on his head, and a reed in his right hand. And kneeling before him, they mocked him, saying, 'Hail, King of the Jews!'`Hail, King of the Jews!"',
         meditation: 'Los soldados visten a Jesús con un manto de púrpura, le colocan una corona de punzantes espinas y una caña en su mano, burlándose del Rey de Reyes con bofetadas e insultos.',
         meditationEn: 'Soldiers mock Jesus with a purple cloak, placing a crown of sharp thorns on His head and a reed in His hand, mocking the King of Kings with blows and insults.',
         reflectionQuestion: '¿Acepto con humildad y paciencia las críticas o incomprensiones, buscando agradar a Dios antes que al mundo?',
-        reflectionQuestionEn: 'Do I accept misunderstandings and criticism with patience, seeking God\'s approval rather than worldly praise?'
+        reflectionQuestionEn: "Fruit of the mystery: Courage"
       },
       {
         number: 4,
         title: 'Jesús con la Cruz a cuestas camino al Calvario',
         titleEn: 'The Carrying of the Cross to Calvary',
         image: 'icon-carrying-cross',
-        biblicalRef: 'Juan 19, 16-17',
+        biblicalRef: "Mark 15:21-22",
         scriptureText: 'Tomaron a Jesús y él, cargando con su cruz, salió hacia el lugar llamado la Calavera, que en hebreo se dice Gólgota.',
-        scriptureTextEn: 'So they took Jesus, and carrying the cross himself he went out to what is called the Place of the Skull, in Hebrew, Golgotha.',
+        scriptureTextEn: `They pressed into service a passer-by, Simon, a Cyrenian, who was coming in from the country, the father of Alexander and Rufus, to carry his cross. They brought him to the place of Golgotha (which is translated Place of the Skull).`,
         meditation: 'Jesús abraza el madero de la Cruz y camina hacia el Gólgota. Cae tres veces bajo el peso, es ayudado por el Cirineo y se encuentra con su afligida Madre.',
         meditationEn: 'Jesus embraces the heavy Cross and walks towards Calvary. Falling under its weight, He is aided by Simon of Cyrene and meets His sorrowful Mother.',
         reflectionQuestion: '¿Tomo mi cruz cotidiana con perseverancia y ayudo como el Cirineo a sobrellevar las cargas de mi prójimo?',
-        reflectionQuestionEn: 'Do I take up my daily cross with perseverance and help others carry their burdens like Simon of Cyrene?'
+        reflectionQuestionEn: "Fruit of the mystery: Patience"
       },
       {
         number: 5,
         title: 'La Crucifixión y Muerte de Nuestro Señor',
         titleEn: 'The Crucifixion and Death of Our Lord',
         image: 'icon-crucifixion',
-        biblicalRef: 'Lucas 23, 33-46',
+        biblicalRef: "Luke 23:33-46",
         scriptureText: 'Jesús decía: «Padre, perdónalos, porque no saben lo que hacen»... Y gritando con voz potente, dijo: «Padre, a tus manos encomiendo mi espíritu». Y expiró.',
-        scriptureTextEn: 'Jesus said: "Father, forgive them, they know not what they do."... Jesus cried out in a loud voice: "Father, into your hands I commend my spirit"; and he breathed his last.',
+        scriptureTextEn: `When they came to the place called the Skull, they crucified him and the criminals there, one on his right, the other on his left. [Then Jesus said, 'Father, forgive them, they know not what they do.'] They divided his garments by casting lots. The people stood by and watched; the rulers, meanwhile, sneered at him and said, 'He saved others, let him save himself if he is the chosen one, the Messiah of God.' Even the soldiers jeered at him. As they approached to offer him wine they called out, 'If you are King of the Jews, save yourself.' Above him there was an inscription that read, 'This is the King of the Jews.' Now one of the criminals hanging there reviled Jesus, saying, 'Are you not the Messiah? Save yourself and us.' The other, however, rebuking him, said in reply, 'Have you no fear of God, for you are subject to the same condemnation? And indeed, we have been condemned justly, for the sentence we received corresponds to our crimes, but this man has done nothing criminal.' Then he said, 'Jesus, remember me when you come into your kingdom.' He replied to him, 'Amen, I say to you, today you will be with me in Paradise.'
+
+It was now about noon and darkness came over the whole land until three in the afternoon because of an eclipse of the sun. Then the veil of the temple was torn down the middle. Jesus cried out in a loud voice, 'Father, into your hands I commend my spirit'; and when he had said this he breathed his last.`Father, forgive them, they know not what they do."... Jesus cried out in a loud voice: "Father, into your hands I commend my spirit"; and he breathed his last.',
         meditation: 'Clavado en la cruz entre dos ladrones, Jesús nos entrega a María como Madre ("Ahí tienes a tu hijo") y, tras tres horas de agonía redentora, exhala su espíritu diciendo: "Todo está cumplido".',
         meditationEn: 'Nailed to the Cross, Jesus gives us Mary as our Mother ("Behold your mother") and, after three hours of agony, yields His spirit, saying: "It is finished."',
         reflectionQuestion: '¿Sé perdonar de corazón a quienes me ofenden y me entrego generosamente por el bien de las almas?',
-        reflectionQuestionEn: 'Do I forgive from the heart those who offend me and offer my life generously for the good of souls?'
+        reflectionQuestionEn: "Fruit of the mystery: Sorrow for our Sins"
       }
     ]
   },
@@ -1118,65 +1122,67 @@ export const MISTERIOS_DATA: Record<MysteryType, MysteryInfo> = {
         title: 'La Resurrección del Señor',
         titleEn: 'The Resurrection of the Lord',
         image: 'icon-resurrection',
-        biblicalRef: 'Mateo 28, 1-10',
+        biblicalRef: "Luke 24:1-5",
         scriptureText: 'El ángel dijo a las mujeres: «No teman; sé que buscan a Jesús, el crucificado. No está aquí: ha resucitado, como había dicho. Vengan a ver el sitio donde yacía».',
-        scriptureTextEn: 'The angel said to the women: "Do not be afraid! I know that you are seeking Jesus the crucified. He is not here, for he has been raised just as he said. Come and see the place where he lay."',
+        scriptureTextEn: `But at daybreak on the first day of the week they took the spices they had prepared and went to the tomb.They found the stone rolled away from the tomb; but when they entered, they did not find the body of the Lord Jesus. While they were puzzling over this, behold, two men in dazzling garments appeared to them. They were terrified and bowed their faces to the ground. They said to them, 'Why do you seek the living one among the dead? He is not here, but he has been raised.'`Do not be afraid! I know that you are seeking Jesus the crucified. He is not here, for he has been raised just as he said. Come and see the place where he lay."',
         meditation: 'Al amanecer del tercer día, Cristo vence el poder de la muerte y el pecado saliendo victorioso del sepulcro, trayéndonos la esperanza de la vida eterna.',
         meditationEn: 'On the third day, Christ triumphs victoriously over death and sin, rising from the tomb and opening for us the gates of everlasting life.',
         reflectionQuestion: '¿Vivo con la gozosa certeza de que Cristo resucitado ha vencido toda desesperanza y miedo en mi vida?',
-        reflectionQuestionEn: 'Do I live with the joyful certainty that the Risen Christ has conquered all fear and despair in my life?'
+        reflectionQuestionEn: "Fruit of the mystery: Faith"
       },
       {
         number: 2,
         title: 'La Ascensión del Señor a los Cielos',
         titleEn: 'The Ascension of the Lord into Heaven',
         image: 'icon-ascension',
-        biblicalRef: 'Hechos 1, 6-11',
+        biblicalRef: "Mark 16:19",
         scriptureText: 'Dicho esto, a la vista de ellos, fue elevado al cielo, hasta que una nube se lo quitó de la vista. Y les dijo: «Serán mis testigos hasta los confines de la tierra».',
-        scriptureTextEn: 'As they were looking on, he was lifted up, and a cloud took him from their sight. And he said: "You will be my witnesses to the ends of the earth."',
+        scriptureTextEn: `So then the Lord Jesus, after he spoke to them, was taken up into heaven and took his seat at the right hand of God.`You will be my witnesses to the ends of the earth."',
         meditation: 'Cuarenta días después de resucitar, ante la mirada de sus apóstoles en el Monte de los Olivos, Jesús asciende al Cielo prometiendo estar con nosotros hasta el fin del mundo.',
         meditationEn: 'Forty days after His resurrection, in the presence of His disciples on Mount Olivet, Jesus ascends into heaven, promising to be with us until the end of the age.',
         reflectionQuestion: '¿Tengo mi corazón puesto en las realidades del cielo y testifico mi fe cristiana con audacia?',
-        reflectionQuestionEn: 'Is my heart set on heavenly treasures and do I courageously witness to my Christian faith?'
+        reflectionQuestionEn: "Fruit of the mystery: Hope"
       },
       {
         number: 3,
         title: 'La Venida del Espíritu Santo en Pentecostés',
         titleEn: 'The Descent of the Holy Spirit at Pentecost',
         image: 'icon-pentecost',
-        biblicalRef: 'Hechos 2, 1-13',
+        biblicalRef: "Acts 2:1-4",
         scriptureText: 'Se les aparecieron unas lenguas como de fuego y se posaron sobre cada uno de ellos. Todos se llenaron del Espíritu Santo y empezaron a proclamar las maravillas de Dios.',
-        scriptureTextEn: 'There appeared to them tongues as of fire, which parted and came to rest on each one of them. And they were all filled with the Holy Spirit and began to speak in different tongues.',
+        scriptureTextEn: `When the time for Pentecost was fulfilled, they were all in one place together. And suddenly there came from the sky a noise like a strong driving wind, and it filled the entire house in which they were. Then there appeared to them tongues as of fire, which parted and came to rest on each one of them. And they were all filled with the holy Spirit and began to speak in different tongues, as the Spirit enabled them to proclaim.`,
         meditation: 'Reunidos en oración junto a María en el Cenáculo, los apóstoles reciben al Espíritu Santo en forma de lenguas de fuego, llenándose de valor y gracia para evangelizar al mundo.',
         meditationEn: 'Gathered in prayer with Mary in the Upper Room, the Apostles receive the Holy Spirit as tongues of fire, filled with courage to proclaim the Gospel to the nations.',
         reflectionQuestion: '¿Invoco diariamente los dones y frutos del Espíritu Santo para ser un apóstol fiel en mi entorno?',
-        reflectionQuestionEn: 'Do I daily invoke the gifts and fruits of the Holy Spirit to be a faithful apostle in my community?'
+        reflectionQuestionEn: "Fruit of the mystery: Wisdom"
       },
       {
         number: 4,
         title: 'La Asunción de la Santísima Virgen al Cielo',
         titleEn: 'The Assumption of the Blessed Virgin Mary into Heaven',
         image: 'icon-assumption',
-        biblicalRef: 'Apocalipsis 12, 1',
+        biblicalRef: "Luke 1:48-49",
         scriptureText: 'Un gran signo apareció en el cielo: una mujer vestida del sol, con la luna bajo sus pies y una corona de doce estrellas sobre su cabeza.',
-        scriptureTextEn: 'A great sign appeared in the sky, a woman clothed with the sun, with the moon under her feet, and on her head a crown of twelve stars.',
+        scriptureTextEn: `Behold, from now on will all ages call me blessed.
+The Mighty One has done great things for me,
+and holy is his name.`,
         meditation: 'Terminado el curso de su vida terrena, la Inmaculada Madre de Dios es asunta en cuerpo y alma a la gloria celestial, anticipo de nuestra propia resurrección.',
         meditationEn: 'Having completed the course of her earthly life, the Immaculate Mother of God is taken up body and soul into heavenly glory, a sign of hope for our own resurrection.',
         reflectionQuestion: '¿Miro a la Virgen María como modelo de santidad y purifico mi vida para alcanzar el banquete celestial?',
-        reflectionQuestionEn: 'Do I look to the Virgin Mary as a model of holiness, directing my life toward the eternal kingdom?'
+        reflectionQuestionEn: "Fruit of the mystery: Devotion to Mary"
       },
       {
         number: 5,
         title: 'La Coronación de María como Reina de Cielos y Tierra',
         titleEn: 'The Coronation of Mary as Queen of Heaven and Earth',
         image: 'icon-coronation',
-        biblicalRef: 'Apocalipsis 12, 1-6',
+        biblicalRef: "Revelation 12:1",
         scriptureText: 'Bendita seas tú, hija, por el Dios Altísimo, más que todas las mujeres de la tierra. Porque no se olvidará la alabanza que te tributan los hombres.',
-        scriptureTextEn: 'Blessed are you, daughter, by the Most High God, above all the women on earth. Your praise will never depart from the hearts of those who remember the power of God.',
+        scriptureTextEn: `A great sign appeared in the sky, a woman clothed with the sun, with the moon under her feet, and on her head a crown of twelve stars.`,
         meditation: 'La Santísima Trinidad corona a la Virgen María como Reina universal, intercesora y medianera de todas las gracias para el pueblo fiel.',
         meditationEn: 'The Most Holy Trinity crowns Mary as Queen of Heaven and Earth, loving intercessor and advocate of all graces for God’s faithful children.',
         reflectionQuestion: '¿Reconozco a María como mi Reina y Madre, confiándole filialmente mis intenciones, luchas y alegrías?',
-        reflectionQuestionEn: 'Do I honor Mary as my Queen and Mother, entrusting my intentions, trials, and joys to her maternal heart?'
+        reflectionQuestionEn: "Fruit of the mystery: Grace of a happy death"
       }
     ]
   },
@@ -1192,65 +1198,65 @@ export const MISTERIOS_DATA: Record<MysteryType, MysteryInfo> = {
         title: 'El Bautismo de Jesús en el Río Jordán',
         titleEn: 'The Baptism of Jesus in the Jordan',
         image: 'icon-baptism',
-        biblicalRef: 'Mateo 3, 13-17',
+        biblicalRef: "Matthew 3:16-17",
         scriptureText: 'Bautizado Jesús, bajó el Espíritu de Dios como una paloma y vino sobre él. Y una voz del cielo decía: «Este es mi Hijo amado, en quien me complazco».',
-        scriptureTextEn: 'After Jesus was baptized, the Spirit of God descended like a dove upon him. And a voice came from the heavens, saying: "This is my beloved Son, with whom I am well pleased."',
+        scriptureTextEn: `After Jesus was baptized, he came up from the water and behold, the heavens were opened [for him], and he saw the Spirit of God descending like a dove [and] coming upon him. And a voice came from the heavens, saying, 'This is my beloved Son, with whom I am well pleased.'`This is my beloved Son, with whom I am well pleased."',
         meditation: 'Jesús desciende a las aguas del Jordán. El Espíritu Santo desciende como paloma y se escucha la voz del Padre: "Este es mi Hijo amado, en quien me complazco".',
         meditationEn: 'Jesus steps into the Jordan River. The Holy Spirit descends like a dove, and the Father’s voice proclaims: "This is my beloved Son, with whom I am well pleased."',
         reflectionQuestion: '¿Renuevo con gratitud mis promesas bautismales y vivo con coherencia como hijo adoptivo de Dios?',
-        reflectionQuestionEn: 'Do I gratefully renew my baptismal commitments and live with fidelity as an adopted child of God?'
+        reflectionQuestionEn: "Fruit of the mystery: Openness to the Holy Spirit"
       },
       {
         number: 2,
         title: 'La Autorrevelación en las Bodas de Caná',
         titleEn: 'The Self-Revelation at the Wedding at Cana',
         image: 'icon-wedding-cana',
-        biblicalRef: 'Juan 2, 1-12',
+        biblicalRef: "John 2:1-5",
         scriptureText: 'Dijo su madre a los sirvientes: «Hagan lo que él les diga». Así Jesús manifestó su gloria, y sus discípulos creyeron en él.',
-        scriptureTextEn: 'His mother said to the servers: "Do whatever he tells you." Jesus revealed his glory, and his disciples began to believe in him.',
+        scriptureTextEn: `On the third day there was a wedding in Cana in Galilee, and the mother of Jesus was there. Jesus and his disciples were also invited to the wedding. When the wine ran short, the mother of Jesus said to him, 'They have no wine.' [And] Jesus said to her, 'Woman, how does your concern affect me? My hour has not yet come.' His mother said to the servers, 'Do whatever he tells you.'`Do whatever he tells you." Jesus revealed his glory, and his disciples began to believe in him.',
         meditation: 'Por intercesión de su Madre ("Hagan lo que Él les diga"), Jesús realiza su primer signo transformando el agua en vino excelente, manifestando su gloria a los discípulos.',
         meditationEn: 'At Mary’s intercession ("Do whatever He tells you"), Jesus performs His first public sign, changing water into fine wine and revealing His divine glory.',
         reflectionQuestion: '¿Escucho la voz de María que me dice "Haz lo que Jesús te diga" en mis responsabilidades y relaciones?',
-        reflectionQuestionEn: 'Do I heed Mary\'s counsel to "Do whatever Jesus tells you" in my daily responsibilities and relationships?'
+        reflectionQuestionEn: "Fruit of the mystery: To Jesus through Mary"
       },
       {
         number: 3,
         title: 'El Anuncio del Reino de Dios y llamado a la Conversión',
         titleEn: 'The Proclamation of the Kingdom of God and Call to Conversion',
         image: 'icon-kingdom',
-        biblicalRef: 'Marcos 1, 14-15',
+        biblicalRef: "Mark 1:15",
         scriptureText: 'Jesús marchó a Galilea a proclamar el Evangelio de Dios: «Se ha cumplido el tiempo y está cerca el reino de Dios: conviértanse y crean en el Evangelio».',
-        scriptureTextEn: 'Jesus came to Galilee proclaiming the gospel of God: "This is the time of fulfillment. The kingdom of God is at hand. Repent, and believe in the gospel."',
+        scriptureTextEn: `'This is the time of fulfillment. The kingdom of God is at hand. Repent, and believe in the gospel.'`This is the time of fulfillment. The kingdom of God is at hand. Repent, and believe in the gospel."',
         meditation: 'Jesús proclama: "El tiempo se ha cumplido y el Reino de Dios está cerca; conviértanse y crean en el Evangelio", perdonando los pecados a los que acuden con fe.',
         meditationEn: 'Jesus proclaims: "The time is fulfilled, and the kingdom of God is at hand; repent and believe in the Gospel," bestowing mercy on all who come in faith.',
         reflectionQuestion: '¿Me acerco con frecuencia al sacramento de la Reconciliación para renovar mi corazón en la gracia divina?',
-        reflectionQuestionEn: 'Do I frequently receive the Sacrament of Reconciliation to renew my heart in God\'s forgiving grace?'
+        reflectionQuestionEn: "Fruit of the mystery: Conversion"
       },
       {
         number: 4,
         title: 'La Transfiguración del Señor en el Monte Tabor',
         titleEn: 'The Transfiguration of the Lord on Mount Tabor',
         image: 'icon-transfiguration',
-        biblicalRef: 'Lucas 9, 28-36',
+        biblicalRef: "Matthew 17:1-2",
         scriptureText: 'Mientras oraba, el aspecto de su rostro cambió y su vestido brillaba de resplandor. Y una voz desde la nube decía: «Este es mi Hijo, el elegido; escúchenlo».',
-        scriptureTextEn: 'While he was praying his face changed in appearance and his clothing became dazzling white. Then from the cloud came a voice: "This is my chosen Son; listen to him."',
+        scriptureTextEn: `After six days Jesus took Peter, James, and John his brother, and led them up a high mountain by themselves. And he was transfigured before them; his face shone like the sun and his clothes became white as light.`This is my chosen Son; listen to him."',
         meditation: 'Jesús sube al monte con Pedro, Santiago y Juan. Su rostro resplandece como el sol y sus vestiduras se vuelven blancas y deslumbrantes, revelando su gloria divina.',
         meditationEn: 'On Mount Tabor before Peter, James, and John, Jesus’ face shines like the sun and His garments become dazzling white, revealing His heavenly glory.',
         reflectionQuestion: '¿Busco momentos de contemplación y adoración para dejarme iluminar por la presencia viva de Cristo?',
-        reflectionQuestionEn: 'Do I seek moments of contemplation and adoration to be illuminated by the living presence of Christ?'
+        reflectionQuestionEn: "Fruit of the mystery: Desire for holiness"
       },
       {
         number: 5,
         title: 'La Institución de la Santísima Eucaristía',
         titleEn: 'The Institution of the Holy Eucharist',
         image: 'icon-eucharist',
-        biblicalRef: 'Mateo 26, 26-30',
+        biblicalRef: "Matthew 26:26",
         scriptureText: 'Tomó pan, pronunció la bendición, lo partió y lo dio a sus discípulos diciendo: «Tomen, coman: esto es mi cuerpo». Y tomando el cáliz: «Beban todos de él, porque esta es mi sangre de la alianza».',
-        scriptureTextEn: 'Jesus took bread, said the blessing, broke it, and giving it to his disciples said: "Take and eat; this is my body." Then he took a cup: "Drink from it, all of you, for this is my blood of the covenant."',
+        scriptureTextEn: `While they were eating, Jesus took bread, said the blessing, broke it, and giving it to his disciples said, 'Take and eat; this is my body.'`Take and eat; this is my body." Then he took a cup: "Drink from it, all of you, for this is my blood of the covenant."',
         meditation: 'En la Última Cena, Jesús toma pan y vino, los entrega como su Cuerpo y Sangre para la remisión de los pecados, y nos ordena: "Hagan esto en memoria mía".',
         meditationEn: 'At the Last Supper, Jesus offers His Body and Blood under the species of bread and wine, giving us the sacrament of eternal love: "Do this in memory of me."',
         reflectionQuestion: '¿Participo de la Sagrada Eucaristía con reverencia, agradecimiento y un corazón debidamente preparado?',
-        reflectionQuestionEn: 'Do I receive the Holy Eucharist with reverence, gratitude, and a properly prepared heart?'
+        reflectionQuestionEn: "Fruit of the mystery: Adoration"
       }
     ]
   }
