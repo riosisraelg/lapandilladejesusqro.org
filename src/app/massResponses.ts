@@ -833,8 +833,22 @@ export function getCanonicalMassLines(
     });
   }
 
-  // 6, 7, 8: La Homilía, Profesión de Fe (El Credo), Oración Universal
+    // 6, 7, 8: La Homilía, Profesión de Fe (El Credo), Oración Universal
   const remainingParts = section.parts.slice(5);
+  
+  if (dailyReadings.meditation && remainingParts.length > 0) {
+    const homilyPart = { ...remainingParts[0] };
+    homilyPart.lines = {
+      en: [
+        { speaker: "Meditation / " + dailyReadings.meditation.author, text: dailyReadings.meditation.text }
+      ],
+      es: [
+        { speaker: "Meditación / " + dailyReadings.meditation.author, text: dailyReadings.meditation.text }
+      ]
+    };
+    remainingParts[0] = homilyPart;
+  }
+
   for (const part of remainingParts) {
     lines.push({ text: `---SECTION---${part.title[lang]}` });
     for (const l of part.lines[lang]) {
@@ -1004,8 +1018,24 @@ export function getCanonicalMassSection(
     });
   }
 
-  // 6, 7, 8: La Homilía, Profesión de Fe (El Credo), Oración Universal
-  parts.push(...section.parts.slice(5));
+    // 6, 7, 8: La Homilía, Profesión de Fe (El Credo), Oración Universal
+  const remainingParts = section.parts.slice(5);
+  
+  if (dailyReadings.meditation && remainingParts.length > 0) {
+    // Override the homily part with the daily meditation
+    const homilyPart = { ...remainingParts[0] }; // Shallow copy Homily
+    homilyPart.lines = {
+      en: [
+        { speaker: "Meditation / " + dailyReadings.meditation.author, text: dailyReadings.meditation.text }
+      ],
+      es: [
+        { speaker: "Meditación / " + dailyReadings.meditation.author, text: dailyReadings.meditation.text }
+      ]
+    };
+    remainingParts[0] = homilyPart;
+  }
+  
+  parts.push(...remainingParts);
 
   return {
     ...section,
