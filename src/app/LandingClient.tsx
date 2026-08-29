@@ -2918,49 +2918,65 @@ export default function Landing() {
         isClosing={isClosingModal === 'confesion'}
         onClose={() => closeModalWithAnimation('confesion')}
         className="confesion-modal-layout"
-      >
-        {/* Top Control Bar with Tab Switcher & Language Toggle */}
-        <div className="oracion-top-bar">
-          <div className="confesion-tab-switcher-bar">
-            {[
-              { id: 'pasos', label: activeLang === 'en' ? '5 Steps' : '5 Pasos', icon: '🕊️' },
-              { id: 'mandamientos', label: activeLang === 'en' ? '10 Commandments' : '10 Mandamientos', icon: '📜' },
-              { id: 'iglesia', label: activeLang === 'en' ? 'Church' : 'Iglesia', icon: '⛪' },
-              { id: 'capitales', label: activeLang === 'en' ? 'Capital Sins' : 'Pecados Capitales', icon: '⚠️' },
-              { id: 'oraciones', label: activeLang === 'en' ? 'Prayers' : 'Oraciones', icon: '🙏' },
-              { id: 'todos', label: activeLang === 'en' ? 'All' : 'Todo', icon: '📖' }
-            ].map(tab => (
-              <button
-                key={tab.id}
-                type="button"
-                className={`confesion-nav-pill ${activeConfesionTab === tab.id ? 'active' : ''}`}
-                onClick={() => {
-                  setActiveConfesionTab(tab.id as any);
-                  triggerHaptic('light');
-                }}
-              >
-                <span className="pill-icon">{tab.icon}</span>
-                <span className="pill-text">{tab.label}</span>
-              </button>
-            ))}
+        headerAction={
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', alignItems: 'flex-end', marginRight: '4px' }}>
+            <button 
+              type="button"
+              className="oracion-lang-toggle-btn"
+              onClick={() => {
+                const nextLang = activeLang === 'es' ? 'en' : 'es';
+                setActiveLang(nextLang);
+                setGuiaLang(nextLang);
+                triggerHaptic('light');
+                setModalUrl('confesion', { lang: nextLang });
+              }}
+              aria-label="Cambiar idioma / Switch language"
+              title={activeLang === 'es' ? "Switch to English" : "Cambiar a Español"}
+            >
+              {activeLang === 'es' ? '🇲🇽 ES' : '🇺🇸 EN'}
+            </button>
           </div>
-
-          <button 
-            type="button"
-            className="oracion-lang-toggle-btn"
-            onClick={() => {
-              const nextLang = activeLang === 'es' ? 'en' : 'es';
-              setActiveLang(nextLang);
-              setGuiaLang(nextLang);
-              triggerHaptic('light');
-              setModalUrl('confesion', { lang: nextLang });
-            }}
-            aria-label="Cambiar idioma / Switch language"
-            title={activeLang === 'es' ? "Switch to English" : "Cambiar a Español"}
-          >
-            {activeLang === 'es' ? '🇲🇽 ES' : '🇺🇸 EN'}
-          </button>
+        }
+      >
+        {/* Top Control Bar with Grouped Deck Switcher */}
+        <div className="oracion-top-bar">
+          <div className="oracion-deck-switcher-new" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <div className="deck-arrows-group">
+              <button 
+                onClick={handlePrevConfesion} 
+                style={{ color: 'var(--coffee)' }}
+                aria-label="Sección anterior"
+              >
+                ◀
+              </button>
+              <button 
+                onClick={handleNextConfesion} 
+                style={{ color: 'var(--coffee)' }}
+                aria-label="Siguiente sección"
+              >
+                ▶
+              </button>
+            </div>
+            <div className="deck-title-row">
+              <span className="title">
+                {
+                  [
+                    { id: 'pasos', label: activeLang === 'en' ? '5 Steps' : '5 Pasos' },
+                    { id: 'mandamientos', label: activeLang === 'en' ? '10 Commandments' : '10 Mandamientos' },
+                    { id: 'iglesia', label: activeLang === 'en' ? 'Church' : 'Iglesia' },
+                    { id: 'capitales', label: activeLang === 'en' ? 'Capital Sins' : 'Pecados Capitales' },
+                    { id: 'oraciones', label: activeLang === 'en' ? 'Prayers' : 'Oraciones' },
+                    { id: 'todos', label: activeLang === 'en' ? 'All' : 'Todo' }
+                  ].find(t => t.id === activeConfesionTab)?.label
+                }
+              </span>
+              <span className="indicator" style={{ color: 'var(--coffee)' }}>
+                • {CONFESION_TABS.indexOf(activeConfesionTab) + 1}/{CONFESION_TABS.length}
+              </span>
+            </div>
+          </div>
         </div>
+
 
         {/* Modal Scrollable Body */}
         <div className="confesion-modal-body">
