@@ -678,7 +678,7 @@ export default function Calendario() {
       <GlobalModal
         isOpen={!!selectedEvent}
         onClose={() => setSelectedEvent(null)}
-        style={{ maxWidth: '420px', padding: '1.2rem', margin: 'auto' }}
+        style={{ maxWidth: '420px', height: 'auto', maxHeight: '90dvh', padding: '1.2rem', margin: 'auto' }}
       >
         {selectedEvent && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
@@ -778,7 +778,7 @@ export default function Calendario() {
       <GlobalModal
         isOpen={showSubscribeModal}
         onClose={() => setShowSubscribeModal(false)}
-        style={{ maxWidth: '420px', padding: '1.2rem', margin: 'auto' }}
+        style={{ maxWidth: '420px', height: 'auto', maxHeight: '90dvh', padding: '1.2rem', margin: 'auto' }}
       >
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
           <h3 className="calendar-modal-title" style={{ textAlign: 'center', fontSize: '1.25rem', margin: '0' }}>Suscribirse al Calendario</h3>
