@@ -752,7 +752,6 @@ export default function Landing() {
 
   const GUIA_SECTIONS: Array<{ id: GuiaSectionId; title: string }> = [
     { id: 'lecturas', title: 'Lecturas del Día' },
-    { id: 'respuestas', title: 'Respuestas y Diálogos' },
     { id: 'cantos', title: 'Cantos Litúrgicos' },
     { id: 'misterio', title: 'El Misterio Pascual' },
     { id: 'liturgia', title: 'Año Litúrgico' },
@@ -860,7 +859,7 @@ export default function Landing() {
       if (seccion && GUIA_SECTIONS.some(s => s.id === seccion)) {
         setActiveGuiaTab(seccion as any);
       } else {
-        setActiveGuiaTab('respuestas');
+        setActiveGuiaTab('lecturas');
       }
     } else if (modal === 'guia_misa_interactiva') {
       setShowAppleMusicGuia(true);
@@ -1360,10 +1359,7 @@ export default function Landing() {
               <button 
                 type="button"
                 onClick={() => { 
-                  setMobileMenuOpen(false); 
-                  setActiveGuiaTab('respuestas'); 
-                  setActiveMisaSectionIdx(0); 
-                  setModalUrl('guia_misa_interactiva'); 
+                  setMobileMenuOpen(false); setActiveGuiaTab('lecturas'); setModalUrl('guia'); 
                   triggerHaptic('medium'); 
                 }}
                 style={{ background: 'none', border: 'none', color: 'inherit', font: 'inherit', cursor: 'pointer', padding: 0, textAlign: 'left', width: '100%' }}
@@ -1735,9 +1731,9 @@ export default function Landing() {
                 <button 
                   className={`recursos-btn btn-guia ${bounceBtn === 'guia' ? 'bounce-active' : ''}`} 
                   onClick={() => { 
-                    setActiveGuiaTab('respuestas'); 
+                    setActiveGuiaTab('lecturas'); 
                     setActiveMisaSectionIdx(0); 
-                    setModalUrl('guia_misa_interactiva'); 
+                    setModalUrl('guia'); 
                     triggerHaptic('medium'); 
                   }}
                   data-tooltip="Abrir Guía de Misa para principiantes"
@@ -1783,7 +1779,7 @@ export default function Landing() {
                 <button 
                   className={`recursos-btn btn-seguir-misa ${bounceBtn === 'seguir-misa' ? 'bounce-active' : ''}`} 
                   onClick={() => { 
-                    setActiveGuiaTab('respuestas'); 
+                    setActiveGuiaTab('lecturas'); 
                     setActiveMisaSectionIdx(0); 
                     setModalUrl('guia_misa_interactiva'); 
                     triggerHaptic('medium'); 
@@ -2599,74 +2595,6 @@ export default function Landing() {
                   )}
                 </div>
               )}
-            </div>
-          )}
-
-          {/* TAB 2: Respuestas y Diálogos de la Misa */}
-          {activeGuiaTab === 'respuestas' && (
-            <div className="guia-content-panel">
-              <h4>Respuestas y Diálogos de la Santa Misa</h4>
-              <p style={{ marginBottom: '1.25rem', lineHeight: 1.6 }}>
-                Sigue cada diálogo entre el celebrante y la asamblea, las oraciones privadas del sacerdote y las posturas litúrgicas (de pie, sentados, de rodillas) estructuradas en los 5 momentos del Misal Romano:
-              </p>
-
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem', marginBottom: '1.5rem' }}>
-                {getCanonicalMassResponses(dailyReadings).map((sec, sIdx) => (
-                  <div 
-                    key={sIdx}
-                    style={{ 
-                      background: 'var(--surface-card, #fdfbf7)', 
-                      border: '1px solid var(--border-subtle)', 
-                      borderRadius: 'var(--radius-xs)', 
-                      padding: '0.85rem 1rem',
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                      gap: '0.5rem',
-                      flexWrap: 'wrap'
-                    }}
-                  >
-                    <div>
-                      <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--gold-dark)', textTransform: 'uppercase' }}>
-                        Parte {sIdx + 1} de {massResponses.length}
-                      </span>
-                      <h5 style={{ margin: '0.15rem 0 0', fontSize: '1rem', color: 'var(--text-dark)' }}>
-                        {sec.title[guiaLang]}
-                      </h5>
-                      <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                        {sec.parts.length} momentos litúrgicos
-                      </span>
-                    </div>
-                    <button
-                      type="button"
-                      className="recursos-btn btn-guia"
-                      style={{ padding: '0.45rem 0.9rem', fontSize: '0.82rem', borderRadius: 'var(--radius-xs)', display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
-                      onClick={() => {
-                        setActiveMisaSectionIdx(sIdx);
-                        const slug = sec.title.es.toLowerCase().replace(/\s+/g, '-');
-                        setModalUrl('guia_misa_interactiva', { seccion: slug });
-                      }}
-                    >
-                      Abrir en Letras ▶
-                    </button>
-                  </div>
-                ))}
-              </div>
-
-              <div style={{ textAlign: 'center', padding: '0.5rem 0' }}>
-                <button
-                  type="button"
-                  className="recursos-btn btn-guia"
-                  style={{ margin: '0 auto', maxWidth: '340px', display: 'inline-flex', padding: '0.9rem 1.6rem', justifyContent: 'center', fontSize: '0.95rem', fontWeight: 700 }}
-                  onClick={() => {
-                    setActiveMisaSectionIdx(0);
-                    const slug = massResponses[0]?.title?.es?.toLowerCase().replace(/\s+/g, '-') || 'ritos-iniciales';
-                    setModalUrl('guia_misa_interactiva', { seccion: slug });
-                  }}
-                >
-                  Abrir Modo Interactivo Completo ▶
-                </button>
-              </div>
             </div>
           )}
 
