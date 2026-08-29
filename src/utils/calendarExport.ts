@@ -189,23 +189,7 @@ export function downloadICSFile(event: CalendarEventPayload): void {
 
   const blob = new Blob([icsString], { type: 'text/calendar;charset=utf-8' });
 
-  // Web Share API: El sistema operativo abrirá su menú nativo y sugerirá la app de Calendario!
-  // Esto evita la descarga pasiva a la carpeta "Descargas".
-  if (navigator.canShare) {
-    const file = new File([blob], filename, { type: 'text/calendar' });
-    if (navigator.canShare({ files: [file] })) {
-      navigator.share({
-        files: [file],
-        title: event.title,
-      }).catch((err) => {
-        console.warn('Share failed, falling back to data URI / download', err);
-        executeFallback(blob, filename, icsString);
-      });
-      return;
-    }
-  }
-
-  // Fallback if Web Share is not supported for files
+  // Force auto-download for all devices (skipping Web Share API entirely)
   executeFallback(blob, filename, icsString);
 }
 

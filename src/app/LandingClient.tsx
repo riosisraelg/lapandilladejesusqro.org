@@ -1363,7 +1363,7 @@ export default function Landing() {
                   setMobileMenuOpen(false); 
                   setActiveGuiaTab('respuestas'); 
                   setActiveMisaSectionIdx(0); 
-                  setModalUrl('guia', { seccion: 'respuestas' }); 
+                  setModalUrl('guia_misa_interactiva'); 
                   triggerHaptic('medium'); 
                 }}
                 style={{ background: 'none', border: 'none', color: 'inherit', font: 'inherit', cursor: 'pointer', padding: 0, textAlign: 'left', width: '100%' }}
@@ -1737,7 +1737,7 @@ export default function Landing() {
                   onClick={() => { 
                     setActiveGuiaTab('respuestas'); 
                     setActiveMisaSectionIdx(0); 
-                    setModalUrl('guia', { seccion: 'respuestas' }); 
+                    setModalUrl('guia_misa_interactiva'); 
                     triggerHaptic('medium'); 
                   }}
                   data-tooltip="Abrir Guía de Misa para principiantes"
@@ -1785,7 +1785,7 @@ export default function Landing() {
                   onClick={() => { 
                     setActiveGuiaTab('respuestas'); 
                     setActiveMisaSectionIdx(0); 
-                    setModalUrl('guia', { seccion: 'respuestas' }); 
+                    setModalUrl('guia_misa_interactiva'); 
                     triggerHaptic('medium'); 
                   }}
                   data-tooltip="Seguir la Misa: lecturas, salmos, respuestas y cantos litúrgicos"
