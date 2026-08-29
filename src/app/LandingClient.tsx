@@ -6,7 +6,7 @@ import { fetchICalFeed } from "../utils/icalParser";
 import { ICAL_FEED_URL } from "../config";
 import AppleMusicLyrics from "./AppleMusicLyrics";
 import GlobalModal from '../components/GlobalModal';
-import { massResponses, MEXICAN_SUNG_HYMNS } from "./massResponses";
+import { massResponses, MEXICAN_SUNG_HYMNS, getCanonicalMassLines, getCanonicalMassSection, getCanonicalMassResponses } from "./massResponses";
 import type { MassReadingsResponse } from "./api/mass-readings/route";
 import { 
   oracionesComunidad, 
@@ -563,7 +563,6 @@ export default function Landing() {
   const [showCancionero, setShowCancionero] = useState(false);
   const [showOraciones, setShowOraciones] = useState(false);
   const [showGuiaMisa, setShowGuiaMisa] = useState(false);
-  const [showLecturasInResponses, setShowLecturasInResponses] = useState(false);
   const [showConfesion, setShowConfesion] = useState(false);
   const [activeConfesionTab, setActiveConfesionTab] = useState<'pasos' | 'mandamientos' | 'iglesia' | 'capitales' | 'oraciones' | 'todos'>('pasos');
   
@@ -783,10 +782,8 @@ export default function Landing() {
   }, [dailyReadings]);
 
   useEffect(() => {
-    if (showGuiaMisa || activeGuiaTab === 'lecturas') {
-      fetchDailyReadings();
-    }
-  }, [showGuiaMisa, activeGuiaTab, fetchDailyReadings]);
+    fetchDailyReadings();
+  }, [fetchDailyReadings]);
   
   const handlePrevGuia = () => {
     const currentIdx = GUIA_SECTIONS.findIndex(s => s.id === activeGuiaTab);
@@ -863,7 +860,7 @@ export default function Landing() {
       if (seccion && GUIA_SECTIONS.some(s => s.id === seccion)) {
         setActiveGuiaTab(seccion as any);
       } else {
-        setActiveGuiaTab('lecturas');
+        setActiveGuiaTab('respuestas');
       }
     } else if (modal === 'guia_misa_interactiva') {
       setShowAppleMusicGuia(true);
@@ -1362,7 +1359,13 @@ export default function Landing() {
             <li>
               <button 
                 type="button"
-                onClick={() => { setMobileMenuOpen(false); setModalUrl('guia'); triggerHaptic('medium'); }}
+                onClick={() => { 
+                  setMobileMenuOpen(false); 
+                  setActiveGuiaTab('respuestas'); 
+                  setActiveMisaSectionIdx(0); 
+                  setModalUrl('guia', { seccion: 'respuestas' }); 
+                  triggerHaptic('medium'); 
+                }}
                 style={{ background: 'none', border: 'none', color: 'inherit', font: 'inherit', cursor: 'pointer', padding: 0, textAlign: 'left', width: '100%' }}
               >
                 Guía de Misa y Lecturas
@@ -1731,7 +1734,12 @@ export default function Landing() {
 
                 <button 
                   className={`recursos-btn btn-guia ${bounceBtn === 'guia' ? 'bounce-active' : ''}`} 
-                  onClick={() => { setModalUrl('guia', { seccion: activeGuiaTab }); triggerHaptic('medium'); }}
+                  onClick={() => { 
+                    setActiveGuiaTab('respuestas'); 
+                    setActiveMisaSectionIdx(0); 
+                    setModalUrl('guia', { seccion: 'respuestas' }); 
+                    triggerHaptic('medium'); 
+                  }}
                   data-tooltip="Abrir Guía de Misa para principiantes"
                 >
                   <div className="recursos-icon-circle">
@@ -1776,6 +1784,7 @@ export default function Landing() {
                   className={`recursos-btn btn-seguir-misa ${bounceBtn === 'seguir-misa' ? 'bounce-active' : ''}`} 
                   onClick={() => { 
                     setActiveGuiaTab('respuestas'); 
+                    setActiveMisaSectionIdx(0); 
                     setModalUrl('guia', { seccion: 'respuestas' }); 
                     triggerHaptic('medium'); 
                   }}
@@ -2544,6 +2553,24 @@ export default function Landing() {
                     </div>
                   )}
 
+                  {/* Aclamación del Evangelio (Aleluya) */}
+                  {dailyReadings?.alleluia && (
+                    <div className="lecturas-reading-card" style={{ background: 'rgba(255, 252, 245, 0.6)' }}>
+                      <div className="lecturas-card-header">
+                        <span className="lecturas-card-label">Aclamación del Evangelio</span>
+                        <span className="lecturas-citation">{dailyReadings.alleluia.citation || 'Aleluya'}</span>
+                      </div>
+                      <div className="lecturas-response-box" style={{ fontWeight: 700, color: 'var(--gold-dark)' }}>
+                        {dailyReadings.alleluia.acclamation}
+                      </div>
+                      {dailyReadings.alleluia.verse && (
+                        <div className="lecturas-text" style={{ fontStyle: 'italic' }}>
+                          «{dailyReadings.alleluia.verse}»
+                        </div>
+                      )}
+                    </div>
+                  )}
+
                   {/* Santo Evangelio */}
                   <div className="lecturas-reading-card" style={{ borderColor: 'rgba(212, 160, 23, 0.5)', background: 'rgba(255, 252, 245, 0.95)' }}>
                     <div className="lecturas-card-header">
@@ -2583,68 +2610,8 @@ export default function Landing() {
                 Sigue cada diálogo entre el celebrante y la asamblea, las oraciones privadas del sacerdote y las posturas litúrgicas (de pie, sentados, de rodillas) estructuradas en los 5 momentos del Misal Romano:
               </p>
 
-              {/* Lecturas del Día (duplicated summary) */}
-              {dailyReadings && (
-                <div style={{ marginBottom: '1.5rem', background: 'rgba(255, 252, 245, 0.7)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-xs)', overflow: 'hidden' }}>
-                  <button
-                    type="button"
-                    onClick={() => setShowLecturasInResponses(prev => !prev)}
-                    style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.85rem 1rem', background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--text-dark)' }}
-                  >
-                    <div style={{ textAlign: 'left' }}>
-                      <span style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--gold-dark)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>📖 Lecturas del Día</span>
-                      <div style={{ fontSize: '0.85rem', fontWeight: 600, marginTop: '2px' }}>{dailyReadings.liturgicalDay || 'Liturgia de la Palabra'}</div>
-                    </div>
-                    <span style={{ fontSize: '1.2rem', color: 'var(--text-muted)', transition: 'transform 0.2s', transform: showLecturasInResponses ? 'rotate(180deg)' : 'rotate(0deg)' }}>▾</span>
-                  </button>
-                  {showLecturasInResponses && (
-                    <div style={{ padding: '0 1rem 1rem 1rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                      {dailyReadings.saint && (
-                        <div style={{ fontSize: '0.8rem', color: 'var(--gold-dark)', fontStyle: 'italic' }}>✝ {dailyReadings.saint}</div>
-                      )}
-                      <div className="lecturas-reading-card">
-                        <div className="lecturas-card-header">
-                          <span className="lecturas-card-label">Primera Lectura</span>
-                          <span className="lecturas-citation">{dailyReadings.firstReading?.citation}</span>
-                        </div>
-                        <div className="lecturas-text">{dailyReadings.firstReading?.text}</div>
-                        <div className="lecturas-acclamation">Palabra de Dios. — <strong>Te alabamos, Señor.</strong></div>
-                      </div>
-                      <div className="lecturas-reading-card">
-                        <div className="lecturas-card-header">
-                          <span className="lecturas-card-label">Salmo Responsorial</span>
-                          <span className="lecturas-citation">{dailyReadings.psalm?.citation}</span>
-                        </div>
-                        {dailyReadings.psalm?.response && (
-                          <div className="lecturas-response-box"><strong>R.</strong> {dailyReadings.psalm.response}</div>
-                        )}
-                        <div className="lecturas-text">{dailyReadings.psalm?.text}</div>
-                      </div>
-                      {dailyReadings.secondReading && (
-                        <div className="lecturas-reading-card">
-                          <div className="lecturas-card-header">
-                            <span className="lecturas-card-label">Segunda Lectura</span>
-                            <span className="lecturas-citation">{dailyReadings.secondReading.citation}</span>
-                          </div>
-                          <div className="lecturas-text">{dailyReadings.secondReading.text}</div>
-                          <div className="lecturas-acclamation">Palabra de Dios. — <strong>Te alabamos, Señor.</strong></div>
-                        </div>
-                      )}
-                      <div className="lecturas-reading-card" style={{ borderColor: 'rgba(212, 160, 23, 0.5)', background: 'rgba(255, 252, 245, 0.95)' }}>
-                        <div className="lecturas-card-header">
-                          <span className="lecturas-card-label" style={{ color: 'var(--gold-dark)', fontWeight: 800 }}>✠ Santo Evangelio</span>
-                          <span className="lecturas-citation">{dailyReadings.gospel?.citation}</span>
-                        </div>
-                        <div className="lecturas-text" style={{ fontWeight: 500 }}>{dailyReadings.gospel?.text}</div>
-                        <div className="lecturas-acclamation">Palabra del Señor. — <strong>Gloria a ti, Señor Jesús.</strong></div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              )}
-
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem', marginBottom: '1.5rem' }}>
-                {massResponses.map((sec, sIdx) => (
+                {getCanonicalMassResponses(dailyReadings).map((sec, sIdx) => (
                   <div 
                     key={sIdx}
                     style={{ 
@@ -3200,7 +3167,7 @@ export default function Landing() {
       >
         <AppleMusicLyrics
           title="Guía de Misa"
-          subtitle={`${massResponses[activeMisaSectionIdx].title[guiaLang]} (${activeMisaSectionIdx + 1} de ${massResponses.length})`}
+          subtitle={`${massResponses[activeMisaSectionIdx].title[guiaLang]} (${activeMisaSectionIdx + 1} de ${massResponses.length})${dailyReadings?.isFallback && activeMisaSectionIdx === 1 ? (guiaLang === 'en' ? ' • Offline Mode' : ' • Modo sin conexión') : ''}`}
           langToggle={
             <button 
               className="lang-toggle-btn" 
@@ -3214,17 +3181,7 @@ export default function Landing() {
           onNext={() => handleMisaNav(activeMisaSectionIdx + 1)}
           onSectionChange={(sectionName) => setModalUrl('guia_misa_interactiva', { seccion: sectionName.toLowerCase().replace(/\s+/g, '-') })}
           initialSection={initialSection}
-          lines={[
-            { text: `---SECTION---${massResponses[activeMisaSectionIdx].title[guiaLang]}` },
-            ...massResponses[activeMisaSectionIdx].parts.flatMap(part => [
-              { text: `---SECTION---${part.title[guiaLang]}` },
-              ...part.lines[guiaLang].map(l => ({
-                text: l.text,
-                speaker: l.speaker,
-                isLeft: l.speaker === 'Sacerdote' || l.speaker === 'Celebrant' || l.speaker === 'Priest' || l.speaker === 'Diácono'
-              }))
-            ])
-          ]}
+          lines={getCanonicalMassLines(activeMisaSectionIdx, dailyReadings, guiaLang)}
         />
       </GlobalModal>
 

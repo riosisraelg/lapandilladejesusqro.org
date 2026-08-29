@@ -1,3 +1,5 @@
+import type { MassReadingsResponse } from "./api/mass-readings/route";
+
 export interface MassResponseLine {
   speaker: string;
   text: string;
@@ -600,3 +602,423 @@ export const massResponses: MassResponseSection[] = [
     ]
   }
 ];
+
+export interface CanonicalLine {
+  text: string;
+  speaker?: string;
+  isLeft?: boolean;
+}
+
+/**
+ * Dynamically builds kinetic text lines for AppleMusicLyrics interactive mode
+ * following exact GIRM canonical order and live daily readings for Liturgia de la Palabra.
+ */
+export function getCanonicalMassLines(
+  sectionIdx: number,
+  dailyReadings: MassReadingsResponse | null,
+  lang: 'es' | 'en' = 'es'
+): CanonicalLine[] {
+  const section = massResponses[sectionIdx];
+  if (!section) return [];
+
+  // If not Liturgia de la Palabra (index 1) or no dailyReadings, return standard ordinary lines
+  if (sectionIdx !== 1 || !dailyReadings) {
+    return [
+      { text: `---SECTION---${section.title[lang]}` },
+      ...section.parts.flatMap(part => [
+        { text: `---SECTION---${part.title[lang]}` },
+        ...part.lines[lang].map(l => ({
+          text: l.text,
+          speaker: l.speaker,
+          isLeft: l.speaker === 'Sacerdote' || l.speaker === 'Celebrant' || l.speaker === 'Priest' || l.speaker === 'Diácono' || l.speaker === 'Priest (quietly)' || l.speaker === 'Sacerdote (en secreto)'
+        }))
+      ])
+    ];
+  }
+
+  // Canonical Sequential Injection for Section 2 (Liturgia de la Palabra)
+  const lines: CanonicalLine[] = [
+    { text: `---SECTION---${section.title[lang]}` }
+  ];
+
+  // 1. Primera Lectura (Sentados)
+  const r1 = dailyReadings.firstReading;
+  if (r1) {
+    const r1Title = lang === 'en' 
+      ? `First Reading${r1.shortCitation ? ` (${r1.shortCitation})` : ''}` 
+      : `Primera Lectura${r1.shortCitation ? ` (${r1.shortCitation})` : ''}`;
+    lines.push({ text: `---SECTION---${r1Title}` });
+    if (r1.citation) {
+      lines.push({ 
+        text: r1.citation, 
+        speaker: lang === 'en' ? 'Lector' : 'Lector', 
+        isLeft: true 
+      });
+    }
+    if (r1.text) {
+      const paragraphs = r1.text.split(/\n\s*\n+/).map(p => p.trim()).filter(Boolean);
+      for (const p of paragraphs) {
+        lines.push({ 
+          text: p, 
+          speaker: lang === 'en' ? 'Lector' : 'Lector', 
+          isLeft: true 
+        });
+      }
+    }
+    lines.push({ 
+      text: lang === 'en' ? 'The Word of the Lord.' : 'Palabra de Dios.', 
+      speaker: lang === 'en' ? 'Lector' : 'Lector', 
+      isLeft: true 
+    });
+    lines.push({ 
+      text: lang === 'en' ? 'Thanks be to God.' : 'Te alabamos, Señor.', 
+      speaker: lang === 'en' ? 'People' : 'Pueblo', 
+      isLeft: false 
+    });
+  }
+
+  // 2. Salmo Responsorial (Sentados)
+  const psalm = dailyReadings.psalm;
+  if (psalm) {
+    const psalmTitle = lang === 'en' 
+      ? `Responsorial Psalm${psalm.shortCitation ? ` (${psalm.shortCitation})` : ''}` 
+      : `Salmo Responsorial${psalm.shortCitation ? ` (${psalm.shortCitation})` : ''}`;
+    lines.push({ text: `---SECTION---${psalmTitle}` });
+    
+    const responseText = psalm.response || (lang === 'en' ? 'The Lord is my shepherd; there is nothing I shall want.' : 'El Señor es mi pastor, nada me falta.');
+    lines.push({ 
+      text: `R. ${responseText}`, 
+      speaker: lang === 'en' ? 'Psalmist' : 'Salmista', 
+      isLeft: true 
+    });
+    lines.push({ 
+      text: `R. ${responseText}`, 
+      speaker: lang === 'en' ? 'All' : 'Todos', 
+      isLeft: false 
+    });
+
+    const stanzas = psalm.stanzas && psalm.stanzas.length > 0
+      ? psalm.stanzas
+      : (psalm.text ? psalm.text.split(/\n\s*\n+/).map(s => s.trim()).filter(Boolean) : []);
+
+    for (const stanza of stanzas) {
+      lines.push({ 
+        text: stanza, 
+        speaker: lang === 'en' ? 'Psalmist' : 'Salmista', 
+        isLeft: true 
+      });
+      lines.push({ 
+        text: `R. ${responseText}`, 
+        speaker: lang === 'en' ? 'All' : 'Todos', 
+        isLeft: false 
+      });
+    }
+  }
+
+  // 3. Segunda Lectura (Sentados) [Conditional on Sundays / Solemnities]
+  if (dailyReadings.secondReading && dailyReadings.secondReading.text && dailyReadings.secondReading.text.trim().length > 0) {
+    const r2 = dailyReadings.secondReading;
+    const r2Title = lang === 'en' 
+      ? `Second Reading${r2.shortCitation ? ` (${r2.shortCitation})` : ''}` 
+      : `Segunda Lectura${r2.shortCitation ? ` (${r2.shortCitation})` : ''}`;
+    lines.push({ text: `---SECTION---${r2Title}` });
+    if (r2.citation) {
+      lines.push({ 
+        text: r2.citation, 
+        speaker: lang === 'en' ? 'Lector' : 'Lector', 
+        isLeft: true 
+      });
+    }
+    const paragraphs = r2.text.split(/\n\s*\n+/).map(p => p.trim()).filter(Boolean);
+    for (const p of paragraphs) {
+      lines.push({ 
+        text: p, 
+        speaker: lang === 'en' ? 'Lector' : 'Lector', 
+        isLeft: true 
+      });
+    }
+    lines.push({ 
+      text: lang === 'en' ? 'The Word of the Lord.' : 'Palabra de Dios.', 
+      speaker: lang === 'en' ? 'Lector' : 'Lector', 
+      isLeft: true 
+    });
+    lines.push({ 
+      text: lang === 'en' ? 'Thanks be to God.' : 'Te alabamos, Señor.', 
+      speaker: lang === 'en' ? 'People' : 'Pueblo', 
+      isLeft: false 
+    });
+  }
+
+  // 4. Aclamación del Evangelio / Aleluya (De pie)
+  const alleluiaTitle = lang === 'en' ? 'Gospel Acclamation (Alleluia)' : 'Aclamación del Evangelio (Aleluya)';
+  lines.push({ text: `---SECTION---${alleluiaTitle}` });
+  const acclamation = dailyReadings.alleluia?.acclamation || (lang === 'en' ? 'Alleluia, alleluia!' : '¡Aleluya, aleluya!');
+  lines.push({ 
+    text: acclamation, 
+    speaker: lang === 'en' ? 'All' : 'Todos', 
+    isLeft: false 
+  });
+  if (dailyReadings.alleluia?.verse) {
+    lines.push({ 
+      text: dailyReadings.alleluia.verse, 
+      speaker: lang === 'en' ? 'Lector' : 'Lector', 
+      isLeft: true 
+    });
+    lines.push({ 
+      text: acclamation, 
+      speaker: lang === 'en' ? 'All' : 'Todos', 
+      isLeft: false 
+    });
+  }
+
+  // 5. Proclamación del Santo Evangelio (De pie)
+  const gospel = dailyReadings.gospel;
+  if (gospel) {
+    const gospelTitle = lang === 'en' 
+      ? `Proclamation of the Holy Gospel${gospel.shortCitation ? ` (${gospel.shortCitation})` : ''}` 
+      : `Proclamación del Santo Evangelio${gospel.shortCitation ? ` (${gospel.shortCitation})` : ''}`;
+    lines.push({ text: `---SECTION---${gospelTitle}` });
+    
+    // Introductory dialogue
+    lines.push({ 
+      text: lang === 'en' ? 'The Lord be with you.' : 'El Señor esté con ustedes.', 
+      speaker: lang === 'en' ? 'Celebrant' : 'Sacerdote', 
+      isLeft: true 
+    });
+    lines.push({ 
+      text: lang === 'en' ? 'And with your spirit.' : 'Y con tu espíritu.', 
+      speaker: lang === 'en' ? 'People' : 'Pueblo', 
+      isLeft: false 
+    });
+    
+    const introCitation = gospel.citation || (lang === 'en' ? 'the Holy Gospel' : 'san Juan');
+    lines.push({ 
+      text: lang === 'en' ? `A reading from the holy Gospel according to ${introCitation}` : `Lectura del santo Evangelio según ${introCitation}`, 
+      speaker: lang === 'en' ? 'Celebrant' : 'Sacerdote', 
+      isLeft: true 
+    });
+    lines.push({ 
+      text: lang === 'en' ? 'Glory to you, O Lord. (Sign of cross on forehead, lips, and chest).' : 'Gloria a ti, Señor. (Haciendo la señal de la cruz en la frente, labios y pecho).', 
+      speaker: lang === 'en' ? 'People' : 'Pueblo', 
+      isLeft: false 
+    });
+
+    // Body
+    if (gospel.text) {
+      const paragraphs = gospel.text.split(/\n\s*\n+/).map(p => p.trim()).filter(Boolean);
+      for (const p of paragraphs) {
+        lines.push({ 
+          text: p, 
+          speaker: lang === 'en' ? 'Celebrant' : 'Sacerdote', 
+          isLeft: true 
+        });
+      }
+    }
+
+    // Concluding dialogue
+    lines.push({ 
+      text: lang === 'en' ? 'The Gospel of the Lord.' : 'Palabra del Señor.', 
+      speaker: lang === 'en' ? 'Celebrant' : 'Sacerdote', 
+      isLeft: true 
+    });
+    lines.push({ 
+      text: lang === 'en' ? 'Praise to you, Lord Jesus Christ.' : 'Gloria a ti, Señor Jesús.', 
+      speaker: lang === 'en' ? 'People' : 'Pueblo', 
+      isLeft: false 
+    });
+    lines.push({ 
+      text: lang === 'en' ? 'Through the words of the Gospel may our sins be wiped away.' : 'Las palabras del Evangelio borren nuestros pecados.', 
+      speaker: lang === 'en' ? 'Priest (quietly)' : 'Sacerdote (en secreto)', 
+      isLeft: true 
+    });
+  }
+
+  // 6, 7, 8: La Homilía, Profesión de Fe (El Credo), Oración Universal
+  const remainingParts = section.parts.slice(5);
+  for (const part of remainingParts) {
+    lines.push({ text: `---SECTION---${part.title[lang]}` });
+    for (const l of part.lines[lang]) {
+      lines.push({
+        text: l.text,
+        speaker: l.speaker,
+        isLeft: l.speaker === 'Sacerdote' || l.speaker === 'Celebrant' || l.speaker === 'Priest' || l.speaker === 'Diácono' || l.speaker === 'Priest (quietly)' || l.speaker === 'Sacerdote (en secreto)'
+      });
+    }
+  }
+
+  return lines;
+}
+
+/**
+ * Returns a MassResponseSection with dynamically injected readings for Section 2 (Liturgia de la Palabra).
+ */
+export function getCanonicalMassSection(
+  sectionIdx: number,
+  dailyReadings: MassReadingsResponse | null
+): MassResponseSection {
+  const section = massResponses[sectionIdx];
+  if (!section) return massResponses[0];
+  if (sectionIdx !== 1 || !dailyReadings) return section;
+
+  const r1 = dailyReadings.firstReading;
+  const psalm = dailyReadings.psalm;
+  const r2 = dailyReadings.secondReading;
+  const alleluia = dailyReadings.alleluia;
+  const gospel = dailyReadings.gospel;
+
+  const parts: MassResponsePart[] = [];
+
+  // 1. Primera Lectura
+  if (r1) {
+    parts.push({
+      title: {
+        en: `First Reading${r1.shortCitation ? ` (${r1.shortCitation})` : ''}`,
+        es: `Primera Lectura${r1.shortCitation ? ` (${r1.shortCitation})` : ''}`
+      },
+      posture: { en: "Sitting", es: "Sentados" },
+      lines: {
+        en: [
+          { speaker: "Lector", text: r1.citation },
+          { speaker: "Lector", text: r1.text },
+          { speaker: "Lector", text: "The Word of the Lord." },
+          { speaker: "People", text: "Thanks be to God." }
+        ],
+        es: [
+          { speaker: "Lector", text: r1.citation },
+          { speaker: "Lector", text: r1.text },
+          { speaker: "Lector", text: "Palabra de Dios." },
+          { speaker: "Pueblo", text: "Te alabamos, Señor." }
+        ]
+      }
+    });
+  }
+
+  // 2. Salmo Responsorial
+  if (psalm) {
+    const respEs = psalm.response || "El Señor es mi pastor, nada me falta.";
+    const respEn = psalm.response || "The Lord is my shepherd; there is nothing I shall want.";
+    const stanzas = psalm.stanzas && psalm.stanzas.length > 0
+      ? psalm.stanzas
+      : (psalm.text ? psalm.text.split(/\n\s*\n+/).map(s => s.trim()).filter(Boolean) : [psalm.text]);
+
+    const esLines: MassResponseLine[] = [
+      { speaker: "Salmista", text: `R. ${respEs}` },
+      { speaker: "Pueblo", text: `R. ${respEs}` }
+    ];
+    const enLines: MassResponseLine[] = [
+      { speaker: "Psalmist", text: `R. ${respEn}` },
+      { speaker: "People", text: `R. ${respEn}` }
+    ];
+
+    for (const stanza of stanzas) {
+      esLines.push({ speaker: "Salmista", text: stanza });
+      esLines.push({ speaker: "Pueblo", text: `R. ${respEs}` });
+      enLines.push({ speaker: "Psalmist", text: stanza });
+      enLines.push({ speaker: "People", text: `R. ${respEn}` });
+    }
+
+    parts.push({
+      title: {
+        en: `Responsorial Psalm${psalm.shortCitation ? ` (${psalm.shortCitation})` : ''}`,
+        es: `Salmo Responsorial${psalm.shortCitation ? ` (${psalm.shortCitation})` : ''}`
+      },
+      posture: { en: "Sitting", es: "Sentados" },
+      lines: { en: enLines, es: esLines }
+    });
+  }
+
+  // 3. Segunda Lectura (Conditional)
+  if (r2 && r2.text && r2.text.trim().length > 0) {
+    parts.push({
+      title: {
+        en: `Second Reading${r2.shortCitation ? ` (${r2.shortCitation})` : ''}`,
+        es: `Segunda Lectura${r2.shortCitation ? ` (${r2.shortCitation})` : ''}`
+      },
+      posture: { en: "Sitting", es: "Sentados" },
+      lines: {
+        en: [
+          { speaker: "Lector", text: r2.citation },
+          { speaker: "Lector", text: r2.text },
+          { speaker: "Lector", text: "The Word of the Lord." },
+          { speaker: "People", text: "Thanks be to God." }
+        ],
+        es: [
+          { speaker: "Lector", text: r2.citation },
+          { speaker: "Lector", text: r2.text },
+          { speaker: "Lector", text: "Palabra de Dios." },
+          { speaker: "Pueblo", text: "Te alabamos, Señor." }
+        ]
+      }
+    });
+  }
+
+  // 4. Aclamación del Evangelio / Aleluya
+  const aclEs = alleluia?.acclamation || "¡Aleluya, aleluya!";
+  const aclEn = alleluia?.acclamation || "Alleluia, alleluia!";
+  const verseText = alleluia?.verse || "Tus palabras, Señor, son espíritu y vida; tú tienes palabras de vida eterna.";
+  parts.push({
+    title: { en: "Gospel Acclamation (Alleluia)", es: "Aclamación del Evangelio (Aleluya)" },
+    posture: { en: "Standing", es: "De pie" },
+    lines: {
+      en: [
+        { speaker: "All", text: aclEn },
+        ...(alleluia?.verse ? [{ speaker: "Lector", text: verseText }, { speaker: "All", text: aclEn }] : [])
+      ],
+      es: [
+        { speaker: "Todos", text: aclEs },
+        ...(alleluia?.verse ? [{ speaker: "Lector", text: verseText }, { speaker: "Todos", text: aclEs }] : [])
+      ]
+    }
+  });
+
+  // 5. Proclamación del Santo Evangelio
+  if (gospel) {
+    parts.push({
+      title: {
+        en: `Proclamation of the Holy Gospel${gospel.shortCitation ? ` (${gospel.shortCitation})` : ''}`,
+        es: `Proclamación del Santo Evangelio${gospel.shortCitation ? ` (${gospel.shortCitation})` : ''}`
+      },
+      posture: { en: "Standing", es: "De pie" },
+      lines: {
+        en: [
+          { speaker: "Celebrant", text: "The Lord be with you." },
+          { speaker: "People", text: "And with your spirit." },
+          { speaker: "Celebrant", text: `A reading from the holy Gospel according to ${gospel.citation || "the Holy Scriptures"}.` },
+          { speaker: "People", text: "Glory to you, O Lord. (Sign of cross on forehead, lips, and chest)." },
+          { speaker: "Celebrant", text: gospel.text },
+          { speaker: "Celebrant", text: "The Gospel of the Lord." },
+          { speaker: "People", text: "Praise to you, Lord Jesus Christ." },
+          { speaker: "Priest (quietly)", text: "Through the words of the Gospel may our sins be wiped away." }
+        ],
+        es: [
+          { speaker: "Sacerdote", text: "El Señor esté con ustedes." },
+          { speaker: "Pueblo", text: "Y con tu espíritu." },
+          { speaker: "Sacerdote", text: `Lectura del santo Evangelio según ${gospel.citation || "San Juan"}.` },
+          { speaker: "Pueblo", text: "Gloria a ti, Señor. (Haciendo la señal de la cruz en la frente, labios y pecho)." },
+          { speaker: "Sacerdote", text: gospel.text },
+          { speaker: "Sacerdote", text: "Palabra del Señor." },
+          { speaker: "Pueblo", text: "Gloria a ti, Señor Jesús." },
+          { speaker: "Sacerdote (en secreto)", text: "Las palabras del Evangelio borren nuestros pecados." }
+        ]
+      }
+    });
+  }
+
+  // 6, 7, 8: La Homilía, Profesión de Fe (El Credo), Oración Universal
+  parts.push(...section.parts.slice(5));
+
+  return {
+    ...section,
+    parts
+  };
+}
+
+/**
+ * Returns all Mass sections with dynamically injected daily readings.
+ */
+export function getCanonicalMassResponses(
+  dailyReadings: MassReadingsResponse | null
+): MassResponseSection[] {
+  return massResponses.map((sec, idx) => getCanonicalMassSection(idx, dailyReadings));
+}
+
