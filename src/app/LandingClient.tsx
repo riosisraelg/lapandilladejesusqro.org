@@ -2133,7 +2133,7 @@ export default function Landing() {
       >
         {/* Top Control Bar with Grouped Deck Switcher */}
         <div className="oracion-top-bar">
-          <div className="oracion-deck-switcher-new" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <div className="oracion-deck-switcher-new" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '12px' }}>
             <div className="deck-arrows-group">
               <button 
                 onClick={handlePrevDeck} 
@@ -2432,7 +2432,7 @@ export default function Landing() {
       >
         {/* Top Control Bar with Grouped Deck Switcher */}
         <div className="oracion-top-bar">
-          <div className="oracion-deck-switcher-new" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <div className="oracion-deck-switcher-new" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '12px' }}>
             <div className="deck-arrows-group">
               <button 
                 onClick={handlePrevGuia} 

@@ -3002,7 +3002,7 @@ body.modal-open [data-tooltip]::after {
 
   .recursos-title-container {
     margin-bottom: 0.5rem;
-    margin-top: 0.25rem;
+    margin-top: 0;
     padding-right: 0.5rem;
   }
 
@@ -3370,12 +3370,12 @@ body.modal-open [data-tooltip]::after {
   gap: 0.45rem;
   width: 100%;
   margin: 0;
-  padding: 1.15rem 80px 0.5rem 1.25rem; /* Large right padding to prevent overlapping with floating buttons */
+  padding: 0.95rem 80px 0.5rem 1.25rem; /* Large right padding to prevent overlapping with floating buttons */
 }
 
 @media (min-width: 768px) {
   .oracion-top-bar {
-    padding: 1.5rem 80px 0.5rem 1.75rem;
+    padding: 1.25rem 80px 0.5rem 1.75rem;
   }
 }
 
@@ -3949,7 +3949,7 @@ body.modal-open [data-tooltip]::after {
   font-weight: 700;
   padding: 0.15rem 0.5rem;
   border-radius: 999px;
-  margin-top: 0.25rem;
+  margin-top: 0;
 }
 
 /* ── Prayer Cards ── */
@@ -4706,7 +4706,7 @@ body.modal-open [data-tooltip]::after {
   display: flex;
   align-items: center;
   gap: 0.35rem;
-  margin-top: 0.25rem;
+  margin-top: 0;
 }
 .deck-title-row .title {
   font-weight: 600;
