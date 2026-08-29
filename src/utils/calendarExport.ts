@@ -187,18 +187,10 @@ export function downloadICSFile(event: CalendarEventPayload): void {
     .replace(/[^a-z0-9]/g, '_');
   const filename = `${safeName}.ics`;
 
-  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.userAgent.includes("Mac") && "ontouchend" in document);
-
-  if (isIOS) {
-    // En iOS, el data URI redirige directamente al parseador nativo que abre la app Calendario 
-    // y muestra la interfaz de "Añadir Evento".
-    window.location.href = `data:text/calendar;charset=utf-8,${encodeURIComponent(icsString)}`;
-    return;
-  }
-
   const blob = new Blob([icsString], { type: 'text/calendar;charset=utf-8' });
 
-  // Web Share API para Android y otros sistemas (abre el menú compartir donde pueden elegir Calendario)
+  // Web Share API: El sistema operativo abrirá su menú nativo y sugerirá la app de Calendario!
+  // Esto evita la descarga pasiva a la carpeta "Descargas".
   if (navigator.canShare) {
     const file = new File([blob], filename, { type: 'text/calendar' });
     if (navigator.canShare({ files: [file] })) {
@@ -206,17 +198,19 @@ export function downloadICSFile(event: CalendarEventPayload): void {
         files: [file],
         title: event.title,
       }).catch((err) => {
-        console.warn('Share failed, falling back to download', err);
-        executeFallback(blob, filename);
+        console.warn('Share failed, falling back to data URI / download', err);
+        executeFallback(blob, filename, icsString);
       });
       return;
     }
   }
 
-  executeFallback(blob, filename);
+  // Fallback if Web Share is not supported for files
+  executeFallback(blob, filename, icsString);
 }
 
-function executeFallback(blob: Blob, filename: string) {
+function executeFallback(blob: Blob, filename: string, icsString: string) {
+  // Always use standard download fallback, which prompts the user to download the file directly.
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
   link.href = url;
