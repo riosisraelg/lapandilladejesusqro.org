@@ -2301,7 +2301,7 @@ export default function Landing() {
                             <img 
                               src={`/rosary-art/${oracion.image}.png`} 
                               alt="Mystery Artwork" 
-                              style={{ width: '100%', height: '260px', objectFit: 'cover', borderRadius: '16px', boxShadow: '0 4px 20px rgba(0,0,0,0.25)' }} 
+                              style={{ width: '100%', height: 'auto', maxHeight: '400px', objectFit: 'contain', borderRadius: '16px', boxShadow: '0 4px 20px rgba(0,0,0,0.25)' }} 
                             />
                             <span className="rosario-artwork-caption" style={{ marginTop: '12px', fontSize: '1rem' }}>
                               {activeLang === 'en' 
