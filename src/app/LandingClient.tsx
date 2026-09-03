@@ -1353,60 +1353,160 @@ export default function Landing() {
 
         {/* Mobile Dropdown Overlay */}
         <div className={`nav-mobile-overlay ${mobileMenuOpen ? "open" : ""}`}>
-          <ul className="nav-mobile-links">
-            <li><Link href="/calendario" onClick={() => setMobileMenuOpen(false)}>Eventos y Preceptos</Link></li>
-            <li>
-              <button 
-                type="button"
-                onClick={() => { 
-                  setMobileMenuOpen(false); setActiveGuiaTab('lecturas'); setModalUrl('guia'); 
-                  triggerHaptic('medium'); 
-                }}
-                style={{ background: 'none', border: 'none', color: 'inherit', font: 'inherit', cursor: 'pointer', padding: 0, textAlign: 'left', width: '100%' }}
-              >
-                Guía de Misa y Lecturas
-              </button>
-            </li>
-            <li>
-              <button 
-                type="button"
-                onClick={() => { setMobileMenuOpen(false); setModalUrl('oraciones'); triggerHaptic('medium'); }}
-                style={{ background: 'none', border: 'none', color: 'inherit', font: 'inherit', cursor: 'pointer', padding: 0, textAlign: 'left', width: '100%' }}
-              >
-                Oraciones y Santo Rosario
-              </button>
-            </li>
-            <li>
-              <button 
-                type="button"
-                onClick={() => { setMobileMenuOpen(false); setModalUrl('cancionero'); triggerHaptic('medium'); }}
-                style={{ background: 'none', border: 'none', color: 'inherit', font: 'inherit', cursor: 'pointer', padding: 0, textAlign: 'left', width: '100%' }}
-              >
-                Cancionero de Horas Santas
-              </button>
-            </li>
-            <li>
-              <button 
-                type="button"
-                onClick={() => { setMobileMenuOpen(false); setModalUrl('confesion'); triggerHaptic('medium'); }}
-                style={{ background: 'none', border: 'none', color: 'inherit', font: 'inherit', cursor: 'pointer', padding: 0, textAlign: 'left', width: '100%' }}
-              >
-                Guía de Confesión
-              </button>
-            </li>
-            <li><Link href="/donaciones" onClick={() => setMobileMenuOpen(false)}>Donaciones</Link></li>
-            <li className="nav-mobile-social-row">
-              <a href="https://instagram.com/lapandilladejesusqro" target="_blank" rel="noopener noreferrer" className="nav-mobile-social-icon" title="Instagram">
-                <InstagramIcon size={18} />
-              </a>
-              <a href="https://threads.net/@lapandilladejesusqro" target="_blank" rel="noopener noreferrer" className="nav-mobile-social-icon" title="Threads">
-                <ThreadsIcon size={18} />
-              </a>
-              <a href="https://facebook.com/lapandilladejesusqro" target="_blank" rel="noopener noreferrer" className="nav-mobile-social-icon" title="Facebook">
-                <FacebookIcon size={18} />
-              </a>
-            </li>
-            <li>
+          <div className="nav-mobile-content">
+            {/* 1. SECCIÓN: PÁGINAS */}
+            <div className="nav-mobile-section">
+              <span className="nav-mobile-section-label">Páginas</span>
+              <ul className="nav-mobile-pages-list">
+                <li>
+                  <Link href="/" onClick={() => setMobileMenuOpen(false)} className="nav-mobile-page-link">
+                    <span className="nav-mobile-page-icon">🏠</span>
+                    <span className="nav-mobile-page-title">Inicio</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/calendario" onClick={() => setMobileMenuOpen(false)} className="nav-mobile-page-link">
+                    <span className="nav-mobile-page-icon">📅</span>
+                    <span className="nav-mobile-page-title">Eventos</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/donaciones" onClick={() => setMobileMenuOpen(false)} className="nav-mobile-page-link">
+                    <span className="nav-mobile-page-icon">💛</span>
+                    <span className="nav-mobile-page-title">Donaciones</span>
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+            {/* 2. SECCIÓN: ATAJOS RÁPIDOS Y RECURSOS INTERACTIVOS */}
+            <div className="nav-mobile-section">
+              <span className="nav-mobile-section-label">Atajos y Recursos Interactivos</span>
+              <div className="nav-mobile-shortcuts-list">
+                {/* 1. Interactivo de Misa */}
+                <button 
+                  type="button"
+                  className="nav-mobile-shortcut-btn priority-high"
+                  onClick={() => { 
+                    setMobileMenuOpen(false); 
+                    setActiveGuiaTab('lecturas'); 
+                    setModalUrl('guia'); 
+                    triggerHaptic('medium'); 
+                  }}
+                >
+                  <span className="shortcut-icon">📖</span>
+                  <div className="shortcut-info">
+                    <span className="shortcut-title">Guía de Misa y Lecturas</span>
+                    <span className="shortcut-desc">Lecturas de hoy, Ordinario y Respuestas</span>
+                  </div>
+                  <span className="shortcut-badge">Interactivo</span>
+                </button>
+
+                {/* 2. Santo Rosario */}
+                <button 
+                  type="button"
+                  className="nav-mobile-shortcut-btn priority-high"
+                  onClick={() => { 
+                    setMobileMenuOpen(false); 
+                    setActiveOracionDeck('rosario'); 
+                    setModalUrl('oraciones', { deck: 'rosario' }); 
+                    triggerHaptic('medium'); 
+                  }}
+                >
+                  <span className="shortcut-icon">📿</span>
+                  <div className="shortcut-info">
+                    <span className="shortcut-title">Santo Rosario</span>
+                    <span className="shortcut-desc">Misterios del día, Citas Bíblicas y Frutos</span>
+                  </div>
+                  <span className="shortcut-badge">Interactivo</span>
+                </button>
+
+                {/* 3. Oraciones de Comida */}
+                <button 
+                  type="button"
+                  className="nav-mobile-shortcut-btn"
+                  onClick={() => { 
+                    setMobileMenuOpen(false); 
+                    setActiveOracionDeck('alimentos'); 
+                    setModalUrl('oraciones', { deck: 'alimentos' }); 
+                    triggerHaptic('medium'); 
+                  }}
+                >
+                  <span className="shortcut-icon">🍽️</span>
+                  <div className="shortcut-info">
+                    <span className="shortcut-title">Bendición de Alimentos</span>
+                    <span className="shortcut-desc">Oraciones para bendecir la mesa y acción de gracias</span>
+                  </div>
+                </button>
+
+                {/* 4. El Ángelus */}
+                <button 
+                  type="button"
+                  className="nav-mobile-shortcut-btn"
+                  onClick={() => { 
+                    setMobileMenuOpen(false); 
+                    setActiveOracionDeck('basicas'); 
+                    setActiveOracionIdx(9);
+                    setModalUrl('oraciones', { deck: 'basicas', etapa: '10' }); 
+                    triggerHaptic('medium'); 
+                  }}
+                >
+                  <span className="shortcut-icon">🕊️</span>
+                  <div className="shortcut-info">
+                    <span className="shortcut-title">El Ángelus</span>
+                    <span className="shortcut-desc">Memoria de la Encarnación y Regina Caeli</span>
+                  </div>
+                </button>
+
+                {/* 5. Cancionero de Horas Santas */}
+                <button 
+                  type="button"
+                  className="nav-mobile-shortcut-btn"
+                  onClick={() => { 
+                    setMobileMenuOpen(false); 
+                    setModalUrl('cancionero'); 
+                    triggerHaptic('medium'); 
+                  }}
+                >
+                  <span className="shortcut-icon">🎵</span>
+                  <div className="shortcut-info">
+                    <span className="shortcut-title">Cancionero de Horas Santas</span>
+                    <span className="shortcut-desc">Letras, acordes y modo interactivo</span>
+                  </div>
+                </button>
+
+                {/* 6. Guía de Confesión */}
+                <button 
+                  type="button"
+                  className="nav-mobile-shortcut-btn"
+                  onClick={() => { 
+                    setMobileMenuOpen(false); 
+                    setModalUrl('confesion'); 
+                    triggerHaptic('medium'); 
+                  }}
+                >
+                  <span className="shortcut-icon">✝️</span>
+                  <div className="shortcut-info">
+                    <span className="shortcut-title">Guía de Confesión</span>
+                    <span className="shortcut-desc">Examen de conciencia y pasos del sacramento</span>
+                  </div>
+                </button>
+              </div>
+            </div>
+
+            {/* 3. SECCIÓN: REDES Y CONTACTO */}
+            <div className="nav-mobile-footer-section">
+              <div className="nav-mobile-social-row">
+                <a href="https://instagram.com/lapandilladejesusqro" target="_blank" rel="noopener noreferrer" className="nav-mobile-social-icon" title="Instagram">
+                  <InstagramIcon size={18} />
+                </a>
+                <a href="https://threads.net/@lapandilladejesusqro" target="_blank" rel="noopener noreferrer" className="nav-mobile-social-icon" title="Threads">
+                  <ThreadsIcon size={18} />
+                </a>
+                <a href="https://facebook.com/lapandilladejesusqro" target="_blank" rel="noopener noreferrer" className="nav-mobile-social-icon" title="Facebook">
+                  <FacebookIcon size={18} />
+                </a>
+              </div>
               <a 
                 href="https://wa.me/5214422497485" 
                 target="_blank" 
@@ -1415,10 +1515,10 @@ export default function Landing() {
                 onClick={() => setMobileMenuOpen(false)}
                 data-tooltip="Escríbenos por WhatsApp para unirte o resolver tus dudas"
               >
-                <WhatsAppIcon size={18} /> WhatsApp
+                <WhatsAppIcon size={18} /> WhatsApp Comunidad
               </a>
-            </li>
-          </ul>
+            </div>
+          </div>
         </div>
       </nav>
 
@@ -2041,6 +2141,83 @@ export default function Landing() {
             </div>
           </div>
           <div className="footer-divider"></div>
+
+          {/* Structured Navigation Columns */}
+          <div className="footer-columns-container">
+            <div className="footer-col">
+              <span className="footer-col-title">Páginas</span>
+              <ul className="footer-col-links">
+                <li><Link href="/">Inicio</Link></li>
+                <li><Link href="/calendario">Eventos y Preceptos</Link></li>
+                <li><Link href="/donaciones">Donaciones</Link></li>
+              </ul>
+            </div>
+            <div className="footer-col">
+              <span className="footer-col-title">Recursos Litúrgicos</span>
+              <ul className="footer-col-links">
+                <li>
+                  <button 
+                    type="button" 
+                    className="footer-link-btn"
+                    onClick={() => { setActiveGuiaTab('lecturas'); setModalUrl('guia'); triggerHaptic('medium'); }}
+                  >
+                    Guía de Misa y Lecturas
+                  </button>
+                </li>
+                <li>
+                  <button 
+                    type="button" 
+                    className="footer-link-btn"
+                    onClick={() => { setActiveOracionDeck('rosario'); setModalUrl('oraciones', { deck: 'rosario' }); triggerHaptic('medium'); }}
+                  >
+                    Santo Rosario
+                  </button>
+                </li>
+                <li>
+                  <button 
+                    type="button" 
+                    className="footer-link-btn"
+                    onClick={() => { setActiveOracionDeck('alimentos'); setModalUrl('oraciones', { deck: 'alimentos' }); triggerHaptic('medium'); }}
+                  >
+                    Bendición de Alimentos
+                  </button>
+                </li>
+              </ul>
+            </div>
+            <div className="footer-col">
+              <span className="footer-col-title">Oración y Piedad</span>
+              <ul className="footer-col-links">
+                <li>
+                  <button 
+                    type="button" 
+                    className="footer-link-btn"
+                    onClick={() => { setActiveOracionDeck('basicas'); setActiveOracionIdx(9); setModalUrl('oraciones', { deck: 'basicas', etapa: '10' }); triggerHaptic('medium'); }}
+                  >
+                    El Ángelus y Regina Caeli
+                  </button>
+                </li>
+                <li>
+                  <button 
+                    type="button" 
+                    className="footer-link-btn"
+                    onClick={() => { setModalUrl('cancionero'); triggerHaptic('medium'); }}
+                  >
+                    Cancionero de Horas Santas
+                  </button>
+                </li>
+                <li>
+                  <button 
+                    type="button" 
+                    className="footer-link-btn"
+                    onClick={() => { setModalUrl('confesion'); triggerHaptic('medium'); }}
+                  >
+                    Guía de Confesión
+                  </button>
+                </li>
+              </ul>
+            </div>
+          </div>
+
           <div className="footer-meta-container">
             <span className="footer-copy">© 2026 La Pandilla de Jesús · lapandilladejesusqro.org</span>
             <ul className="footer-links">

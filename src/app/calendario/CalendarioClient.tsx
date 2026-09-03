@@ -507,59 +507,143 @@ export default function Calendario() {
 
         {/* Mobile Dropdown Overlay */}
         <div className={`nav-mobile-overlay ${mobileMenuOpen ? "open" : ""}`}>
-          <ul className="nav-mobile-links">
-            <li>
-              <Link href="/" onClick={() => setMobileMenuOpen(false)}>
-                Inicio
-              </Link>
-            </li>
-            <li>
-              <Link href="/donaciones" onClick={() => setMobileMenuOpen(false)}>
-                Donaciones
-              </Link>
-            </li>
-            <li className="nav-mobile-social-row">
-              <a
-                href="https://instagram.com/lapandilladejesusqro"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="nav-mobile-social-icon"
-                title="Instagram"
-              >
-                <InstagramIcon size={18} />
-              </a>
-              <a
-                href="https://threads.net/@lapandilladejesusqro"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="nav-mobile-social-icon"
-                title="Threads"
-              >
-                <ThreadsIcon size={18} />
-              </a>
-              <a
-                href="https://facebook.com/lapandilladejesusqro"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="nav-mobile-social-icon"
-                title="Facebook"
-              >
-                <FacebookIcon size={18} />
-              </a>
-            </li>
-            <li>
-              <a
-                href="https://wa.me/5214422497485"
-                target="_blank"
-                rel="noopener noreferrer"
+          <div className="nav-mobile-content">
+            {/* 1. SECCIÓN: PÁGINAS */}
+            <div className="nav-mobile-section">
+              <span className="nav-mobile-section-label">Páginas</span>
+              <ul className="nav-mobile-pages-list">
+                <li>
+                  <Link href="/" onClick={() => setMobileMenuOpen(false)} className="nav-mobile-page-link">
+                    <span className="nav-mobile-page-icon">🏠</span>
+                    <span className="nav-mobile-page-title">Inicio</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/calendario" onClick={() => setMobileMenuOpen(false)} className="nav-mobile-page-link">
+                    <span className="nav-mobile-page-icon">📅</span>
+                    <span className="nav-mobile-page-title">Eventos</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/donaciones" onClick={() => setMobileMenuOpen(false)} className="nav-mobile-page-link">
+                    <span className="nav-mobile-page-icon">💛</span>
+                    <span className="nav-mobile-page-title">Donaciones</span>
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+            {/* 2. SECCIÓN: ATAJOS RÁPIDOS Y RECURSOS INTERACTIVOS */}
+            <div className="nav-mobile-section">
+              <span className="nav-mobile-section-label">Atajos y Recursos Interactivos</span>
+              <div className="nav-mobile-shortcuts-list">
+                {/* 1. Interactivo de Misa */}
+                <Link 
+                  href="/?modal=guia"
+                  className="nav-mobile-shortcut-btn priority-high"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <span className="shortcut-icon">📖</span>
+                  <div className="shortcut-info">
+                    <span className="shortcut-title">Guía de Misa y Lecturas</span>
+                    <span className="shortcut-desc">Lecturas de hoy, Ordinario y Respuestas</span>
+                  </div>
+                  <span className="shortcut-badge">Interactivo</span>
+                </Link>
+
+                {/* 2. Santo Rosario */}
+                <Link 
+                  href="/?modal=oraciones&deck=rosario"
+                  className="nav-mobile-shortcut-btn priority-high"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <span className="shortcut-icon">📿</span>
+                  <div className="shortcut-info">
+                    <span className="shortcut-title">Santo Rosario</span>
+                    <span className="shortcut-desc">Misterios del día, Citas Bíblicas y Frutos</span>
+                  </div>
+                  <span className="shortcut-badge">Interactivo</span>
+                </Link>
+
+                {/* 3. Oraciones de Comida */}
+                <Link 
+                  href="/?modal=oraciones&deck=alimentos"
+                  className="nav-mobile-shortcut-btn"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <span className="shortcut-icon">🍽️</span>
+                  <div className="shortcut-info">
+                    <span className="shortcut-title">Bendición de Alimentos</span>
+                    <span className="shortcut-desc">Oraciones para bendecir la mesa y acción de gracias</span>
+                  </div>
+                </Link>
+
+                {/* 4. El Ángelus */}
+                <Link 
+                  href="/?modal=oraciones&deck=basicas"
+                  className="nav-mobile-shortcut-btn"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <span className="shortcut-icon">🕊️</span>
+                  <div className="shortcut-info">
+                    <span className="shortcut-title">El Ángelus</span>
+                    <span className="shortcut-desc">Memoria de la Encarnación y Regina Caeli</span>
+                  </div>
+                </Link>
+
+                {/* 5. Cancionero de Horas Santas */}
+                <Link 
+                  href="/?modal=cancionero"
+                  className="nav-mobile-shortcut-btn"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <span className="shortcut-icon">🎵</span>
+                  <div className="shortcut-info">
+                    <span className="shortcut-title">Cancionero de Horas Santas</span>
+                    <span className="shortcut-desc">Letras, acordes y modo interactivo</span>
+                  </div>
+                </Link>
+
+                {/* 6. Guía de Confesión */}
+                <Link 
+                  href="/?modal=confesion"
+                  className="nav-mobile-shortcut-btn"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <span className="shortcut-icon">✝️</span>
+                  <div className="shortcut-info">
+                    <span className="shortcut-title">Guía de Confesión</span>
+                    <span className="shortcut-desc">Examen de conciencia y pasos del sacramento</span>
+                  </div>
+                </Link>
+              </div>
+            </div>
+
+            {/* 3. SECCIÓN: REDES Y CONTACTO */}
+            <div className="nav-mobile-footer-section">
+              <div className="nav-mobile-social-row">
+                <a href="https://instagram.com/lapandilladejesusqro" target="_blank" rel="noopener noreferrer" className="nav-mobile-social-icon" title="Instagram">
+                  <InstagramIcon size={18} />
+                </a>
+                <a href="https://threads.net/@lapandilladejesusqro" target="_blank" rel="noopener noreferrer" className="nav-mobile-social-icon" title="Threads">
+                  <ThreadsIcon size={18} />
+                </a>
+                <a href="https://facebook.com/lapandilladejesusqro" target="_blank" rel="noopener noreferrer" className="nav-mobile-social-icon" title="Facebook">
+                  <FacebookIcon size={18} />
+                </a>
+              </div>
+              <a 
+                href="https://wa.me/5214422497485" 
+                target="_blank" 
+                rel="noopener noreferrer" 
                 className="nav-mobile-cta-wa"
                 onClick={() => setMobileMenuOpen(false)}
                 data-tooltip="Escríbenos por WhatsApp para unirte o resolver tus dudas"
               >
-                <WhatsAppIcon size={18} /> WhatsApp
+                <WhatsAppIcon size={18} /> WhatsApp Comunidad
               </a>
-            </li>
-          </ul>
+            </div>
+          </div>
         </div>
       </nav>
 
@@ -785,6 +869,35 @@ export default function Calendario() {
             </div>
           </div>
           <div className="footer-divider"></div>
+
+          {/* Structured Navigation Columns */}
+          <div className="footer-columns-container">
+            <div className="footer-col">
+              <span className="footer-col-title">Páginas</span>
+              <ul className="footer-col-links">
+                <li><Link href="/">Inicio</Link></li>
+                <li><Link href="/calendario">Eventos y Preceptos</Link></li>
+                <li><Link href="/donaciones">Donaciones</Link></li>
+              </ul>
+            </div>
+            <div className="footer-col">
+              <span className="footer-col-title">Recursos Litúrgicos</span>
+              <ul className="footer-col-links">
+                <li><Link href="/?modal=guia">Guía de Misa y Lecturas</Link></li>
+                <li><Link href="/?modal=oraciones&deck=rosario">Santo Rosario</Link></li>
+                <li><Link href="/?modal=oraciones&deck=alimentos">Bendición de Alimentos</Link></li>
+              </ul>
+            </div>
+            <div className="footer-col">
+              <span className="footer-col-title">Oración y Piedad</span>
+              <ul className="footer-col-links">
+                <li><Link href="/?modal=oraciones&deck=basicas">El Ángelus y Regina Caeli</Link></li>
+                <li><Link href="/?modal=cancionero">Cancionero de Horas Santas</Link></li>
+                <li><Link href="/?modal=confesion">Guía de Confesión</Link></li>
+              </ul>
+            </div>
+          </div>
+
           <div className="footer-meta-container">
             <span className="footer-copy">© 2026 La Pandilla de Jesús · lapandilladejesusqro.org</span>
             <ul className="footer-links">
