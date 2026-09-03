@@ -1779,9 +1779,9 @@ export default function Landing() {
                 <button 
                   className={`recursos-btn btn-seguir-misa ${bounceBtn === 'seguir-misa' ? 'bounce-active' : ''}`} 
                   onClick={() => { 
-                    setActiveGuiaTab('lecturas'); 
+                    setActiveGuiaTab('respuestas'); 
                     setActiveMisaSectionIdx(0); 
-                    setModalUrl('guia_misa_interactiva'); 
+                    setModalUrl('guia', { seccion: 'respuestas' }); 
                     triggerHaptic('medium'); 
                   }}
                   data-tooltip="Seguir la Misa: lecturas, salmos, respuestas y cantos litúrgicos"
@@ -2328,25 +2328,13 @@ export default function Landing() {
                             </div>
                           )}
 
-                          {/* Element 4: Deep Meditation */}
-                          {(oracion.mysteryMeditation || oracion.mysteryMeditationEn) && (
-                            <div className="rosario-element-section rosario-element-meditation">
-                              <span className="rosario-element-badge">
-                                🕊️ {activeLang === 'en' ? 'Contemplative Meditation' : 'Meditación Contemplativa'}
-                              </span>
-                              <p className="rosario-meditation-text">
-                                {activeLang === 'en' && oracion.mysteryMeditationEn ? oracion.mysteryMeditationEn : oracion.mysteryMeditation}
-                              </p>
-                            </div>
-                          )}
-
-                          {/* Element 5: Reflection Question for the Decade */}
+                          {/* Element 4: Fruit of the Mystery */}
                           {(oracion.reflectionQuestion || oracion.reflectionQuestionEn) && (
                             <div className="rosario-element-section rosario-element-reflection">
                               <span className="rosario-element-badge">
-                                💭 {activeLang === 'en' ? 'Decade Reflection Question' : 'Pregunta de Reflexión para la Decena'}
+                                🍇 {activeLang === 'en' ? 'Fruit of the Mystery' : 'Fruto del Misterio'}
                               </span>
-                              <p className="rosario-reflection-question">
+                              <p className="rosario-reflection-question" style={{ fontWeight: 600 }}>
                                 {activeLang === 'en' && oracion.reflectionQuestionEn ? oracion.reflectionQuestionEn : oracion.reflectionQuestion}
                               </p>
                             </div>

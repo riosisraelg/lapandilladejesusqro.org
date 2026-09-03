@@ -1,82 +1,66 @@
-# Project: lapandilladejesusqro.org
+# Project: Mass Readings Scraper Upgrade & Canonical Mass Guide Integration
 
 ## Architecture
-- **Framework**: Next.js 15.1.0 App Router, React 19, TypeScript 5.7.
-- **Styling Architecture**: Monolithic Vanilla CSS (`src/app/global.css`) with CSS custom variables, 3D transform perspectives (`translate3d`, `rotate`, `scale`), and responsive media queries.
-- **Data Layer**:
-  - `src/data/oracionesData.ts`: Central prayer database, Food Prayers deck (Domingo–Sábado), Rosary mystery structures with 5-element sequence, and deck generation functions.
-  - `src/data/confesionData.ts`: Examination of conscience and confession guide.
-  - `src/app/massResponses.ts`: Liturgy of the Word, Eucharistic Prayer, Communion dialogues (priest & people), and traditional Mexican sung hymns.
-- **API & Serverless Functions**:
-  - `/api/calendar`: Google Calendar iCal proxy with cache busting.
-  - `/api/mass-readings`: Evangelizo XML feed proxy for daily Liturgia de la Palabra with caching and offline fallback.
-  - `/api/og`: Dynamic 1200x630px Open Graph banner generator using `next/og` (`ImageResponse`).
-- **Client Components**:
-  - `src/app/LandingClient.tsx`: Main interactive hub with infinite deck swiping, dynamic HSL tone generation, standalone Mass Guide modal, Rosary modal with top-bar vibrating counter and collapsible repeated prayers, and global long-press tooltips.
-  - `src/app/calendario/CalendarioClient.tsx`: Annual Jesus calendar integrated with Misas de Precepto (Canon 1246 & CEM), layered event modal, URL deep-linking (`?evento=...`), and universal export (.ics, Google, Apple, Outlook Web, Outlook Desktop, Yahoo).
-  - `src/components/GlobalModal.tsx`: Accessible modal wrapper.
+- **API Edge Subsystem**: `src/app/api/mass-readings/route.ts` - Next.js Route Handler querying Evangelizo XML feed, parsing full liturgical readings, formatting multi-stanza psalms with recurring responses, providing seasonal Alleluia/Lent acclamations, and returning structured JSON with Edge/HTTP 24h caching and resilient fallback.
+- **Data Models**: `MassReadingsResponse` supporting `firstReading`, `psalm` (with antiphon `response` & stanzas), `secondReading` (conditional on Sundays/Solemnities), `alleluia` (acclamation & verse), `gospel`, `meditation`, and status flags.
+- **UI Presentation Subsystem**: `src/app/LandingClient.tsx` & `src/app/massResponses.ts` - Interactive and standard Mass Guide modal. Removal of legacy accordion. Sequential canonical injection of live readings into "Liturgia de la Palabra" (GIRM canonical sequence).
+- **Navigation & Lifecycle**: Auto-fetch daily readings on initial client mount, Hero & Navigation direct access buttons opening directly to Ritos Iniciales with cached live readings.
+- **Verification Harness**: `scripts/test-e2e.mjs` - 5-tier zero-dependency test harness executing unit, integration, and E2E journeys.
 
 ## Feature Inventory
 | # | Feature | Description | Milestone | Source |
 |---|---------|-------------|-----------|--------|
-| 1 | R1: Food Prayers Transcription | 18 images transcribed into Domingo–Sábado *Antes* & *Después* meal prayers in Spanish | M1 | ORIGINAL_REQUEST §R1 |
-| 2 | R2: Auto-Day Selection & Minimalist Deck | Food deck auto-detects current day of week and opens directly to that card with manual swiping | M1 | ORIGINAL_REQUEST §R2 |
-| 3 | R3: Infinite Swipe Animations | Minimal swipe gesture navigating between decks in an infinite continuous loop | M2 | ORIGINAL_REQUEST §R3 |
-| 4 | R4: Dynamic Color Tones | Programmatic calculation of distinct HSL brand color tones/gradients per deck | M2 | ORIGINAL_REQUEST §R4 |
-| 5 | R5: Global Long-Press Tooltips | Long-press on any interactive button triggers info tooltip with haptic vibration | M3 | ORIGINAL_REQUEST §R5 |
-| 6 | R6: Event OG Previews & Shareable Modals | Dynamic OG images via `/api/og` and unique URLs (`/calendario?evento=[id]`) triggering modal | M4 | ORIGINAL_REQUEST §R6 |
-| 7 | R7: Rosary UI Overhaul & Vibrating Counter | 5 mystery elements (image, citation, text, meditation, reflection question), untruncated text, collapsible repeated prayers, dedicated main/self decks, top-level vibrating counter | M5 | ORIGINAL_REQUEST §R7 |
-| 8 | R8: Mass Guide, Dialogues, Songs & Scraper | Standalone button, missing priest Communion dialogues, Mexican songs (Gloria/Santo/Cordero), daily mass scraper (`/api/mass-readings`) | M6 | ORIGINAL_REQUEST §R8 |
-| 9 | R9: Misas de Precepto Calendar Integration | Full Canon 1246 & CEM Holy Days of Obligation, Computus movable feast calculation, layered event modal, and multi-provider export | M7 | ORIGINAL_REQUEST §R9 |
-| 10 | R10: Verification, Git Commits & Push | 100% E2E test passing, granular git commits with semantic version tags, and remote push | M8 & M9 | ORIGINAL_REQUEST §R10 |
+| 1 | Full Text Liturgical Scraper | Scrape & parse complete 1st Reading, Psalm (response + all stanzas), 2nd Reading (Sunday/Solemnity), Alleluia, and Gospel | M1 (API Scraper) | ORIGINAL_REQUEST R1 |
+| 2 | Robust Entity Decoding & CDATA | Decode all Spanish accented & HTML entities, parse CDATA safely | M1 (API Scraper) | ORIGINAL_REQUEST R1 |
+| 3 | Resilient Fallback & 24h Caching | Cache-Control headers, 6s timeout, robust `FALLBACK_READINGS` on offline/upstream fail | M1 (API Scraper) | ORIGINAL_REQUEST R1 |
+| 4 | Obsolete Accordion Removal | Delete `showLecturasInResponses` accordion toggle from Tab 2 in `LandingClient.tsx` | M2 (UI Canonical Injection) | ORIGINAL_REQUEST R2 |
+| 5 | Canonical Sequential Injection | Inject 1st Reading → Psalm (R. + stanzas) → 2nd Reading (if present) → Alleluia → Gospel into Liturgia de la Palabra | M2 (UI Canonical Injection) | ORIGINAL_REQUEST R2 |
+| 6 | Interactive Streaming Mode (`AppleMusicLyrics`) | Dynamically generate kinetic line array with live readings and speaker rubrics in Section 2 | M2 (UI Canonical Injection) | ORIGINAL_REQUEST R2 |
+| 7 | Direct Access Mass Launcher | Configure hero and mobile navigation buttons to open directly to Mass guide at Section 1 (Ritos Iniciales) | M3 (Direct Access & Auto-fetch) | ORIGINAL_REQUEST R3 |
+| 8 | Auto-Fetch on Mount | Proactively fetch and cache daily readings in background on client mount | M3 (Direct Access & Auto-fetch) | ORIGINAL_REQUEST R3 |
+| 9 | 3-Stage Engineering Documentation | ISO 42010 (`docs/architecture.md`), ISO 29148 (`docs/srs.md`), ISO 12207 (`docs/tasks.md`) | M0 (Standards Docs) | Engineering Standards |
+| 10 | 5-Tier E2E & Unit Test Suite | Comprehensive automated tests covering all 5 tiers (≥189 tests) in `scripts/test-e2e.mjs` | M4 (E2E Testing Track) | Testing Standards |
 
 ## Milestones
 | # | Name | Scope | Dependencies | Status |
 |---|------|-------|-------------|--------|
-| 0 | M0: Technical Manuals & Specs | ISO 42010 Architecture, ISO 29148 SRS, ISO 12207 Tasks, TEST_INFRA.md | none | DONE |
-| E2E | E2E Testing Track | Requirement-driven opaque-box 4-tier test suite & TEST_READY.md | M0 | DONE |
-| 1 | M1: Food Prayers & Auto-Day Deck | `src/data/oracionesData.ts`, food deck generator, current day auto-selection | M0 | DONE |
-| 2 | M2: Infinite Swipe & Dynamic Tones | `LandingClient.tsx`, `global.css`, circular deck navigation, HSL dynamic palette | M1 | PLANNED |
-| 3 | M3: Global Long-Press Tooltips | `useLongPress` hook, button integration across LandingClient, Calendario, Modals | M2 | PLANNED |
-| 4 | M4: Event OG Image & Shareable Modals | `/api/og/route.tsx`, `CalendarioClient.tsx`, `/calendario/page.tsx` dynamic metadata | M0 | PLANNED |
-| 5 | M5: Rosary UI Overhaul & Vibrating Counter | `oracionesData.ts`, `LandingClient.tsx`, `GlobalModal.tsx`, 5 mystery elements, collapsible repeats | M1 | PLANNED |
-| 6 | M6: Mass Guide Standalone & Liturgy Scraper | `/api/mass-readings/route.ts`, `massResponses.ts`, `LandingClient.tsx` standalone button | M0 | PLANNED |
-| 7 | M7: Misas de Precepto & Calendar Export | `src/data/preceptoData.ts`, `CalendarioClient.tsx`, multi-platform export (.ics, Google, Apple, Outlook) | M4 | PLANNED |
-| 8 | M8: E2E Full Suite Verification & Adversarial Hardening | Pass 100% Tiers 1-4 tests + Tier 5 adversarial stress testing | M1-M7, E2E | PLANNED |
-| 9 | M9: Granular Git Commits, Semver Tags & Production Push | Granular git commits, semver tags, and final remote push | M8 | PLANNED |
+| M0 | Standards Documentation | Generate `docs/architecture.md`, `docs/srs.md`, `docs/tasks.md` | Survey Complete | DONE |
+| M1 | API & Liturgical Scraper Overhaul | `src/app/api/mass-readings/route.ts` full text, psalm parsing, alleluia, entity decoding | M0 | PLANNED |
+| M2 | Canonical UI Injection | `src/app/LandingClient.tsx`, `src/app/massResponses.ts` accordion removal, sequential injection, AppleMusicLyrics feed | M1 | PLANNED |
+| M3 | Direct Access & Auto-Fetch | Direct Mass button trigger, client mount auto-fetch, loading/offline handling | M2 | PLANNED |
+| M4 | E2E & Comprehensive Testing Track | Extend `scripts/test-e2e.mjs` with Tier 1–5 test suite (≥189 tests), 100% pass | M1, M2, M3 | PLANNED |
+| M5 | Final Verification & Forensic Audit | Full regression run, Next.js production build, Forensic Integrity Audit | M4 | PLANNED |
 
 ## Interface Contracts
-### `oracionesData.ts` ↔ `LandingClient.tsx` (Food Deck & Rosary)
-- `FoodPrayerDay`: `{ id: string; day: DayOfWeek; dayName: string; before: MealPrayer; after?: MealPrayer; intro?: RubricIntro }`
-- `MysteryItem`: `{ number: number; title: string; titleEn: string; biblicalRef: string; scriptureText: string; scriptureTextEn: string; meditation: string; meditationEn: string; reflectionQuestion: string; reflectionQuestionEn: string; image: string }`
-- `getFoodPrayersDeck(dayIndex?: number): PrayerCard[]`
-- `getSantoRosarioDeck(variant: RosaryVariant, mysteryType: MysteryType, subDeck: 'opening' | 'mysteries' | 'concluding'): PrayerCard[]`
+### API Route `GET /api/mass-readings`
+- **Request**: `GET /api/mass-readings?date=YYYY-MM-DD&lang=SP`
+- **Response**: `200 OK` (JSON conforming to `MassReadingsResponse`)
+  ```typescript
+  export interface MassReadingsResponse {
+    date: string; // YYYYMMDD
+    liturgicalDay: string;
+    saint?: string;
+    firstReading: { citation: string; shortCitation?: string; text: string; };
+    psalm: { citation: string; shortCitation?: string; response: string; text: string; stanzas?: string[]; };
+    secondReading?: { citation: string; shortCitation?: string; text: string; };
+    alleluia: { acclamation: string; verse: string; citation?: string; };
+    gospel: { citation: string; shortCitation?: string; text: string; };
+    meditation?: { author: string; text: string; };
+    isFallback?: boolean;
+    source?: string;
+  }
+  ```
 
-### `/api/mass-readings` ↔ `LandingClient.tsx`
-- Endpoint: `GET /api/mass-readings?date=YYYYMMDD&lang=es`
-- Response: `{ liturgicalDay: string; saint?: string; firstReading: { citation: string; text: string }; psalm: { citation: string; response: string; text: string }; secondReading?: { citation: string; text: string }; gospel: { citation: string; text: string }; meditation?: { author: string; text: string } }`
-
-### `/api/og` ↔ Social Share & Calendario
-- Endpoint: `GET /api/og?title=[title]&date=[date]&time=[time]&category=[category]&location=[location]`
-- Returns: `image/png` (1200x630 px) with Catholic branding.
-
-### `preceptoData.ts` ↔ `CalendarioClient.tsx`
-- `getMisasDePrecepto(year: number): ParsedEvent[]`
-- Export functions: `generateGoogleCalendarUrl(event)`, `generateOutlookWebUrl(event)`, `generateICSContent(event)`, `downloadICSFile(event)`.
+### Canonical Mass Generator Function
+- `getCanonicalMassLines(sectionIdx: number, dailyReadings: MassReadingsResponse | null, lang: 'es' | 'en')`:
+  Returns structured lines array for `AppleMusicLyrics` kinetic reader and ordinary display.
 
 ## Code Layout
-- `docs/architecture.md`: ISO/IEC/IEEE 42010 Architecture Description
-- `docs/srs.md`: ISO/IEC/IEEE 29148 Software Requirements Specification
-- `docs/tasks.md`: ISO/IEC/IEEE 12207 Software Lifecycle Atomic Task Plan
-- `PROJECT.md`: Project master architecture, feature inventory, milestones, contracts
-- `TEST_INFRA.md`: E2E test infrastructure, 4-tier test specifications
-- `src/data/oracionesData.ts`: Catholic prayers, Food prayers deck, Rosary deck structures
-- `src/data/preceptoData.ts`: Holy Days of Obligation, Computus algorithm, CEM liturgical rules
-- `src/app/massResponses.ts`: Full Liturgy of the Word, priest Communion prayers, Mexican sung hymns
-- `src/app/api/mass-readings/route.ts`: Daily Mass readings scraper endpoint
-- `src/app/api/og/route.tsx`: Dynamic Open Graph image generation endpoint
-- `src/utils/useLongPress.ts`: Global long-press tooltip hook with haptic feedback
-- `src/utils/calendarExport.ts`: Universal calendar export generators
-- `src/app/LandingClient.tsx`: Decks, Infinite navigation, Rosary modal, Mass Guide button
-- `src/app/calendario/CalendarioClient.tsx`: Calendar view, Misas de Precepto, layered event modals
-- `src/app/global.css`: UI styling, infinite deck animations, top-level vibrating counter styles, tooltip popovers
+- `src/app/api/mass-readings/route.ts`: Scraper API route handler and liturgical parser
+- `src/app/LandingClient.tsx`: Main client view, modal state, navigation buttons, Mass Guide UI
+- `src/app/massResponses.ts`: Liturgical ordinaries, dialogues, and baseline structure
+- `src/app/AppleMusicLyrics.tsx`: Kinetic full-screen liturgical text reader
+- `scripts/test-e2e.mjs`: Zero-dependency automated test harness (Tiers 1–5)
+- `docs/architecture.md`: System Architecture Specification (ISO/IEC/IEEE 42010:2022)
+- `docs/srs.md`: Software Requirements Specification (ISO/IEC/IEEE 29148:2018)
+- `docs/tasks.md`: Life Cycle Task Matrix (ISO/IEC/IEEE 12207:2017)

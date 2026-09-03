@@ -3,7 +3,7 @@ import { useState, useEffect, useMemo, useCallback } from "react";
 import Link from "next/link";
 import GlobalModal from "../../components/GlobalModal";
 import { useSearchParams } from "next/navigation";
-import { fetchICalFeed } from "../../utils/icalParser";
+import { fetchICalFeed, cleanDescription } from "../../utils/icalParser";
 import { ICAL_FEED_URL } from "../../config";
 import { getMisasDePrecepto, PreceptoEvent } from "../../data/preceptoData";
 import {
@@ -126,11 +126,86 @@ const CopyIcon = () => (
 );
 
 const ShareIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
     <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
     <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
   </svg>
 );
+
+const NotesGCalIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="3" y1="6" x2="21" y2="6"/>
+    <line x1="3" y1="12" x2="21" y2="12"/>
+    <line x1="3" y1="18" x2="15" y2="18"/>
+  </svg>
+);
+
+const MapPinGCalIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
+    <circle cx="12" cy="10" r="3"/>
+  </svg>
+);
+
+const CalendarGCalIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+    <line x1="16" y1="2" x2="16" y2="6"/>
+    <line x1="8" y1="2" x2="8" y2="6"/>
+    <line x1="3" y1="10" x2="21" y2="10"/>
+  </svg>
+);
+
+const getEventCategoryColor = (event: any) => {
+  if (event.isPrecepto) return "#f58220";
+  const primaryType = (event.types && event.types[0]) || event.type || "Otro";
+  switch (primaryType.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")) {
+    case "precepto": return "#f58220";
+    case "misa": return "#1a73e8";
+    case "oracion": return "#0d904f";
+    case "retiro": return "#9c27b0";
+    case "colecta": return "#f29900";
+    case "mision": return "#d93025";
+    case "reunion": return "#e8710a";
+    case "apostolado": return "#12b5cb";
+    default: return "#5f6368";
+  }
+};
+
+const formatGoogleDate = (dateStr: string, timeStr?: string) => {
+  if (!dateStr) return "";
+  const dateObj = new Date(dateStr + "T12:00:00");
+  const weekday = dateObj.toLocaleDateString("es-ES", { weekday: "long" });
+  const capitalizedWeekday = weekday.charAt(0).toUpperCase() + weekday.slice(1);
+  const day = dateObj.getDate();
+  const month = dateObj.toLocaleDateString("es-ES", { month: "long" });
+  
+  const formattedDate = `${capitalizedWeekday}, ${day} de ${month}`;
+  if (timeStr && timeStr !== "Todo el día") {
+    return `${formattedDate} · ${timeStr}`;
+  }
+  return formattedDate;
+};
+
+const formatRecurrenceText = (rrule?: string, event?: any) => {
+  if (!rrule) {
+    if (event?.isPrecepto) return "✝ Misa de Precepto Obligatorio";
+    return null;
+  }
+  const upper = rrule.toUpperCase();
+  if (upper.includes("FREQ=MONTHLY")) {
+    if (upper.includes("BYDAY=2TU")) return "Mensual el segundo martes";
+    if (upper.includes("BYDAY=1TU")) return "Mensual el primer martes";
+    if (upper.includes("BYDAY=3TU")) return "Mensual el tercer martes";
+    if (upper.includes("BYDAY=4TU")) return "Mensual el cuarto martes";
+    if (upper.includes("BYDAY=")) return "Mensual en día programado";
+    return "Mensual";
+  }
+  if (upper.includes("FREQ=WEEKLY")) return "Semanal";
+  if (upper.includes("FREQ=YEARLY")) return "Anual";
+  if (upper.includes("FREQ=DAILY")) return "Diario";
+  return "Evento recurrente";
+};
 
 const EVENT_FILTERS = [
   { key: "all", label: "Todos" },
@@ -289,6 +364,55 @@ export default function Calendario() {
       return e.type === activeFilter;
     });
   }, [events, activeFilter, currentMonthEventsInfo]);
+
+  const getWeekRange = (dateStr: string) => {
+    const d = new Date(dateStr + "T12:00:00");
+    const day = d.getDay(); // 0 is Sunday, 1 is Monday, ..., 6 is Saturday
+    
+    // Start week on Monday, end on Sunday
+    const diffToMonday = (day === 0 ? -6 : 1) - day;
+    const monday = new Date(d);
+    monday.setDate(d.getDate() + diffToMonday);
+
+    const sunday = new Date(monday);
+    sunday.setDate(monday.getDate() + 6);
+
+    const mondayDay = monday.getDate();
+    const sundayDay = sunday.getDate();
+    const mondayMonth = monday.toLocaleDateString("es-ES", { month: "long" });
+    const sundayMonth = sunday.toLocaleDateString("es-ES", { month: "long" });
+
+    let label = "";
+    if (mondayMonth === sundayMonth) {
+      label = `Semana del ${mondayDay} al ${sundayDay} de ${mondayMonth}`;
+    } else {
+      label = `Semana del ${mondayDay} de ${mondayMonth} al ${sundayDay} de ${sundayMonth}`;
+    }
+
+    const y = monday.getFullYear();
+    const m = String(monday.getMonth() + 1).padStart(2, '0');
+    const dayM = String(monday.getDate()).padStart(2, '0');
+    const key = `${y}-${m}-${dayM}`;
+
+    return { key, label };
+  };
+
+  const eventsGroupedByWeek = useMemo(() => {
+    const groups: { key: string; label: string; events: any[] }[] = [];
+    const map = new Map<string, { key: string; label: string; events: any[] }>();
+
+    filteredEvents.forEach((ev) => {
+      const { key, label } = getWeekRange(ev.date);
+      if (!map.has(key)) {
+        const group = { key, label, events: [] as any[] };
+        map.set(key, group);
+        groups.push(group);
+      }
+      map.get(key)!.events.push(ev);
+    });
+
+    return groups;
+  }, [filteredEvents]);
 
   const formatDate = (d: string) =>
     new Date(d + "T12:00:00").toLocaleDateString("es-ES", {
@@ -491,94 +615,105 @@ export default function Calendario() {
                   <p>No hay eventos con este filtro en este momento.</p>
                 </div>
               ) : (
-                filteredEvents.map((ev) => (
-                  <div key={ev.id} className="event-detail-card">
-                    <div className="event-detail-top">
-                      <div className="event-type-badges-container">
-                        {ev.isPrecepto && (
-                          <span className="event-type-badge precepto">
-                            ✝ Precepto
-                          </span>
-                        )}
-                        {(ev.types && ev.types.length > 0 ? ev.types : [ev.type || "Otro"])
-                          .filter((t: string) => t !== "Precepto")
-                          .map((t: string) => (
-                            <span
-                              key={t}
-                              className={`event-type-badge ${t.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")}`}
-                            >
-                              {t}
-                            </span>
-                          ))}
+                eventsGroupedByWeek.map((group) => (
+                  <div key={group.key} className="event-week-section">
+                    <div className="event-week-header">
+                      <div className="event-week-title">
+                        <CalendarSmIcon />
+                        <span>{group.label}</span>
                       </div>
-                      <span className="event-detail-time">
-                        <ClockSmIcon />
-                        {formatDate(ev.date)}
-                        {ev.time && ev.time !== "Todo el día" && ` · ${ev.time}`}
+                      <span className="event-week-count">
+                        {group.events.length} {group.events.length === 1 ? 'evento' : 'eventos'}
                       </span>
                     </div>
-                    <h4>{ev.title}</h4>
-                    {ev.location && (
-                      <div className="event-detail-location">
-                        <MapPinSmIcon />
-                        {ev.location}
-                      </div>
-                    )}
-                    <div className="event-detail-actions">
-                      <button
-                        onClick={() => setSelectedEvent(ev)}
-                        className="btn-agendar"
-                        style={{ background: "transparent" }}
-                        data-tooltip="Sincronizar esta actividad individual con tu Google Calendar, Outlook o Apple Calendar"
-                      >
-                        <CalendarSmIcon /> Agendar
-                      </button>
-                      <button
-                        onClick={() => handleCopyEventLink(ev)}
-                        className="btn-agendar"
-                        style={{ 
-                          background: copiedEventId === ev.id ? "#20ba5a" : "transparent",
-                          color: copiedEventId === ev.id ? "#fff" : "inherit",
-                          maxWidth: copiedEventId === ev.id ? "120px" : "44px",
-                          padding: "0.5rem",
-                          transition: "all 0.3s ease",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          gap: "6px"
-                        }}
-                        data-tooltip={copiedEventId === ev.id ? "¡Enlace copiado al portapapeles!" : "Copiar enlace directo compartible de este evento"}
-                        aria-label="Compartir evento"
-                      >
-                        {copiedEventId === ev.id ? (
-                          <>
-                            <CopyIcon />
-                            <span style={{ fontSize: '0.8rem', fontWeight: 'bold' }}>Copiado</span>
-                          </>
-                        ) : (
-                          <ShareIcon />
+
+                    {group.events.map((ev) => (
+                      <div key={ev.id} className="event-detail-card">
+                        <div className="event-detail-top">
+                          <div className="event-type-badges-container">
+                            {ev.isPrecepto && (
+                              <span className="event-type-badge precepto">
+                                ✝ Precepto
+                              </span>
+                            )}
+                            {(ev.types && ev.types.length > 0 ? ev.types : [ev.type || "Otro"])
+                              .filter((t: string) => t !== "Precepto")
+                              .map((t: string) => (
+                                <span
+                                  key={t}
+                                  className={`event-type-badge ${t.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")}`}
+                                >
+                                  {t}
+                                </span>
+                              ))}
+                          </div>
+                          <span className="event-detail-time">
+                            <ClockSmIcon />
+                            {formatDate(ev.date)}
+                            {ev.time && ev.time !== "Todo el día" && ` · ${ev.time}`}
+                          </span>
+                        </div>
+                        <h4>{ev.title}</h4>
+                        {ev.location && (
+                          <div className="event-detail-location">
+                            <MapPinSmIcon />
+                            {ev.location}
+                          </div>
                         )}
-                      </button>
-                      {ev.lumaLink && (
-                        <a
-                          href={ev.lumaLink}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="btn-luma-sm"
-                          data-tooltip="Ver detalles y registro de asistencia en la plataforma Luma"
-                        >
-                          Info Luma <ExternalLinkIcon />
-                        </a>
-                      )}
-                    </div>
+                        <div className="event-detail-actions">
+                          <button
+                            onClick={() => setSelectedEvent(ev)}
+                            className="btn-agendar"
+                            style={{ background: "transparent" }}
+                            data-tooltip="Sincronizar esta actividad individual con tu Google Calendar, Outlook o Apple Calendar"
+                          >
+                            <CalendarSmIcon /> Agendar
+                          </button>
+                          <button
+                            onClick={() => handleCopyEventLink(ev)}
+                            className="btn-agendar"
+                            style={{ 
+                              background: copiedEventId === ev.id ? "#20ba5a" : "transparent",
+                              color: copiedEventId === ev.id ? "#fff" : "inherit",
+                              maxWidth: copiedEventId === ev.id ? "120px" : "44px",
+                              padding: "0.5rem",
+                              transition: "all 0.3s ease",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              gap: "6px"
+                            }}
+                            data-tooltip={copiedEventId === ev.id ? "¡Enlace copiado al portapapeles!" : "Copiar enlace directo compartible de este evento"}
+                            aria-label="Compartir evento"
+                          >
+                            {copiedEventId === ev.id ? (
+                              <>
+                                <CopyIcon />
+                                <span style={{ fontSize: '0.8rem', fontWeight: 'bold' }}>Copiado</span>
+                              </>
+                            ) : (
+                              <ShareIcon />
+                            )}
+                          </button>
+                          {ev.lumaLink && (
+                            <a
+                              href={ev.lumaLink}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="btn-luma-sm"
+                              data-tooltip="Ver detalles y registro de asistencia en la plataforma Luma"
+                            >
+                              Info Luma <ExternalLinkIcon />
+                            </a>
+                          )}
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 ))
               )}
               <div className="upcoming-info-note" style={{ marginTop: "1.5rem" }}>
                 <p>
-                  * Esta sección muestra la planeación completa de eventos y Misas de Precepto según las normas de la Conferencia del Episcopado Mexicano (CEM) y el Código de Derecho Canónico (Canon 1246).
-                </p>
-                <p style={{ marginTop: "8px" }}>
                   Haz clic en "Agendar" en cualquier evento para sincronizarlo con tu cuenta de Google, Apple o Outlook personal.
                 </p>
               </div>
@@ -674,102 +809,145 @@ export default function Calendario() {
         </div>
       </footer>
 
-      {/* ── ADD TO CALENDAR MODAL ── */}
+      {/* ── ADD TO CALENDAR MODAL (GOOGLE CALENDAR STYLE LAYOUT) ── */}
       <GlobalModal
         isOpen={!!selectedEvent}
         onClose={() => setSelectedEvent(null)}
-        style={{ maxWidth: '420px', height: 'auto', maxHeight: '90dvh', padding: '1.2rem', margin: 'auto' }}
       >
         {selectedEvent && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
-            <h3 className="calendar-modal-title" style={{ textAlign: 'center', fontSize: '1.25rem', margin: '0' }}>
-              {selectedEvent.title}
-            </h3>
-            {selectedEvent.isPrecepto && (
-              <div style={{ textAlign: "center" }}>
-                <span className="event-type-badge precepto" style={{ fontSize: '0.75rem', padding: '2px 8px' }}>
-                  ✝ Misa de Precepto Obligatorio
-                </span>
+          <div className="gcal-modal-wrapper">
+            {/* Scrollable Event Information Body */}
+            <div className="gcal-scrollable-body" style={{ paddingTop: '0.5rem' }}>
+              {/* 1. Header: Title + Date/Time + Recurrence (Without color badge next to title) */}
+              <div className="gcal-row gcal-title-row">
+                <div className="gcal-content-col" style={{ paddingLeft: '2px' }}>
+                  <h3 className="gcal-event-title">{selectedEvent.title}</h3>
+                  <div className="gcal-event-datetime">
+                    {formatGoogleDate(selectedEvent.date, selectedEvent.time)}
+                  </div>
+                  {formatRecurrenceText(selectedEvent.rrule, selectedEvent) && (
+                    <div className="gcal-event-recurrence">
+                      {formatRecurrenceText(selectedEvent.rrule, selectedEvent)}
+                    </div>
+                  )}
+                </div>
               </div>
-            )}
-            <p className="calendar-modal-desc" style={{ textAlign: 'center', color: 'var(--text-light)', margin: '0', fontSize: '0.85rem', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-              {selectedEvent.description || "Sincroniza o comparte este evento."}
-            </p>
-            
-            <div style={{ fontSize: "0.85rem", color: "var(--text-dark)", textAlign: "center", background: 'var(--bg-secondary)', padding: '0.75rem', borderRadius: '8px' }}>
-              📅 <strong>{formatDate(selectedEvent.date)}</strong>
-              {selectedEvent.time && ` · ${selectedEvent.time}`}
-              <br />
-              <div style={{ marginTop: '0.25rem' }}>📍 {selectedEvent.location || "Parroquia de la Sagrada Familia"}</div>
+
+              {/* 2. Location (if present) with Google Maps link */}
+              {selectedEvent.location && (
+                <div className="gcal-row">
+                  <div className="gcal-icon-col">
+                    <MapPinGCalIcon />
+                  </div>
+                  <div className="gcal-content-col">
+                    <a
+                      href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(selectedEvent.location)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="gcal-location-link"
+                      title="Abrir ubicación en Google Maps"
+                      data-tooltip="Abrir en Google Maps"
+                    >
+                      <span>{selectedEvent.location}</span>
+                      <ExternalLinkIcon />
+                    </a>
+                  </div>
+                </div>
+              )}
+
+              {/* 3. Description (if present) */}
+              {selectedEvent.description && (
+                <div className="gcal-row">
+                  <div className="gcal-icon-col">
+                    <NotesGCalIcon />
+                  </div>
+                  <div className="gcal-content-col">
+                    <div className="gcal-description-text">
+                      {cleanDescription(selectedEvent.description)}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* 4. Calendar / Source with Google Calendar link */}
+              <div className="gcal-row">
+                <div className="gcal-icon-col">
+                  <CalendarGCalIcon />
+                </div>
+                <div className="gcal-content-col">
+                  <a
+                    href={googleSubscribeLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="gcal-calendar-link"
+                    title="Abrir o sincronizar en Google Calendar"
+                    data-tooltip="Abrir calendario oficial en Google Calendar"
+                  >
+                    <div className="gcal-calendar-name">
+                      <span>lapandilladejesusqro.org</span>
+                      <ExternalLinkIcon />
+                    </div>
+                    <div className="gcal-calendar-sub">La Pandilla de Jesús · Querétaro</div>
+                  </a>
+                </div>
+              </div>
             </div>
 
-            {/* Smaller, completely compact grid of 4 buttons */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', gap: '8px' }}>
-              <a
-                href={generateGoogleCalendarUrl(selectedEvent)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="calendar-btn calendar-btn-google"
-                onClick={() => setSelectedEvent(null)}
-                title="Google Calendar"
-                style={{ flex: 1, aspectRatio: '1', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: '5px', fontSize: '0.65rem', borderRadius: '8px' }}
-              >
-                <div style={{ marginBottom: '4px' }}><GoogleIcon /></div>
-                <span>Google</span>
-              </a>
-              <a
-                href={generateOutlookWebUrl(selectedEvent)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="calendar-btn calendar-btn-outlook"
-                onClick={() => setSelectedEvent(null)}
-                title="Outlook"
-                style={{ flex: 1, aspectRatio: '1', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: '5px', fontSize: '0.65rem', borderRadius: '8px' }}
-              >
-                <div style={{ marginBottom: '4px' }}><OutlookIcon /></div>
-                <span>Outlook</span>
-              </a>
-              <a
-                href={generateYahooCalendarUrl(selectedEvent)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="calendar-btn calendar-btn-yahoo"
-                onClick={() => setSelectedEvent(null)}
-                title="Yahoo"
-                style={{ flex: 1, aspectRatio: '1', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: '5px', fontSize: '0.65rem', borderRadius: '8px' }}
-              >
-                <div style={{ marginBottom: '4px' }}><YahooIcon /></div>
-                <span>Yahoo</span>
-              </a>
+            {/* 5. Pinned Bottom Sync / Export Actions */}
+            <div className="gcal-actions-section gcal-actions-pinned">
+              <div className="gcal-actions-label">Sincronizar y Compartir</div>
+              <div className="gcal-actions-grid">
+                <a
+                  href={generateGoogleCalendarUrl(selectedEvent)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="gcal-action-btn"
+                  onClick={() => setSelectedEvent(null)}
+                  title="Google Calendar"
+                >
+                  <GoogleIcon />
+                  <span>Google</span>
+                </a>
+                <a
+                  href={generateOutlookWebUrl(selectedEvent)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="gcal-action-btn"
+                  onClick={() => setSelectedEvent(null)}
+                  title="Outlook"
+                >
+                  <OutlookIcon />
+                  <span>Outlook</span>
+                </a>
+                <a
+                  href={generateYahooCalendarUrl(selectedEvent)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="gcal-action-btn"
+                  onClick={() => setSelectedEvent(null)}
+                  title="Yahoo"
+                >
+                  <YahooIcon />
+                  <span>Yahoo</span>
+                </a>
+                <button
+                  onClick={() => { downloadICSFile(selectedEvent); setSelectedEvent(null); }}
+                  className="gcal-action-btn"
+                  title="Apple / iCal"
+                >
+                  <AppleIcon />
+                  <span>Apple</span>
+                </button>
+              </div>
+
               <button
-                onClick={() => { downloadICSFile(selectedEvent); setSelectedEvent(null); }}
-                className="calendar-btn calendar-btn-ical"
-                title="Apple / iCal"
-                style={{ flex: 1, aspectRatio: '1', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: '5px', fontSize: '0.65rem', borderRadius: '8px' }}
+                onClick={() => handleCopyEventLink(selectedEvent)}
+                className={`gcal-share-btn ${copiedEventId === selectedEvent.id ? 'copied' : ''}`}
               >
-                <div style={{ marginBottom: '4px' }}><AppleIcon /></div>
-                <span>Apple</span>
+                {copiedEventId === selectedEvent.id ? <CopyIcon /> : <ShareIcon />}
+                <span>{copiedEventId === selectedEvent.id ? "¡Enlace Copiado al Portapapeles!" : "Copiar Enlace Directo"}</span>
               </button>
             </div>
-            
-            <button
-              onClick={() => handleCopyEventLink(selectedEvent)}
-              className="calendar-btn calendar-btn-share"
-              style={{ 
-                width: '100%', 
-                padding: '8px', 
-                fontSize: '0.9rem', 
-                fontWeight: 'bold', 
-                justifyContent: 'center', 
-                borderRadius: '8px',
-                background: copiedEventId === selectedEvent.id ? "#20ba5a" : "",
-                color: copiedEventId === selectedEvent.id ? "#fff" : "",
-                transition: "all 0.3s"
-              }}
-            >
-              {copiedEventId === selectedEvent.id ? <CopyIcon /> : <ShareIcon />} 
-              {copiedEventId === selectedEvent.id ? "¡Enlace Copiado!" : "Compartir Evento"}
-            </button>
           </div>
         )}
       </GlobalModal>
@@ -778,48 +956,49 @@ export default function Calendario() {
       <GlobalModal
         isOpen={showSubscribeModal}
         onClose={() => setShowSubscribeModal(false)}
-        style={{ maxWidth: '420px', height: 'auto', maxHeight: '90dvh', padding: '1.2rem', margin: 'auto' }}
       >
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
-          <h3 className="calendar-modal-title" style={{ textAlign: 'center', fontSize: '1.25rem', margin: '0' }}>Suscribirse al Calendario</h3>
-          <p className="calendar-modal-desc" style={{ textAlign: 'center', color: 'var(--text-light)', margin: '0', fontSize: '0.85rem' }}>
-            Sincroniza <strong>todos los eventos</strong> de La Pandilla de Jesús en tu dispositivo. Se actualizará automáticamente.
-          </p>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            <a
-              href={googleSubscribeLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="calendar-btn calendar-btn-google"
-              onClick={() => setShowSubscribeModal(false)}
-              style={{ display: 'flex', justifyContent: 'center', padding: '8px', fontSize: '0.9rem', borderRadius: '8px' }}
-            >
-              <GoogleIcon /> Google Calendar (Web)
-            </a>
-            <a
-              href={appleOutlookSubscribeLink}
-              className="calendar-btn calendar-btn-ical"
-              onClick={() => setShowSubscribeModal(false)}
-              style={{ display: 'flex', justifyContent: 'center', padding: '8px', fontSize: '0.9rem', borderRadius: '8px' }}
-            >
-              <AppleIcon /> Apple Calendar / Outlook
-            </a>
-            <button
-              onClick={handleCopyLink}
-              className="calendar-btn calendar-btn-outlook"
-              style={{
-                background: copiedLink ? "#20ba5a" : "",
-                color: copiedLink ? "#fff" : "",
-                transition: "all 0.3s",
-                display: 'flex',
-                justifyContent: 'center',
-                padding: '8px',
-                fontSize: '0.9rem',
-                borderRadius: '8px'
-              }}
-            >
-              <CopyIcon /> {copiedLink ? "¡Enlace Copiado!" : "Copiar Enlace iCal"}
-            </button>
+        <div className="recursos-modal-body" style={{ marginTop: 0, paddingRight: 0 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', paddingTop: '0.5rem' }}>
+            <h3 className="calendar-modal-title" style={{ textAlign: 'left', fontSize: '1.35rem', margin: '0' }}>Suscribirse al Calendario</h3>
+            <p className="calendar-modal-desc" style={{ textAlign: 'left', color: 'var(--text-light)', margin: '0', fontSize: '0.9rem', padding: 0 }}>
+              Sincroniza <strong>todos los eventos</strong> de La Pandilla de Jesús en tu dispositivo. Se actualizará automáticamente en tiempo real.
+            </p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              <a
+                href={googleSubscribeLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="calendar-btn calendar-btn-google"
+                onClick={() => setShowSubscribeModal(false)}
+                style={{ display: 'flex', justifyContent: 'center', padding: '10px', fontSize: '0.95rem', borderRadius: '10px' }}
+              >
+                <GoogleIcon /> Google Calendar (Web)
+              </a>
+              <a
+                href={appleOutlookSubscribeLink}
+                className="calendar-btn calendar-btn-ical"
+                onClick={() => setShowSubscribeModal(false)}
+                style={{ display: 'flex', justifyContent: 'center', padding: '10px', fontSize: '0.95rem', borderRadius: '10px' }}
+              >
+                <AppleIcon /> Apple Calendar / Outlook
+              </a>
+              <button
+                onClick={handleCopyLink}
+                className="calendar-btn calendar-btn-outlook"
+                style={{
+                  background: copiedLink ? "#20ba5a" : "",
+                  color: copiedLink ? "#fff" : "",
+                  transition: "all 0.3s",
+                  display: 'flex',
+                  justifyContent: 'center',
+                  padding: '10px',
+                  fontSize: '0.95rem',
+                  borderRadius: '10px'
+                }}
+              >
+                <CopyIcon /> {copiedLink ? "¡Enlace Copiado!" : "Copiar Enlace iCal"}
+              </button>
+            </div>
           </div>
         </div>
       </GlobalModal>

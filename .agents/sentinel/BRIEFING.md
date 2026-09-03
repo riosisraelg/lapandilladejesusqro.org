@@ -1,24 +1,23 @@
-# BRIEFING — 2026-08-27T07:16:00Z
+# BRIEFING — 2026-08-28T21:50:00-06:00
 
 ## Mission
-Coordinate and monitor project execution for Deck system updates, food prayers, Rosary UI overhaul, event previews, Mass scraper, and calendar Misas de Precepto.
+Sentinel monitoring and post-victory audit verification for Mass Readings scraper upgrade and canonical UI integration.
 
 ## 🔒 My Identity
 - Archetype: sentinel
 - Working directory: /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/sentinel
-- Orchestrator: 3fa99b3d-313c-40f3-a691-86719a1f42b4 (Gen 2)
-- Victory Auditor: 7caedf75-d331-4da3-b7f4-debeaad75074
+- Orchestrator: fee9f551-c734-45ee-b325-91aa89ba507e
+- Victory Auditor: d6733f86-1f2a-42c3-ad28-ba68f51afeca
 
 ## 🔒 Key Constraints
 - No technical decisions — relay only
 - Victory Audit is MANDATORY before reporting completion
-- Must route to teamwork_preview_orchestrator (General path) per Routing Decision Table
-- Autonomous execution requested by user (R10)
+- Must enforce engineering standards (ISO 42010 architecture, ISO 29148 SRS, ISO 12207 task execution plan)
 
 ## User Context
-- **Last user request**: Full application update (Decks, Food Prayers, Rosary UI, Event OG image previews, Mass guide & daily scraper, Misas de Precepto calendar integration, autonomous git versioning & push).
+- **Last user request**: Upgrade Mass Readings scraper for complete text, integrate into Mass Guide UI in canonical order, configure direct access and auto-fetch.
 - **Pending clarifications**: none
-- **Delivered results**: Complete implementation and deployment of R1 through R10, independently audited and verified with VICTORY CONFIRMED.
+- **Delivered results**: Complete upgrade of scraper API, dynamic canonical injection in Mass Guide modal, direct launcher access, 217/217 E2E tests passing, Next.js clean production build, and confirmed victory audit.
 
 ## Project Status
 - **Phase**: complete
@@ -29,7 +28,9 @@ Coordinate and monitor project execution for Deck system updates, food prayers, 
 - **Retry count**: 0
 
 ## Artifact Index
-- /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/ORIGINAL_REQUEST.md — Verbatim user request
-- /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/orchestrator_1/handoff.md — Gen 1 Orchestrator Handoff
-- /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/victory_auditor_1/handoff.md — Victory Auditor Handoff Report
-- /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/sentinel/handoff.md — Sentinel Handoff Report
+- /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/ORIGINAL_REQUEST.md — Authoritative record of user request
+- /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/docs/architecture.md — ISO/IEC/IEEE 42010 Architecture
+- /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/docs/srs.md — ISO/IEC/IEEE 29148 SRS
+- /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/docs/tasks.md — ISO/IEC/IEEE 12207 Tasks
+- /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/victory_auditor_1/handoff.md — Victory Auditor Handoff
+- /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/sentinel/handoff.md — Sentinel Final Handoff

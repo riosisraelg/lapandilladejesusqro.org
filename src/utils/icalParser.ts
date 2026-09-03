@@ -233,6 +233,47 @@ const expandRecurringEvent = (baseEvent: any): ParsedEvent[] => {
 };
 
 /**
+ * Cleans and converts HTML or escaped formatting inside iCal DESCRIPTION into clean, readable text
+ */
+export const cleanDescription = (rawDesc: string): string => {
+  if (!rawDesc) return "";
+
+  let text = rawDesc;
+
+  // Convert HTML breaks and block tags to newlines
+  text = text
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/<\/p>/gi, "\n\n")
+    .replace(/<\/li>/gi, "\n")
+    .replace(/<li>/gi, "• ")
+    .replace(/<\/(ul|ol|div|h[1-6])>/gi, "\n")
+    // Convert links <a href="url">label</a> to label (if label!=url) or url
+    .replace(/<a\s+[^>]*href=["']([^"']*)["'][^>]*>(.*?)<\/a>/gi, (_match, url, label) => {
+      const cleanLabel = label.replace(/<[^>]*>/g, '').trim();
+      if (!cleanLabel || cleanLabel === url) return url;
+      return `${cleanLabel} (${url})`;
+    })
+    // Strip all remaining HTML tags
+    .replace(/<[^>]*>/g, '')
+    // Decode HTML entities
+    .replace(/&nbsp;/gi, ' ')
+    .replace(/&amp;/gi, '&')
+    .replace(/&lt;/gi, '<')
+    .replace(/&gt;/gi, '>')
+    .replace(/&quot;/gi, '"')
+    .replace(/&#39;/gi, "'")
+    .replace(/&laquo;/gi, '«')
+    .replace(/&raquo;/gi, '»')
+    .replace(/&mdash;/gi, '—')
+    .replace(/&ndash;/gi, '–');
+
+  // Normalize excessive newlines (more than 2 consecutive newlines)
+  text = text.replace(/\n{3,}/g, '\n\n').trim();
+
+  return text;
+};
+
+/**
  * Parses raw iCal (.ics) text format into a clean array of structured ParsedEvent items
  */
 export function parseICS(icsText: string): ParsedEvent[] {
@@ -312,7 +353,7 @@ export function parseICS(icsText: string): ParsedEvent[] {
         if (key === "SUMMARY") {
           currentEvent.title = value === "Busy" ? "Evento Programado" : value;
         } else if (key === "DESCRIPTION") {
-          currentEvent.description = value;
+          currentEvent.description = cleanDescription(value);
         } else if (key === "LOCATION") {
           currentEvent.location = value;
         } else if (key === "DTSTART") {

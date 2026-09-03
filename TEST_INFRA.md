@@ -1,39 +1,33 @@
-# E2E Test Infra: lapandilladejesusqro.org
+# E2E Test Infra: Mass Readings Scraper & Canonical Mass Guide Integration
 
 ## Test Philosophy
-- **Opaque-box, requirement-driven**: Derived directly from `ORIGINAL_REQUEST.md` and user-facing specifications (R1–R10).
-- **Methodology**: Category-Partition + Boundary Value Analysis + Pairwise Combinations + Real-World Application Scenarios + Automated Integration Harness.
+- Zero-dependency Node.js ESM test suite in `scripts/test-e2e.mjs` executed via `npm test`.
+- Opaque-box, requirement-driven testing mapped to ISO 29148 requirements (R1, R2, R3).
+- Fast execution (<100ms) with native assertions (`node:assert/strict`).
 
-## Feature Inventory & Test Coverage Goals
-| # | Feature | Requirement | Tier 1 (Min 5) | Tier 2 (Min 5) | Tier 3 (Pairwise) | Tier 4 (Real-World) |
-|---|---------|-------------|:--------------:|:--------------:|:-----------------:|:-------------------:|
-| 1 | Food Prayers Transcription (R1) | ORIGINAL_REQUEST §R1 | 5 | 5 | ✓ | ✓ |
-| 2 | Auto-Day Selection & Decks (R2) | ORIGINAL_REQUEST §R2 | 5 | 5 | ✓ | ✓ |
-| 3 | Infinite Swipe Animations (R3) | ORIGINAL_REQUEST §R3 | 5 | 5 | ✓ | ✓ |
-| 4 | Dynamic Color Tones (R4) | ORIGINAL_REQUEST §R4 | 5 | 5 | ✓ | ✓ |
-| 5 | Long-Press Tooltips (R5) | ORIGINAL_REQUEST §R5 | 5 | 5 | ✓ | ✓ |
-| 6 | Event OG Images & Modals (R6) | ORIGINAL_REQUEST §R6 | 5 | 5 | ✓ | ✓ |
-| 7 | Rosary UI & Counter (R7) | ORIGINAL_REQUEST §R7 | 5 | 5 | ✓ | ✓ |
-| 8 | Mass Guide & Liturgy Scraper (R8) | ORIGINAL_REQUEST §R8 | 5 | 5 | ✓ | ✓ |
-| 9 | Misas de Precepto & Calendar (R9) | ORIGINAL_REQUEST §R9 | 5 | 5 | ✓ | ✓ |
-| 10 | Autonomous Commits & Tags (R10) | ORIGINAL_REQUEST §R10 | 5 | 5 | ✓ | ✓ |
+## Feature Inventory & Test Mapping
+| # | Feature | Requirement | Tier 1 (Unit) | Tier 2 (Boundary) | Tier 3 (Pairwise) | Tier 4 (Scenario) | Tier 5 (Adversarial) |
+|---|---|---|:---:|:---:|:---:|:---:|:---:|
+| 1 | Full Liturgical Parser | R1 | 8 | 4 | 2 | 2 | 2 |
+| 2 | Psalm Response & Multi-Stanza | R1 | 4 | 3 | 2 | 1 | 2 |
+| 3 | Sunday 2nd Reading Conditional | R1, R2 | 3 | 2 | 2 | 2 | 1 |
+| 4 | Alleluia & Seasonal Acclamation | R1, R2 | 3 | 2 | 1 | 1 | 1 |
+| 5 | Entity Decoding & CDATA | R1 | 3 | 3 | 1 | 1 | 2 |
+| 6 | Offline / 500 Fallback | R1 | 2 | 2 | 1 | 2 | 1 |
+| 7 | Accordion Removal | R2 | 2 | 1 | 1 | 1 | 1 |
+| 8 | Canonical Sequential Injection | R2 | 6 | 3 | 3 | 2 | 1 |
+| 9 | Direct Access & Auto-Fetch | R3 | 4 | 2 | 3 | 2 | 1 |
+| 10 | Bilingual Support & UI State | R2, R3 | 3 | 2 | 2 | 1 | 1 |
 
 ## Test Architecture
-- Test runner: Automated Node/TypeScript test suites executable via `node --test` or custom runner script (`scripts/test-e2e.mjs` / `npm run test`).
-- Assertions verify:
-  1. Complete 7-day Spanish meal prayer text presence, versicles, and responses.
-  2. Auto-day selection date mapping (Sunday=0 to Saturday=6).
-  3. Dynamic HSL tone generation logic and circular modulo deck indexing.
-  4. Global long-press duration and haptic feedback invocation.
-  5. Dynamic OG image generation endpoint HTTP 200 response and valid PNG headers.
-  6. 5-element mystery sequence structure and decade counter increment/vibrate logic.
-  7. Liturgy scraper API XML parsing, Priest dialogues, and Mexican hymns.
-  8. Misas de Precepto Computus algorithm and multi-calendar export formatting (Google, Apple, Outlook, Yahoo).
-  9. Clean Next.js 15 build execution (`npm run build`).
+- **Runner**: `scripts/test-e2e.mjs`
+- **Invocation**: `npm test` or `node scripts/test-e2e.mjs`
+- **Output Format**: Concise grouped CLI reporting with timing, suite breakdown, and strict assertion traces.
 
-## Tier Breakdown & Coverage Metrics
-- **Tier 1 (Feature Coverage)**: ≥ 50 test cases (5 per feature × 10 features).
-- **Tier 2 (Boundary & Corner Cases)**: ≥ 50 test cases (Edge days, leap years, offline scraper fallback, extreme drag thresholds).
-- **Tier 3 (Cross-Feature Combinations)**: ≥ 15 pairwise interaction tests (Deck navigation + Dynamic color, Rosary deck + Top counter, Misas de Precepto + OG preview + Add-to-calendar).
-- **Tier 4 (Real-World Application Scenarios)**: ≥ 8 comprehensive user workflow test scenarios.
-- **Tier 5 (Adversarial Coverage Hardening)**: White-box adversarial testing verifying edge error boundaries and regression guards.
+## Coverage Thresholds
+- **Tier 1 (Feature Coverage)**: ≥75 tests (100% pass)
+- **Tier 2 (Boundary & Corner Cases)**: ≥65 tests (100% pass)
+- **Tier 3 (Cross-Feature Combinations)**: ≥23 tests (100% pass)
+- **Tier 4 (Real-World Application Scenarios)**: ≥13 tests (100% pass)
+- **Tier 5 (Adversarial & Hardening)**: ≥13 tests (100% pass)
+- **Total Suite Minimum**: ≥189 tests with 100% pass rate and clean build (`npm run build`).

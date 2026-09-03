@@ -1,42 +1,25 @@
-# Dispatch Log
+# DISPATCH LOG
 
-## 2026-08-27T05:52:54Z
-You are the Project Orchestrator for the task defined in ORIGINAL_REQUEST.md.
+## 2026-08-28T18:50:14-06:00
+You are the Project Orchestrator for this workspace.
 
-## Working Directory
-Your metadata working directory is: `/Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/orchestrator_1`
-Project root workspace is: `/Users/riosisraelg/Desktop/1/lapandilladejesusqro.org`
+Your identity and configuration:
+- Working Directory: /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/orchestrator_1/
+- Original User Request: /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/ORIGINAL_REQUEST.md
+- Workspace Root: /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org
 
-## Authoritative User Request
-Read the complete, authoritative user request from:
-`/Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/ORIGINAL_REQUEST.md`
+Task Overview:
+Upgrade the Mass Readings web scraper to accurately fetch the complete text of all daily readings, and dynamically integrate them into their exact canonical order within the Mass Guide UI. Configure the main Mass button to open directly to this guide.
 
-## Verification Resources
-The 18 source images for the food prayers are located at:
-`/Users/riosisraelg/.gemini/antigravity-cli/brain/d4899b3d-c841-45a4-aff4-f09be1bad826`
+Key Requirements:
+1. R1: Overhaul Daily Readings Scraper API (`src/app/api/mass-readings/route.ts` or similar) to accurately scrape and return the FULL text of the daily liturgy (full citations, First Reading, entire Responsorial Psalm with recurring response phrase and all verses, Second Reading if applicable, Alleluia, and Gospel).
+2. R2: Canonical UI Integration in `LandingClient.tsx` removing old accordion, dynamically injecting readings sequentially into "Liturgia de la Palabra" (Primera Lectura → Salmo Responsorial → Segunda Lectura → Aleluya → Evangelio).
+3. R3: Direct Access & Auto-fetch: Configure main Mass button to open modal directly to the start of the mass and auto-fetch readings without manual button press.
 
-## Responsibilities
-1. Initialize your `BRIEFING.md`, `plan.md`, and `progress.md` in your working directory.
-2. Follow all standard software engineering protocols, architectural design, requirements specifications, and task plans before coding.
-3. Coordinate specialists/subagents to implement all requirements (R1 through R10) including:
-   - Food prayers transcription (Spanish) and auto-day selection
-   - Infinite swipe navigation & dynamic brand color tones for decks
-   - Global long-press tooltips
-   - Event OG image preview generation and shareable modals
-   - Rosary UI overhaul (minimalist, 5 mystery elements, un-truncated full text, collapsible repeated prayers, top-level vibrating counter)
-   - Mass guide standalone button, missing dialogues/Mexican sung songs, daily mass scraper
-   - Misas de Precepto calendar integration with add-to-calendar feature
-   - Granular git commits with semantic version tags, and final remote push (per R10)
-4. Continuously update `progress.md` in your working directory so the Sentinel can monitor progress and liveness.
-5. When complete, verify all acceptance criteria thoroughly and send a completion message back to the Sentinel with a full summary.
-
-## 2026-08-27T07:00:30Z
-You are the Project Orchestrator (Generation 2 Successor) for lapandilladejesusqro.org.
-Resume work at /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/orchestrator_1.
-Complete the remaining milestones:
-- Milestone M3 (R5: Global Long-Press Tooltips): `useLongPress.ts` hook (450ms, `navigator.vibrate([20])`, clean tooltip popovers across all interactive buttons).
-- Milestone M4 (R6: Event Dynamic OG Images & Shareable Modal URLs): `/api/og/route.tsx` (1200x630px Catholic branding) and `/calendario?evento=[id]` deep link auto-open.
-- Milestone M7 (R9: Misas de Precepto Calendar Integration & Multi-Export): `src/data/preceptoData.ts` (Canon 1246 & CEM, Computus algorithm) and `src/utils/calendarExport.ts` (.ics, Google, Apple, Outlook Web, Outlook Desktop, Yahoo) integrated into `CalendarioClient.tsx`.
-- Milestone M8: Full 5-tier E2E test verification (`npm test` 100% pass) and Tier 5 adversarial stress testing.
-- Milestone M9 (R10): Granular git commits with semantic version tags for each milestone and final remote push to production.
-Report final completion to Sentinel (parent ID: 932b2723-8010-42cc-af45-6c6775f0bc33).
+Engineering Standards:
+Comply with 3-stage engineering standards:
+- Stage 1: System Architecture (`docs/architecture.md`) [ISO/IEC/IEEE 42010]
+- Stage 2: Software Requirements Specification (`docs/srs.md`) [ISO/IEC/IEEE 29148]
+- Stage 3: Execution Plan & Atomic Task Matrix (`docs/tasks.md`) [ISO/IEC/IEEE 12207]
+Maintain your `BRIEFING.md` and `progress.md` in your working directory.
+Coordinate subagents (explorers, implementers, reviewers, etc.) to deliver, verify with automated/manual tests, and report completion when verified.

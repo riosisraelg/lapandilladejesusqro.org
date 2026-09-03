@@ -2,8 +2,8 @@
 
 **System Name**: La Pandilla de Jesús — Querétaro Web Platform  
 **Standard**: ISO/IEC/IEEE 29148:2018 (Systems and software engineering — Life cycle processes — Requirements engineering)  
-**Document Version**: 1.0.0  
-**Date**: 2026-08-27  
+**Document Version**: 1.1.0  
+**Date**: 2026-08-28  
 **Status**: Approved & Authoritative  
 
 ---
@@ -11,21 +11,23 @@
 ## 1. Introduction
 
 ### 1.1 Purpose
-This Software Requirements Specification (SRS) establishes the complete, rigorous, and verifiable requirements for the **La Pandilla de Jesús** web application (`lapandilladejesusqro.org`). It serves as the single source of truth for engineering development, automated opaque-box testing, quality assurance verification, and stakeholder acceptance.
+This Software Requirements Specification (SRS) establishes the complete, rigorous, and verifiable functional and non-functional requirements for the **La Pandilla de Jesús** web application (`lapandilladejesusqro.org`). It provides the single source of truth for engineering development, autonomous subagent collaboration, automated multi-tier opaque-box testing, quality assurance verification, and stakeholder acceptance.
 
 ### 1.2 Scope of the System
 The platform is a progressive web application serving the Catholic youth community and parish of La Sagrada Familia in Querétaro, México. The system encompasses:
 1. Daily Catholic Food Prayers deck (Domingo a Sábado, Antes y Después de las comidas) transcribed from the Roman *Bendicional*.
 2. Interactive 3D deck carousel with auto-day selection, infinite continuous swiping, and dynamic brand color tone generation.
 3. Complete Rosary overhaul featuring a 5-element mystery sequence, untruncated text, collapsible nested repeated prayers, dedicated sub-decks, and top-bar vibrating bead counter.
-4. Standalone Mass Guide ("Guía de Misa") with complete priest/people dialogues, traditional Mexican sung liturgical responses, and an edge scraper fetching daily Mass readings.
+4. **Mass Guide & Liturgical Readings Scraper Subsystem (RF-08)**: Complete Roman Missal ordinary dialogues, priest private Communion prayers, Mexican sung liturgical hymns, automated edge scraper for daily Mass readings (`/api/mass-readings`), sequential canonical injection into the Liturgy of the Word (GIRM sequence), kinetic interactive streaming mode (`AppleMusicLyrics`), and direct access launchers with client mount pre-fetching.
 5. Annual Jesus calendar integrating *Misas de Precepto* (Holy Days of Obligation per Canon 1246 and Mexican Episcopal Conference CEM), dynamic 1200x630px Open Graph social preview generation, deep-linked event modals, and universal multi-platform calendar export (.ics, Google, Apple, Outlook Web, Outlook Desktop, Yahoo).
 6. Global usability enhancements including standardized 450ms long-press tooltips with haptic feedback.
 
 ### 1.3 Definitions, Acronyms and Abbreviations
 - **CEM**: *Conferencia del Episcopado Mexicano* (Mexican Episcopal Conference).
-- **Canon 1246**: The universal canon in the Code of Canon Law establishing Sundays and feast days of precept (Holy Days of Obligation).
+- **Canon 1246**: Universal canon in the Code of Canon Law establishing Sundays and feast days of precept (Holy Days of Obligation).
 - **Computus**: Mathematical algorithm calculating the astronomical date of Easter Sunday and dependent movable liturgical feasts.
+- **GIRM / IGMR**: *General Instruction of the Roman Missal* / *Instrucción General del Misal Romano*.
+- **Misal Romano 3ª Edición**: Official liturgical book for the celebration of Mass according to the Roman Rite.
 - **Deck**: A card-stack user interface element rendered in 3D perspective with physical gesture navigation.
 - **OG**: Open Graph protocol for generating dynamic social media link preview images.
 - **RRULE**: Recurrence Rule format conforming to RFC 5545 (iCalendar specification).
@@ -43,8 +45,9 @@ The application operates as a high-performance Next.js 15 App Router web system 
 
 ### 2.2 User Persona Characteristics
 1. **Youth Ministry Member / Teen**: Accesses the site via mobile phone during meal times, retreats, and prayer sessions. Demands zero load lag, haptic feedback, and fluid swipe gestures.
-2. **Parishioner / Parent**: Attends daily or Sunday Mass. Utilizes the Mass Guide for liturgical responses and checks the calendar for Misas de Precepto.
-3. **Catechist / Group Leader**: Guides Rosary decades and community prayers. Requires doctrinal exactness, complete scripture readings, meditation texts, and reflection questions.
+2. **Parishioner / Parent / Assembly**: Attends daily or Sunday Mass. Utilizes the Mass Guide to follow liturgical responses and read the Word of God in uninterrupted canonical sequence without clunky dropdown toggles.
+3. **Catechist / Liturgical Minister / Lector**: Leads community prayer and reads Mass readings. Demands liturgical exactness, complete antiphon responses with verses, full citations, and doctrinal fidelity.
+4. **Priest / Deacon (Celebrant)**: Needs complete dialogues, priest private prayers during Communion, and seasonal Gospel acclamations.
 
 ### 2.3 Design and Implementation Constraints
 - **Zero Heavy UI Dependencies**: Styling must be authored in monolithic Vanilla CSS (`src/app/global.css`) using CSS Custom Properties without Tailwind, SCSS, or CSS-in-JS runtime overhead.
@@ -66,29 +69,10 @@ The application operates as a high-performance Next.js 15 App Router web system 
      - **Después de las comidas**: Thanksgiving "Oremos" Prayer.
   3. The introductory liturgical rubric from *Bendicional* nn. 883-884 regarding charity toward the poor shall be included.
   4. Language shall default to Spanish.
-- **Input Schema**:
-  ```typescript
-  export type DayOfWeek = 'domingo' | 'lunes' | 'martes' | 'miercoles' | 'jueves' | 'viernes' | 'sabado';
-  
-  export interface MealPrayer {
-    verse?: string;
-    response?: string;
-    prayer: string;
-  }
-  
-  export interface FoodPrayerDay {
-    id: string;
-    day: DayOfWeek;
-    dayName: string;
-    before: MealPrayer;
-    after?: MealPrayer;
-    intro?: { title: string; citation: string; text: string };
-  }
-  ```
 - **Acceptance Criteria**:
   - **AC-RF01-1**: Given the food prayers deck is loaded, all 7 days (Domingo to Sábado) are present with exact verbatim text matching the *Bendicional* transcription.
   - **AC-RF01-2**: Given any day of the week, the "Antes de las comidas" section contains both the versicle, response, and prayer.
-  - **AC-RF01-3**: Given Sunday through Saturday, the "Después de las comidas" thanksgiving prayer is rendered with complete liturgical doxologies ("Por Jesucristo nuestro Señor. Amén" / "Tú que vives y reinas...").
+  - **AC-RF01-3**: Given Sunday through Saturday, the "Después de las comidas" thanksgiving prayer is rendered with complete liturgical doxologies.
 
 ---
 
@@ -98,124 +82,180 @@ The application operates as a high-performance Next.js 15 App Router web system 
 - **Description**: The food deck shall automatically detect the user's current day of the week and open directly to that day's meal prayer, while allowing manual swipe navigation to any other day.
 - **Functional Specification**:
   1. Upon opening the Food Prayers deck, the system shall read `new Date().getDay()` (0=Domingo, 1=Lunes, ..., 6=Sábado).
-  2. The initial active card index shall automatically match the current day of the week.
-  3. The layout shall maximize screen space for prayer text, eliminating redundant margins and matching the minimalist Rosary viewport style.
+  2. The deck shall initialize with the active card index corresponding to today's day of the week.
+  3. The viewport shall feature a clean, minimalist card aesthetic matching the Rosary deck.
 - **Acceptance Criteria**:
-  - **AC-RF02-1**: Given a user accesses the food prayers deck on a Thursday (day index 4), the active card displayed on initial mount is Thursday ("Jueves").
-  - **AC-RF02-2**: Given the active card is initialized to the current day, the user can manually swipe left or right to inspect other days.
+  - **AC-RF02-1**: Given the system clock is Tuesday, opening the food prayers deck initializes with the "Martes" card selected.
+  - **AC-RF02-2**: Manual swipe gestures permit unrestricted navigation to all other days.
 
 ---
 
-### RF-03: Infinite Continuous Swipe Animations (Decks)
+### RF-03: Minimalist Continuous Infinite Swipe Gesture Loop
 - **ID**: `RF-03`
 - **Priority**: High | **Source**: `ORIGINAL_REQUEST.md §R3`
-- **Description**: The deck navigation shall utilize a clean, minimal swipe gesture operating in an infinite circular loop.
-- **Functional Specification**:
-  1. Swiping left past the last card/deck shall loop seamlessly to the first card/deck (`(index + 1) % totalCards`).
-  2. Swiping right past the first card/deck shall loop seamlessly to the last card/deck (`(index - 1 + totalCards) % totalCards`).
-  3. Dragging gestures shall apply live 3D transform tracking (`translate3d(dx, 0, 0) rotate(dx * 0.04deg)`).
-  4. Drag releases exceeding `80px` delta or velocity threshold shall trigger card advancement with spring easing.
+- **Description**: The 3D deck carousel shall implement smooth, continuous infinite circular navigation via circular modulo index calculations.
 - **Acceptance Criteria**:
-  - **AC-RF03-1**: Given the user is on the final card of a deck of size $N$, swiping left transitions smoothly to card index 0.
-  - **AC-RF03-2**: Given the user is on card index 0, swiping right transitions smoothly to card index $N - 1$.
-  - **AC-RF03-3**: Given a drag under 80px, the card springs back to the center position without changing index.
+  - **AC-RF03-1**: Swiping left on the last card loops seamlessly to the first card index.
+  - **AC-RF03-2**: Swiping right on the first card loops seamlessly to the last card index.
 
 ---
 
-### RF-04: Dynamic Color Tone Engine (Decks)
+### RF-04: Dynamic Brand Color Tone Generator
 - **ID**: `RF-04`
 - **Priority**: Medium | **Source**: `ORIGINAL_REQUEST.md §R4`
-- **Description**: The system shall dynamically calculate distinct tones and gradients of the primary brand color in code to visually distinguish decks.
-- **Functional Specification**:
-  1. Base brand color: Warm Catholic Coffee (`#5C3D2E`, HSL: 20°, 33%, 27%).
-  2. For deck index $i$ in a set of size $M$, calculate dynamic card accent styles using HSL formula:
-     $$\text{Hue} = (20 + i \times 12) \pmod{360}$$
-     $$\text{Lightness} = 24\% + ((i \times 7) \pmod{22})\%$$
-     $$\text{Saturation} = 30\% + ((i \times 5) \pmod{15})\%$$
-  3. Compute card gradient background: `linear-gradient(135deg, hsl(H, S%, L%), hsl(H, S - 5%, L - 8%))`.
+- **Description**: The deck component shall dynamically compute brand color tone variations (lightness/chroma) based on card index while maintaining WCAG 2.1 AA text contrast.
 - **Acceptance Criteria**:
-  - **AC-RF04-1**: Given two adjacent decks or cards, their rendered background/border accents have distinctly calculated HSL values.
-  - **AC-RF04-2**: The contrast ratio between dynamically computed backgrounds and white text strictly meets or exceeds 4.5:1.
+  - **AC-RF04-1**: Each card index generates a distinct tone variant within brand guidelines.
+  - **AC-RF04-2**: Contrast ratio between card text and calculated background is $\ge 4.5:1$.
 
 ---
 
-### RF-05: Global Long-Press Tooltip & Haptic System
+### RF-05: Global Long-Press Tooltips with Haptic Feedback
 - **ID**: `RF-05`
-- **Priority**: Medium | **Source**: `ORIGINAL_REQUEST.md §R5`
-- **Description**: Long-pressing any interactive button across the application shall display an informative description tooltip and trigger device haptic feedback.
-- **Functional Specification**:
-  1. All buttons declaring `data-tooltip="Text"` shall be wired to the long-press touch listener.
-  2. Continuous touch hold for $\ge 450\text{ms}$ without scroll movement shall:
-     - Invoke `navigator.vibrate([20])`.
-     - Display the tooltip overlay immediately above/below the target element.
-  3. Desktop devices shall support instant hover with a graceful 1.8s delay to avoid visual clutter during rapid pointer movement.
+- **Priority**: High | **Source**: `ORIGINAL_REQUEST.md §R5`
+- **Description**: All interactive action and navigation buttons shall declare descriptive tooltips accessible via a 450ms long-press touch gesture with haptic vibration.
 - **Acceptance Criteria**:
-  - **AC-RF05-1**: Given a touch press held for 450ms on any interactive button, haptic vibration is dispatched and the tooltip element is made visible.
-  - **AC-RF05-2**: Given a touch press that moves $> 10\text{px}$ (scrolling), the long-press timer is cancelled and no tooltip is shown.
+  - **AC-RF05-1**: Holding touch for 450ms triggers `navigator.vibrate` and displays the tooltip popover.
+  - **AC-RF05-2**: Scrolling or lifting touch before 450ms cancels tooltip display.
 
 ---
 
-### RF-06: Dynamic Event OG Image Generator & Shareable Deep-Linked Modals
+### RF-06: Event OG Image Generator & Shareable Deep-Linked Modals
 - **ID**: `RF-06`
 - **Priority**: High | **Source**: `ORIGINAL_REQUEST.md §R6`
-- **Description**: The system shall dynamically generate high-resolution Open Graph preview images for calendar events and support unique deep-linked URLs that automatically open the event detail modal.
-- **Functional Specification**:
-  1. Edge Route `/api/og` shall generate a 1200x630px PNG image using `next/og` (`ImageResponse`).
-  2. Input query parameters: `title`, `date`, `time`, `category`, `location`.
-  3. Output: Branded Catholic preview banner featuring gold accents, community logo, category badge, and formatted date.
-  4. Each event shall have a canonical deep-link URL: `/calendario?evento=[id]`.
-  5. Visiting `/calendario?evento=[id]` shall mount the calendar page and automatically display the layered event detail modal.
+- **Description**: The system shall generate dynamic 1200x630px Open Graph banner images via `/api/og` and provide shareable deep-linked URLs that immediately open event modals.
 - **Acceptance Criteria**:
-  - **AC-RF06-1**: Given a `GET /api/og?title=Retiro+Espiritual` request, the server returns HTTP 200 with `Content-Type: image/png` and dimensions 1200x630px.
-  - **AC-RF06-2**: Given a user visits `/calendario?evento=precepto-guadalupe`, the event modal for "Nuestra Señora de Guadalupe" opens immediately on load.
+  - **AC-RF06-1**: Requesting `/api/og?title=...&date=...&category=...` returns a valid 1200x630 PNG image.
+  - **AC-RF06-2**: Visiting `/calendario?evento=[id]` opens the corresponding event modal immediately on page load.
 
 ---
 
 ### RF-07: Rosary UI Overhaul, 5-Element Mystery Sequence & Top-Bar Vibrating Counter
 - **ID**: `RF-07`
 - **Priority**: High | **Source**: `ORIGINAL_REQUEST.md §R7`
-- **Description**: The Rosary user interface shall be overhauled into a minimalist layout matching the site aesthetics, featuring complete 5-element mystery sequences, untruncated text, collapsible repeated prayers, dedicated sub-decks, and a top-bar vibrating bead counter.
-- **Functional Specification**:
-  1. **5-Element Mystery Sequence**: Each mystery card must render in exact sequential order:
-     1. Mystery illustration artwork / icon.
-     2. Biblical citation reference (e.g. *Lucas 1, 26-38*).
-     3. Direct Scripture reading text.
-     4. Doctrinal meditation text.
-     5. Reflection question for personal meditation.
-  2. **Dedicated Decks**:
-     - *Opening Prayers Deck*: Señal de la Cruz, Acto de Contrición, Credo, Padre Nuestro, 3 Ave Marías (Fe, Esperanza, Caridad), Gloria.
-     - *Mysteries Deck*: The 5 decades of the day.
-     - *Concluding & Self-Prayers Deck*: Salve Regina, 3 Ave Marías finales, Letanías Lauretanas, Bajo tu Amparo, Bendición final.
-  3. **Collapsible Nested Repeated Prayers**: In each mystery decade, the repeated prayers (1 Padre Nuestro, 10 Ave Marías, 1 Gloria, Jaculatorias de Fátima) shall be contained within an expandable/collapsible toggleable list.
-  4. **Top-Bar Vibrating Counter**:
-     - Positioned at the top header immediately adjacent to the modal close button ('X').
-     - Displays current count: `0/10` to `10/10`.
-     - Tapping increments count and triggers `navigator.vibrate([25])`. Reaching 10 resets or triggers decade completion vibration `[15, 30, 15]`.
+- **Description**: The Rosary interface shall feature complete 5-element mystery sequences, untruncated text, collapsible repeated prayers, dedicated sub-decks, and a top-bar vibrating bead counter.
 - **Acceptance Criteria**:
-  - **AC-RF07-1**: Every mystery across all 4 Rosary types (Gozosos, Dolorosos, Gloriosos, Luminosos) renders all 5 required elements without text truncation.
-  - **AC-RF07-2**: The decade bead counter is rendered in the top header beside the close button, increments on tap, and invokes `navigator.vibrate`.
-  - **AC-RF07-3**: Repeated prayers inside mystery cards can be collapsed and expanded with a single tap.
+  - **AC-RF07-1**: Every mystery across all 4 Rosary types renders all 5 required elements (Artwork, Citation, Scripture, Meditation, Reflection Question).
+  - **AC-RF07-2**: The decade bead counter is rendered in the top header, increments on tap, and invokes `navigator.vibrate`.
+  - **AC-RF07-3**: Repeated prayers inside mystery cards expand and collapse on tap.
 
 ---
 
-### RF-08: Mass Guide Standalone Module, Complete Liturgy & Daily Scraper
+### RF-08: Mass Guide & Liturgical Readings Scraper Subsystem (Master Requirement)
 - **ID**: `RF-08`
-- **Priority**: High | **Source**: `ORIGINAL_REQUEST.md §R8`
-- **Description**: The Mass Guide shall become a standalone launcher button, expanded with complete Roman Missal dialogues (including priest private Communion prayers), traditional Mexican sung hymns, and an edge scraper fetching daily Mass readings.
+- **Priority**: Critical | **Source**: `ORIGINAL_REQUEST.md §R1, §R2, §R3`
+- **Description**: The Mass Guide shall provide a complete, canonical, and seamless liturgical experience according to the *Misal Romano (3ª Edición Típica)* and *Instrucción General del Misal Romano* (IGMR). The system shall overhaul the daily liturgical readings scraper API, eliminate the detached readings accordion, dynamically inject the readings sequentially into the "Liturgia de la Palabra" ordinary flow and kinetic stream reader, and provide direct one-touch launch with proactive background pre-fetching.
+- **Sub-Requirements**: Decomposed into `RF-08.1`, `RF-08.2`, and `RF-08.3`.
+
+---
+
+#### RF-08.1: Daily Mass Readings Scraper API Engine
+- **ID**: `RF-08.1`
+- **Priority**: Critical | **Source**: `ORIGINAL_REQUEST.md §R1`
+- **Description**: The edge route handler at `src/app/api/mass-readings/route.ts` shall fetch, parse, and structure the complete text of the Catholic daily liturgy.
 - **Functional Specification**:
-  1. The Mass Guide shall be accessible via a prominent standalone button in the navigation/hero, replacing the embedded tab section.
-  2. Missing liturgical dialogues shall be fully added to `massResponses.ts`:
-     - *Liturgia de la Palabra*: Monición, Primera Lectura, Salmo responsorial, Segunda Lectura, Aclamación del Evangelio (Aleluya), Proclamación del Evangelio, Credo Niceno/Apostólico, Oración Universal.
-     - *Priest Private Communion Prayers*: Fracción del Pan (*"El Cuerpo y la Sangre de nuestro Señor Jesucristo..."*), Oración antes de comulgar (*"Señor Jesucristo, Hijo de Dios vivo..."*), Comunión del Sacerdote (*"El Cuerpo de Cristo me guarde..."*), Purificación de los vasos sagrados, y Oración después de la Comunión.
-     - *Mexican Sung Hymns*: Gloria de Mejía, Santo tradicional mexicano, Cordero de Dios.
-  3. **Edge Mass Readings Scraper** (`/api/mass-readings`):
-     - Fetches and parses daily readings from Evangelizo XML feed (`http://feed.evangelizo.org/v2/reader.php?date=YYYYMMDD&lang=SP&type=xml`).
-     - Extracts: Liturgical day, Saint of the day, Primera Lectura, Salmo Responsorial, Segunda Lectura, Santo Evangelio, and Patristic Meditation.
-     - Implements Next.js caching (`revalidate: 86400`) and static offline fallback.
-- **Acceptance Criteria**:
-  - **AC-RF08-1**: Clicking the "Guía de Misa" standalone button opens the full Mass Guide modal.
-  - **AC-RF08-2**: The Communion Rite section displays all priest private prayers and dialogues.
-  - **AC-RF08-3**: The Liturgia de la Palabra section fetches and renders the live daily readings from `/api/mass-readings`.
+  1. **Upstream Feed Query**:
+     - Query `http://feed.evangelizo.org/v2/reader.php?date=${dateParam}&lang=${langParam}&type=xml`.
+     - `dateParam` shall support normalized `YYYYMMDD` and `YYYY-MM-DD` formats; defaults to current date in `America/Mexico_City` timezone.
+     - `langParam` shall default to `SP` (Spanish).
+  2. **Comprehensive Tag & Content Extraction**:
+     - `liturgicalDay`: Full liturgical title from `<litugic_t>` (e.g., *"XXII Domingo del Tiempo Ordinario"*).
+     - `saint`: Daily saint commemoration from `<saint>` (e.g., *"San Agustín de Hipona"*).
+     - `firstReading`: Full citation (`<reading_text1_lt>`), short citation (`<reading_text1_st>`), and full text (`<reading_text1>`).
+     - `psalm`: Full citation (`<reading_text2_lt>`), short citation (`<reading_text2_st>`), antiphon response phrase (`response`), and complete verses formatted with recurring `R.` indicators (`text` / `stanzas`). The extraction shall not truncate verse 1 or confuse it with the antiphon.
+     - `secondReading`: Full citation (`<reading_text3_lt>`), short citation (`<reading_text3_st>`), and full text (`<reading_text3>`). Handled conditionally: populated on Sundays and Solemnities; omitted (`undefined`) on ferial weekdays when `<reading_text3>` is empty.
+     - `alleluia`: Canonical Gospel Acclamation object containing `acclamation` (e.g., `"¡Aleluya, aleluya!"` during Ordinary/Easter time; `"Honor y gloria a ti, Señor Jesús"` during Lent), lectionary verse (`verse`), and citation.
+     - `gospel`: Full citation (`<reading_gospel_lt>`), short citation (`<reading_gospel_st>`), and full proclamation text (`<reading_gospel>`).
+     - `meditation`: Patristic commentary author (`<comment_a>`), title (`<comment_t>`), and body text (`<comment>`).
+  3. **Data Sanitization & CDATA Extraction**:
+     - Safely extract content enclosed in `<![CDATA[ ... ]]>`.
+     - Decode all XML and HTML entities (including accented vowels `&aacute;`, `&eacute;`, `&iacute;`, `&oacute;`, `&uacute;`, `&ntilde;`, `&laquo;`, `&raquo;`, `&#39;`, `&quot;`, `&amp;`).
+     - Strip unwanted HTML markup while preserving paragraph line breaks (`\n\n`).
+  4. **Timeout, Caching & Zero-Downtime Fallback**:
+     - Fetch queries shall enforce `signal: AbortSignal.timeout(6000)` (6 seconds).
+     - Success responses shall return HTTP status 200 with headers `Cache-Control: public, s-maxage=86400, stale-while-revalidate=43200` and Next.js revalidation (`revalidate: 86400`).
+     - On upstream failure, network timeout, malformed XML, or out-of-range dates, the endpoint shall catch errors and return the bundled canonical `FALLBACK_READINGS` with HTTP status 200, `isFallback: true`, and `Cache-Control: public, s-maxage=300, stale-while-revalidate=3600`.
+
+---
+
+#### RF-08.2: Canonical Sequential UI Injection & Accordion Removal
+- **ID**: `RF-08.2`
+- **Priority**: Critical | **Source**: `ORIGINAL_REQUEST.md §R2`
+- **Description**: The Mass Guide UI in `src/app/LandingClient.tsx` and `src/app/massResponses.ts` shall eliminate the detached readings accordion and dynamically inject the live readings directly into the canonical flow of Section 2 ("Liturgia de la Palabra") according to the General Instruction of the Roman Missal (GIRM).
+- **Functional Specification**:
+  1. **Accordion Removal**:
+     - The legacy collapsible accordion button `showLecturasInResponses` and its associated dropdown container in Tab 2 (`activeGuiaTab === 'respuestas'`) shall be completely removed from the DOM hierarchy.
+  2. **Canonical Sequential Injection Flow**:
+     - Inside Section 2 ("Liturgia de la Palabra"), the static placeholder lines shall be dynamically replaced with the live structured readings in exact liturgical sequence:
+       1. **Primera Lectura** (Sentados):
+          - Rubric: *"Sentados"*
+          - Title: *"Primera Lectura — [dailyReadings.firstReading.citation]"*
+          - Speaker: *"Lector"*
+          - Text: Full reading body paragraphs.
+          - Proclamation Dialogue: Lector: *"Palabra de Dios."* | Pueblo: *"Te alabamos, Señor."*
+       2. **Salmo Responsorial** (Sentados):
+          - Rubric: *"Sentados"*
+          - Title: *"Salmo Responsorial — [dailyReadings.psalm.citation]"*
+          - Antiphon Box: Display highlighted response `"R. [dailyReadings.psalm.response]"`.
+          - Stanzas: Complete psalm stanzas rendered with repeated assembly response `"R. [dailyReadings.psalm.response]"` after each stanza.
+       3. **Segunda Lectura** (Sentados) [Conditional Rendering]:
+          - Condition: Rendered ONLY when `dailyReadings.secondReading` exists and contains text (Sundays & Solemnities). Gracefully omitted on ferial weekdays with zero empty headers or gaps.
+          - Rubric: *"Sentados"*
+          - Title: *"Segunda Lectura — [dailyReadings.secondReading.citation]"*
+          - Speaker: *"Lector"*
+          - Text: Full epistle body paragraphs.
+          - Proclamation Dialogue: Lector: *"Palabra de Dios."* | Pueblo: *"Te alabamos, Señor."*
+       4. **Aclamación antes del Evangelio (Aleluya)** (De pie):
+          - Rubric: *"De pie"*
+          - Title: *"Aclamación antes del Evangelio"*
+          - Speaker: *"Todos"*
+          - Text: Acclamation formula (`"¡Aleluya, aleluya!"` or Lenten verse) followed by the lectionary verse (`dailyReadings.alleluia.verse`).
+       5. **Proclamación del Santo Evangelio** (De pie):
+          - Rubric: *"De pie"*
+          - Title: *"Santo Evangelio — [dailyReadings.gospel.citation]"*
+          - Introductory Dialogue:
+            * Sacerdote: *"El Señor esté con ustedes."* | Pueblo: *"Y con tu espíritu."*
+            * Sacerdote: *"Lectura del santo Evangelio según [evangelista]."* | Pueblo: *"Gloria a ti, Señor."*
+          - Proclamation Text: Full Gospel body paragraphs.
+          - Concluding Dialogue:
+            * Sacerdote: *"Palabra del Señor."* | Pueblo: *"Gloria a ti, Señor Jesús."*
+          - Secret Priest Rubric: *"Sacerdote (en secreto): Las palabras del Evangelio borren nuestros pecados."*
+       6. **Homilía, Credo, y Oración Universal**:
+          - Standard Roman Missal ordinary flow continues seamlessly.
+  3. **Interactive Mode (`AppleMusicLyrics`) Stream Generator**:
+     - The helper function `getCanonicalMassLines(sectionIdx, dailyReadings, lang)` shall dynamically produce the linear line stream for Section 2, pairing each line with appropriate speaker tags (`Lector`, `Salmista`, `Sacerdote`, `Pueblo`, `Todos`) and left/right kinetic alignments without hydration mismatches.
+
+---
+
+#### RF-08.3: Direct Access Mass Launcher & Proactive Auto-Fetch
+- **ID**: `RF-08.3`
+- **Priority**: High | **Source**: `ORIGINAL_REQUEST.md §R3`
+- **Description**: The main Mass launcher buttons across the site shall open directly to the Mass Guide without intermediate menu friction, and daily readings shall be fetched proactively in the background on initial page mount.
+- **Functional Specification**:
+  1. **Autonomous Mount Pre-Fetching**:
+     - `LandingClient.tsx` shall execute `fetchDailyReadings()` in a `useEffect` hook on client mount.
+     - Fetched readings shall be cached in React state (`dailyReadings`), ensuring that readings are 100% pre-loaded and ready before the user opens or navigates to Liturgia de la Palabra.
+     - A manual refresh button (`↻ Actualizar`) shall be available to force cache re-fetching.
+  2. **Direct Mass Launcher Buttons**:
+     - Main Hero CTA button ("Guía de Misa" / "Seguir la Misa") and Mobile Drawer navigation link shall directly open the Mass Guide modal initialized to Section 1 (Ritos Iniciales, `activeMisaSectionIdx = 0`).
+  3. **UI Loading & Offline States**:
+     - If the user accesses readings while fetching is in progress, a smooth non-blocking indicator shall be displayed.
+     - If `dailyReadings.isFallback === true`, an unobtrusive badge `(Liturgia común / modo sin conexión)` shall indicate offline mode without disrupting Mass flow.
+
+---
+
+### RF-08 Acceptance Criteria Matrix
+
+| Criterion ID | Target Feature | Acceptance Verification Condition |
+|---|---|---|
+| **AC-RF08-1** | Full Text Preservation | `GET /api/mass-readings` returns non-empty full text, short citations, and full citations for First Reading, Psalm, Gospel, and Meditation. |
+| **AC-RF08-2** | Responsorial Psalm Integrity | The Psalm object contains both a clean antiphon `response` string and the complete verse stanzas without duplications or truncation of verse 1. |
+| **AC-RF08-3** | Sunday vs Weekday 2nd Reading | Querying a Sunday date returns a populated `secondReading` object; querying a weekday ferial date returns `secondReading === undefined` without errors. |
+| **AC-RF08-4** | Seasonal Gospel Acclamation | The `alleluia` object provides the seasonal acclamation ("¡Aleluya, aleluya!" during Ordinary/Easter vs Lenten acclamation) and lectionary verse. |
+| **AC-RF08-5** | Resilience & Edge Caching | Upstream timeouts or errors return `FALLBACK_READINGS` with status 200, `isFallback: true`, and valid `Cache-Control` headers. |
+| **AC-RF08-6** | Accordion Removal | The legacy `showLecturasInResponses` accordion button and dropdown container are completely removed from Tab 2 in `LandingClient.tsx`. |
+| **AC-RF08-7** | Sequential Canonical Injection | Navigating to Section 2 ("Liturgia de la Palabra") renders the readings in exact GIRM sequence (1st Reading → Psalm with R. → 2nd Reading [if Sunday] → Aleluya → Gospel) in both standard modal and `AppleMusicLyrics` interactive mode. |
+| **AC-RF08-8** | Direct Launch & Auto-Fetch | Clicking the Mass button in Hero/Nav opens the Mass modal directly at Section 1 (Ritos Iniciales), with readings automatically fetched on mount without manual intervention. |
 
 ---
 
@@ -223,33 +263,6 @@ The application operates as a high-performance Next.js 15 App Router web system 
 - **ID**: `RF-09`
 - **Priority**: High | **Source**: `ORIGINAL_REQUEST.md §R9`
 - **Description**: The system shall compute and integrate all Holy Days of Obligation (*Misas de Precepto* per Canon 1246 and Mexican Episcopal Conference CEM) into the Jesus calendar, providing detailed event modals and universal multi-platform export.
-- **Functional Specification**:
-  1. Liturgical Computus Algorithm: Calculates Easter Sunday for any year and accurately projects all movable feasts:
-     - Domingo de Ramos (Easter - 7 days).
-     - Jueves Santo & Viernes Santo (Triduo Pascual).
-     - Domingo de Pascua de la Resurrección.
-     - Ascensión del Señor (Pascua + 42 días / VII Domingo).
-     - Domingo de Pentecostés (Pascua + 49 días).
-     - Santísima Trinidad (Pascua + 56 días).
-     - Santísimo Cuerpo y Sangre de Cristo / Corpus Christi (Pascua + 60 / 63 días).
-     - Sagrado Corazón de Jesús (Pascua + 68 días).
-     - Jesucristo, Rey del Universo (Último domingo de Tiempo Ordinario).
-  2. Fixed Holy Days:
-     - 1 de Enero: Santa María, Madre de Dios (Precepto).
-     - 6 de Enero: Epifanía del Señor.
-     - 19 de Marzo: San José.
-     - 29 de Junio: Santos Pedro y Pablo.
-     - 15 de Agosto: Asunción de la Virgen María.
-     - 1 de Noviembre: Todos los Santos.
-     - 8 de Diciembre: Inmaculada Concepción.
-     - 12 de Diciembre: Nuestra Señora de Guadalupe (Precepto Nacional en México).
-     - 25 de Diciembre: Natividad del Señor - Navidad (Precepto).
-  3. Multi-Platform Export Engine:
-     - Google Calendar web template URL.
-     - Apple Calendar / iOS direct `.ics` download / webcal.
-     - Microsoft Outlook.com Web compose link.
-     - Microsoft Outlook Desktop RFC 5545 `.ics` file.
-     - Yahoo Calendar compose link.
 - **Acceptance Criteria**:
   - **AC-RF09-1**: Given any target year, all fixed and movable Misas de Precepto are generated with correct dates and tagged with `isPrecepto: true`.
   - **AC-RF09-2**: Clicking "Agregar a Google Calendar" on any event opens a pre-populated Google Calendar event creation URL.
@@ -261,10 +274,6 @@ The application operates as a high-performance Next.js 15 App Router web system 
 - **ID**: `RF-10`
 - **Priority**: High | **Source**: `ORIGINAL_REQUEST.md §R10`
 - **Description**: The development workflow shall execute autonomously, creating granular atomic git commits, assigning semantic version tags to each milestone commit, verifying 100% test passing, and pushing all branches/tags to the remote repository.
-- **Functional Specification**:
-  1. Granular commits following Conventional Commits format (`feat(module): description`).
-  2. Semantic version tagging (`v1.0.0-m1.food-prayers`, `v1.0.0-m2.decks-swipe`, ..., `v1.0.0`).
-  3. 100% automated opaque-box E2E test verification across all 5 test tiers before pushing.
 - **Acceptance Criteria**:
   - **AC-RF10-1**: Git log contains granular, descriptive commits corresponding to each milestone.
   - **AC-RF10-2**: Git repository contains valid annotated/lightweight semantic version tags.
@@ -277,11 +286,11 @@ The application operates as a high-performance Next.js 15 App Router web system 
 | ID | Category | Requirement Specification | Measurement Metric |
 |---|---|---|---|
 | **RNF-01** | **Performance** | The application shall achieve sub-second initial load on standard 4G mobile networks. | FCP $\le 1.0\text{s}$, LCP $\le 1.8\text{s}$, CLS $= 0.00$. |
-| **RNF-02** | **Animation Frame Rate** | 3D card deck dragging and swiping shall maintain smooth hardware-accelerated GPU rendering. | 60 FPS consistent with zero dropped frames. |
+| **RNF-02** | **Animation Frame Rate** | 3D card deck dragging and kinetic text streaming shall maintain smooth hardware-accelerated GPU rendering. | 60 FPS consistent with zero dropped frames. |
 | **RNF-03** | **Usability** | The interface shall provide single-scroll containment, eliminating double-scroll jump bugs. | Modal container has `overflow: hidden`, inner card has `overflow-y: auto`. |
 | **RNF-04** | **Accessibility** | All text, buttons, and dialogs shall comply with WCAG 2.1 Level AA standards. | Text contrast $\ge 4.5:1$, touch targets $\ge 44 \times 44\text{px}$, full keyboard navigation. |
-| **RNF-05** | **Internationalization** | All UI copy and prayer texts shall maintain authentic Spanish Catholic liturgical phrasing, with English support for universal prayers. | 100% translation completeness in bilingual prayer cards. |
-| **RNF-06** | **Reliability & Resilience** | The daily Mass readings scraper and Google Calendar integration shall gracefully fall back to local data when offline. | Zero unhandled exceptions; fallback UI rendered seamlessly. |
+| **RNF-05** | **Internationalization** | All UI copy and prayer texts shall maintain authentic Spanish Catholic liturgical phrasing, with English support for universal dialogues. | 100% translation completeness in bilingual prayer cards. |
+| **RNF-06** | **Reliability & Resilience** | The daily Mass readings scraper and Google Calendar integration shall gracefully fall back to local canonical data when offline. | Zero unhandled exceptions; fallback UI rendered seamlessly. |
 | **RNF-07** | **Security & Privacy** | Public read-only architecture with zero collection of personally identifiable information (PII). | No cookies, no unauthorized trackers, sanitized external XML inputs. |
 | **RNF-08** | **Cross-Platform Support** | Flawless rendering and interaction across iOS Safari (15+), Android Chrome, macOS Safari/Chrome, and Windows Edge. | 100% automated test passing on Chromium, WebKit, and Firefox engines. |
 
@@ -324,7 +333,7 @@ export interface MysteryItem {
   meditationEn: string;
   reflectionQuestion: string;
   reflectionQuestionEn: string;
-  image: string; // SVG icon identifier or asset path
+  image: string;
 }
 
 export interface MysteryInfo {
@@ -337,33 +346,45 @@ export interface MysteryInfo {
 }
 ```
 
-### 5.3 Daily Mass Readings API Schema
+### 5.3 Daily Mass Readings API Schema (`MassReadingsResponse`)
 ```typescript
-export interface DailyMassReadings {
-  date: string; // YYYY-MM-DD
-  liturgicalDay: string;
-  saint?: string;
+export interface MassReadingsResponse {
+  date: string; // 'YYYYMMDD' or 'YYYY-MM-DD'
+  liturgicalDay: string; // e.g. "Viernes de la 21a semana del Tiempo Ordinario"
+  saint?: string; // Saint commemoration
   firstReading: {
     citation: string;
+    shortCitation?: string;
     text: string;
   };
   psalm: {
     citation: string;
+    shortCitation?: string;
     response: string;
     text: string;
+    stanzas?: string[];
   };
   secondReading?: {
     citation: string;
+    shortCitation?: string;
     text: string;
+  };
+  alleluia: {
+    citation?: string;
+    acclamation: string;
+    verse: string;
   };
   gospel: {
     citation: string;
+    shortCitation?: string;
     text: string;
   };
   meditation?: {
     author: string;
     text: string;
   };
+  isFallback?: boolean;
+  source?: string;
 }
 ```
 
@@ -424,3 +445,19 @@ export interface ParsedEvent {
   4. User taps "Agregar a Google Calendar" or "Descargar archivo iCal (.ics)".
   5. Personal calendar app opens with pre-populated event details.
 - **Postcondition**: Holy Day of Obligation successfully synced to the user's personal device calendar.
+
+### UC-04: Participating in Daily and Sunday Mass with Canonical Reading Flow
+- **Actor**: Parishioner / Assembly Member.
+- **Precondition**: User is attending Mass at La Sagrada Familia and opens `lapandilladejesusqro.org`.
+- **Main Flow**:
+  1. User taps the standalone "Guía de Misa" button on the hero section.
+  2. System opens the modal directly at Section 1 (Ritos Iniciales) while automatically pre-fetching today's daily readings in the background.
+  3. User participates in the Introductory Rites (Greeting, Penitential Act, Gloria).
+  4. User advances to Section 2 ("Liturgia de la Palabra"):
+     - Primera Lectura is seamlessly rendered with full scripture text and dialogue.
+     - Salmo Responsorial is rendered with the antiphon response and all verse stanzas.
+     - Segunda Lectura is rendered if Sunday, or omitted smoothly if a weekday.
+     - Gospel Acclamation (Aleluya) and Holy Gospel are rendered with complete rubrics and dialogues.
+  5. User can switch to "AppleMusicLyrics" kinetic full-screen reader for synchronized text following during the homily or liturgy.
+  6. User continues through Liturgia Eucarística, Rito de Comunión (with priest private prayers), and Ritos Conclusivos.
+- **Postcondition**: Complete Catholic Mass followed in exact canonical order with live daily scriptures and zero UI friction.
