@@ -53,8 +53,8 @@ const InstagramIcon = ({ size = 16 }: { size?: number }) => (
 );
 
 const ThreadsIcon = ({ size = 16 }: { size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
-    <path d="M12.186 24C5.454 24 0 18.618 0 12.006 0 5.394 5.454.012 12.186.012c6.732 0 12.186 5.382 12.186 11.994 0 2.274-.636 4.416-1.848 6.276l-2.028-1.344c.948-1.44 1.44-3.09 1.44-4.932 0-5.268-4.32-9.558-9.75-9.558-5.43 0-9.75 4.29-9.75 9.558 0 5.268 4.32 9.558 9.75 9.558 2.652 0 5.166-1.044 7.026-2.922l1.74 1.704C18.57 22.68 15.486 24 12.186 24zm4.818-12.87c-.078-3.09-2.316-5.55-5.004-5.55-2.778 0-5.046 2.586-5.046 5.766 0 3.18 2.268 5.766 5.046 5.766 1.83 0 3.444-1.122 4.314-2.82l-2.052-1.092c-.528.984-1.398 1.548-2.262 1.548-1.47 0-2.658-1.44-2.658-3.402 0-.252.018-.504.06-.744 1.05-.18 2.232-.27 3.51-.27 1.494 0 2.658.12 3.468.348.06-.522.084-1.032.084-1.546h-.46zm-2.43 1.902c-.636-.18-1.542-.27-2.622-.27-.996 0-1.926.066-2.748.192.198 1.47 1.152 2.574 2.37 2.574.978 0 1.956-.708 2.352-1.896l.648-.6z"/>
+  <svg width={size} height={size} viewBox="0 0 192 192" fill="currentColor">
+    <path d="M141.537 88.9883C140.71 88.5919 139.87 88.2104 139.019 87.8451C137.537 60.5382 122.616 44.905 97.5619 44.745C97.4484 44.7443 97.3355 44.7443 97.222 44.7443C82.2364 44.7443 69.7731 51.1409 62.102 62.7807L75.481 72.7301C80.8935 64.5126 89.2604 60.9168 97.2039 60.9168C97.2798 60.9168 97.3556 60.9168 97.4322 60.9175C110.669 61.0023 120.914 69.6054 122.407 84.4443C114.776 83.4735 106.398 83.1772 97.3756 83.5604C67.4344 84.8329 49.3361 99.8872 50.3259 123.149C51.3503 147.218 72.7663 158.455 93.3089 158.455C109.914 158.455 122.259 150.941 128.531 137.078C133.722 147.469 143.084 153.256 156.444 153.256C168.016 153.256 177.387 147.669 181.71 137.95C186.297 127.639 187.355 113.111 187.355 96.0001C187.355 42.9806 146.903 0 96 0C42.9806 0 0 42.9806 0 96C0 149.019 42.9806 192 96 192C128.273 192 156.709 176.103 173.844 151.724L160.016 140.237C146.104 160.103 122.844 173.084 96 173.084C53.4277 173.084 18.9164 138.572 18.9164 96C18.9164 53.4277 53.4277 18.9164 96 18.9164C137.24 18.9164 168.438 52.6102 168.438 96.0001C168.438 111.458 167.579 123.639 164.298 131.01C161.761 136.711 156.241 139.771 149.52 139.771C139.816 139.771 133.914 133.821 133.914 121.218C133.914 117.818 134.254 114.181 134.925 110.375C138.257 91.4674 146.331 89.288 141.537 88.9883ZM93.9922 142.284C81.8286 142.284 68.6186 136.082 67.9944 121.39C67.4377 108.283 77.2917 99.8872 96.9064 99.0543C104.996 98.7107 112.441 99.0307 119.068 99.9883C116.581 132.846 103.882 142.284 93.9922 142.284Z" />
   </svg>
 );
 
@@ -2144,33 +2144,84 @@ export default function Landing() {
 
           {/* Structured Navigation Columns */}
           <div className="footer-columns-container">
+            {/* Col 1: Páginas y Templo Sede */}
             <div className="footer-col">
-              <span className="footer-col-title">Páginas</span>
+              <span className="footer-col-title">Páginas y Sede</span>
               <ul className="footer-col-links">
                 <li><Link href="/">Inicio</Link></li>
                 <li><Link href="/calendario">Eventos y Preceptos</Link></li>
                 <li><Link href="/donaciones">Donaciones</Link></li>
+                <li>
+                  <a href="https://lasagradafamiliaqro.org/" target="_blank" rel="noopener noreferrer">
+                    Parroquia Sagrada Familia
+                  </a>
+                </li>
+                <li>
+                  <a href="https://wa.me/5214422497485" target="_blank" rel="noopener noreferrer">
+                    Asambleas (Martes 8 PM)
+                  </a>
+                </li>
               </ul>
             </div>
+
+            {/* Col 2: Recursos de la Misa */}
             <div className="footer-col">
-              <span className="footer-col-title">Recursos Litúrgicos</span>
+              <span className="footer-col-title">Guía de la Misa</span>
               <ul className="footer-col-links">
                 <li>
                   <button 
                     type="button" 
                     className="footer-link-btn"
-                    onClick={() => { setActiveGuiaTab('lecturas'); setModalUrl('guia'); triggerHaptic('medium'); }}
+                    onClick={() => { setActiveGuiaTab('lecturas'); setModalUrl('guia', { seccion: 'lecturas' }); triggerHaptic('medium'); }}
                   >
-                    Guía de Misa y Lecturas
+                    Lecturas de Hoy
                   </button>
                 </li>
                 <li>
                   <button 
                     type="button" 
                     className="footer-link-btn"
+                    onClick={() => { 
+                      setActiveMisaSectionIdx(0); 
+                      setModalUrl('guia_misa_interactiva', { seccion: 'rito-de-entrada' }); 
+                      triggerHaptic('medium'); 
+                    }}
+                  >
+                    Respuestas y Ordinario
+                  </button>
+                </li>
+                <li>
+                  <button 
+                    type="button" 
+                    className="footer-link-btn"
+                    onClick={() => { setActiveGuiaTab('cantos'); setModalUrl('guia', { seccion: 'cantos' }); triggerHaptic('medium'); }}
+                  >
+                    Cantos Litúrgicos
+                  </button>
+                </li>
+                <li>
+                  <button 
+                    type="button" 
+                    className="footer-link-btn"
+                    onClick={() => { setActiveGuiaTab('misterio'); setModalUrl('guia', { seccion: 'misterio' }); triggerHaptic('medium'); }}
+                  >
+                    Plegarias y Misterio Pascual
+                  </button>
+                </li>
+              </ul>
+            </div>
+
+            {/* Col 3: Oración y Devociones */}
+            <div className="footer-col">
+              <span className="footer-col-title">Oración y Devoción</span>
+              <ul className="footer-col-links">
+                <li>
+                  <button 
+                    type="button" 
+                    className="footer-link-btn"
                     onClick={() => { setActiveOracionDeck('rosario'); setModalUrl('oraciones', { deck: 'rosario' }); triggerHaptic('medium'); }}
                   >
-                    Santo Rosario
+                    Santo Rosario Interactivo
                   </button>
                 </li>
                 <li>
@@ -2182,11 +2233,15 @@ export default function Landing() {
                     Bendición de Alimentos
                   </button>
                 </li>
-              </ul>
-            </div>
-            <div className="footer-col">
-              <span className="footer-col-title">Oración y Piedad</span>
-              <ul className="footer-col-links">
+                <li>
+                  <button 
+                    type="button" 
+                    className="footer-link-btn"
+                    onClick={() => { setActiveOracionDeck('comunidad'); setModalUrl('oraciones', { deck: 'comunidad' }); triggerHaptic('medium'); }}
+                  >
+                    Oraciones de la Pandilla
+                  </button>
+                </li>
                 <li>
                   <button 
                     type="button" 
@@ -2196,6 +2251,13 @@ export default function Landing() {
                     El Ángelus y Regina Caeli
                   </button>
                 </li>
+              </ul>
+            </div>
+
+            {/* Col 4: Alabanza y Sacramentos */}
+            <div className="footer-col">
+              <span className="footer-col-title">Alabanza y Sacramentos</span>
+              <ul className="footer-col-links">
                 <li>
                   <button 
                     type="button" 
@@ -2211,8 +2273,18 @@ export default function Landing() {
                     className="footer-link-btn"
                     onClick={() => { setModalUrl('confesion'); triggerHaptic('medium'); }}
                   >
-                    Guía de Confesión
+                    Guía de Confesión y Examen
                   </button>
+                </li>
+                <li>
+                  <Link href="/calendario">
+                    Misas de Precepto CEM
+                  </Link>
+                </li>
+                <li>
+                  <a href="/api/calendar" target="_blank" rel="noopener noreferrer">
+                    Descargar Calendario (.ics)
+                  </a>
                 </li>
               </ul>
             </div>
@@ -2221,11 +2293,22 @@ export default function Landing() {
           <div className="footer-meta-container">
             <span className="footer-copy">© 2026 La Pandilla de Jesús · lapandilladejesusqro.org</span>
             <ul className="footer-links">
+              <li><Link href="/">Inicio</Link></li>
               <li><Link href="/calendario">Eventos</Link></li>
               <li><Link href="/donaciones">Donaciones</Link></li>
               <li>
                 <a href="https://instagram.com/lapandilladejesusqro" target="_blank" rel="noopener noreferrer">
                   Instagram
+                </a>
+              </li>
+              <li>
+                <a href="https://threads.net/@lapandilladejesusqro" target="_blank" rel="noopener noreferrer">
+                  Threads
+                </a>
+              </li>
+              <li>
+                <a href="https://facebook.com/lapandilladejesusqro" target="_blank" rel="noopener noreferrer">
+                  Facebook
                 </a>
               </li>
               <li>
