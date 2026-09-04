@@ -1582,11 +1582,15 @@ body.landing-body {
 }
 
 .footer-brand-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
   margin-bottom: 1rem;
 }
 
 .footer-brand-name {
-  
   font-weight: 700;
   font-size: 1.6rem;
   color: var(--text-dark);
@@ -1617,16 +1621,18 @@ body.landing-body {
 .footer-social-row {
   display: flex;
   align-items: center;
-  gap: 0.65rem;
-  margin-top: 0.85rem;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  width: 100%;
 }
 
 .footer-social-icon-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 34px;
-  height: 34px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   background: var(--cream);
   border: 1px solid var(--border-subtle);
@@ -1634,6 +1640,14 @@ body.landing-body {
   text-decoration: none;
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   box-shadow: 0 1px 3px rgba(45, 27, 14, 0.04);
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.footer-social-icon-btn svg {
+  display: block;
+  margin: auto;
+  flex-shrink: 0;
 }
 
 .footer-social-icon-btn:hover {
