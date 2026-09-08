@@ -1,3 +1,7 @@
+This is the open-source code for the website of a youth Catholic community.
+
+This project was not developed by a single person. I use Agy to develop all the code and architecture. Therefore, it was created using Vibe-coding. It’s important to understand that AI is not perfect, and the project during the development in the past, now and shall be technical debt. So, don’t consider this codebase as a reliable template. You may need a human eye to validate each component and logic. The website is lapandilladejesusqro.org.
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
