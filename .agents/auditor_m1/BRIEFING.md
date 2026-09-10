@@ -1,61 +1,68 @@
-# BRIEFING — 2026-08-27T00:48:00-06:00
+# BRIEFING — 2026-09-10T17:40:15Z
 
 ## Mission
-Conduct forensic integrity audit on Milestone M1 code changes (oracionesData.ts, LandingClient.tsx, tests/) to verify authentic implementation without shortcuts or integrity violations.
+Conduct an exhaustive forensic integrity audit of changes made by worker_m1 for mobile modal rendering fixes, verifying zero shortcuts, authentic implementations, clean tests, build soundness, and adversarial robustness.
 
 ## 🔒 My Identity
 - Archetype: forensic_auditor
 - Roles: critic, specialist, auditor
 - Working directory: /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/auditor_m1
-- Original parent: 367b9238-f1ab-4c6e-b44d-f936902ad2ff
-- Target: milestone_m1 (R1 & R2)
+- Original parent: d4ceabdc-0e57-4961-b7dd-1c003edf586e
+- Target: milestone M1 (Mobile Viewport & Modal Rendering Fix)
 
 ## 🔒 Key Constraints
 - Audit-only — do NOT modify implementation code
 - Trust NOTHING — verify everything independently
-- Integrity Mode: development (per ORIGINAL_REQUEST.md line 12)
-- Zero tolerance for hardcoded test results, facade implementations, fabricated verification outputs
+- Adhere strictly to ORIGINAL_REQUEST.md ground-truth constraints
+- Provide evidence: raw tool output, file diffs, test executions
+- Binary verdict required: CLEAN or INTEGRITY VIOLATION
 
 ## Current Parent
-- Conversation ID: 367b9238-f1ab-4c6e-b44d-f936902ad2ff
-- Updated: 2026-08-27T00:48:00-06:00
+- Conversation ID: d4ceabdc-0e57-4961-b7dd-1c003edf586e
+- Updated: not yet
 
 ## Audit Scope
-- **Work product**: src/data/oracionesData.ts, src/app/LandingClient.tsx, tests/m1_food_prayers.test.mjs
+- **Work product**: Changes made by worker_m1 for mobile modal rendering fix across:
+  - `src/components/GlobalModal.tsx`
+  - `src/app/global.css`
+  - `src/app/LandingClient.tsx`
+  - `src/app/calendario/CalendarioClient.tsx`
+  - `src/app/AppleMusicLyrics.tsx`
 - **Profile loaded**: General Project
 - **Audit type**: forensic integrity check
 
 ## Audit Progress
 - **Phase**: reporting
 - **Checks completed**:
-  - Mode-Agnostic & Mode-Specific Integrity Checks (Development mode)
-  - Source Code Analysis & Facade Detection in oracionesData.ts & LandingClient.tsx
-  - Full 7-Day Liturgical Text Verification against 18 Source Images
-  - Auto-Day Selection Logic (`new Date().getDay()`) & Deck Navigation Verification
-  - Legacy Prayer (`basicas-alimentos`) Removal Verification
-  - Pre-populated Result Artifacts Search
-  - Independent Build (`npm run build`) & Unit/E2E Test Suite Execution
+  - Authoritative docs review
+  - Git diff and modified files line-by-line inspection
+  - Source code forensic analysis (hardcoded outputs, facades, pre-populated artifacts)
+  - Independent execution of `npm test` (217/217 passing)
+  - Independent execution of `npx tsc --noEmit` (0 errors)
+  - Independent execution of `npm run build` (Next.js 15.5.18, 9/9 routes compiled cleanly)
+  - Adversarial analysis of mobile viewport units, safe flexbox alignment, body scroll lock, and portal lifecycle
 - **Checks remaining**: None
-- **Findings so far**: CLEAN — No integrity violations found. Genuine implementation across all criteria.
-
-## Key Decisions Made
-- Confirmed full text fidelity of all 7 days with canonical liturgical completions.
-- Verified deterministic Date.getDay() mapping to 0..6 food prayer indices.
-- Issued binary verdict: CLEAN.
+- **Findings so far**: CLEAN — 0 integrity violations, 0 shortcuts, authentic implementation.
 
 ## Attack Surface
 - **Hypotheses tested**:
-  - Dummy facade in food prayer deck: DISPROVEN (full 7-day data structures populated).
-  - Hardcoded test bypasses: DISPROVEN (genuine assertion suite).
-  - Day index desynchronization: DISPROVEN (0..6 matches JS Date spec).
-  - Residual legacy food prayer in basicas: DISPROVEN (cleaned).
-- **Vulnerabilities found**: None.
-- **Untested angles**: None within M1 scope.
+  - H1: Did worker introduce hardcoded or fake CSS values/facades? (Rejected: authentic CSS rules implemented)
+  - H2: Does body scroll lock break when switching between modals? (Rejected: `existingTop` check preserves saved scroll position)
+  - H3: Does React Portal cause SSR hydration mismatch? (Rejected: `mounted` check protects SSR)
+  - H4: Does flexbox `safe flex-end` prevent negative coordinate clipping on mobile? (Verified: `safe` alignment and `margin: auto 0 0 0` ensure accessibility of headers)
+- **Vulnerabilities found**: None in audited work product.
+- **Untested angles**: Physical hardware testing across various iOS WebKit versions (covered by rigorous CSS/DOM standards and dynamic viewport architecture).
 
 ## Loaded Skills
-- None required
+- None.
+
+## Key Decisions Made
+- Confirmed mode: Demo/Benchmark strictness.
+- Verified zero external library additions (strictly vanilla CSS and React standard APIs).
+- Verdict determined: CLEAN.
 
 ## Artifact Index
-- /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/auditor_m1/DISPATCH.md — Audit assignment
-- /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/auditor_m1/progress.md — Liveness and progress tracking
-- /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/auditor_m1/handoff.md — Final forensic audit report
+- `.agents/auditor_m1/DISPATCH.md` — Dispatch prompt
+- `.agents/auditor_m1/BRIEFING.md` — Working memory
+- `.agents/auditor_m1/progress.md` — Execution heartbeat
+- `.agents/auditor_m1/handoff.md` — Forensic audit report

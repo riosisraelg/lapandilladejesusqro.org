@@ -1,47 +1,52 @@
-# BRIEFING — 2026-08-27T06:48:00Z
+# BRIEFING — 2026-09-10T17:42:00Z
 
 ## Mission
-Adversarially verify UI layout and data integrity of Food Prayers deck for Milestone M1.
+Empirically stress-test modal scroll lifecycle, body scroll locking, rapid sequential modal switching, portal mounting/cleanup, and scrollIntoView elimination.
 
 ## 🔒 My Identity
-- Archetype: challenger
+- Archetype: empirical-challenger
 - Roles: critic, specialist
-- Working directory: /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/challenger_m1_2/
-- Original parent: 367b9238-f1ab-4c6e-b44d-f936902ad2ff
-- Milestone: M1 (Food Prayers & Auto-Day Deck)
+- Working directory: /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/challenger_m1_2
+- Original parent: d4ceabdc-0e57-4961-b7dd-1c003edf586e
+- Milestone: M1 (Modal Architecture & Content Migration)
 - Instance: 2 of 2
 
 ## 🔒 Key Constraints
 - Review-only — do NOT modify implementation code
-- Run build and verification tests directly
-- Verification-driven verdict: APPROVE or REQUEST_CHANGES
+- Run verification code yourself; empirical reproduction required for bugs
+- No source/tests in .agents/
+- Deliver report to .agents/challenger_m1_2/handoff.md with explicit APPROVE/REJECT verdict
 
 ## Current Parent
-- Conversation ID: 367b9238-f1ab-4c6e-b44d-f936902ad2ff
-- Updated: 2026-08-27T06:48:00Z
+- Conversation ID: d4ceabdc-0e57-4961-b7dd-1c003edf586e
+- Updated: 2026-09-10T17:42:00Z
 
 ## Review Scope
-- **Files to review**: `src/data/oracionesData.ts`, `src/app/LandingClient.tsx`, `tests/m1_food_prayers.test.mjs`, `scripts/test-e2e.mjs`
-- **Interface contracts**: `/Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/ORIGINAL_REQUEST.md`
-- **Review criteria**: Untruncated text, valid formatting, proper HTML/JSX rendering compatibility, correct liturgical doxology endings, npm test & npm run build execution
+- **Files to review**:
+  - `src/components/GlobalModal.tsx`
+  - `src/app/LandingClient.tsx`
+  - `src/app/calendario/CalendarioClient.tsx`
+  - `src/app/AppleMusicLyrics.tsx`
+  - `src/app/global.css`
+- **Interface contracts**: PROJECT.md, ORIGINAL_REQUEST.md, worker_m1/handoff.md
+- **Review criteria**: Scroll preservation/restoration, scroll lock leak prevention under rapid switching, portal lifecycle, zero unwanted scrollIntoView calls, build/test green.
 
 ## Attack Surface
-- **Hypotheses tested**: 
-  - Prayer texts truncated or containing ellipsis artifacts (PASSED: all substantive and untruncated)
-  - Missing or non-canonical doxology endings (PASSED: all conclude with Trinitarian/Christological doxologies and "Amén." / "Amen.")
-  - Broken HTML/JSX rendering or unescaped characters (PASSED: clean formatting with `whiteSpace: 'pre-wrap'`)
-  - Broken day mapping or boundary wraps (PASSED: 0-6 dayIndex mapping and infinite swipe loop verified)
-- **Vulnerabilities found**: None.
-- **Untested angles**: None within M1 scope.
+- **Hypotheses tested**:
+  - H1: Modal switching drops or resets scrollY to 0 due to intermediate cleanup. Result: REJECTED (scrollY preserved with 0px drift across 1,000 chaotic switches).
+  - H2: Remaining scrollIntoView in components displaces the browser window on mobile. Result: REJECTED (0 occurrences found in src/; container-level scrollTo verified).
+  - H3: Calendario event selection and subscribe modal switching leaks body styles. Result: REJECTED (styles cleaned up cleanly, scroll preserved).
+  - H4: SSR hydration mismatch or portal orphan nodes on GlobalModal unmount. Result: REJECTED (SSR gate tested, createPortal verified).
+- **Vulnerabilities found**: None. Implementation is robust and resilient.
+- **Untested angles**: No untested angles. Full test suite across 24 empirical tests passed.
 
 ## Loaded Skills
-- None
+None requested.
 
 ## Key Decisions Made
-- Executed custom adversarial harness with 18 comprehensive checks
-- Verified `npm test` (147/147 passed) and `npm run build` (compiled clean, 8/8 routes generated)
-- Issued final verdict: APPROVE
+- Implemented dedicated empirical stress harness in `scripts/modal-scroll-stress-suite.mjs` with 24 adversarial tests.
+- Formally issued APPROVE verdict in handoff report.
 
 ## Artifact Index
-- handoff.md — Final adversarial evaluation report and verdict
-- progress.md — Liveness and execution tracking
+- `/Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/challenger_m1_2/handoff.md` — Final challenge report
+- `/Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/scripts/modal-scroll-stress-suite.mjs` — Modal scroll lifecycle & state adversarial stress suite

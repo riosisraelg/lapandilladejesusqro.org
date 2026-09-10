@@ -1,11 +1,19 @@
-# Progress — Challenger 2 (Milestone M1)
+# Progress — Challenger 2 (Scroll Lifecycle & State Stress Challenger)
 
-**Last visited**: 2026-08-27T06:48:00Z
+Last visited: 2026-09-10T11:42:25-06:00
 
-- [x] Initialized DISPATCH.md and BRIEFING.md
-- [x] Read ORIGINAL_REQUEST.md, inspect codebase & food prayer deck implementation
-- [x] Run `npm test` (147/147 test cases passing)
-- [x] Run `npm run build` (Clean production build, 8/8 pages static generation)
-- [x] Adversarially verified food prayer card contents, doxology endings, truncation, formatting, JSX rendering
-- [x] Executed custom adversarial verification script (`verify_food_prayers_adversarial.mjs`, 18/18 tests passing)
-- [x] Document findings in handoff.md and reported verdict: APPROVE
+## Current Status: COMPLETE
+- Read all authoritative documents (ORIGINAL_REQUEST.md, PROJECT.md, worker_m1/handoff.md).
+- Developed and executed empirical stress test harness (`scripts/modal-scroll-stress-suite.mjs`) covering 24 tests across 5 test suites.
+- Verified 0 occurrences of `scrollIntoView` in `src/`.
+- Verified container-level `.scrollTo` in `AppleMusicLyrics.tsx`.
+- Verified `GlobalModal` SSR hydration gate, `document.body` portal, and scroll reset on open.
+- Verified body scroll locking and exact scroll restoration in `LandingClient.tsx` and `CalendarioClient.tsx`.
+- Tested rapid sequential modal switching (1,000 chaotic transitions) with zero scroll drift.
+- Verified test suites:
+  - `npm test`: 217/217 passed
+  - `node scripts/modal-scroll-stress-suite.mjs`: 24/24 passed
+  - `npx tsc --noEmit`: 0 errors
+  - `npm run build`: Exit code 0 (9/9 routes compiled)
+- Challenge report delivered with verdict **APPROVE** to:
+  `/Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/challenger_m1_2/handoff.md`

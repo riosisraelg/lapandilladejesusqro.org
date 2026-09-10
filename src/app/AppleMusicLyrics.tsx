@@ -221,9 +221,9 @@ export default function AppleMusicLyrics({
       const targetEl = Array.from(elements).find(el => {
         const t = el.getAttribute('data-text') || '';
         return t === `---SECTION---${initialSection}`;
-      });
-      if (targetEl) {
-        targetEl.scrollIntoView({ behavior: 'auto', block: 'center' });
+      }) as HTMLElement | undefined;
+      if (targetEl && containerRef.current) {
+        containerRef.current.scrollTo({ top: targetEl.offsetTop - 100, behavior: 'auto' });
       }
     }
 

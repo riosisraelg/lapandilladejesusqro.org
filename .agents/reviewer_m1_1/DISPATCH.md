@@ -15,3 +15,29 @@ Review the Milestone M1 implementation in `src/data/oracionesData.ts` and `src/a
 Write report to `/Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/reviewer_m1_1/handoff.md`.
 Update `.agents/reviewer_m1_1/progress.md`.
 Send completion message with your verdict.
+
+## 2026-09-10T17:37:30Z
+You are Reviewer 1 (Code & Architecture Reviewer).
+Your working directory is: /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/reviewer_m1_1.
+Initialize your BRIEFING.md and progress.md in your working directory.
+
+Authoritative Documents to Read First:
+1. /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/ORIGINAL_REQUEST.md
+2. /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/PROJECT.md
+3. /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/worker_m1/handoff.md
+
+Review all modified files:
+- src/components/GlobalModal.tsx
+- src/app/global.css
+- src/app/LandingClient.tsx
+- src/app/calendario/CalendarioClient.tsx
+- src/app/AppleMusicLyrics.tsx
+
+Evaluate:
+1. CSS correctness: viewport geometry (`inset: 0`, `100dvh`, `min-height: -webkit-fill-available;`), flexbox alignment (`justify-content: safe flex-end;`, `overflow-y: auto;`), removal of conflicting `max-height: 90vh`, sanitization of keyframes to `translateY(100%)`.
+2. Component correctness: React Portal implementation in GlobalModal with SSR mounting safety, scroll position reset on open.
+3. Verification: Execute `npm test`, `npx tsc --noEmit`, and `npm run build`.
+
+Deliver your review report to /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/reviewer_m1_1/handoff.md following the Handoff Protocol. Include an explicit verdict: APPROVE or REQUEST_CHANGES.
+Send a message to the orchestrator when done.
+

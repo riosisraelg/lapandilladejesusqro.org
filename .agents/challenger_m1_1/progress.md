@@ -1,17 +1,18 @@
-# Progress — Challenger M1-1
+# Progress — Challenger 1 (Mobile Layout & Viewport Stress)
 
-**Status**: Completed
-**Last visited**: 2026-08-27T06:48:00Z
-
-## Active Task
-Empirical verification and adversarial challenge testing of Milestone M1 complete.
-
-## Steps
-- [x] Initialized DISPATCH.md and BRIEFING.md
-- [x] Initialized progress.md
-- [x] Codebase & Implementation deep-dive (`src/data/oracionesData.ts`, `src/app/LandingClient.tsx`)
-- [x] Implemented and executed adversarial stress test harness (`tests/m1_challenger_stress.test.mjs`)
-- [x] Executed full regression test suite (`npm test`, 147 test cases) and production build (`npm run build`)
-- [x] Analyzed results, evaluated resilience and boundary conditions
-- [x] Updated BRIEFING.md
-- [x] Wrote handoff.md and sending completion message with verdict: APPROVE
+- Last visited: 2026-09-10T17:42:00Z
+- Status: COMPLETED
+- Phase: Handoff and reporting
+- Completed:
+  - Read authoritative documents (ORIGINAL_REQUEST.md, PROJECT.md, worker_m1/handoff.md)
+  - Inspected code diffs across all 5 affected files
+  - Created and executed empirical stress test suite `scripts/adversarial-mobile-viewport-suite.mjs` (148/148 checks passed)
+  - Verified 21 device viewport dimensions across 6 content stress profiles
+  - Verified coordinate bounding math: `top >= 0` invariant strictly holds
+  - Empirically reproduced legacy baseline defect (`top = -47.3px` on iPhone SE)
+  - Verified project suites:
+    - `npm test`: 217/217 passed
+    - `npx tsc --noEmit`: 0 errors
+    - `npm run build`: 9/9 routes compiled cleanly
+  - Updated BRIEFING.md
+  - Generated final handoff report with verdict: APPROVE
