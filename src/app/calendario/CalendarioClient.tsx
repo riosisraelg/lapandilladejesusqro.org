@@ -699,11 +699,11 @@ export default function Calendario() {
             <div className="event-sidebar">
               {/* EVENTO FIJO DESTACADO */}
               {new Date() < new Date('2026-11-04') && (
-                <div className="event-detail-card" style={{ border: "1px solid var(--border)", boxShadow: "0 2px 8px rgba(0,0,0,0.05)", marginBottom: "1.5rem" }}>
+                <div className="event-detail-card talk-highlight-card" style={{ border: "1px solid var(--border)", boxShadow: "0 2px 8px rgba(0,0,0,0.05)", marginBottom: "1.5rem" }}>
                   <div className="event-detail-top">
                     <div className="event-type-badges-container">
-                      <span className="event-type-badge conferencia">
-                        📌 Conferencia Especial
+                      <span className="event-type-badge platica">
+                        Plática Especial
                       </span>
                     </div>
                     <span className="event-detail-time">
@@ -711,7 +711,7 @@ export default function Calendario() {
                       3 de noviembre, 2026 · 8:00 PM - 9:30 PM
                     </span>
                   </div>
-                  <h4 style={{ margin: "0.5rem 0" }}>Conferencia: Los 4 pilares de la pareja</h4>
+                  <h4 style={{ margin: "0.5rem 0" }}>Plática: Los 4 pilares de la pareja</h4>
                   <div className="event-detail-location">
                     <MapPinSmIcon />
                     Parroquia de la Sagrada Familia, Blvd Jardines de la Hacienda 710, Querétaro, Qro.
@@ -719,28 +719,28 @@ export default function Calendario() {
                   <div className="event-detail-actions" style={{ marginTop: "1rem" }}>
                     <button
                       onClick={() => setSelectedEvent({
-                        id: "conferencia-pilares-pareja",
-                        title: "Conferencia: Los 4 pilares de la pareja",
+                        id: "platica-pilares-pareja",
+                        title: "Plática: Los 4 pilares de la pareja",
                         date: "2026-11-03",
                         time: "8:00 PM - 9:30 PM",
                         location: "Parroquia de la Sagrada Familia, Blvd Jardines de la Hacienda 710, Querétaro, Qro.",
-                        description: "Conferencia impartida por el Dr. Mauricio Terrasas, psicoterapeuta.\nTemas: afectividad, sexualidad, economía y proyectos en común.\nDirigida a parejas, novios y matrimonios.\nCosto: $100 MXN.\n\nPara pagar tu entrada o pedir más informes contáctanos por WhatsApp al +52 1 442 249 7485:\nhttps://wa.me/5214422497485",
+                        description: "Plática impartida por el Dr. Mauricio Terrasas, psicoterapeuta.\nTemas: afectividad, sexualidad, economía y proyectos en común.\nDirigida a parejas, novios y matrimonios.\nCosto: $100 MXN.\n\nPara pagar tu entrada o pedir más informes contáctanos por WhatsApp al +52 1 442 249 7485:\nhttps://wa.me/5214422497485",
                         isPrecepto: false,
-                        types: ["Conferencia"],
+                        types: ["Plática"],
                       })}
                       className="btn-agendar"
                       style={{ background: "transparent" }}
                       data-tooltip="Ver detalles del evento y sincronizar con tu calendario"
                     >
-                      <CalendarSmIcon /> Agendar / Ver más
+                      <CalendarSmIcon /> Ver detalles
                     </button>
                     <button
-                      onClick={() => handleCopyEventLink({ id: "conferencia-pilares-pareja" } as any)}
+                      onClick={() => handleCopyEventLink({ id: "platica-pilares-pareja" } as any)}
                       className="btn-agendar"
                       style={{ 
-                        background: copiedEventId === "conferencia-pilares-pareja" ? "#20ba5a" : "transparent",
-                        color: copiedEventId === "conferencia-pilares-pareja" ? "#fff" : "inherit",
-                        maxWidth: copiedEventId === "conferencia-pilares-pareja" ? "120px" : "44px",
+                        background: copiedEventId === "platica-pilares-pareja" ? "#20ba5a" : "transparent",
+                        color: copiedEventId === "platica-pilares-pareja" ? "#fff" : "inherit",
+                        maxWidth: copiedEventId === "platica-pilares-pareja" ? "120px" : "44px",
                         padding: "0.5rem",
                         transition: "all 0.3s ease",
                         display: "flex",
@@ -750,7 +750,7 @@ export default function Calendario() {
                       }}
                       title="Copiar enlace directo"
                     >
-                      {copiedEventId === "conferencia-pilares-pareja" ? (
+                      {copiedEventId === "platica-pilares-pareja" ? (
                         <>
                           <CopyIcon />
                           <span style={{ fontSize: '0.8rem', fontWeight: 'bold' }}>Copiado</span>
