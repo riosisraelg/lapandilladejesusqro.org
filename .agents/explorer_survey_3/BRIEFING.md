@@ -1,49 +1,40 @@
-# BRIEFING — 2026-09-10T11:30:00Z
+# BRIEFING — 2026-09-10T20:26:53Z
 
 ## Mission
-Investigate scroll containment, overflow handling, and mobile body locking across the application, especially modal dialogs and sheets.
+Investigate architectural standards (ISO/IEC/IEEE 42010, 29148, 12207) and testing setup regarding mass readings (R1, R2, R3).
 
 ## 🔒 My Identity
 - Archetype: explorer
-- Roles: survey, scroll containment & body locking analysis
+- Roles: explorer, investigator, analyst
 - Working directory: /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/explorer_survey_3
-- Original parent: d4ceabdc-0e57-4961-b7dd-1c003edf586e
-- Milestone: Modal Architecture Survey & Hardening Plan
+- Original parent: 9fe0ebfb-9dc9-4ad7-a5f7-5f547740ec52
+- Milestone: Architectural and Testing Standards Survey
 
 ## 🔒 Key Constraints
 - Read-only investigation — do NOT implement
-- Write only inside /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/explorer_survey_3/
-- Provide complete 5-component handoff report
-- Deliver evidence chain with exact line numbers and quotes
+- Investigate architectural and testing standards (docs/architecture.md, docs/srs.md, docs/tasks.md, test setup, requirements R1, R2, R3)
+- Write only to /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/explorer_survey_3
 
 ## Current Parent
-- Conversation ID: d4ceabdc-0e57-4961-b7dd-1c003edf586e
-- Updated: 2026-09-10T11:30:00Z
+- Conversation ID: 9fe0ebfb-9dc9-4ad7-a5f7-5f547740ec52
+- Updated: not yet
 
 ## Investigation State
-- **Explored paths**: 
-  - `src/components/GlobalModal.tsx`
-  - `src/app/LandingClient.tsx` (modals: Cancionero, Oraciones, Guia de Misa, Confesion, AppleMusicGuia)
-  - `src/app/calendario/CalendarioClient.tsx` (Add-to-Calendar event modal)
-  - `src/app/AppleMusicLyrics.tsx`
-  - `src/app/global.css` (modal overlay, cards, animations, responsive media queries)
-  - `src/app/layout.tsx`
-  - `package.json` & `scripts/test-e2e.mjs`
+- **Explored paths**: docs/architecture.md, docs/srs.md, docs/tasks.md, docs/20260908/TEST_INFRA.md, docs/20260908/TEST_READY.md, package.json, scripts/test-e2e.mjs, src/app/api/mass-readings/route.ts, src/app/LandingClient.tsx, src/app/massResponses.ts
 - **Key findings**:
-  1. Root cause of mobile cut-off bug is Flexbox `justify-content: flex-end` on `.calendar-modal-overlay` combined with overflow: when modal content height exceeds the mobile dynamic viewport (`100dvh`), `justify-content: flex-end` forces content into negative scroll space, permanently clipping the top of the modal out of view and leaving only the bottom visible with the background page behind it.
-  2. Mobile body locking is completely broken on iOS WebKit: `LandingClient.tsx` only sets `document.body.style.overflow = 'hidden'`, which iOS Safari ignores for touch drag gestures, allowing background window scrolling and rubber-banding.
-  3. `CalendarioClient.tsx` has zero body locking (does not even set `overflow: hidden`).
-  4. Missing `overscroll-behavior: contain` on `.lyric-scroll-container`, `.recursos-modal-body`, and `.confesion-modal-body`.
-  5. Missing `min-height: 0` on modal flex children causing flex item overflow.
-  6. In `AppleMusicLyrics.tsx`, `scrollIntoView()` on `targetEl` shifts the entire browser window on mobile.
-  7. Test suite is Node-based (`scripts/test-e2e.mjs`) with 217 tests across 5 tiers, with 1 existing failing test (`R10.1` missing `./PROJECT.md`).
-- **Unexplored areas**: None within scope.
+  1. ISO docs currently specify Evangelizo XML scraping (`feed.evangelizo.org`) with CDATA and entity decoding; need full update to specify `catholic-mass-readings` library (USCCB scraper).
+  2. Test setup uses custom zero-dependency Node.js ESM harness in `scripts/test-e2e.mjs` (`npm test`); Jest, Vitest, Playwright, Cypress are NOT installed.
+  3. Existing tests for R8 in `scripts/test-e2e.mjs` test Evangelizo XML parsing and must be adapted for `catholic-mass-readings`.
+  4. `catholic-mass-readings` is an npm package (v0.5.6) by andrewtryder querying `bible.usccb.org` (in English, no native Spanish support). R2 specifies respecting language param *if supported by package*.
+  5. UI in `LandingClient.tsx` consumes `MassReadingsResponse` directly; the adapter in `route.ts` can map USCCB `Mass` model into `MassReadingsResponse` without breaking changes.
+- **Unexplored areas**: None; full survey of architecture, standards, test suite, and requirements completed.
 
 ## Key Decisions Made
-- Fully documented all 3 investigation items with complete evidence chain, logic chain, caveats, conclusion, and verification methods.
+- Analyzed and documented 3-stage ISO/IEC/IEEE updates needed (ISO 42010, ISO 29148, ISO 12207).
+- Identified exact gaps in documentation, tests, and build verification.
 
 ## Artifact Index
-- DISPATCH.md — Received directives
-- BRIEFING.md — Working memory
-- progress.md — Liveness & progress tracker
-- handoff.md — Final 5-component handoff report
+- /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/explorer_survey_3/DISPATCH.md — Incoming message log
+- /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/explorer_survey_3/BRIEFING.md — Persistent working memory
+- /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/explorer_survey_3/progress.md — Liveness heartbeat
+- /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/explorer_survey_3/handoff.md — Final investigation report

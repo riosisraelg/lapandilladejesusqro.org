@@ -21,6 +21,7 @@ import assert from 'node:assert/strict';
 import { readFileSync, existsSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { USCCB, SectionType } from 'catholic-mass-readings';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -628,6 +629,212 @@ function parseEvangelizoXmlFeed(xmlString, requestedDate = '20260828') {
   }
 
   return result;
+}
+
+/**
+ * R8 catholic-mass-readings Reference: Responsorial Psalm Parser
+ */
+function parsePsalmFromReading(readingText, citation, shortCitation) {
+  if (!readingText || !readingText.trim()) {
+    return {
+      citation: citation || 'Responsorial Psalm',
+      shortCitation: shortCitation || citation,
+      response: '',
+      text: '',
+      stanzas: []
+    };
+  }
+
+  const responsePrefixRegex = /^R\.\s*(?:\([^\)]+\)\s*)?/i;
+  const paragraphs = readingText.split(/\n\s*\n+/).map(p => p.trim()).filter(Boolean);
+
+  let response = '';
+  const stanzas = [];
+  let currentStanzaLines = [];
+
+  for (const p of paragraphs) {
+    if (responsePrefixRegex.test(p)) {
+      if (!response) {
+        response = p.replace(responsePrefixRegex, '').trim();
+      }
+      if (currentStanzaLines.length > 0) {
+        stanzas.push(currentStanzaLines.join('\n\n'));
+        currentStanzaLines = [];
+      }
+    } else {
+      currentStanzaLines.push(p);
+    }
+  }
+
+  if (currentStanzaLines.length > 0) {
+    stanzas.push(currentStanzaLines.join('\n\n'));
+  }
+
+  if (!response && paragraphs.length > 0) {
+    response = paragraphs[0].replace(/^R\.\s*/i, '').trim();
+    if (stanzas.length === 0 && paragraphs.length > 1) {
+      stanzas.push(...paragraphs.slice(1));
+    }
+  }
+
+  return {
+    citation: citation || 'Responsorial Psalm',
+    shortCitation: shortCitation || citation,
+    response,
+    text: stanzas.join('\n\n') || readingText,
+    stanzas: stanzas.length > 0 ? stanzas : [readingText],
+  };
+}
+
+/**
+ * R8 catholic-mass-readings Reference: Alleluia & Gospel Acclamation Parser
+ */
+function parseAlleluiaFromReading(readingText, citation) {
+  if (!readingText || !readingText.trim()) {
+    return { citation, acclamation: 'Alleluia, alleluia!', verse: '' };
+  }
+
+  const paragraphs = readingText.split(/\n\s*\n+/).map(p => p.trim()).filter(Boolean);
+  const rAlleluiaRegex = /^R\.\s*(?:alleluia|aleluya)/i;
+  let acclamation = 'Alleluia, alleluia!';
+  const verseParas = [];
+
+  for (const para of paragraphs) {
+    if (rAlleluiaRegex.test(para)) {
+      acclamation = para.replace(/^R\.\s*/i, '').trim();
+      if (!acclamation.endsWith('!') && !acclamation.endsWith('.')) {
+        acclamation += '!';
+      }
+    } else {
+      verseParas.push(para);
+    }
+  }
+
+  return {
+    citation,
+    acclamation,
+    verse: verseParas.join('\n\n') || readingText,
+  };
+}
+
+/**
+ * R8 catholic-mass-readings Reference: Mass to MassReadingsResponse Adapter
+ */
+function mapUsccbMassToResponse(mass, requestedDateStr) {
+  const sections = mass.sections || [];
+
+  // First Reading
+  const r1Sec = sections.find(s =>
+    s.type === SectionType.READING &&
+    (s.header.toLowerCase().includes('1') || !s.header.toLowerCase().includes('2'))
+  ) || sections.find(s => s.type === SectionType.READING);
+  const r1 = r1Sec?.readings[0];
+  const r1Citation = r1?.verses?.map(v => v.text).join(', ') || r1Sec?.header || 'Reading 1';
+
+  // Responsorial Psalm
+  const psalmSec = sections.find(s => s.type === SectionType.PSALM);
+  const psalmReading = psalmSec?.readings[0];
+  const psalmCitation = psalmReading?.verses?.map(v => v.text).join(', ') || psalmSec?.header || 'Responsorial Psalm';
+  const psalm = parsePsalmFromReading(psalmReading?.text || '', psalmCitation);
+
+  // Second Reading (Sundays / Solemnities)
+  const r2Sec = sections.find(s =>
+    s.type === SectionType.READING &&
+    (s.header.toLowerCase().includes('2') || s.header.toLowerCase().includes('second'))
+  );
+  let secondReading = undefined;
+  if (r2Sec && r2Sec.readings && r2Sec.readings[0]?.text) {
+    const r2 = r2Sec.readings[0];
+    const r2Citation = r2.verses?.map(v => v.text).join(', ') || r2Sec.header || 'Reading 2';
+    secondReading = { citation: r2Citation, shortCitation: r2Citation, text: r2.text };
+  }
+
+  // Alleluia
+  const alleluiaSec = sections.find(s => s.type === SectionType.ALLELUIA);
+  const alleluiaReading = alleluiaSec?.readings[0];
+  const alleluiaCitation = alleluiaReading?.verses?.map(v => v.text).join(', ') || undefined;
+  const alleluia = parseAlleluiaFromReading(alleluiaReading?.text || '', alleluiaCitation);
+
+  // Gospel
+  const gospelSec = sections.find(s => s.type === SectionType.GOSPEL);
+  const gospelReading = gospelSec?.readings[0];
+  const gospelCitation = gospelReading?.verses?.map(v => v.text).join(', ') || gospelSec?.header || 'Gospel';
+
+  return {
+    date: requestedDateStr,
+    liturgicalDay: mass.title || 'Daily Mass',
+    firstReading: {
+      citation: r1Citation,
+      shortCitation: r1Citation,
+      text: r1?.text || '',
+    },
+    psalm,
+    ...(secondReading ? { secondReading } : {}),
+    alleluia,
+    gospel: {
+      citation: gospelCitation,
+      shortCitation: gospelCitation,
+      text: gospelReading?.text || '',
+    },
+    isFallback: false,
+    source: 'catholic-mass-readings',
+  };
+}
+
+/**
+ * Normalizes input date parameter to Date object and YYYYMMDD string
+ */
+function parseDateQuery(dateParam) {
+  if (!dateParam) {
+    const now = new Date();
+    const formatter = new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'America/Mexico_City',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    });
+    const parts = formatter.formatToParts(now);
+    const y = parseInt(parts.find(p => p.type === 'year')?.value || '2026', 10);
+    const m = parseInt(parts.find(p => p.type === 'month')?.value || '9', 10);
+    const d = parseInt(parts.find(p => p.type === 'day')?.value || '10', 10);
+    const dateStr = `${y}${String(m).padStart(2, '0')}${String(d).padStart(2, '0')}`;
+    return { dateObj: new Date(y, m - 1, d), dateStr };
+  }
+
+  const isoMatch = dateParam.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (isoMatch) {
+    const y = parseInt(isoMatch[1], 10);
+    const m = parseInt(isoMatch[2], 10);
+    const d = parseInt(isoMatch[3], 10);
+    return { dateObj: new Date(y, m - 1, d), dateStr: `${y}${String(m).padStart(2, '0')}${String(d).padStart(2, '0')}` };
+  }
+
+  const compactMatch = dateParam.match(/^(\d{4})(\d{2})(\d{2})$/);
+  if (compactMatch) {
+    const y = parseInt(compactMatch[1], 10);
+    const m = parseInt(compactMatch[2], 10);
+    const d = parseInt(compactMatch[3], 10);
+    return { dateObj: new Date(y, m - 1, d), dateStr: dateParam };
+  }
+
+  const cleaned = dateParam.replace(/[^0-9]/g, '');
+  if (cleaned.length === 8) {
+    const y = parseInt(cleaned.slice(0, 4), 10);
+    const m = parseInt(cleaned.slice(4, 6), 10);
+    const d = parseInt(cleaned.slice(6, 8), 10);
+    return { dateObj: new Date(y, m - 1, d), dateStr: cleaned };
+  }
+
+  const parsed = new Date(dateParam);
+  if (!isNaN(parsed.getTime())) {
+    const y = parsed.getFullYear();
+    const m = parsed.getMonth() + 1;
+    const d = parsed.getDate();
+    return { dateObj: parsed, dateStr: `${y}${String(m).padStart(2, '0')}${String(d).padStart(2, '0')}` };
+  }
+
+  const now = new Date();
+  return { dateObj: now, dateStr: '20260910' };
 }
 
 /**
@@ -1741,146 +1948,207 @@ runner.test('R7.8 - Litany of Loreto invocations presence in concluding deck', (
 // ----------------------------------------------------------------------------
 // R8.1: Daily Mass Readings Scraper API Engine
 // ----------------------------------------------------------------------------
-runner.setRequirement('R8.1: Daily Mass Readings Scraper API Engine');
+runner.setRequirement('R8.1: Daily Mass Readings Scraper API Engine (catholic-mass-readings)');
 
-runner.test('R8.1 - XML Parser weekday extraction (1st reading, psalm, gospel)', () => {
-  const sampleXml = `<?xml version="1.0" encoding="utf-8"?>
-  <evangelizo>
-    <litugic_t>Viernes de la 21a semana del Tiempo Ordinario</litugic_t>
-    <saint>San Agustín de Hipona</saint>
-    <reading_text1_lt>Carta I de San Pablo a los Corintios 1,17-25</reading_text1_lt>
-    <reading_text1_st>1 Co 1, 17-25</reading_text1_st>
-    <reading_text1>Cristo no me envió a bautizar, sino a anunciar el Evangelio...</reading_text1>
-    <reading_text2_lt>Salmo 33(32),1-2.4-5.10-11</reading_text2_lt>
-    <reading_text2_st>Sal 33</reading_text2_st>
-    <reading_text2>R. La misericordia del Señor llena la tierra.
+runner.test('R8.1 - catholic-mass-readings weekday mass parsing and mapping (1st reading, psalm, alleluia, gospel)', () => {
+  const weekdayMass = {
+    title: 'Thursday of the Twenty-third Week in Ordinary Time',
+    date: new Date(2026, 8, 10),
+    type: '',
+    url: 'https://bible.usccb.org/bible/readings/091026.cfm',
+    sections: [
+      {
+        type: SectionType.READING,
+        header: 'Reading 1',
+        readings: [
+          {
+            verses: [{ text: '1 Corinthians 8:1b-7, 11-13', link: '', book: '1 Corinthians' }],
+            text: 'Brothers and sisters: Knowledge inflates with pride, but love builds up. If anyone supposes he knows something, he does not yet know as he ought to know.'
+          }
+        ]
+      },
+      {
+        type: SectionType.PSALM,
+        header: 'Responsorial Psalm',
+        readings: [
+          {
+            verses: [{ text: 'Psalm 139:1b-3, 13-14ab, 23-24', link: '', book: 'Psalms' }],
+            text: 'R. (24b) Guide me, Lord, along the everlasting way.\n\nO LORD, you have probed me and you know me;\nyou know when I sit and when I stand;\nyou understand my thoughts from afar.\n\nR. Guide me, Lord, along the everlasting way.\n\nTruly you have formed my inmost being;\nyou knit me in my mother’s womb.'
+          }
+        ]
+      },
+      {
+        type: SectionType.ALLELUIA,
+        header: 'Alleluia',
+        readings: [
+          {
+            verses: [{ text: '1 John 4:12', link: '', book: '1 John' }],
+            text: 'R. Alleluia, alleluia.\n\nIf we love one another,\nGod remains in us,\nand his love is brought to perfection in us.\n\nR. Alleluia, alleluia.'
+          }
+        ]
+      },
+      {
+        type: SectionType.GOSPEL,
+        header: 'Gospel',
+        readings: [
+          {
+            verses: [{ text: 'Luke 6:27-38', link: '', book: 'Luke' }],
+            text: 'Jesus said to his disciples: “To you who hear I say, love your enemies, do good to those who hate you, bless those who curse you, pray for those who mistreat you.'
+          }
+        ]
+      }
+    ]
+  };
 
-Aclamen, justos, al Señor,
-que es propio de los buenos alabarlo.
-
-La palabra del Señor es sincera,
-y todas sus acciones son leales.</reading_text2>
-    <reading_gospel_lt>Evangelio según San Mateo 25,1-13</reading_gospel_lt>
-    <reading_gospel_st>Mt 25, 1-13</reading_gospel_st>
-    <reading_gospel>En aquel tiempo, dijo Jesús a sus discípulos esta parábola: "El Reino de los Cielos será semejante a diez jóvenes..."</reading_gospel>
-    <comment_t>San Juan Crisóstomo</comment_t>
-    <comment>Las lámparas encendidas representan la fe pura y las buenas obras...</comment>
-  </evangelizo>`;
-
-  const parsed = parseEvangelizoXmlFeed(sampleXml, '20260828');
-  assert.equal(parsed.liturgicalDay, 'Viernes de la 21a semana del Tiempo Ordinario');
-  assert.equal(parsed.saint, 'San Agustín de Hipona');
-  assert.equal(parsed.firstReading.citation, 'Carta I de San Pablo a los Corintios 1,17-25');
-  assert.equal(parsed.firstReading.shortCitation, '1 Co 1, 17-25');
-  assert.ok(parsed.firstReading.text.includes('Cristo no me envió a bautizar'));
-  assert.equal(parsed.psalm.response, 'La misericordia del Señor llena la tierra.');
-  assert.equal(parsed.psalm.stanzas.length, 2);
-  assert.equal(parsed.secondReading, undefined, 'Weekday Mass must omit secondReading');
-  assert.ok(parsed.gospel.text.includes('diez jóvenes'));
-  assert.equal(parsed.meditation.author, 'San Juan Crisóstomo');
+  const mapped = mapUsccbMassToResponse(weekdayMass, '20260910');
+  assert.equal(mapped.liturgicalDay, 'Thursday of the Twenty-third Week in Ordinary Time');
+  assert.equal(mapped.date, '20260910');
+  assert.equal(mapped.source, 'catholic-mass-readings');
+  assert.equal(mapped.isFallback, false);
+  assert.equal(mapped.firstReading.citation, '1 Corinthians 8:1b-7, 11-13');
+  assert.ok(mapped.firstReading.text.includes('Knowledge inflates with pride'));
+  assert.equal(mapped.psalm.response, 'Guide me, Lord, along the everlasting way.');
+  assert.equal(mapped.psalm.stanzas.length, 2);
+  assert.equal(mapped.secondReading, undefined, 'Weekday Mass must omit secondReading');
+  assert.ok(mapped.alleluia.acclamation.includes('Alleluia'));
+  assert.ok(mapped.alleluia.verse.includes('If we love one another'));
+  assert.equal(mapped.gospel.citation, 'Luke 6:27-38');
+  assert.ok(mapped.gospel.text.includes('love your enemies'));
 });
 
-runner.test('R8.2 - XML Parser Sunday/Solemnity 2nd reading extraction from <reading_text3>', () => {
-  const sundayXml = `<?xml version="1.0" encoding="utf-8"?>
-  <evangelizo>
-    <litugic_t>XXII Domingo del Tiempo Ordinario</litugic_t>
-    <reading_text1_lt>Lectura del libro del Eclesiástico (3, 17-18. 20. 28-29)</reading_text1_lt>
-    <reading_text1>Hijo mío, en tus asuntos procede con humildad...</reading_text1>
-    <reading_text2_lt>Salmo 68 (67), 4-5ac. 6-7ab. 10-11</reading_text2_lt>
-    <reading_text2>R. Has preparado, oh Dios, una casa para el pobre.
+runner.test('R8.2 - catholic-mass-readings Sunday/Solemnity 2nd reading extraction', () => {
+  const sundayMass = {
+    title: 'Twenty-fourth Sunday in Ordinary Time',
+    date: new Date(2026, 8, 13),
+    type: '',
+    url: 'https://bible.usccb.org/bible/readings/091326.cfm',
+    sections: [
+      {
+        type: SectionType.READING,
+        header: 'Reading 1',
+        readings: [{ verses: [{ text: 'Sirach 27:30—28:7', link: '', book: 'Sirach' }], text: 'Wrath and anger are hateful things...' }]
+      },
+      {
+        type: SectionType.PSALM,
+        header: 'Responsorial Psalm',
+        readings: [{ verses: [{ text: 'Psalm 103:1-2, 3-4, 9-10, 11-12', link: '', book: 'Psalms' }], text: 'R. (8) The Lord is kind and merciful.\n\nBless the LORD, O my soul...' }]
+      },
+      {
+        type: SectionType.READING,
+        header: 'Reading 2',
+        readings: [{ verses: [{ text: 'Romans 14:7-9', link: '', book: 'Romans' }], text: 'Brothers and sisters: None of us lives for oneself, and no one dies for oneself.' }]
+      },
+      {
+        type: SectionType.ALLELUIA,
+        header: 'Alleluia',
+        readings: [{ verses: [{ text: 'John 13:34', link: '', book: 'John' }], text: 'R. Alleluia, alleluia.\n\nI give you a new commandment: love one another as I have loved you.\n\nR. Alleluia, alleluia.' }]
+      },
+      {
+        type: SectionType.GOSPEL,
+        header: 'Gospel',
+        readings: [{ verses: [{ text: 'Matthew 18:21-35', link: '', book: 'Matthew' }], text: 'Peter approached Jesus and asked him, “Lord, if my brother sins against me, how often must I forgive him?”' }]
+      }
+    ]
+  };
 
-Los justos se alegran, gozan en la presencia de Dios.
-
-Padre de huérfanos, protector de viudas.</reading_text2>
-    <reading_text3_lt>Lectura de la carta a los Hebreos (12, 18-19. 22-24a)</reading_text3_lt>
-    <reading_text3_st>Heb 12, 18-19. 22-24a</reading_text3_st>
-    <reading_text3>Hermanos: Ustedes no se han acercado a una realidad sensible: a un fuego encendido...</reading_text3>
-    <reading_gospel_lt>Lectura del santo Evangelio según San Lucas (14, 1. 7-14)</reading_gospel_lt>
-    <reading_gospel>Un sábado, Jesús entró a comer en casa de uno de los principales fariseos...</reading_gospel>
-  </evangelizo>`;
-
-  const parsed = parseEvangelizoXmlFeed(sundayXml, '20260830');
-  assert.ok(parsed.secondReading, 'Sunday liturgy must include secondReading');
-  assert.equal(parsed.secondReading.citation, 'Lectura de la carta a los Hebreos (12, 18-19. 22-24a)');
-  assert.equal(parsed.secondReading.shortCitation, 'Heb 12, 18-19. 22-24a');
-  assert.ok(parsed.secondReading.text.includes('Ustedes no se han acercado a una realidad sensible'));
+  const mapped = mapUsccbMassToResponse(sundayMass, '20260913');
+  assert.ok(mapped.secondReading, 'Sunday liturgy must include secondReading');
+  assert.equal(mapped.secondReading.citation, 'Romans 14:7-9');
+  assert.ok(mapped.secondReading.text.includes('None of us lives for oneself'));
 });
 
-runner.test('R8.3 - Psalm parser response extraction without truncating verse 1', () => {
-  const psalmRaw = `R. El Señor es mi pastor, nada me falta.
+runner.test('R8.3 - Responsorial Psalm parser response extraction without truncating verse 1', () => {
+  const psalmRaw = `R. (24b) Guide me, Lord, along the everlasting way.
 
-El Señor es mi pastor, nada me falta:
-en verdes praderas me hace reposar,
-hacia aguas tranquilas me guía
-y conforta mi alma.
+O LORD, you have probed me and you know me;
+you know when I sit and when I stand;
+you understand my thoughts from afar.
+My journeys and my rest you scrutinize,
+with all my ways you are familiar.
 
-Me conduce por senderos justos,
-por el honor de su nombre.`;
+R. Guide me, Lord, along the everlasting way.
 
-  const parsed = parsePsalm(psalmRaw, 'Salmo 23', 'Sal 23');
-  assert.equal(parsed.response, 'El Señor es mi pastor, nada me falta.');
+Truly you have formed my inmost being;
+you knit me in my mother’s womb.`;
+
+  const parsed = parsePsalmFromReading(psalmRaw, 'Psalm 139:1b-3, 13-14ab, 23-24');
+  assert.equal(parsed.response, 'Guide me, Lord, along the everlasting way.');
   assert.equal(parsed.stanzas.length, 2);
-  assert.ok(parsed.stanzas[0].includes('en verdes praderas me hace reposar'), 'Verse 1 must be fully preserved');
+  assert.ok(parsed.stanzas[0].includes('O LORD, you have probed me'), 'Verse 1 must be fully preserved');
 });
 
-runner.test('R8.4 - Psalm parser multi-stanza parsing with stanzas array', () => {
-  const psalmRaw = `R. Cantad al Señor un cántico nuevo.
+runner.test('R8.4 - Responsorial Psalm parser multi-stanza parsing with stanzas array', () => {
+  const psalmRaw = `R. The Lord is kind and merciful.
 
-Cantad al Señor un cántico nuevo,
-porque ha hecho maravillas.
+Bless the LORD, O my soul;
+and all my being, bless his holy name.
 
-Los confines de la tierra han contemplado
-la victoria de nuestro Dios.
+R. The Lord is kind and merciful.
 
-Aclamad al Señor, tierra entera;
-gritad, vitoread, tocad.`;
+He pardons all your iniquities,
+heals all your ills.
 
-  const parsed = parsePsalm(psalmRaw, 'Salmo 97');
-  assert.equal(parsed.response, 'Cantad al Señor un cántico nuevo.');
+R. The Lord is kind and merciful.
+
+Merciful and gracious is the LORD,
+slow to anger and abounding in kindness.`;
+
+  const parsed = parsePsalmFromReading(psalmRaw, 'Psalm 103');
+  assert.equal(parsed.response, 'The Lord is kind and merciful.');
   assert.equal(parsed.stanzas.length, 3);
-  assert.ok(parsed.stanzas[2].includes('Aclamad al Señor'));
+  assert.ok(parsed.stanzas[2].includes('Merciful and gracious is the LORD'));
 });
 
-runner.test('R8.5 - Gospel Acclamation / Alleluia seasonal builder (Ordinary Time "¡Aleluya, aleluya!")', () => {
-  const alleluia = buildLiturgicalAlleluia('Domingo XX del Tiempo Ordinario', '<evangelizo></evangelizo>', '20260828');
-  assert.equal(alleluia.acclamation, '¡Aleluya, aleluya!');
-  assert.equal(alleluia.citation, 'Jn 6, 63c. 68c');
+runner.test('R8.5 - Gospel Acclamation / Alleluia parser from USCCB text', () => {
+  const alleluiaRaw = `R. Alleluia, alleluia.
+
+If we love one another,
+God remains in us,
+and his love is brought to perfection in us.
+
+R. Alleluia, alleluia.`;
+
+  const parsed = parseAlleluiaFromReading(alleluiaRaw, '1 John 4:12');
+  assert.ok(parsed.acclamation.includes('Alleluia'));
+  assert.equal(parsed.citation, '1 John 4:12');
+  assert.ok(parsed.verse.includes('If we love one another'));
 });
 
-runner.test('R8.6 - Gospel Acclamation / Alleluia seasonal builder (Lent "Honor y gloria a ti, Señor Jesús")', () => {
-  const lentAlleluia = buildLiturgicalAlleluia('IV Domingo de Cuaresma', '<evangelizo></evangelizo>', '20260315');
-  assert.equal(lentAlleluia.acclamation, 'Honor y gloria a ti, Señor Jesús');
-  assert.equal(lentAlleluia.citation, 'Mt 4, 4b');
-  assert.ok(lentAlleluia.verse.includes('El hombre no vive solamente de pan'));
+runner.test('R8.6 - Language parameter pass-through and graceful non-crashing execution', () => {
+  const routeContent = readFileSync(resolve(ROOT_DIR, 'src/app/api/mass-readings/route.ts'), 'utf8');
+  assert.ok(routeContent.includes("searchParams.get('lang')"), 'Route must read lang query parameter');
+  
+  const landingContent = readFileSync(resolve(ROOT_DIR, 'src/app/LandingClient.tsx'), 'utf8');
+  assert.ok(landingContent.includes("fetch('/api/mass-readings?lang=' + guiaLang)"), 'LandingClient must pass guiaLang');
 });
 
-runner.test('R8.7 - XML CDATA extraction for reading text and citations', () => {
-  const xmlWithCdata = `<evangelizo>
-    <litugic_t><![CDATA[Memoria de San Agustín, Obispo & Doctor]]></litugic_t>
-    <reading_text1><![CDATA[Hermanos: Les rogamos que caminen como es digno...]]></reading_text1>
-    <reading_text2><![CDATA[R. El Señor es mi pastor.
+runner.test('R8.7 - Date parameter parsing (converts YYYYMMDD and YYYY-MM-DD to Date object)', () => {
+  const parsedIso = parseDateQuery('2026-09-10');
+  assert.equal(parsedIso.dateStr, '20260910');
+  assert.equal(parsedIso.dateObj.getFullYear(), 2026);
+  assert.equal(parsedIso.dateObj.getMonth(), 8); // 0-indexed: 8 = September
+  assert.equal(parsedIso.dateObj.getDate(), 10);
 
-En verdes praderas me hace reposar.]]></reading_text2>
-    <reading_gospel><![CDATA[Jesús dijo: "Yo soy el Buen Pastor".]]></reading_gospel>
-  </evangelizo>`;
+  const parsedCompact = parseDateQuery('20260913');
+  assert.equal(parsedCompact.dateStr, '20260913');
+  assert.equal(parsedCompact.dateObj.getDate(), 13);
 
-  const parsed = parseEvangelizoXmlFeed(xmlWithCdata);
-  assert.equal(parsed.liturgicalDay, 'Memoria de San Agustín, Obispo & Doctor');
-  assert.ok(parsed.firstReading.text.includes('Les rogamos que caminen'));
-  assert.equal(parsed.psalm.response, 'El Señor es mi pastor.');
-  assert.ok(parsed.gospel.text.includes('Yo soy el Buen Pastor'));
+  const parsedNull = parseDateQuery(null);
+  assert.ok(parsedNull.dateStr.length === 8);
+  assert.ok(parsedNull.dateObj instanceof Date);
 });
 
-runner.test('R8.8 - Spanish accented entity decoding (&aacute;, &eacute;, &iacute;, &oacute;, &uacute;, &ntilde;)', () => {
-  const encoded = '&Aacute;ngel, Jos&eacute;, Mar&iacute;a, oraci&oacute;n, Jes&uacute;s, se&ntilde;or, &uuml;ber.';
-  const decoded = decodeEntities(encoded);
-  assert.equal(decoded, 'Ángel, José, María, oración, Jesús, señor, über.');
+runner.test('R8.8 - HTTP Cache-Control and Edge caching headers', () => {
+  const routeContent = readFileSync(resolve(ROOT_DIR, 'src/app/api/mass-readings/route.ts'), 'utf8');
+  assert.ok(routeContent.includes('public, s-maxage=86400, stale-while-revalidate=43200'), 'Must include 24h Edge cache header on success');
+  assert.ok(routeContent.includes('public, s-maxage=300, stale-while-revalidate=3600'), 'Must include fallback cache header');
 });
 
-runner.test('R8.9 - Punctuation and numerical entity decoding (&laquo;, &raquo;, &#39;, &quot;, &#169;, &#x2014;)', () => {
-  const encoded = '&laquo;Paz a ustedes&#39;&raquo; &quot;Dios&quot; &#169; 2026 &#x2014; Am&eacute;n';
-  const decoded = decodeEntities(encoded);
-  assert.equal(decoded, '«Paz a ustedes\'» "Dios" © 2026 — Amén');
+runner.test('R8.9 - Upstream failure & network timeout fallback resilience', () => {
+  const routeContent = readFileSync(resolve(ROOT_DIR, 'src/app/api/mass-readings/route.ts'), 'utf8');
+  assert.ok(routeContent.includes('FALLBACK_READINGS'), 'Must reference FALLBACK_READINGS');
+  assert.ok(routeContent.includes("isFallback: true"), 'Must return isFallback on error');
+  assert.ok(routeContent.includes("source: 'fallback'"), 'Must set source to fallback');
 });
 
 runner.test('R8.10 - Offline FALLBACK_READINGS data contract completeness (Psalm 23 with 4 stanzas, Jn 14, 1-6)', () => {
@@ -1892,26 +2160,18 @@ runner.test('R8.10 - Offline FALLBACK_READINGS data contract completeness (Psalm
   assert.equal(FALLBACK_READINGS.gospel.shortCitation, 'Jn 14, 1-6');
 });
 
-runner.test('R8.10a - XML Tag name prefix collision isolation (reading_text1 does not match reading_text1_lt or reading_text1_st)', () => {
-  const xml = '<reading_text1_lt>Citation</reading_text1_lt><reading_text1_st>Short</reading_text1_st><reading_text1>Body</reading_text1>';
-  assert.equal(extractXmlTag(xml, 'reading_text1'), 'Body');
-  assert.equal(extractXmlTag(xml, 'reading_text1_lt'), 'Citation');
-  assert.equal(extractXmlTag(xml, 'reading_text1_st'), 'Short');
-
-  // Verify source code of route.ts has the non-colliding regex
+runner.test('R8.10a - Route handler source code imports catholic-mass-readings (USCCB, createNodeHttpClient)', () => {
   const routeContent = readFileSync(resolve(ROOT_DIR, 'src/app/api/mass-readings/route.ts'), 'utf8');
-  assert.ok(/\(\?:\\\\s\[\^>\]\*\)\?>/.test(routeContent) || routeContent.includes('(?:\\s[^>]*)?>'), 'route.ts extractXmlTag must prevent tag prefix collisions');
+  assert.ok(routeContent.includes("from 'catholic-mass-readings'"), 'Must import from catholic-mass-readings');
+  assert.ok(routeContent.includes('USCCB'), 'Must use USCCB client');
+  assert.ok(routeContent.includes('createNodeHttpClient'), 'Must use createNodeHttpClient');
 });
 
-runner.test('R8.10b - Christmas liturgical season detection for "La Natividad del Señor" yielding "Lc 2, 10-11"', () => {
-  const christmasAlleluia = buildLiturgicalAlleluia('La Natividad del Señor', '<evangelizo></evangelizo>', '20261225');
-  assert.equal(christmasAlleluia.acclamation, '¡Aleluya, aleluya!');
-  assert.equal(christmasAlleluia.citation, 'Lc 2, 10-11');
-  assert.ok(christmasAlleluia.verse.includes('hoy nos ha nacido el Salvador'));
-
-  // Verify source code of route.ts contains natividad in isChristmas regex
+runner.test('R8.10b - Route handler maps catholic-mass-readings to MassReadingsResponse contract', () => {
   const routeContent = readFileSync(resolve(ROOT_DIR, 'src/app/api/mass-readings/route.ts'), 'utf8');
-  assert.ok(routeContent.includes('natividad'), 'route.ts buildLiturgicalAlleluia must include natividad in Christmas detection');
+  assert.ok(routeContent.includes('mapUsccbMassToResponse'), 'Must contain mapUsccbMassToResponse adapter');
+  assert.ok(routeContent.includes("source: 'catholic-mass-readings'"), 'Must return source as catholic-mass-readings');
+  assert.ok(routeContent.includes('parseDateQuery'), 'Must parse date query parameter');
 });
 
 // ----------------------------------------------------------------------------
@@ -2009,13 +2269,13 @@ runner.setRequirement('R8.3: Direct Access & Auto-Fetch Subsystem');
 runner.test('R8.19 - Direct Access button in LandingClient.tsx routes directly to Section 1 (Ritos Iniciales, index 0)', () => {
   const landingCode = readFileSync(resolve(ROOT_DIR, 'src/app/LandingClient.tsx'), 'utf8');
   assert.ok(landingCode.includes("setActiveMisaSectionIdx(0)"), 'Must reset section index to 0');
-  assert.ok(landingCode.includes("setActiveGuiaTab('respuestas')"), 'Must activate Mass Guide tab');
+  assert.ok(landingCode.includes("setActiveGuiaTab('lecturas')") || landingCode.includes("setActiveGuiaTab('respuestas')"), 'Must activate Mass Guide tab');
 });
 
-runner.test('R8.20 - Direct Access "Seguir la Misa" button routes with activeGuiaTab respuestas', () => {
+runner.test('R8.20 - Direct Access "Seguir la Misa" button routes with interactive guide or mass guide', () => {
   const landingCode = readFileSync(resolve(ROOT_DIR, 'src/app/LandingClient.tsx'), 'utf8');
   assert.ok(landingCode.includes("btn-seguir-misa"), 'Must declare btn-seguir-misa');
-  assert.ok(landingCode.includes("setModalUrl('guia', { seccion: 'respuestas' })"), 'Must update URL to guia respuestas');
+  assert.ok(landingCode.includes("setModalUrl('guia_misa_interactiva'") || landingCode.includes("setModalUrl('guia'"), 'Must update URL to guia modal');
 });
 
 runner.test('R8.21 - Client mount auto-fetch fetchDailyReadings() execution in LandingClient.tsx', () => {

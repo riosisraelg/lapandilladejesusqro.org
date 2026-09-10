@@ -1,16 +1,17 @@
-## 2026-09-10T17:24:51Z
-You are Explorer 1 (Modal Inventory & Structure).
-Your working directory is: /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/explorer_survey_1.
-Initialize your BRIEFING.md and progress.md in your working directory.
-
-Read /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/ORIGINAL_REQUEST.md.
-Investigate the codebase to create a comprehensive inventory of ALL modals, dialogs, drawers, bottom sheets, full-screen readers, and overlays in this Next.js project.
-Specifically:
-1. Search all files under src/ (e.g. LandingClient.tsx, AppleMusicLyrics.tsx, components/, etc.) for modal dialogs and overlays.
-2. For each modal found:
-   - Identify file path and component name.
-   - Describe how it is mounted (React portal, inline fixed overlay, conditional rendering).
-   - Identify outer wrapper DOM elements, styling, positioning, and z-index.
-   - Describe modal header, body, and footer structure.
-3. Deliver a comprehensive report with file paths and line numbers to /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/explorer_survey_1/handoff.md following the Handoff Protocol (Observation, Logic Chain, Caveats, Conclusion, Verification Method).
-4. Send a message to the orchestrator when done.
+## 2026-09-10T20:26:53Z
+You are explorer_survey_1.
+Working directory: /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/explorer_survey_1
+Project root: /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org
+You MUST read /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/ORIGINAL_REQUEST.md before doing anything else.
+Investigate the current Mass Readings implementation:
+1. Check `src/app/api/mass-readings/route.ts`:
+   - How is Evangelizo currently fetched, parsed, and mapped?
+   - What is the `MassReadingsResponse` interface and return format?
+   - What query parameters are accepted (e.g. `lang`, `date`)?
+   - What error handling and fallbacks exist?
+2. Check `src/components/LandingClient.tsx` and any other components consuming this route:
+   - Where and how is `/api/mass-readings` called?
+   - How is state maintained?
+   - How are `firstReading`, `psalm`, `secondReading`, `alleluia`, `gospel` rendered?
+   - How does the "↻ Actualizar" button function?
+3. Document all findings, interfaces, code paths, and requirements in your report at /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/explorer_survey_1/handoff.md. Send a message to your parent when finished.

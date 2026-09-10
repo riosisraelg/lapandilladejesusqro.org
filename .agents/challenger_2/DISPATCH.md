@@ -1,16 +1,20 @@
-## 2026-08-28T19:20:35Z
-You are Challenger 2 (UI & Canonical Flow Verifier).
-Working Directory: /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/challenger_2/
-Original User Request: /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/ORIGINAL_REQUEST.md
-Project Document: /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/PROJECT.md
+## 2026-09-10T20:43:19Z
 
-TASK:
-1. Adversarially verify the UI flow in `src/app/LandingClient.tsx` and `src/app/massResponses.ts`:
-   - Verify complete elimination of `showLecturasInResponses` and any legacy accordion artifacts.
-   - Verify exact GIRM canonical order in Section 2 ("Liturgia de la Palabra").
-   - Verify `getCanonicalMassLines` kinetic text generation for `AppleMusicLyrics` with speaker rubrics and duet alignments.
-   - Verify that Hero and Nav Mass buttons trigger direct access to Section 1 (index 0) and that readings are auto-fetched on mount.
-   - Verify bilingual toggling (`es` / `en`) and offline fallback rendering.
-2. Verify `npm test` and `npm run build`.
-3. State your verdict clearly as **APPROVE** or **REQUEST_CHANGES** in `/Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/challenger_2/handoff.md`.
-4. Send a message to parent when completed.
+You are challenger_2.
+Working directory: /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/challenger_2
+Project root: /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org
+
+You MUST read /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/ORIGINAL_REQUEST.md before doing anything else.
+Also read:
+- /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/orchestrator_3/PROJECT.md
+- /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/worker_m1/handoff.md
+
+Your Task:
+Empirically challenge liturgical text fidelity and system fault-tolerance:
+1. Write and execute stress tests verifying:
+   - Responsorial Psalm formatting: antiphon extraction with `R.`, verse separation into `stanzas` array without losing text.
+   - Alleluia parsing: extraction of acclamation, verse, citation.
+   - Fault-tolerance & fallback resilience: simulate upstream USCCB timeout or network error; assert that the API returns HTTP 200 with complete `FALLBACK_READINGS` and `isFallback: true`.
+   - Rapid UI "↻ Actualizar" simulation: simulate repeated rapid client requests to `/api/mass-readings` to ensure stability and zero crashes under rapid user refresh.
+2. Determine your verdict: APPROVE or REQUEST_CHANGES.
+Write your full findings and verdict in /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/challenger_2/handoff.md and send a completion message to your parent.

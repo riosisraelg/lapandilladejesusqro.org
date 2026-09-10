@@ -40,7 +40,7 @@ The platform is a progressive web application serving the Catholic youth communi
 ### 2.1 Product Perspective & Context
 The application operates as a high-performance Next.js 15 App Router web system with client hydration on React 19. It interfaces upstream with:
 - Google Calendar iCal feed (via `/api/calendar`).
-- Evangelizo Daily Liturgical Reading XML API (via `/api/mass-readings`).
+- USCCB Daily Liturgical Reading Lectionary via `catholic-mass-readings` (via `/api/mass-readings`).
 - Social Media metadata crawlers (via `/api/og` dynamic image generator).
 
 ### 2.2 User Persona Characteristics
@@ -151,30 +151,30 @@ The application operates as a high-performance Next.js 15 App Router web system 
 
 #### RF-08.1: Daily Mass Readings Scraper API Engine
 - **ID**: `RF-08.1`
-- **Priority**: Critical | **Source**: `ORIGINAL_REQUEST.md §R1`
-- **Description**: The edge route handler at `src/app/api/mass-readings/route.ts` shall fetch, parse, and structure the complete text of the Catholic daily liturgy.
+- **Priority**: Critical | **Source**: `ORIGINAL_REQUEST.md §R1, Follow-up 2026-09-10 §R1, §R2`
+- **Description**: The route handler at `src/app/api/mass-readings/route.ts` shall fetch, parse, and structure the complete text of the Catholic daily liturgy using the `catholic-mass-readings` library, mapping upstream USCCB data models cleanly to `MassReadingsResponse`.
 - **Functional Specification**:
-  1. **Upstream Feed Query**:
-     - Query `http://feed.evangelizo.org/v2/reader.php?date=${dateParam}&lang=${langParam}&type=xml`.
-     - `dateParam` shall support normalized `YYYYMMDD` and `YYYY-MM-DD` formats; defaults to current date in `America/Mexico_City` timezone.
-     - `langParam` shall default to `SP` (Spanish).
-  2. **Comprehensive Tag & Content Extraction**:
-     - `liturgicalDay`: Full liturgical title from `<litugic_t>` (e.g., *"XXII Domingo del Tiempo Ordinario"*).
-     - `saint`: Daily saint commemoration from `<saint>` (e.g., *"San Agustín de Hipona"*).
-     - `firstReading`: Full citation (`<reading_text1_lt>`), short citation (`<reading_text1_st>`), and full text (`<reading_text1>`).
-     - `psalm`: Full citation (`<reading_text2_lt>`), short citation (`<reading_text2_st>`), antiphon response phrase (`response`), and complete verses formatted with recurring `R.` indicators (`text` / `stanzas`). The extraction shall not truncate verse 1 or confuse it with the antiphon.
-     - `secondReading`: Full citation (`<reading_text3_lt>`), short citation (`<reading_text3_st>`), and full text (`<reading_text3>`). Handled conditionally: populated on Sundays and Solemnities; omitted (`undefined`) on ferial weekdays when `<reading_text3>` is empty.
-     - `alleluia`: Canonical Gospel Acclamation object containing `acclamation` (e.g., `"¡Aleluya, aleluya!"` during Ordinary/Easter time; `"Honor y gloria a ti, Señor Jesús"` during Lent), lectionary verse (`verse`), and citation.
-     - `gospel`: Full citation (`<reading_gospel_lt>`), short citation (`<reading_gospel_st>`), and full proclamation text (`<reading_gospel>`).
-     - `meditation`: Patristic commentary author (`<comment_a>`), title (`<comment_t>`), and body text (`<comment>`).
-  3. **Data Sanitization & CDATA Extraction**:
-     - Safely extract content enclosed in `<![CDATA[ ... ]]>`.
-     - Decode all XML and HTML entities (including accented vowels `&aacute;`, `&eacute;`, `&iacute;`, `&oacute;`, `&uacute;`, `&ntilde;`, `&laquo;`, `&raquo;`, `&#39;`, `&quot;`, `&amp;`).
-     - Strip unwanted HTML markup while preserving paragraph line breaks (`\n\n`).
+  1. **Upstream Lectionary Query**:
+     - Instantiate `USCCB` client using `createNodeHttpClient()`.
+     - `dateParam` shall support normalized `YYYYMMDD` and `YYYY-MM-DD` formats, converting them into a JavaScript `Date` object passed to `usccb.getMassFromDate(date)`. Defaults to current date in `America/Mexico_City` timezone.
+     - `langParam` shall read query parameter `lang` (e.g. `'es'`, `'en'`). The engine shall gracefully handle both languages without crashing, respecting the package capabilities (USCCB English Lectionary) while preserving seamless API responses.
+  2. **Comprehensive Section Mapping to `MassReadingsResponse`**:
+     - `liturgicalDay`: Mapped from `mass.title` (e.g., *"Thursday of the Twenty-third Week in Ordinary Time"*).
+     - `firstReading`: Extracted from section where `type === SectionType.READING` (first occurrence or header containing "1"). Full citation from verses array (`verses.map(v => v.text).join(', ')`), short citation, and full proclamation text (`reading.text`).
+     - `psalm`: Extracted from section where `type === SectionType.PSALM`. Full citation from verses, antiphon `response` parsed from lines starting with `R.`, complete stanzas array (`stanzas`), and complete text (`reading.text`).
+     - `secondReading`: Extracted from section where `type === SectionType.READING` (second occurrence or header containing "2" / "Second"). Populated on Sundays and Solemnities; omitted (`undefined`) on ferial weekdays.
+     - `alleluia`: Extracted from section where `type === SectionType.ALLELUIA`. Acclamation formula (`acclamation`), lectionary verse (`verse`), and citation.
+     - `gospel`: Extracted from section where `type === SectionType.GOSPEL`. Full citation from verses, short citation, and full proclamation text (`reading.text`).
+     - `date`: Normalized date string in `YYYYMMDD` format.
+     - `source`: Set to `'catholic-mass-readings'` on successful upstream parse, or `'fallback'` if served from fallback.
+     - `isFallback`: Boolean flag (`false` on live parse, `true` on fallback).
+  3. **Data Sanitization & Antiphon Parsing**:
+     - Cleanly parse Responsorial Psalm paragraphs: isolate antiphon prefix matching `/^R\.\s*(?:\([^\)]+\)\s*)?/i` without truncating verse 1 or duplicating antiphon lines inside stanzas.
+     - Parse Alleluia section to isolate acclamation line (`R. Alleluia...`) from the scripture verse.
   4. **Timeout, Caching & Zero-Downtime Fallback**:
-     - Fetch queries shall enforce `signal: AbortSignal.timeout(6000)` (6 seconds).
+     - Operations shall include resilient error boundaries to handle USCCB challenge-response latencies and potential network timeouts.
      - Success responses shall return HTTP status 200 with headers `Cache-Control: public, s-maxage=86400, stale-while-revalidate=43200` and Next.js revalidation (`revalidate: 86400`).
-     - On upstream failure, network timeout, malformed XML, or out-of-range dates, the endpoint shall catch errors and return the bundled canonical `FALLBACK_READINGS` with HTTP status 200, `isFallback: true`, and `Cache-Control: public, s-maxage=300, stale-while-revalidate=3600`.
+     - On upstream failure, network timeout, null response, or out-of-range dates, the endpoint shall catch errors and return the bundled canonical `FALLBACK_READINGS` with HTTP status 200, `isFallback: true`, `source: 'fallback'`, and `Cache-Control: public, s-maxage=300, stale-while-revalidate=3600`.
 
 ---
 
@@ -248,14 +248,15 @@ The application operates as a high-performance Next.js 15 App Router web system 
 
 | Criterion ID | Target Feature | Acceptance Verification Condition |
 |---|---|---|
-| **AC-RF08-1** | Full Text Preservation | `GET /api/mass-readings` returns non-empty full text, short citations, and full citations for First Reading, Psalm, Gospel, and Meditation. |
-| **AC-RF08-2** | Responsorial Psalm Integrity | The Psalm object contains both a clean antiphon `response` string and the complete verse stanzas without duplications or truncation of verse 1. |
+| **AC-RF08-1** | Full Text Preservation | `GET /api/mass-readings` returns non-empty full text, citations, and models for First Reading, Psalm, Gospel, and Alleluia using `catholic-mass-readings`. |
+| **AC-RF08-2** | Responsorial Psalm Integrity | The Psalm object contains both a clean antiphon `response` string parsed from `R.` and the complete verse stanzas array without duplications or truncation of verse 1. |
 | **AC-RF08-3** | Sunday vs Weekday 2nd Reading | Querying a Sunday date returns a populated `secondReading` object; querying a weekday ferial date returns `secondReading === undefined` without errors. |
-| **AC-RF08-4** | Seasonal Gospel Acclamation | The `alleluia` object provides the seasonal acclamation ("¡Aleluya, aleluya!" during Ordinary/Easter vs Lenten acclamation) and lectionary verse. |
-| **AC-RF08-5** | Resilience & Edge Caching | Upstream timeouts or errors return `FALLBACK_READINGS` with status 200, `isFallback: true`, and valid `Cache-Control` headers. |
+| **AC-RF08-4** | Gospel Acclamation (Alleluia) | The `alleluia` object provides acclamation text and lectionary verse parsed from USCCB Alleluia section. |
+| **AC-RF08-5** | Resilience & Edge Caching | Upstream timeouts or errors return `FALLBACK_READINGS` with status 200, `isFallback: true`, `source: 'fallback'`, and valid `Cache-Control` headers. |
 | **AC-RF08-6** | Accordion Removal | The legacy `showLecturasInResponses` accordion button and dropdown container are completely removed from Tab 2 in `LandingClient.tsx`. |
 | **AC-RF08-7** | Sequential Canonical Injection | Navigating to Section 2 ("Liturgia de la Palabra") renders the readings in exact GIRM sequence (1st Reading → Psalm with R. → 2nd Reading [if Sunday] → Aleluya → Gospel) in both standard modal and `AppleMusicLyrics` interactive mode. |
 | **AC-RF08-8** | Direct Launch & Auto-Fetch | Clicking the Mass button in Hero/Nav opens the Mass modal directly at Section 1 (Ritos Iniciales), with readings automatically fetched on mount without manual intervention. |
+| **AC-RF08-9** | Language Parameter Handling | Querying `/api/mass-readings?lang=es` or `/api/mass-readings?lang=en` returns valid JSON without throwing runtime errors or crashes. |
 
 ---
 

@@ -1,7 +1,7 @@
-# BRIEFING — 2026-09-10T17:36:30Z
+# BRIEFING — 2026-09-10T20:45:00Z
 
 ## Mission
-Implement comprehensive, genuine fix for mobile modal rendering bug across Next.js application (viewport bounds, safe alignment, scroll lock, portal, lyric scroll containment).
+Replace mass readings engine with `catholic-mass-readings`, integrate into route.ts and LandingClient.tsx, update ISO docs (architecture.md, srs.md, tasks.md, index.md), overhaul test suite in scripts/test-e2e.mjs, and verify with tests and build.
 
 ## 🔒 My Identity
 - Archetype: implementer, qa, specialist
@@ -9,6 +9,11 @@ Implement comprehensive, genuine fix for mobile modal rendering bug across Next.
 - Working directory: /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/worker_m1
 - Original parent: d4ceabdc-0e57-4961-b7dd-1c003edf586e
 - Milestone: mobile_modal_viewport_fix
+- Archetype: implementer, qa, specialist
+- Roles: implementer, qa, specialist
+- Working directory: /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/worker_m1
+- Current parent: 9fe0ebfb-9dc9-4ad7-a5f7-5f547740ec52
+- Milestone: catholic_mass_readings_migration
 
 ## 🔒 Key Constraints
 - Exclusive File Ownership:
@@ -19,42 +24,61 @@ Implement comprehensive, genuine fix for mobile modal rendering bug across Next.
   - src/app/AppleMusicLyrics.tsx
 - DO NOT CHEAT: No hardcoded test results, genuine implementations only.
 - Strict layout compliance: .agents/ holds metadata only.
+- M6 Exclusive File Ownership:
+  - package.json
+  - src/app/api/mass-readings/route.ts
+  - src/app/LandingClient.tsx
+  - scripts/test-e2e.mjs
+  - docs/architecture.md
+  - docs/srs.md
+  - docs/tasks.md
+  - docs/index.md
+- Mandatory 3-Stage engineering standards (ISO/IEC/IEEE 42010, 29148, 12207).
+- Master Documentation Index (MDI) rule: docs/index.md is SSOT.
+- Local dependency isolation: project-scoped installation only.
 
 ## Current Parent
-- Conversation ID: d4ceabdc-0e57-4961-b7dd-1c003edf586e
-- Updated: 2026-09-10T17:36:30Z
+- Conversation ID: 9fe0ebfb-9dc9-4ad7-a5f7-5f547740ec52
+- Updated: 2026-09-10T20:45:00Z
 
 ## Task Summary
-- **What to build**: Mobile viewport and modal rendering fixes across global.css, GlobalModal.tsx, LandingClient.tsx, CalendarioClient.tsx, AppleMusicLyrics.tsx.
-- **Success criteria**: All 5 tasks complete, npm test passes 217/217, npx tsc --noEmit passes, npm run build passes.
-- **Interface contracts**: PROJECT.md
-- **Code layout**: PROJECT.md
+- **What to build**: Replace Evangelizo scraper in `src/app/api/mass-readings/route.ts` with `catholic-mass-readings`. Map output to `MassReadingsResponse`. Update `LandingClient.tsx` to pass `lang` parameter and render readings cleanly. Update ISO docs (`architecture.md`, `srs.md`, `tasks.md`, `index.md`). Overhaul tests in `scripts/test-e2e.mjs` (R8.1-R8.10b).
+- **Success criteria**: All tests pass, Next.js build succeeds, full contract adherence, robust fallback.
+- **Interface contracts**: `MassReadingsResponse` in `src/app/api/mass-readings/route.ts`
+- **Code layout**: /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/orchestrator_3/PROJECT.md
 
 ## Change Tracker
 - **Files modified**:
-  - `src/app/global.css`: Fixed `.calendar-modal-overlay` with canonical bounds (`inset: 0; width: 100%; height: 100dvh; min-height: -webkit-fill-available`), `justify-content: safe flex-end;`, `overflow-y: auto`, `overscroll-behavior: contain; -webkit-overflow-scrolling: touch;`. Updated `.recursos-modal-card` and `.modal-large` to `height: auto; max-height: calc(100dvh - 2rem); max-height: calc(100svh - 2rem); margin: auto 0 0 0;`. Removed conflicting `max-height: 90vh;`. Adjusted `.stacked-deck-container` to flex dynamically. Updated `@keyframes modalSlideUp`, `modalSlideDown`, and `scaleInModal` to `translateY(100%)`. Added `overscroll-behavior: contain; -webkit-overflow-scrolling: touch;` and `min-height: 0` to scrollable modal bodies (`.lyric-scroll-container`, `.recursos-modal-body`, `.confesion-modal-body`). Added `overscroll-behavior: none` to `body.modal-open`.
-  - `src/components/GlobalModal.tsx`: Implemented `createPortal(content, document.body)` with SSR-safe `mounted` state check (`useEffect(() => setMounted(true), [])`). Added `scrollTop = 0` reset on open for overlay, card, and internal scroll bodies.
-  - `src/app/LandingClient.tsx`: Upgraded body scroll lock to position-fixed scroll lock saving and restoring `window.scrollY` on open/close with `modal-open` class.
-  - `src/app/calendario/CalendarioClient.tsx`: Added universal position-fixed body scroll lock when `selectedEvent` or `showSubscribeModal` is open.
-  - `src/app/AppleMusicLyrics.tsx`: Replaced `targetEl.scrollIntoView(...)` with `containerRef.current.scrollTo({ top: targetEl.offsetTop - 100, behavior: 'auto' })` to prevent window-level displacement.
-- **Build status**: All tests passing (217/217), clean tsc, clean production build.
-- **Pending issues**: None.
+  - `docs/architecture.md`: Section 2.1 data flow, Section 3.1 Subsystem 4, Section 3.2.1 contract, Section 4.3 reliability, Section 5 tech stack table, Section 6 RTM.
+  - `docs/srs.md`: Section 2.1/2.4 external interfaces, RF-08.1 scraper specification, and AC-RF08 matrix.
+  - `docs/tasks.md`: TSK-M6-01, UT-SCR-01..08, and Section 4 RTM.
+  - `docs/index.md`: Created Master Documentation Index (MDI) Single Source of Truth (SSOT).
+  - `package.json`: Added `catholic-mass-readings: ^0.5.6`.
+  - `src/app/api/mass-readings/route.ts`: Refactored to use USCCB adapter from catholic-mass-readings with psalm antiphon/stanza separation, Alleluia parsing, date/lang handling, and fallback resilience.
+  - `src/app/LandingClient.tsx`: Updated fetchDailyReadings to pass `?lang=${guiaLang}`.
+  - `scripts/test-e2e.mjs`: Updated R8.1-R8.10b to test catholic-mass-readings and aligned R8.19-R8.20.
+- **Build status**: PASS (Next.js 15.5.18 build succeeded with exit code 0)
+- **Pending issues**: None
 
 ## Quality Status
-- **Build/test result**: 217/217 tests passed (100% pass rate). Production build exit code 0.
-- **Lint status**: Clean (tsc --noEmit passes with 0 errors).
-- **Tests added/modified**: Unregressed test suite in `scripts/test-e2e.mjs`.
+- **Build/test result**: PASS. `npm test` -> 217/217 passed (0 failed). `npx next build` -> PASS (exit code 0).
+- **Lint status**: Clean. `npx tsc --noEmit` -> 0 errors.
+- **Tests added/modified**: Updated R8.1 through R8.10b for catholic-mass-readings, updated R8.19 and R8.20.
 
 ## Loaded Skills
-- None
+- **Source**: /Users/riosisraelg/.gemini/config/skills/software-architecture/SKILL.md
+- **Local copy**: /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/worker_m1/software-architecture-SKILL.md
+- **Core methodology**: Corporate software engineering framework (ISO/IEC/IEEE 42010 architecture, 29148 requirements, 12207 lifecycle & tasks), Master Documentation Index (MDI), local dependency isolation.
 
 ## Key Decisions Made
-- Used `margin: auto 0 0 0;` and `justify-content: safe flex-end;` on `.calendar-modal-overlay` so that whenever the card exceeds the viewport, content aligns safely from top 0 and allows natural scrolling instead of flexbox data-loss clipping.
-- Replaced window-level `scrollIntoView` in `AppleMusicLyrics.tsx` with container-level `.scrollTo` to eliminate physical mobile address-bar and window displacement.
-- Used SSR-safe `createPortal` in `GlobalModal.tsx` ensuring modal elements are appended directly to `document.body` away from any parent positioning/overflow constraints.
+- Used `npm install --omit=optional` to omit optional native binary `impit` which breaks Next.js Webpack bundling, enabling graceful native `fetch` fallback.
+- Exported only HTTP handlers from Next.js App Router `route.ts` to satisfy `.next/types` TS2344 validation.
+- Implemented robust psalm parser extracting antiphon from `R. (verse)` and grouping stanzas between recurring `R.` indicators.
+- Ensured Fallback readings preserve HTTP status 200 with `isFallback: true` and 5-minute CDN cache for high availability.
 
 ## Artifact Index
 - /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/worker_m1/DISPATCH.md
 - /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/worker_m1/BRIEFING.md
 - /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/worker_m1/progress.md
 - /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/worker_m1/handoff.md
+- /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/worker_m1/software-architecture-SKILL.md

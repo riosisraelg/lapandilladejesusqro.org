@@ -768,7 +768,7 @@ export default function Landing() {
     if (dailyReadings && !force) return;
     setIsLoadingReadings(true);
     try {
-      const res = await fetch('/api/mass-readings');
+      const res = await fetch('/api/mass-readings?lang=' + guiaLang);
       if (res.ok) {
         const data: MassReadingsResponse = await res.json();
         setDailyReadings(data);
@@ -778,7 +778,7 @@ export default function Landing() {
     } finally {
       setIsLoadingReadings(false);
     }
-  }, [dailyReadings]);
+  }, [dailyReadings, guiaLang]);
 
   useEffect(() => {
     fetchDailyReadings();

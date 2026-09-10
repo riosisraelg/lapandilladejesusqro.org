@@ -105,36 +105,40 @@ The application functions as a high-performance progressive web application with
 ```
 
 ### 2.1 Mass Readings Scraper Data Flow Architecture
-The daily liturgical readings data flow operates under a multi-tier resilient architecture:
+The daily liturgical readings data flow operates under a multi-tier resilient architecture utilizing `catholic-mass-readings`:
 
 ```
-[ Client Initial Mount / Direct Mass Open ]
+[ Client Initial Mount / Direct Mass Open / Force Refresh ]
                   │
                   ▼
-   [ GET /api/mass-readings?date=YYYY-MM-DD&lang=SP ]
+   [ GET /api/mass-readings?date=YYYY-MM-DD&lang=es|en ]
                   │
                   ├───────────────────────────────┐
                   ▼                               ▼
        [ Edge Server Cache Hit? ]       [ Server Cache Miss ]
                   │                               │
          YES ─────┘                               ▼
-         │                        [ HTTP Fetch: feed.evangelizo.org ]
-         │                        [ Signal: AbortSignal.timeout(6000) ]
+         │                 [ Instantiate catholic-mass-readings: USCCB ]
+         │                 [ Client: createNodeHttpClient() ]
+         │                 [ Target: bible.usccb.org (Lectionary) ]
          │                                        │
          │                        ┌───────────────┴───────────────┐
          │                        ▼                               ▼
-         │                [ HTTP 200 OK ]                 [ Timeout / 5xx / Bad XML ]
+         │                 [ Mass Object OK ]            [ Outage / Timeout / Error ]
          │                        │                               │
          │                        ▼                               ▼
-         │             [ XML Parser & Decoder ]          [ Return FALLBACK_READINGS ]
-         │             - CDATA Extraction                - Status 200 OK
-         │             - Accented Entity Decoding        - isFallback: true
-         │             - Psalm Stanza & Antiphon         - Caching: s-maxage=300
-         │             - Seasonal Alleluia Generator              │
+         │             [ Model Mapper & Adapter ]        [ Return FALLBACK_READINGS ]
+         │             - Reading 1 (citation & text)     - Status 200 OK
+         │             - Psalm (antiphon R. & stanzas)   - isFallback: true
+         │             - Reading 2 (Sundays/Solemnities) - source: 'fallback'
+         │             - Alleluia (acclamation & verse)  - Caching: s-maxage=300
+         │             - Gospel (citation & text)                 │
+         │             - liturgicalDay: mass.title                │
          │                        │                               │
          │                        ▼                               │
          │             [ MassReadingsResponse ]                   │
          │             - Status 200 OK                            │
+         │             - source: 'catholic-mass-readings'         │
          │             - Cache: s-maxage=86400                    │
          │                        │                               │
          └────────────────────────┼───────────────────────────────┘
@@ -149,6 +153,7 @@ The daily liturgical readings data flow operates under a multi-tier resilient ar
 [ Standard Mass Guide Dialog ]             [ AppleMusicLyrics Interactive View ]
 (Liturgia de la Palabra Part)              (Kinetic Synced Proclamation Stream)
 ```
+
 
 ---
 
@@ -186,15 +191,18 @@ Subsystem 4 is architected with three tightly coupled, highly cohesive component
 +--------------------------------------------------------------------------------------------------+
 |                                                                                                  |
 |  1. EDGE SCRAPER API ENGINE (`src/app/api/mass-readings/route.ts`)                               |
-|     • Endpoint: `GET /api/mass-readings?date=YYYY-MM-DD&lang=SP`                                 |
-|     • Upstream: Queries Evangelizo XML feed with 6-second timeout.                               |
-|     • Parser: Robust extraction of First Reading, Responsorial Psalm, Second Reading,            |
-|       Alleluia / Gospel Acclamation, Holy Gospel, and Patristic Meditation.                      |
-|     • Psalm Formatter: Parses complete stanzas (`\n\n`), extracts antiphon `R.` phrase, and      |
-|       maintains full verse structure without duplicating or clipping verse 1.                    |
-|     • Alleluia Builder: Generates seasonal acclamation ("¡Aleluya, aleluya!" vs Lenten           |
-|       "Honor y gloria a ti, Señor Jesús") and lectionary verse.                                  |
-|     • Entity Sanitizer: Decodes all HTML/XML character entities (Spanish vowels, quotes, dashes).|
+|     • Endpoint: `GET /api/mass-readings?date=YYYY-MM-DD&lang=es|en`                              |
+|     • Upstream: Queries USCCB Lectionary via `catholic-mass-readings` (`USCCB`,                  |
+|       `createNodeHttpClient`) with resilient timeout handling.                                  |
+|     • Model Mapper: Adapts `Mass` object into canonical `MassReadingsResponse`:                  |
+|       - First Reading: citation from verses, full reading body.                                  |
+|       - Responsorial Psalm: antiphon `response` parsed from `R.`, citation, and stanzas array.    |
+|       - Second Reading: conditional extraction for Sundays and Solemnities.                      |
+|       - Alleluia: Gospel acclamation and verse.                                                  |
+|       - Holy Gospel: citation and full proclamation text.                                        |
+|       - Liturgical Day: mapped from `mass.title`.                                                |
+|     • Query Handling: Flexible `date` (YYYYMMDD or YYYY-MM-DD to `Date`) and `lang` (`es`, `en`)  |
+|       with graceful non-crashing execution.                                                      |
 |     • Edge Cache Policy: 24h Next.js revalidation (`revalidate: 86400`) and HTTP `Cache-Control`.|
 |     • Resilient Fallback: Bundles complete canonical `FALLBACK_READINGS` for zero-downtime.     |
 |                                                                                                  |
@@ -270,7 +278,7 @@ export interface MassReadingsResponse {
   gospel: LiturgicalReadingSection;
   meditation?: LiturgicalMeditationSection;
   isFallback?: boolean; // True if served from embedded fallback
-  source?: string; // 'evangelizo' | 'fallback'
+  source?: string; // 'catholic-mass-readings' | 'fallback'
 }
 ```
 
@@ -388,8 +396,8 @@ lapandilladejesusqro.org/
 - Accurate seasonal Gospel acclamations (Aleluya vs Lenten tract).
 
 ### 4.3 Reliability, Resilience & Graceful Degradation
-- **Timeout Protection**: Upstream Evangelizo queries abort after 6,000ms.
-- **Zero-Downtime Fallback**: If external feeds fail (5xx, network loss, DNS failure, out-of-range dates), `FALLBACK_READINGS` returns valid Catholic liturgical texts with HTTP 200 and `isFallback: true`.
+- **Timeout & Challenge Protection**: Upstream USCCB queries through `catholic-mass-readings` resolve or abort with resilient error boundaries, handling upstream challenges and network latencies gracefully.
+- **Zero-Downtime Fallback**: If external lectionary sources fail (5xx, network loss, DNS failure, out-of-range dates), `FALLBACK_READINGS` returns valid Catholic liturgical texts with HTTP 200, `source: 'fallback'`, and `isFallback: true`.
 - **Offline Mode**: If client loses network connectivity, cached readings or fallback liturgy remain fully accessible.
 
 ### 4.4 Usability & Ergonomics
@@ -413,6 +421,7 @@ lapandilladejesusqro.org/
 | **Language** | TypeScript | 5.7.3 | Strict static typing across prayer structures, iCal parsing, and liturgical calculation. |
 | **Styling** | Pure Vanilla CSS | Custom Tokens | High performance, zero CSS-in-JS runtime penalty, direct 3D GPU transforms, easily inspectable. |
 | **Calendar Engine**| `rrule` + RFC 5545 | 2.8.1 | Robust recurrence expansion for parish Google Calendar events. |
+| **Mass Readings** | `catholic-mass-readings` | ^0.5.6 | Official USCCB Catholic daily mass readings scraper using Cheerio with structured citations, psalm stanzas, and gospel text. |
 | **Image Generation**| `next/og` (`@vercel/og`) | Built-in | Dynamic server-side rasterization of event banners with custom Catholic typography. |
 | **Test Harness** | Node.js ESM Runner | Built-in | Zero-dependency, ultra-fast (~50ms) test execution across Tiers 1–5 in `scripts/test-e2e.mjs`. |
 
@@ -429,7 +438,7 @@ lapandilladejesusqro.org/
 | **R5 / RF-05 (Long-Press Tooltips)** | Global Long-Press & Haptic Hook | `src/utils/useLongPress.ts`, `src/app/global.css` | Tier 1: `T1-R5-01` to `T1-R5-05` |
 | **R6 / RF-06 (OG Preview & Deep-Links)**| Edge Image Engine & Calendar Query Router | `src/app/api/og/route.tsx`, `src/app/calendario/` | Tier 1: `T1-R6-01` to `T1-R6-05` |
 | **R7 / RF-07 (Rosary Overhaul & Counter)**| 5-Element Mystery Schema & Top Bar Counter | `src/data/oracionesData.ts`, `src/app/LandingClient.tsx` | Tier 1: `T1-R7-01` to `T1-R7-05` |
-| **R8 / RF-08.1 (Daily Scraper API)** | Edge Scraper API Engine & XML Parser | `src/app/api/mass-readings/route.ts` | Tier 1: `T1-R8-01` to `T1-R8-05` |
+| **R8 / RF-08.1 (Daily Scraper API)** | Edge Scraper API Engine (`catholic-mass-readings`) | `src/app/api/mass-readings/route.ts` | Tier 1: `T1-R8-01` to `T1-R8-05` |
 | **R8 / RF-08.2 (Canonical UI Injection)**| Canonical Liturgy Injection & Kinetic Stream | `src/app/LandingClient.tsx`, `src/app/massResponses.ts` | Tier 1: `T1-R8-06` to `T1-R8-10` |
 | **R8 / RF-08.3 (Direct Access & Auto-fetch)**| Direct Launchers & Mount Background Fetch | `src/app/LandingClient.tsx` | Tier 1: `T1-R8-11` to `T1-R8-15` |
 | **R9 / RF-09 (Misas de Precepto & Export)**| Computus Algorithm & Multi-Export Suite | `src/data/preceptoData.ts`, `src/utils/calendarExport.ts` | Tier 1: `T1-R9-01` to `T1-R9-05` |

@@ -1,18 +1,19 @@
-## 2026-08-29T01:20:35Z
-You are Challenger 1 (Backend & Parser Stress Verifier).
-Working Directory: /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/challenger_1/
-Original User Request: /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/ORIGINAL_REQUEST.md
-Project Document: /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/PROJECT.md
+## 2026-09-10T20:43:19Z
 
-TASK:
-1. Adversarially challenge the scraper and parser in `src/app/api/mass-readings/route.ts` and `src/app/massResponses.ts`.
-2. Write and execute standalone verification scripts or stress checks for:
-   - Malformed / corrupted XML feeds.
-   - Missing fields, unclosed CDATA blocks, nested HTML tags.
-   - Accented Spanish entities and numerical entities (hex and decimal).
-   - Sunday (with 2nd reading) vs Weekday (no 2nd reading) vs Lenten titles.
-   - Multi-stanza psalms with 6+ stanzas and repeating responses.
-   - Fallback activation under simulated 500 error / network timeout.
-3. Verify `npm test` and `npm run build`.
-4. State your verdict clearly as **APPROVE** or **REQUEST_CHANGES** in `/Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/challenger_1/handoff.md`.
-5. Send a message to parent when completed.
+You are challenger_1.
+Working directory: /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/challenger_1
+Project root: /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org
+
+You MUST read /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/ORIGINAL_REQUEST.md before doing anything else.
+Also read:
+- /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/orchestrator_3/PROJECT.md
+- /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/worker_m1/handoff.md
+
+Your Task:
+Empirically challenge and stress-test the `src/app/api/mass-readings` endpoint and mapping logic:
+1. Write and execute test scripts verifying:
+   - Various dates: today, weekdays, Sundays, future dates, past dates, malformed/invalid dates.
+   - Language query parameters: `lang=es`, `lang=en`, `lang=fr`, `lang=`, and omitting `lang`. Verify returned JSON is valid and no 500 errors or unhandled exceptions occur.
+   - API contract assertions: verify that the returned JSON always has `firstReading`, `psalm`, and `gospel` with `citation` and `text` properties.
+2. Determine your verdict: APPROVE or REQUEST_CHANGES.
+Write your full findings and verdict in /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/challenger_1/handoff.md and send a completion message to your parent.

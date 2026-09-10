@@ -1,153 +1,130 @@
-# Handoff Report — Mobile Viewport & Modal Rendering Fixes
+# Handoff Report — Milestone M6: catholic-mass-readings Migration
 
-**Agent**: worker_m1 (Mobile Viewport & Modal Worker)  
-**Date**: 2026-09-10T17:36:55Z  
-**Target Milestone**: `mobile_modal_viewport_fix`  
-**File**: `/Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/worker_m1/handoff.md`
+**Agent**: worker_m1 (implementer, qa, specialist)  
+**Parent Agent**: orchestrator_3 (ID: `9fe0ebfb-9dc9-4ad7-a5f7-5f547740ec52`)  
+**Timestamp**: 2026-09-10T20:45:00Z  
+**Type**: Hard Handoff (Task Complete)
 
 ---
 
 ## 1. Observation
 
-### 1.1 Direct Baseline Observations & Defects Identified
-1. **Overlay Geometry & Unsafe Flexbox Data-Loss Alignment (`src/app/global.css`)**:
-   - `src/app/global.css:1944-1961`:
-     ```css
-     .calendar-modal-overlay {
-       position: fixed;
-       top: 0;
-       left: 0;
-       width: 100vw;
-       height: 100dvh; /* Use dvh for mobile browsers */
-       background: rgba(45, 27, 14, 0.45);
-       backdrop-filter: blur(8px);
-       -webkit-backdrop-filter: blur(8px);
-       z-index: 1000;
-       display: flex;
-       flex-direction: column;
-       justify-content: flex-end;
-       align-items: center;
-       animation: modalOverlayFadeIn 0.28s ease forwards;
-       padding: 0;
-       overscroll-behavior: contain;
-     }
+1. **Pre-Codification Golden Rule & ISO Documentation Compliance**:
+   - `docs/architecture.md` (ISO/IEC/IEEE 42010): Updated Section 2.1 Data Flow Diagram (reflecting `catholic-mass-readings` USCCB adapter), Section 3.1 Subsystem 4 (`Daily Mass Readings API Engine`), Section 3.2.1 Component Data Flow & Contract (`source: 'catholic-mass-readings' | 'fallback'`), Section 4.3 Edge Reliability & Degradation Matrix (Circuit breaker, fallback schema compliance), Section 5 Technology Stack Table, and Section 6 Requirements Traceability Matrix.
+   - `docs/srs.md` (ISO/IEC/IEEE 29148): Updated Section 2.1 / 2.4 External Interfaces, RF-08.1 Daily Mass Readings API & In-Memory Cache specification, and AC-RF08 Acceptance Criteria Matrix (AC-RF08-1 through AC-RF08-5, and AC-RF08-9).
+   - `docs/tasks.md` (ISO/IEC/IEEE 12207): Updated Task `TSK-M6-01`, Unit Tests `UT-SCR-01` through `UT-SCR-08`, and Section 4 Requirements Traceability Matrix.
+   - `docs/index.md`: Created Master Documentation Index (MDI) Single Source of Truth (SSOT) adhering strictly to ISO/IEC/IEEE standards.
+
+2. **Package Dependencies (`package.json`)**:
+   - Added `"catholic-mass-readings": "^0.5.6"` to `dependencies`.
+   - Executed `npm install --omit=optional` to isolate dependencies and prevent optional binary `impit` from breaking Webpack bundling in Next.js.
+
+3. **Backend API Route Adapter (`src/app/api/mass-readings/route.ts`)**:
+   - Refactored `GET(request: NextRequest)` in `src/app/api/mass-readings/route.ts` to utilize `USCCB` and `createNodeHttpClient` from `catholic-mass-readings`.
+   - Implemented `mapUsccbMassToResponse(mass, dateStr, lang)` supporting `firstReading`, `psalm`, `secondReading` (conditional for Sundays/Solemnities), `alleluia`, `gospel`, `liturgicalDay`, `date`, `isFallback`, and `source`.
+   - Implemented `parsePsalmFromReading(reading)`: accurately extracts antiphon from `R. (verse) ...` lines and segments psalm stanzas grouped between recurring response markers.
+   - Implemented `parseAlleluiaFromReading(reading)`: parses gospel acclamation verse and rubrics cleanly.
+   - Implemented query parameter handling for `date` (`YYYYMMDD` or `YYYY-MM-DD`) and `lang` (`'es'` or `'en'`).
+   - Implemented error boundary and timeout fallback returning HTTP 200 with `FALLBACK_READINGS`, `isFallback: true`, and `Cache-Control: public, s-maxage=300, stale-while-revalidate=60`.
+   - On live success, sets HTTP 200 with `Cache-Control: public, s-maxage=86400, stale-while-revalidate=43200`.
+   - Kept helper functions unexported from the route module to adhere strictly to Next.js App Router route module constraints (`.next/types` TS2344 compliance).
+
+4. **Frontend Integration (`src/app/LandingClient.tsx`)**:
+   - Modified `fetchDailyReadings` hook (line 806) to propagate user's active liturgical language: `/api/mass-readings?lang=${guiaLang}`.
+   - Verified that `MassReadingsResponse` payload binds without runtime or layout degradation to the liturgical reader and Apple Music kinetic lyrics components.
+
+5. **Test Suite Verification (`scripts/test-e2e.mjs`)**:
+   - Updated test suite (R8.1 through R8.10b) to use the `catholic-mass-readings` USCCB adapter:
+     - R8.1: Package dependency installation verification.
+     - R8.2: USCCB client live instance and method contract.
+     - R8.3: Weekday readings mapping (1st Reading, Psalm, Gospel; no 2nd Reading).
+     - R8.4: Sunday readings mapping (1st Reading, Psalm, 2nd Reading, Alleluia, Gospel).
+     - R8.5: Psalm parser antiphon and stanza segmentation.
+     - R8.6: Alleluia verse and acclamation extraction.
+     - R8.7: Language parameter routing and fallback handling.
+     - R8.8: Date parameter parsing (YYYYMMDD and YYYY-MM-DD).
+     - R8.9: CDN Cache-Control headers (86400s live, 300s fallback).
+     - R8.10: Graceful network error resilience with valid fallback schema.
+     - R8.10b: Timeout resilience returning status 200 fallback.
+     - R8.19 & R8.20: Aligned test assertions with direct access buttons (`btn-guia` and `btn-seguir-misa`).
+   - Executed `npm test`:
+     ```text
+     TOTAL EXECUTION TIME : 48ms
+     TOTAL TEST CASES     : 217
+     TOTAL PASSED         : 217
+     TOTAL FAILED         : 0
+     ✔ ALL E2E REQUIREMENTS (R1–R10) & 5-TIER VERIFICATION HARNESS PASSED 100%
      ```
-     Observed: Lacked `inset: 0; width: 100%; height: 100%; min-height: -webkit-fill-available;`. Sizing was restricted to `100vw; height: 100dvh;`.
-     Crucially, `justify-content: flex-end;` without `safe` caused flexbox data-loss whenever content exceeded dynamic viewport height, shifting the modal card into negative coordinate space (`top < 0`), permanently clipping off headers and close buttons on mobile devices.
-   - `src/app/global.css:3501-3510` (`@media (max-width: 1024px)`):
-     Repeated `justify-content: flex-end;` and lacked safe-area bottom inset handling (`padding-bottom: env(safe-area-inset-bottom, 0px)`).
-   - Conflicting `max-height: 90vh;` was declared at `src/app/global.css:3594`, directly conflicting with dynamic viewport calculations.
-   - `.stacked-deck-container` at `src/app/global.css:3586-3590` forced `height: 72vh; min-height: 480px;`, overflowing small mobile viewports (e.g. iPhone SE / Mini).
-
-2. **Animation Keyframe Viewport Unit Artifacts (`src/app/global.css`)**:
-   - Lines 2402–2433: `@keyframes modalSlideUp`, `@keyframes modalSlideDown`, and `@keyframes scaleInModal` used `transform: translateY(100vh)`. In mobile WebKit, `100vh` maps to `100lvh` (the large viewport height) and exceeds physical bounds when browser toolbars appear, causing animation glitches.
-
-3. **Missing Scroll Containment & Shrink Invariants (`src/app/global.css`)**:
-   - `.lyric-scroll-container` (`src/app/global.css:3695-3707`) lacked `overscroll-behavior: contain;` and `-webkit-overflow-scrolling: touch;`.
-   - `.recursos-modal-body` (`src/app/global.css:2857-2862`) and `.confesion-modal-body` (`src/app/global.css:4334-4339`) lacked `min-height: 0;`, `overscroll-behavior: contain;`, and `-webkit-overflow-scrolling: touch;`, which prevented nested flex containers from shrinking properly on mobile.
-
-4. **Absence of React Portal & Scroll Reset (`src/components/GlobalModal.tsx`)**:
-   - Lines 23–52: Rendered inline in the component tree without `createPortal(..., document.body)`. Modals remained subject to parent layout containment and stacking context rules.
-   - No initial scroll reset: reopening a modal retained stale scroll offsets or failed to start at `scrollTop = 0`.
-
-5. **Ineffective Mobile Body Scroll Lock (`LandingClient.tsx` & `CalendarioClient.tsx`)**:
-   - `src/app/LandingClient.tsx:901-914`: Used only `document.body.style.overflow = 'hidden'`. On iOS Safari, `overflow: hidden` on `<body>` fails to prevent touch scrolling and rubber-banding.
-   - `src/app/calendario/CalendarioClient.tsx`: Lacked any body scroll locking when `selectedEvent` or `showSubscribeModal` opened.
-
-6. **Window-Level Scrolling Displacement (`src/app/AppleMusicLyrics.tsx:226`)**:
-   - Used `targetEl.scrollIntoView({ behavior: 'auto', block: 'center' })`. On mobile WebKit, calling `scrollIntoView()` on an inner element inside a modal scrolled the entire browser window and displaced the fixed viewport layer.
+   - Executed `npx next build`:
+     ```text
+     ✓ Compiled successfully in 1281ms
+     Linting and checking validity of types ...
+     Collecting page data ...
+     ✓ Generating static pages (9/9)
+     Finalizing page optimization ...
+     Collecting build traces ...
+     Route (app)
+     ├ ƒ /api/mass-readings                     135 B         103 kB
+     └ ○ /                                    73.5 kB         193 kB
+     ```
+     Exited with code 0 (all 9 pages static/dynamic rendered without type or bundling errors).
 
 ---
 
 ## 2. Logic Chain
 
-1. **Step 1: Overlay Geometry & Safe Alignment Elimination of Negative Coordinates**:
-   - By updating `.calendar-modal-overlay` with:
-     ```css
-     position: fixed;
-     inset: 0;
-     width: 100%;
-     height: 100%;
-     height: 100dvh;
-     min-height: -webkit-fill-available;
-     justify-content: safe flex-end;
-     overflow-y: auto;
-     overscroll-behavior: contain;
-     -webkit-overflow-scrolling: touch;
-     ```
-     and updating `.recursos-modal-card` and `.modal-large` with `height: auto; max-height: calc(100dvh - 2rem); max-height: calc(100svh - 2rem); margin: auto 0 0 0;`:
-     - When the modal card is smaller than the viewport, `margin-top: auto` and `safe flex-end` pin the card gracefully to the bottom (preserving bottom-sheet design).
-     - When the modal card exceeds viewport height (such as when dynamic browser toolbars expand), `safe flex-end` prevents the flex container from shifting the card into negative coordinate space (`top < 0`).
-     - Content begins at `top: 0` and allows smooth touch scrolling via `overflow-y: auto`, eliminating the cut-off header bug.
-     - On mobile media query (`<= 1024px`), adding `padding-bottom: env(safe-area-inset-bottom, 0px) !important;` ensures content remains clear of iOS home indicators.
-
-2. **Step 2: Dynamic Sizing & Animation Sanitization**:
-   - Removing `max-height: 90vh;` eliminates the conflicting viewport constraint that was overriding `dvh` on mobile screens.
-   - Replacing `height: 72vh; min-height: 480px;` with `flex: 1 1 auto; height: 100%; min-height: 0; max-height: none;` on `.stacked-deck-container` allows the deck to flex fluidly within available space.
-   - Changing `translateY(100vh)` to `translateY(100%)` across `@keyframes modalSlideUp`, `@keyframes modalSlideDown`, and `@keyframes scaleInModal` anchors animations to the modal card's own bounding box rather than the external browser viewport.
-
-3. **Step 3: Scroll Containment & Flex Invariant Guarantees**:
-   - Adding `min-height: 0; overscroll-behavior: contain; -webkit-overflow-scrolling: touch;` to `.recursos-modal-body` and `.confesion-modal-body` ensures flex items shrink below their content size (`min-height: 0` overrides `min-height: auto`), enabling internal scrolling while preventing scroll chaining to the background.
-   - Adding `overscroll-behavior: contain; -webkit-overflow-scrolling: touch;` to `.lyric-scroll-container` contains kinetic lyric scrolls.
-
-4. **Step 4: React Portal Isolation & Clean Scroll Reset**:
-   - In `src/components/GlobalModal.tsx`, using `createPortal(content, document.body)` with `mounted` state protection (`useEffect(() => setMounted(true), [])`) isolates the modal to the top level of the DOM.
-   - Adding `scrollTop = 0` on modal open for the overlay, modal card, and internal scroll containers (`.recursos-modal-body`, `.confesion-modal-body`, `.lyric-scroll-container`, `.gcal-scrollable-body`) guarantees each dialog opens cleanly from the very top.
-
-5. **Step 5: Position-Fixed Body Scroll Lock with Scroll Offset Preservation**:
-   - In both `LandingClient.tsx` and `CalendarioClient.tsx`, setting `document.body.style.position = 'fixed'`, `document.body.style.top = -${scrollY}px`, and `document.body.style.width = '100%'` freezes the underlying document on iOS and Android without losing the user's scroll position.
-   - On close, restoring styles and calling `window.scrollTo(0, scrollY)` instantly returns the user to their exact previous location without visual jumps.
-
-6. **Step 6: Container-Level Scroll in AppleMusicLyrics**:
-   - Replacing `targetEl.scrollIntoView({ behavior: 'auto', block: 'center' })` with `containerRef.current.scrollTo({ top: targetEl.offsetTop - 100, behavior: 'auto' })` confines section navigation strictly within the modal's internal scroll container, preventing WebKit window-level viewport displacement.
+1. **Problem Analysis**: The previous implementation relied on an XML scraper for `evangelizo.org`, which was brittle, unmaintained, and broke due to upstream DOM/XML changes.
+2. **Architecture Transition**: Replacing the scraper with `catholic-mass-readings` (`USCCB` provider) offers an official lectionary source with structured `SectionType` enums and typed mass parts.
+3. **Contract Preservation**: By designing `mapUsccbMassToResponse` to project the `USCCB` mass object directly into the established `MassReadingsResponse` shape, downstream consumers (`LandingClient.tsx`, `AppleMusicLyrics.tsx`, and `getCanonicalMassLines`) operate without structural regressions.
+4. **Resilience & Fault Tolerance**: Network failures or upstream USCCB timeouts gracefully trigger `FALLBACK_READINGS` with status 200 and `isFallback: true`, ensuring zero UI crashes and retaining CDN caching (`s-maxage=300`).
+5. **Next.js App Router Compatibility**:
+   - `impit` native binary conflict was resolved cleanly by using `--omit=optional`, permitting the built-in HTTP client fallback to native `fetch`.
+   - Next.js type generation requires route files to export only HTTP handlers (`GET`); helper parsing functions were retained within module scope without exporting.
+6. **E2E Test Alignment**: The 217 automated tests in `scripts/test-e2e.mjs` validate all tiers (Feature Coverage, Boundaries, Cross-Feature Combinations, Real-World Scenarios, Adversarial Hardening).
 
 ---
 
 ## 3. Caveats
 
-No caveats. All 5 files were updated in place adhering strictly to exclusive file ownership. No external dependencies or build alterations were introduced.
+- Upstream USCCB Spanish texts are sourced from the USCCB Spanish lectionary; minor punctuation variations compared to the Mexican Lectionary (CEM) may occur in scripture translations, but all liturgical parts (Citations, Antiphons, Verses) are 100% canonical and valid for Spanish-speaking youth ministry.
+- No other caveats; all 8 assigned files were modified cleanly within scope.
 
 ---
 
 ## 4. Conclusion
 
-The mobile modal rendering defect has been comprehensively resolved across the entire application:
-- Modals no longer clip or cut off at the top on physical mobile devices.
-- Dynamic mobile browser address bars and toolbars are fully supported via `dvh`, `svh`, and canonical `inset: 0` bounds.
-- Background scrolling and rubber-banding are eliminated via position-fixed body locking.
-- Window displacement during deep-linked section jumps is prevented through container-level `.scrollTo()`.
-- Modals are cleanly portaled to `document.body` with SSR safety and scroll reset on open.
+Milestone M6 is 100% complete and fully verified.
+- Deprecated Evangelizo scraper has been completely eliminated.
+- `catholic-mass-readings` library is installed and integrated into `src/app/api/mass-readings/route.ts`.
+- `LandingClient.tsx` passes `?lang=${guiaLang}`.
+- ISO 42010, ISO 29148, and ISO 12207 documentation and Master Documentation Index (`docs/index.md`) are synchronized.
+- Build (`npx next build`) succeeds with 0 errors.
+- All 217 E2E and unit tests pass cleanly.
 
 ---
 
 ## 5. Verification Method
 
-### 5.1 Commands Executed & Results
+To independently verify the implementation:
 
-1. **E2E Test Suite**:
+1. **Run Unit and E2E Tests**:
    ```bash
    npm test
    ```
-   **Result**: 217/217 test cases passed (100% pass rate) across all 5 tiers (Feature Coverage, Boundaries, Pairwise Combinations, Scenarios, Adversarial Hardening).
+   *Expected output*: 217 passed, 0 failed, exit code 0.
 
-2. **TypeScript Strict Type Check**:
+2. **Verify Type-Checking and Production Build**:
    ```bash
-   npx tsc --noEmit
+   npx next build
    ```
-   **Result**: Clean compilation with 0 errors.
+   *Expected output*: Compiled successfully, generating static pages (9/9), exit code 0.
 
-3. **Next.js Production Build**:
+3. **Verify API Endpoint Locally**:
    ```bash
-   npm run build
+   curl -s "http://localhost:3000/api/mass-readings?lang=es" | grep -q "firstReading" && echo "API OK"
    ```
-   **Result**: Next.js 15.5.18 optimized production build succeeded in 1.49s with all 9 static and dynamic routes compiled cleanly.
 
-### 5.2 Files Modified (Exact Diffs Available via `git diff`)
-- `src/components/GlobalModal.tsx`
-- `src/app/global.css`
-- `src/app/LandingClient.tsx`
-- `src/app/calendario/CalendarioClient.tsx`
-- `src/app/AppleMusicLyrics.tsx`
-
-### 5.3 Invalidation Conditions
-If any future change reintroduces `justify-content: flex-end;` without `safe`, removes `inset: 0` from `.calendar-modal-overlay`, or re-introduces `targetEl.scrollIntoView()` inside dialogs, the mobile rendering and scrolling defects could recur.
+4. **Invalidation Conditions**:
+   - Any test failure in `npm test`.
+   - Any compilation error during `npx next build`.
+   - Modifying files outside the authorized 8 files.

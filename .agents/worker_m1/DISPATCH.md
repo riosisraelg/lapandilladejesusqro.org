@@ -59,3 +59,53 @@ Implement a comprehensive, genuine fix for the mobile modal rendering bug across
    - Run `npm run build` (Next.js production build).
    - Document verification output and exact diffs in `/Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/worker_m1/handoff.md`.
 6. Send a message to orchestrator upon completion.
+
+## 2026-09-10T20:31:45Z
+
+You are worker_m1.
+Working directory: /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/worker_m1
+Project root: /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org
+
+Scope & File Ownership:
+You exclusively own:
+- `package.json`
+- `src/app/api/mass-readings/route.ts`
+- `src/app/LandingClient.tsx`
+- `scripts/test-e2e.mjs`
+- `docs/architecture.md`
+- `docs/srs.md`
+- `docs/tasks.md`
+- `docs/index.md`
+
+Your Assignment:
+1. Install `catholic-mass-readings`:
+   Run `npm install catholic-mass-readings` in project root.
+2. Refactor `src/app/api/mass-readings/route.ts`:
+   - Replace the Evangelizo XML HTTP fetcher and regex parsers with `catholic-mass-readings` (`USCCB`, `createNodeHttpClient`).
+   - Implement mapping to `MassReadingsResponse` matching the interface contract:
+     - `firstReading`: citation, shortCitation, text
+     - `psalm`: citation, shortCitation, response (antiphon parsed from R.), text, stanzas
+     - `secondReading`: optional, populated if present (e.g. Sundays/Solemnities)
+     - `alleluia`: citation, acclamation, verse
+     - `gospel`: citation, shortCitation, text
+     - `liturgicalDay`: mapped from mass.title
+     - `date`: normalized date string
+     - `source`: 'catholic-mass-readings' (or 'fallback' if fallback used)
+     - `isFallback`: boolean
+   - Support `date` query parameter (converts YYYYMMDD or YYYY-MM-DD to Date object).
+   - Support `lang` query parameter (e.g., 'es', 'en'): respect it per library capabilities, ensure zero crashes when 'es' or 'en' is requested.
+   - Retain `FALLBACK_READINGS` and resilient error/timeout handling.
+   - Ensure Cache-Control headers are preserved.
+3. Update `src/app/LandingClient.tsx`:
+   - Ensure the fetch call includes the language parameter (e.g., `fetch('/api/mass-readings?lang=' + guiaLang)`).
+   - Verify that readings state is properly consumed and rendered (First Reading, Psalm, Second Reading if present, Alleluia, Gospel).
+   - Verify that the "↻ Actualizar" button triggers a refresh without throwing React errors.
+4. Update ISO documentation per software-architecture standard:
+   - `docs/architecture.md`: Section 2.1 data flow, Section 3.1 Subsystem 4, Section 3.2 contract, Section 4.3 reliability, Section 5 tech stack table.
+   - `docs/srs.md`: Section 2.4, RF-08.1, AC-RF08 matrix.
+   - `docs/tasks.md`: TSK-M6-01, UT-SCR-01..08, and RTM.
+   - `docs/index.md`: Create or update Master Documentation Index.
+5. Update & verify test suite `scripts/test-e2e.mjs`:
+   - Update tests `R8.1` to `R8.10b` to test the new `catholic-mass-readings` adapter, data contract completeness, language handling, and fallback resilience.
+   - Run `npm test` and `npm run build` (or `npx next build`). Confirm all tests pass and build succeeds.
+6. Write a complete handoff report to `/Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/worker_m1/handoff.md` and send a completion message to your parent.

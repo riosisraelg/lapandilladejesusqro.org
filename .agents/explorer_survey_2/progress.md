@@ -1,11 +1,15 @@
-# Progress — Explorer 2 (CSS & Mobile Viewport Pitfalls)
+# Progress Log - explorer_survey_2
 
-Last visited: 2026-09-10T17:31:30Z
+Last visited: 2026-09-10T20:30:00Z
+Status: Completed investigation and handoff report
 
-- [x] Initialized DISPATCH.md, BRIEFING.md, and progress.md
-- [x] Read ORIGINAL_REQUEST.md and analyze bug description
-- [x] Survey all modals and layout containers for viewport height units (`h-screen`, `100vh`, `min-h-screen`, `max-h-screen`, etc.)
-- [x] Inspect positioning context: ancestors with `transform`, `filter`, `perspective`, `contain`, `backdrop-filter`
-- [x] Deep dive into mobile browser viewport mechanics (iOS Safari dynamic toolbars, Chrome URL bar collapse, visual viewport vs layout viewport, fixed positioning scrolling bugs)
-- [x] Document findings, code snippets, root cause identification, and recommended fix strategies
-- [x] Write handoff.md and notify parent orchestrator
+## Steps
+- [x] Received dispatch instructions and initialized BRIEFING.md
+- [x] Read ORIGINAL_REQUEST.md
+- [x] Check package.json for catholic-mass-readings (not installed; latest is 0.5.6)
+- [x] Inspect catholic-mass-readings via npm / node_modules / CLI / source code
+- [x] Inspect API methods, TypeScript types, language support, parameters
+- [x] Inspect return data structure (readings, psalm, gospel, citations, texts)
+- [x] Check compatibility with Next.js Server environment (Node.js runtime / Route Handlers)
+- [x] Develop mapping logic from library output to MassReadingsResponse
+- [x] Write handoff.md and report to parent

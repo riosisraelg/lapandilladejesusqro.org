@@ -1,34 +1,42 @@
-# BRIEFING — 2026-09-10T17:29:00Z
+# BRIEFING — 2026-09-10T20:30:00Z
 
 ## Mission
-Comprehensive inventory and structural analysis of all modals, dialogs, drawers, bottom sheets, full-screen readers, and overlays across the Next.js codebase to inform mobile viewport and positioning fixes.
+Investigate the current Mass Readings implementation in `src/app/api/mass-readings/route.ts` and `src/app/LandingClient.tsx` (and other consumers), documenting all interfaces, code paths, error handling, fallbacks, and UI rendering.
 
 ## 🔒 My Identity
 - Archetype: explorer
-- Roles: investigator, analyzer, surveyor
+- Roles: investigator, analyzer, synthesizer
 - Working directory: /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/explorer_survey_1
-- Original parent: d4ceabdc-0e57-4961-b7dd-1c003edf586e
-- Milestone: Modal Inventory & Structure Survey
+- Original parent: 9fe0ebfb-9dc9-4ad7-a5f7-5f547740ec52
+- Milestone: survey current mass readings implementation
 
 ## 🔒 Key Constraints
 - Read-only investigation — do NOT implement
-- Strictly investigate files under src/
-- Follow Handoff Protocol (Observation, Logic Chain, Caveats, Conclusion, Verification Method) in handoff.md
-- Update progress.md as liveness heartbeat
+- Never write source code, tests, or data files inside `.agents/`
+- Only write to `/Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/explorer_survey_1/`
 
 ## Current Parent
-- Conversation ID: d4ceabdc-0e57-4961-b7dd-1c003edf586e
-- Updated: 2026-09-10T17:29:00Z
+- Conversation ID: 9fe0ebfb-9dc9-4ad7-a5f7-5f547740ec52
+- Updated: 2026-09-10T20:30:00Z
 
 ## Investigation State
-- **Explored paths**: `src/components/GlobalModal.tsx`, `src/app/LandingClient.tsx`, `src/app/AppleMusicLyrics.tsx`, `src/app/calendario/CalendarioClient.tsx`, `src/app/global.css`, `src/app/layout.tsx`, `src/app/page.tsx`, `src/app/calendario/page.tsx`, `src/app/donaciones/page.tsx`.
-- **Key findings**: Identified 9 modal/overlay instances (7 using `GlobalModal` inline without portals, 2 mobile navigation drawer overlays). Root cause identified as `justify-content: flex-end;`, `100vh` in animations, `width: 100vw; height: 100dvh;` without `inset: 0`, and lack of fixed body scroll lock on mobile Safari.
-- **Unexplored areas**: None under `src/`. All 35 files inspected and cataloged.
+- **Explored paths**:
+  - `src/app/api/mass-readings/route.ts`
+  - `src/app/LandingClient.tsx`
+  - `src/app/massResponses.ts`
+  - `scripts/test-e2e.mjs`
+  - `catholic-mass-readings` npm package (v0.5.6)
+- **Key findings**:
+  - `src/app/api/mass-readings/route.ts` defines `MassReadingsResponse` and returns JSON with Edge caching (24h) and fallback handling.
+  - Consumers are `src/app/LandingClient.tsx` (Tab 1 "Lecturas del Día") and `src/app/massResponses.ts` (`getCanonicalMassLines`, `getCanonicalMassSection`).
+  - "↻ Actualizar" button in `LandingClient.tsx` calls `fetchDailyReadings(true)` to re-fetch `/api/mass-readings`.
+  - `catholic-mass-readings` scrapes `bible.usccb.org` (English texts) and does not natively support Spanish (`es`).
+- **Unexplored areas**: None for survey scope.
 
 ## Key Decisions Made
-- Cataloged every modal with exact line numbers, props, mounting mechanism, DOM hierarchy, and CSS rules into `handoff.md`.
+- Fully documented all 3 requested investigation points in `handoff.md`.
 
 ## Artifact Index
-- `/Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/explorer_survey_1/handoff.md` — 5-component survey report
-- `/Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/explorer_survey_1/progress.md` — Liveness heartbeat
-- `/Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/explorer_survey_1/DISPATCH.md` — Dispatch log
+- handoff.md — Comprehensive findings and handoff report
+- progress.md — Liveness and step tracking
+- DISPATCH.md — Received requests
