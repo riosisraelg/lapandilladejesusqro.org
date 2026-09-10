@@ -264,6 +264,30 @@ export default function Calendario() {
     return () => document.body.classList.remove("landing-body");
   }, []);
 
+  // Robust mobile body scroll lock when modal is open
+  useEffect(() => {
+    const isModalOpen = Boolean(selectedEvent || showSubscribeModal);
+    if (isModalOpen) {
+      const existingTop = document.body.style.top;
+      const scrollY = existingTop ? Math.abs(parseInt(existingTop, 10)) : window.scrollY;
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = '100%';
+      document.body.style.overflow = 'hidden';
+      document.body.classList.add('modal-open');
+      return () => {
+        const currentTop = document.body.style.top;
+        document.body.style.position = '';
+        document.body.style.top = '';
+        document.body.style.width = '';
+        document.body.style.overflow = '';
+        document.body.classList.remove('modal-open');
+        const restoredY = currentTop ? Math.abs(parseInt(currentTop, 10)) : scrollY;
+        window.scrollTo(0, restoredY);
+      };
+    }
+  }, [selectedEvent, showSubscribeModal]);
+
   // Fetch external Google Calendar events & generate Misas de Precepto
   useEffect(() => {
     const fetchEvents = async () => {
@@ -539,13 +563,13 @@ export default function Calendario() {
               <div className="nav-mobile-shortcuts-list">
                 {/* 1. Interactivo de Misa */}
                 <Link 
-                  href="/?modal=guia"
+                  href="/?modal=guia_misa_interactiva&seccion=rito-de-entrada"
                   className="nav-mobile-shortcut-btn priority-high"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   <span className="shortcut-icon">📖</span>
                   <div className="shortcut-info">
-                    <span className="shortcut-title">Guía de Misa y Lecturas</span>
+                    <span className="shortcut-title">Seguir Misa</span>
                     <span className="shortcut-desc">Lecturas de hoy, Ordinario y Respuestas</span>
                   </div>
                   <span className="shortcut-badge">Interactivo</span>
@@ -673,6 +697,72 @@ export default function Calendario() {
 
             {/* Event Sidebar */}
             <div className="event-sidebar">
+              {/* EVENTO FIJO DESTACADO */}
+              {new Date() < new Date('2026-11-04') && (
+                <div className="event-detail-card" style={{ border: "1px solid var(--border)", boxShadow: "0 2px 8px rgba(0,0,0,0.05)", marginBottom: "1.5rem" }}>
+                  <div className="event-detail-top">
+                    <div className="event-type-badges-container">
+                      <span className="event-type-badge conferencia">
+                        📌 Conferencia Especial
+                      </span>
+                    </div>
+                    <span className="event-detail-time">
+                      <ClockSmIcon />
+                      3 de noviembre, 2026 · 8:00 PM - 9:30 PM
+                    </span>
+                  </div>
+                  <h4 style={{ margin: "0.5rem 0" }}>Conferencia: Los 4 pilares de la pareja</h4>
+                  <div className="event-detail-location">
+                    <MapPinSmIcon />
+                    Parroquia de la Sagrada Familia, Blvd Jardines de la Hacienda 710, Querétaro, Qro.
+                  </div>
+                  <div className="event-detail-actions" style={{ marginTop: "1rem" }}>
+                    <button
+                      onClick={() => setSelectedEvent({
+                        id: "conferencia-pilares-pareja",
+                        title: "Conferencia: Los 4 pilares de la pareja",
+                        date: "2026-11-03",
+                        time: "8:00 PM - 9:30 PM",
+                        location: "Parroquia de la Sagrada Familia, Blvd Jardines de la Hacienda 710, Querétaro, Qro.",
+                        description: "Conferencia impartida por el Dr. Mauricio Terrasas, psicoterapeuta.\nTemas: afectividad, sexualidad, economía y proyectos en común.\nDirigida a parejas, novios y matrimonios.\nCosto: $100 MXN.\n\nPara pagar tu entrada o pedir más informes contáctanos por WhatsApp al +52 1 442 249 7485:\nhttps://wa.me/5214422497485",
+                        isPrecepto: false,
+                        types: ["Conferencia"],
+                      })}
+                      className="btn-agendar"
+                      style={{ background: "transparent" }}
+                      data-tooltip="Ver detalles del evento y sincronizar con tu calendario"
+                    >
+                      <CalendarSmIcon /> Agendar / Ver más
+                    </button>
+                    <button
+                      onClick={() => handleCopyEventLink({ id: "conferencia-pilares-pareja" } as any)}
+                      className="btn-agendar"
+                      style={{ 
+                        background: copiedEventId === "conferencia-pilares-pareja" ? "#20ba5a" : "transparent",
+                        color: copiedEventId === "conferencia-pilares-pareja" ? "#fff" : "inherit",
+                        maxWidth: copiedEventId === "conferencia-pilares-pareja" ? "120px" : "44px",
+                        padding: "0.5rem",
+                        transition: "all 0.3s ease",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: "6px"
+                      }}
+                      title="Copiar enlace directo"
+                    >
+                      {copiedEventId === "conferencia-pilares-pareja" ? (
+                        <>
+                          <CopyIcon />
+                          <span style={{ fontSize: '0.8rem', fontWeight: 'bold' }}>Copiado</span>
+                        </>
+                      ) : (
+                        <ShareIcon />
+                      )}
+                    </button>
+                  </div>
+                </div>
+              )}
+
               <div style={{ display: "flex", flexDirection: "column", gap: "4px", marginBottom: "0.75rem" }}>
                 <h3 style={{ fontSize: "1rem", fontWeight: "700", color: "var(--text-dark)", margin: 0 }}>
                   Eventos Próximos
@@ -896,10 +986,10 @@ export default function Calendario() {
             <div className="footer-col">
               <span className="footer-col-title">Guía de la Misa</span>
               <ul className="footer-col-links">
-                <li><Link href="/?modal=guia&seccion=lecturas">Lecturas de Hoy</Link></li>
+                <li><Link href="/?modal=guia_misa_interactiva&seccion=rito-de-entrada">Lecturas de Hoy</Link></li>
                 <li><Link href="/?modal=guia_misa_interactiva&seccion=rito-de-entrada">Respuestas y Ordinario</Link></li>
-                <li><Link href="/?modal=guia&seccion=cantos">Cantos Litúrgicos</Link></li>
-                <li><Link href="/?modal=guia&seccion=misterio">Plegarias y Misterio Pascual</Link></li>
+                <li><Link href="/?modal=guia_misa_interactiva&seccion=rito-de-entrada">Cantos Litúrgicos</Link></li>
+                <li><Link href="/?modal=guia_misa_interactiva&seccion=rito-de-entrada">Plegarias y Misterio Pascual</Link></li>
               </ul>
             </div>
 

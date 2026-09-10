@@ -1,7 +1,7 @@
-# BRIEFING — 2026-08-27T00:48:30-06:00
+# BRIEFING — 2026-09-10T11:38:30-06:00
 
 ## Mission
-Objective Quality Review and Adversarial Challenge for Milestone M1 (Food Prayers & Auto-Day Deck).
+Objective Quality Review and Adversarial Challenge for Modal Viewport Overhaul (CSS geometry, React Portal in GlobalModal, flexbox alignment, scroll resets).
 
 ## 🔒 My Identity
 - Archetype: reviewer_critic
@@ -10,30 +10,50 @@ Objective Quality Review and Adversarial Challenge for Milestone M1 (Food Prayer
 - Original parent: 367b9238-f1ab-4c6e-b44d-f936902ad2ff
 - Milestone: M1
 - Instance: 1 of 1
+- Current dispatch parent: d4ceabdc-0e57-4961-b7dd-1c003edf586e
 
 ## 🔒 Key Constraints
 - Review-only — do NOT modify implementation code
 - Rigorous verification of R1 & R2 against Bendicional nn. 883-884, tests, build, and adversarial stress tests
+- Actively check for integrity violations (hardcoded test results, facade implementations, shortcuts, fabricated verification)
+- Verify CSS correctness (inset: 0, 100dvh, -webkit-fill-available, safe flex-end, overflow-y: auto, max-height removal, keyframes)
+- Verify Component correctness (React Portal, SSR mounting safety, scroll position reset)
+- Verification execution: `npm test`, `npx tsc --noEmit`, `npm run build`
 
 ## Current Parent
-- Conversation ID: 367b9238-f1ab-4c6e-b44d-f936902ad2ff
-- Updated: 2026-08-27T00:48:30-06:00
+- Conversation ID: d4ceabdc-0e57-4961-b7dd-1c003edf586e
+- Updated: 2026-09-10T11:38:30-06:00
 
 ## Review Scope
-- **Files reviewed**:
-  - `src/data/oracionesData.ts`
+- **Files to review**:
+  - `src/components/GlobalModal.tsx`
+  - `src/app/global.css`
   - `src/app/LandingClient.tsx`
-  - `tests/m1_food_prayers.test.mjs`
-  - `scripts/test-e2e.mjs`
-  - `package.json`, `next.config.mjs`, `src/app/sitemap.ts`
-- **Interface contracts**: `.agents/ORIGINAL_REQUEST.md`, `.agents/milestone_m1/handoff.md`, `.agents/transcribe_prayers_b1/handoff.md`, `.agents/transcribe_prayers_b2/handoff.md`
-- **Review criteria**: correctness, integrity, completeness, Catholic prayer fidelity (Bendicional 883-884), UI/UX auto-day deck functionality, build & test validity
+  - `src/app/calendario/CalendarioClient.tsx`
+  - `src/app/AppleMusicLyrics.tsx`
+- **Interface contracts**:
+  - `/Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/ORIGINAL_REQUEST.md`
+  - `/Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/PROJECT.md`
+  - `/Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/worker_m1/handoff.md`
+- **Review criteria**:
+  - CSS geometry & viewport coverage
+  - Safe flexbox alignment & scroll behavior
+  - Keyframe animation sanitization
+  - React Portal implementation & SSR safety
+  - Modal content scroll reset
+  - Build, TypeScript, and unit/e2e test passing
+  - No integrity violations
 
 ## Key Decisions Made
-- Confirmed full alignment of 7-day Catholic meal prayer texts with Roman *Bendicional* nn. 883-884.
-- Confirmed removal of legacy `basicas-alimentos` from `oracionesBasicas`.
-- Verified `new Date().getDay()` mapping (0=Sunday to 6=Saturday) directly matches `FOOD_PRAYERS_DATA`.
-- Verified Next.js build (`npm run build`) and test suite (`npm test`, `node --test tests/m1_food_prayers.test.mjs`) pass with 0 errors.
+- Confirmed CSS Box Alignment Level 3 fix: `justify-content: safe flex-end;` and `margin: auto 0 0 0;` on `.recursos-modal-card` and `.modal-large` prevent negative coordinate clipping (`scrollTop < 0`).
+- Confirmed full mobile viewport geometry: `position: fixed; inset: 0; width: 100%; height: 100%; height: 100dvh; min-height: -webkit-fill-available;`.
+- Confirmed removal of conflicting `max-height: 90vh` in `global.css`.
+- Confirmed keyframe animation sanitization to `translateY(100%)` in `modalSlideUp`, `modalSlideDown`, `scaleInModal`.
+- Confirmed React Portal implementation via `createPortal(content, document.body)` in `GlobalModal.tsx` with SSR `mounted` state protection.
+- Confirmed modal scroll reset on open (`scrollTop = 0`).
+- Confirmed position-fixed mobile body scroll lock with scroll offset preservation in `LandingClient.tsx` and `CalendarioClient.tsx`.
+- Confirmed container-level `.scrollTo()` replacing `scrollIntoView()` in `AppleMusicLyrics.tsx`.
+- Confirmed 217/217 E2E tests pass, `tsc --noEmit` passes with 0 errors, Next.js build compiles 9/9 routes in 1742ms.
 - Issued verdict: **APPROVE**.
 
 ## Artifact Index
@@ -43,21 +63,20 @@ Objective Quality Review and Adversarial Challenge for Milestone M1 (Food Prayer
 
 ## Review Checklist
 - **Items reviewed**:
-  - R1: All 7 days Catholic meal prayers (Domingo–Sábado) transcribed with Versicle, Response, Oremos before meals, Oremos after meals, Spanish default + English translations, Bendicional rubric. (PASS)
-  - R1: Obsolete `basicas-alimentos` removed from `oracionesBasicas`. (PASS)
-  - R2: Dedicated deck 3/4 integrated in `DECKS_ORDER`, top switcher badge & titles. (PASS)
-  - R2: Auto-day detection via `new Date().getDay()` on deck switch and URL sync. (PASS)
-  - R2: Manual swiping & navigation (gestures + arrows) supported. (PASS)
-  - Test suites: 13/13 M1 unit tests passed, 147/147 E2E tests passed. (PASS)
-  - Build: `npm run build` compiled 8/8 static pages successfully with 0 errors. (PASS)
+  - `src/components/GlobalModal.tsx` (PASS)
+  - `src/app/global.css` (PASS - 2 minor cleanup findings)
+  - `src/app/LandingClient.tsx` (PASS)
+  - `src/app/calendario/CalendarioClient.tsx` (PASS)
+  - `src/app/AppleMusicLyrics.tsx` (PASS)
 - **Verdict**: APPROVE
-- **Unverified claims**: None. All claims independently verified.
+- **Unverified claims**: None. All claims independently verified via AST/code inspection, unit/E2E test suite, TypeScript typecheck, and Next.js production build.
 
 ## Attack Surface
 - **Hypotheses tested**:
-  - Day index offset (0=Sunday vs 1=Monday): Verified `FOOD_PRAYERS_DATA[0]` is Domingo, matching `new Date().getDay()`.
-  - Boundary swiping modulo wrapping: Tested edge indices (0, 6, -1, 7).
-  - Hydration / URL parameter handling: Tested `?modal=oraciones&deck=alimentos&etapa=X`.
-  - Language toggle persistence: Tested switching between ES/EN.
+  - Browser lack of `safe` flexbox keyword: Mitigated by `margin: auto 0 0 0` on modal cards. (PASS)
+  - Rapid sequential modal opening/closing: Body scroll lock captures existing `document.body.style.top` offset and restores exact position without jumps. (PASS)
+  - SSR / Hydration mismatch with React Portal: Gated by client-side `mounted` state check before `createPortal`. (PASS)
+  - Modal content starting scrolled down: Reset by `useEffect` on `isOpen` targeting overlay, card, and all body containers. (PASS)
+  - Integrity violation audit: No hardcoded test responses, dummy facades, or skipped tests found. (PASS)
 - **Vulnerabilities found**: None.
-- **Untested angles**: None within M1 scope.
+- **Untested angles**: Physical touch interactions on legacy iOS 14 WebKit versions (acceptable risk; code adheres to standard WebKit workarounds).

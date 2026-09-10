@@ -1,11 +1,22 @@
-# Progress — Reviewer 2 (Milestone M1)
+# Progress — Reviewer 2 (Mobile UX & Behavioral Reviewer)
 
-Last visited: 2026-08-27T06:48:00Z
+**Status**: Independent verification, code inspection, and adversarial stress testing complete. Ready to compile handoff report.
+**Last visited**: 2026-09-10T17:42:00Z
 
-- [x] Initialized DISPATCH.md and BRIEFING.md
-- [x] Inspect ORIGINAL_REQUEST.md, milestone_m1/handoff.md, and source images/data
-- [x] Review `src/data/oracionesData.ts` and liturgical texts for all 7 days against source images and *Bendicional* nn. 883-884
-- [x] Review `src/app/LandingClient.tsx` (auto-day selection, edge cases, day indices 0-6, Sunday vs Saturday, URL params)
-- [x] Adversarial stress test & integrity check (zero cheating patterns, solid types and error handling)
-- [x] Run `npm run build` (success, 8/8 pages generated) and `npm test` (147/147 passed) and `node --test --experimental-strip-types tests/m1_food_prayers.test.mjs` (13/13 passed)
-- [x] Complete `handoff.md` and send report with verdict APPROVE
+## Tasks
+- [x] Initialize BRIEFING.md and progress.md
+- [x] Read authoritative documents (ORIGINAL_REQUEST.md, PROJECT.md, worker_m1/handoff.md)
+- [x] Review implementation files for Mobile UX & behavioral constraints:
+  - [x] src/components/GlobalModal.tsx (Portal to document.body, SSR safety, scrollTop reset on open)
+  - [x] src/app/global.css (.calendar-modal-overlay bounds & safe flex-end, .recursos-modal-card dynamic max-height, overscroll containment, safe-area-inset-bottom)
+  - [x] src/app/LandingClient.tsx (Position-fixed body scroll lock preserving/restoring scrollY)
+  - [x] src/app/calendario/CalendarioClient.tsx (Position-fixed body scroll lock preserving/restoring scrollY)
+  - [x] src/app/AppleMusicLyrics.tsx (Container-level scrollTo eliminating window displacement)
+- [x] Run independent verification:
+  - [x] `npm test`: 217/217 passed (100%)
+  - [x] `npx tsc --noEmit`: Clean compilation (0 errors)
+  - [x] `npm run build`: Next.js 15.5.18 production build succeeded (9/9 routes)
+- [x] Conduct adversarial stress testing & edge-case analysis
+- [x] Integrity check (0 violations detected)
+- [ ] Write handoff.md with verdict (APPROVE)
+- [ ] Send message to orchestrator

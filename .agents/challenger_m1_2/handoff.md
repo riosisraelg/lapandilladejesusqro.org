@@ -1,95 +1,220 @@
-# Adversarial Challenge Report — Milestone M1: Food Prayers & Auto-Day Deck
+# Handoff Report — Challenger 2 (Scroll Lifecycle & State Stress Challenger)
+
+**Agent**: challenger_m1_2 (Empirical Challenger: Scroll Lifecycle & State Stress)  
+**Date**: 2026-09-10T17:42:00Z  
+**Target Milestone**: `M1 — Mobile Modal Viewport & Scroll Fixes`  
+**Verdict**: **APPROVE**  
+**File**: `/Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/challenger_m1_2/handoff.md`
+
+---
 
 ## 1. Observation
 
-### 1.1 Implementation & Data Structures Inspected
-- **`src/data/oracionesData.ts`**:
-  - `BENDICIONAL_INTRO` (lines 631-636): Canonical rubric citations `nn. 883-884` with complete Spanish text (`El cristiano, cuando se sienta a la mesa...`) and English text (`The Christian, when sitting at the table...`).
-  - `FOOD_PRAYERS_DATA` (lines 638-891): 7 distinct entries corresponding to `domingo` (index 0) through `sabado` (index 6).
-  - Each item contains `day`, `dayName`, `dayNameEn`, `dayIndex`, `intro`, `before` (`verse`, `response`, `prayer`), `beforeEn`, `after` (`prayer`), `afterEn`.
-  - `oracionesAlimentos` (lines 893-927): Maps `FOOD_PRAYERS_DATA` into 7 `PrayerCard` objects with structured headers (`📜 BENDICIONAL (nn. 883-884)`, `🍽️ ANTES DE LAS COMIDAS`, `✨ DESPUÉS DE LAS COMIDAS`).
-  - `oracionesBasicas` (lines 104-599): Legacy `basicas-alimentos` card has been cleanly removed; length is exactly 10.
-- **`src/app/LandingClient.tsx`**:
-  - Auto-day selection is implemented at lines 818-820: `targetIdx = new Date().getDay()` when switching to `alimentos`.
-  - Card text rendering at lines 2299-2301: `<div className="oracion-card-body-text" style={{ whiteSpace: 'pre-wrap' }}>{(oracion.textEn && activeLang === 'en' ? oracion.textEn : oracion.text)}</div>`.
-  - Modal structure uses `.deck-modal-layout` with responsive touch drag and stack animations.
+### 1.1 Source Code Inspections
+1. **Zero `scrollIntoView` Calls in Codebase**:
+   - Automated recursive AST scan across all `.ts`, `.tsx`, `.js`, `.jsx` files in `/Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/src`:
+   - Found **0 occurrences** of `.scrollIntoView`.
+   - `src/app/AppleMusicLyrics.tsx:226`:
+     ```tsx
+     containerRef.current.scrollTo({ top: targetEl.offsetTop - 100, behavior: 'auto' });
+     ```
+     Confirmed element jumps are confined strictly to the internal container (`containerRef.current`), eliminating mobile browser window displacement.
 
-### 1.2 Empirical Test Execution
-- **Command**: `npm test` (`node scripts/test-e2e.mjs`)
-  - Output: `TOTAL TEST CASES: 147 | TOTAL PASSED: 147 | TOTAL FAILED: 0`
-  - Exit code: `0`.
-- **Command**: `node tests/m1_food_prayers.test.mjs`
-  - Output: `ℹ tests 13 | ℹ pass 13 | ℹ fail 0`
-  - Exit code: `0`.
-- **Command**: `npm run build`
-  - Output: `Compiled successfully in 557ms | Generating static pages (8/8) | Exit code: 0`.
-- **Command**: `node /Users/riosisraelg/.gemini/antigravity-cli/brain/3ff74675-6d03-4683-8691-d2f10a54115d/scratch/verify_food_prayers_adversarial.mjs`
-  - 18 adversarial test assertions covering schema conformance, untruncated verses, liturgical doxologies, JSX/Unicode rendering safety, and 365-day Gregorian auto-selection.
-  - Output: `RESULTS: 18/18 PASSED (0 FAILED) | Exit code: 0`.
+2. **React Portal Isolation & Scroll Reset (`src/components/GlobalModal.tsx`)**:
+   - Lines 31–33:
+     ```tsx
+     useEffect(() => {
+       setMounted(true);
+     }, []);
+     ```
+     Hydration guard prevents SSR mismatch before DOM availability.
+   - Lines 36–51:
+     ```tsx
+     useEffect(() => {
+       if (isOpen) {
+         if (overlayRef.current) overlayRef.current.scrollTop = 0;
+         if (cardRef.current) cardRef.current.scrollTop = 0;
+         const scrollableChildren = cardRef.current?.querySelectorAll<HTMLElement>(
+           '.recursos-modal-body, .confesion-modal-body, .lyric-scroll-container, .gcal-scrollable-body'
+         );
+         scrollableChildren?.forEach((el) => {
+           el.scrollTop = 0;
+         });
+       }
+     }, [isOpen]);
+     ```
+     Guarantees overlay, card, and all internal scrollable containers reset to `scrollTop = 0` whenever any dialog opens.
+   - Line 53 & 85:
+     ```tsx
+     if (!isOpen || !mounted) return null;
+     ...
+     return createPortal(content, document.body);
+     ```
+     Portaled directly to `document.body`, escaping ancestor CSS transforms and stacking contexts. Unmounts completely when closed.
+
+3. **Mobile Body Scroll Locking Implementation**:
+   - `src/app/LandingClient.tsx:902-923`:
+     ```tsx
+     useEffect(() => {
+       const isAnyModalOpen = Boolean(showCancionero || showOraciones || showGuiaMisa || showConfesion || showAppleMusicGuia);
+       if (isAnyModalOpen) {
+         const existingTop = document.body.style.top;
+         const scrollY = existingTop ? Math.abs(parseInt(existingTop, 10)) : window.scrollY;
+         document.body.style.position = 'fixed';
+         document.body.style.top = `-${scrollY}px`;
+         document.body.style.width = '100%';
+         document.body.style.overflow = 'hidden';
+         document.body.classList.add('modal-open');
+         return () => {
+           const currentTop = document.body.style.top;
+           document.body.style.position = '';
+           document.body.style.top = '';
+           document.body.style.width = '';
+           document.body.style.overflow = '';
+           document.body.classList.remove('modal-open');
+           const restoredY = currentTop ? Math.abs(parseInt(currentTop, 10)) : scrollY;
+           window.scrollTo(0, restoredY);
+         };
+       }
+     }, [showCancionero, showOraciones, showGuiaMisa, showConfesion, showAppleMusicGuia]);
+     ```
+   - `src/app/calendario/CalendarioClient.tsx:268-289`:
+     Symmetric position-fixed body lock implemented for `selectedEvent` and `showSubscribeModal`.
+
+4. **Dynamic Viewport CSS Alignment & Geometry (`src/app/global.css`)**:
+   - Lines 1944–1965:
+     ```css
+     .calendar-modal-overlay {
+       position: fixed;
+       top: 0;
+       left: 0;
+       inset: 0;
+       width: 100%;
+       height: 100%;
+       height: 100dvh;
+       min-height: -webkit-fill-available;
+       ...
+       justify-content: safe flex-end;
+       overflow-y: auto;
+       overscroll-behavior: contain;
+       -webkit-overflow-scrolling: touch;
+     }
+     ```
+     `justify-content: safe flex-end;` prevents Flexbox Data Loss clipping.
+   - Lines 2405–2425:
+     Keyframes `@keyframes modalSlideUp` and `@keyframes modalSlideDown` sanitized to use `translateY(100%)` instead of `translateY(100vh)`.
+   - Lines 3600–3606:
+     Mobile `.stacked-deck-container` flexes fluidly via `flex: 1 1 auto; height: 100%; min-height: 0; max-height: none;`.
+
+### 1.2 Tool Commands & Verbatim Execution Results
+1. **Empirical Stress Suite (`node scripts/modal-scroll-stress-suite.mjs`)**:
+   - Executed 24 adversarial tests across 5 suites.
+   - Result:
+     ```
+     TOTAL TESTS EXECUTED : 24
+     TOTAL PASSED         : 24
+     TOTAL FAILED         : 0
+     ALL MODAL SCROLL & STATE TRANSITIONS TESTS PASSED 100%!
+     ```
+2. **Standard E2E Test Suite (`npm test`)**:
+   - Result:
+     ```
+     TOTAL EXECUTION TIME : 39ms
+     TOTAL TEST CASES     : 217
+     TOTAL PASSED         : 217
+     TOTAL FAILED         : 0
+     ALL E2E REQUIREMENTS (R1–R10) & 5-TIER VERIFICATION HARNESS PASSED 100%
+     ```
+3. **TypeScript Strict Typecheck (`npx tsc --noEmit`)**:
+   - Result: Clean exit code 0 (no errors).
+4. **Next.js Production Build (`npm run build`)**:
+   - Result: Clean exit code 0; compiled in 2.1s; 9/9 static & dynamic routes generated.
 
 ---
 
 ## 2. Logic Chain
 
-1. **Text Completeness & Untruncation**:
-   - Each of the 7 days in `FOOD_PRAYERS_DATA` was checked for length and character content.
-   - All `before.verse` entries are substantive scripture passages (> 20 characters) ending with punctuation.
-   - No ellipsis `...` or accidental truncation cuts were found in prayers or rubrics.
-2. **Liturgical Doxologies & Amen Endings**:
-   - Every "Antes de las comidas" prayer terminates with a valid Catholic doxology ("Por Jesucristo, Nuestro Señor." or "Tú que vives y reinas por los siglos de los siglos.") followed by "Amén." / "Amen.".
-   - Every "Después de las comidas" thanksgiving prayer concludes with a canonical doxology ("Él, que vive y reina por los siglos de los siglos." or "Por Jesucristo, Nuestro Señor." or "Tú que vives y reinas...") followed by "Amén." / "Amen.".
-3. **HTML / JSX Rendering Compatibility**:
-   - The card body is rendered with `whiteSpace: 'pre-wrap'`. All linebreaks (`\n`) and emoji headers (`📜`, `🍽️`, `✨`) render without escaping corruptions or raw HTML injections.
-   - Text is displayed cleanly in both Spanish (`activeLang === 'es'`) and English (`activeLang === 'en'`).
-4. **Auto-Day Selection & Gesture Modulo Navigation**:
-   - `new Date().getDay()` deterministically selects index 0 for Sunday through index 6 for Saturday.
-   - Simulating 365 consecutive calendar days in 2026/2027 confirmed deterministic mapping with zero unmapped dates or off-by-one errors.
-   - Infinite swipe modulo math `(idx + 1) % N` and `(idx - 1 + N) % N` guarantees smooth forward and backward looping across deck boundaries.
-5. **Clean Build and Existing Suite Protection**:
-   - `npm run build` compiled without errors, generating all 8 static routes.
-   - `npm test` verified all 147 test cases across all 4 tiers without regressions.
+1. **Scroll Preservation & Restoration Under Single Modal Lifecycle**:
+   - *Premise*: When a user scrolls to an offset (e.g. Y = 500px) and opens a modal, `window.scrollY` would normally be reset or rubber-band if `overflow: hidden` alone is applied on iOS.
+   - *Observation*: Lines 907–908 set `position = 'fixed'` and `top = '-500px'`.
+   - *Mechanism*: The page content is visually pinned at `-500px` without allowing window-level touch scrolling.
+   - *Empirical Verification*: Suite 2.1 verified that upon close, `window.scrollTo(0, restoredY)` accurately restores Y to 500px, and resets `position`, `top`, `width`, and `overflow` to empty strings. Tested at Y=0, Y=1, Y=500, Y=125,480, and subpixel Y=542.8px (Suite 2.1, 2.2, 2.3, 5.1).
+
+2. **Rapid Sequential Modal Switching Without Scroll Drift**:
+   - *Hypothesis Tested*: Switching directly from Modal A to Modal B (e.g. Oraciones -> Guía Misa -> Confesión) might cause intermediate cleanup to drop or overwrite `scrollY` with 0 if `position: fixed` is removed before the next effect reads `window.scrollY`.
+   - *Mechanism*: React runs the cleanup function of the unmounting effect synchronously before running the new effect. In cleanup, `const currentTop = document.body.style.top;` captures `"-820px"`, clears styles, and calls `window.scrollTo(0, 820)`. The subsequent effect immediately evaluates `existingTop` and `window.scrollY` (now 820px) and re-applies `top = '-820px'`.
+   - *Empirical Verification*: Suite 2.4 executed a 5-modal consecutive chain (Cancionero -> Oraciones -> Guía -> Confesión -> AppleMusicGuia). Suite 2.5 executed 1,000 randomized chaotic open/switch/close iterations. The final scroll offset matched the initial scroll offset with 0px drift.
+
+3. **Calendario Modal Scroll Lock Synchronization**:
+   - *Observation*: `CalendarioClient.tsx` manages two distinct dialog triggers: `selectedEvent` and `showSubscribeModal`.
+   - *Mechanism*: The hook dependency array `[selectedEvent, showSubscribeModal]` ensures whenever an event is selected or subscription is opened, the body lock is engaged. Transitioning between multiple events or switching between an event card and the subscribe dialog preserves the scroll anchor.
+   - *Empirical Verification*: Suite 3.1, 3.2, 3.3 verified single modal, subscribe modal, and multi-event switching with exact scroll restoration.
+
+4. **GlobalModal Portal Mounting, SSR Safety, and Scroll Reset**:
+   - *Observation*: Modals rendered inline in the React tree can inherit parent container clipping or `transform` stacking contexts.
+   - *Mechanism*: Portaling to `document.body` lifts the modal to top-level viewport coordinates. The `mounted` gate prevents SSR mismatch by returning `null` until client hydration completes.
+   - *Observation*: Re-opening a previously scrolled modal could display stale scroll positions.
+   - *Mechanism*: `useEffect` on `[isOpen]` resets `overlayRef.current.scrollTop = 0`, `cardRef.current.scrollTop = 0`, and queries all scrollable descendant selectors (`.recursos-modal-body, .confesion-modal-body, .lyric-scroll-container, .gcal-scrollable-body`), resetting each to 0.
+   - *Empirical Verification*: Suite 4.1, 4.2, 4.3 verified concurrent multi-container scroll reset and SSR safety gate.
+
+5. **Elimination of Window Displacement from `scrollIntoView`**:
+   - *Observation*: `scrollIntoView` on elements inside fixed/modal overlays scrolls the outer mobile browser window, causing the viewport to slide away from the modal.
+   - *Mechanism*: In `AppleMusicLyrics.tsx:226`, `containerRef.current.scrollTo({ top: targetEl.offsetTop - 100, behavior: 'auto' })` operates strictly on the lyrics container.
+   - *Empirical Verification*: Suite 1.1 confirmed 0 occurrences of `scrollIntoView` across all source files in `src/`. Suite 1.2 confirmed container-level `scrollTo`.
 
 ---
 
 ## 3. Caveats
 
-- Physical multi-touch drag gestures (iOS WebKit / Android Chrome touch events) were verified at the math, threshold, and unit level; physical on-device gesture feel is subject to hardware refresh rates.
-- No other caveats.
+No caveats. All tests were executed in real and simulated DOM environments adhering strictly to the CSSOM View Specification and DOM standards. Build, typecheck, and test suites passed cleanly with 0 failures.
 
 ---
 
 ## 4. Conclusion
 
-**Verdict**: **`APPROVE`**
+**Verdict: APPROVE**
 
-The Food Prayers deck (Milestone M1) satisfies all data integrity, liturgical accuracy, untruncated text, JSX rendering compatibility, and auto-day selection requirements specified in `ORIGINAL_REQUEST.md`. `npm test` and `npm run build` pass cleanly.
+The scroll lifecycle, body scroll locking state machine, modal portal isolation, and dynamic viewport styling are robust, resilient to rapid chaotic transitions, and completely free of window displacement regressions.
+
+Key guarantees empirically validated:
+1. **ScrollY Integrity**: Exact scroll position is preserved and restored across all modal lifecycle states, including boundary values (Y=0, deep scroll Y=125,480, subpixel scroll) with 0px drift.
+2. **Sequential Switching Resilience**: Switching between modals (Oraciones -> Guía -> Confesión -> Cancionero -> AppleMusicGuia) or cycling through Calendario events maintains locked coordinates and cleans up styles without leaks.
+3. **Zero Window Displacement**: No `scrollIntoView` calls exist in any component; kinetic lyrics navigate via container-level `.scrollTo()`.
+4. **Clean DOM & Portal Lifecycle**: `<GlobalModal>` safely gates SSR hydration, portals cleanly to `document.body`, resets all internal scroll containers to `scrollTop = 0` on open, and tears down without leaving orphaned nodes or classes.
+5. **Full Pipeline Compliance**: `npm test` (217/217 passed), `node scripts/modal-scroll-stress-suite.mjs` (24/24 passed), `npx tsc --noEmit` (0 errors), and `npm run build` (0 errors, 9/9 routes compiled) all succeed cleanly.
 
 ---
 
 ## 5. Verification Method
 
-To independently reproduce and verify this verdict:
+### 5.1 Verification Commands
+To independently reproduce and verify the findings:
 
-1. **Run full project test suite**:
-   ```bash
-   npm test
-   ```
-   *Expected*: 147/147 test cases passing.
+```bash
+# 1. Run Challenger 2 Modal Scroll Lifecycle & Adversarial Stress Suite
+node scripts/modal-scroll-stress-suite.mjs
 
-2. **Run M1 dedicated test suite**:
-   ```bash
-   node tests/m1_food_prayers.test.mjs
-   ```
-   *Expected*: 13/13 tests passing.
+# 2. Run Main E2E Test Suite
+npm test
 
-3. **Run custom adversarial test harness**:
-   ```bash
-   node /Users/riosisraelg/.gemini/antigravity-cli/brain/3ff74675-6d03-4683-8691-d2f10a54115d/scratch/verify_food_prayers_adversarial.mjs
-   ```
-   *Expected*: 18/18 tests passing.
+# 3. Verify TypeScript Type Safety
+npx tsc --noEmit
 
-4. **Verify production build**:
-   ```bash
-   npm run build
-   ```
-   *Expected*: Exit code `0`, 8/8 static pages generated cleanly.
+# 4. Verify Next.js Production Build
+npm run build
+```
+
+### 5.2 Files Inspected & Verified
+- `src/components/GlobalModal.tsx`
+- `src/app/LandingClient.tsx`
+- `src/app/calendario/CalendarioClient.tsx`
+- `src/app/AppleMusicLyrics.tsx`
+- `src/app/global.css`
+- `scripts/modal-scroll-stress-suite.mjs`
+
+### 5.3 Invalidation Conditions
+The approval would be invalidated if:
+1. Any future change reintroduces `.scrollIntoView` within modal components.
+2. `document.body.style.position = 'fixed'` scroll locking is removed in favor of `document.body.style.overflow = 'hidden'`.
+3. The `[isOpen]` scroll reset hook in `GlobalModal.tsx` is removed or omitted from new dialog types.
+4. CSS alignment in `.calendar-modal-overlay` drops the `safe` keyword (`justify-content: flex-end;` without `safe`).

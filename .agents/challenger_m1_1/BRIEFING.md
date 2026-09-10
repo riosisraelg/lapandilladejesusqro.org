@@ -1,53 +1,57 @@
-# BRIEFING — 2026-08-27T06:47:55Z
+# BRIEFING — 2026-09-10T17:42:00Z
 
 ## Mission
-Adversarially challenge and stress-test Milestone M1 (Food Prayers & Auto-Day Deck): verify getFoodPrayersDeck, auto-day indexing, boundary days, timezones, leap years, deck switching, data structure integrity, and report verdict.
+Empirically challenge and stress-test mobile layout, modal rendering, coordinate bounds, and mobile viewports for Milestone 1.
 
 ## 🔒 My Identity
-- Archetype: challenger
+- Archetype: EMPIRICAL CHALLENGER
 - Roles: critic, specialist
-- Working directory: /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/challenger_m1_1/
-- Original parent: 367b9238-f1ab-4c6e-b44d-f936902ad2ff
-- Milestone: M1 (Food Prayers & Auto-Day Deck)
-- Instance: 1 of 1
+- Working directory: /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/challenger_m1_1
+- Original parent: d4ceabdc-0e57-4961-b7dd-1c003edf586e
+- Milestone: milestone-1
+- Instance: 1 of 2
 
 ## 🔒 Key Constraints
-- Review-only — do NOT modify implementation code (report bugs/findings as challenges/findings)
-- Write only to .agents/challenger_m1_1/ folder for agent metadata
-- Stress-test empirically by writing and running test harnesses
-- Adhere to engineering standards & policies
+- Review-only — do NOT modify implementation code
+- Run verification code directly — do NOT trust worker claims
+- Must empirically reproduce any bug; if not reproducible, does not count
+- .agents/ holds only metadata (plans, progress, handoffs) — no tests/code/data
 
 ## Current Parent
-- Conversation ID: 367b9238-f1ab-4c6e-b44d-f936902ad2ff
-- Updated: 2026-08-27T06:47:55Z
+- Conversation ID: d4ceabdc-0e57-4961-b7dd-1c003edf586e
+- Updated: 2026-09-10T17:42:00Z
 
 ## Review Scope
-- **Files to review**: `src/data/oracionesData.ts`, `src/app/LandingClient.tsx`, `tests/m1_food_prayers.test.mjs`, `scripts/test-e2e.mjs`, `tests/m1_challenger_stress.test.mjs`
-- **Interface contracts**: `ORIGINAL_REQUEST.md`, `PROJECT.md`, `scope-exploration.md`, `docs/architecture.md`, `docs/srs.md`
-- **Review criteria**: Empirical correctness, edge cases, boundaries (days 0 and 6, invalid days, leap years, timezone offsets, missing fields), deck switching between alimentos, basicas, comunidad, and rosario.
+- **Files to review**:
+  - `src/app/global.css`
+  - `src/components/GlobalModal.tsx`
+  - `src/app/LandingClient.tsx`
+  - `src/app/calendario/CalendarioClient.tsx`
+  - `src/app/AppleMusicLyrics.tsx`
+- **Interface contracts**: `PROJECT.md`
+- **Review criteria**: Mobile layout stability, coordinate clipping (`top < 0`), viewport constraints, test suites
+
+## Key Decisions Made
+- Authored and executed empirical stress test harness `scripts/adversarial-mobile-viewport-suite.mjs` covering 148 automated checks across 21 devices and 6 content load profiles.
+- Verified that `top >= 0` invariant strictly holds under all mobile, tablet, and landscape viewports, guaranteeing headers and close buttons are never clipped.
+- Validated empirical baseline reproduction: legacy `justify-content: flex-end` without `safe` and rigid deck min-height (588px) causes `top = -47.3px` on iPhone SE (reproducing user bug). Under the new architecture, negative coordinate space is eliminated.
+- Verified build and test suites: `npm test` (217/217 pass), `npx tsc --noEmit` (0 errors), `npm run build` (success).
+- Formulated verdict: **APPROVE**.
+
+## Artifact Index
+- `/Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/challenger_m1_1/handoff.md` — Final Handoff Report & Explicit Verdict
+- `/Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/challenger_m1_1/progress.md` — Liveness heartbeat
+- `/Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/scripts/adversarial-mobile-viewport-suite.mjs` — Automated empirical stress harness
 
 ## Attack Surface
-- **Hypotheses tested**: 
-  - `getFoodPrayersDeck` input variations (NaN, null, undefined, strings, negative/overflow indices) -> PASS (100% resilient)
-  - Boundary days (0: Domingo, 6: Sábado) prayer data completeness -> PASS (100% valid)
-  - Leap year date mappings (2000, 2024, 2028, 2032, 2036, 2040 Feb 29) -> PASS (100% valid)
-  - 365-day Gregorian calendar continuity across 3 years (1,095 days) -> PASS
-  - Global timezone offsets (UTC-12 to UTC+14) -> PASS
-  - Card schema, missing field fallback, and absence of "undefined"/"null" string interpolation -> PASS
-  - 4-Deck cyclic switching order & modulo wrap -> PASS
-  - Full-year 2026 daily auto-day sweep -> PASS
-- **Vulnerabilities found**: None that compromise system integrity. Minor observation: extreme deep-link URL parameter `etapa > 14` normalizes on initial swipe.
-- **Untested angles**: All identified boundary angles empirically covered in `tests/m1_challenger_stress.test.mjs`.
+- **Hypotheses tested**:
+  1. Viewport flexbox data-loss (can `top < 0` occur on small screens like iPhone SE?): Tested on 21 devices x 6 profiles = 126 layout matrix cells. Result: `top >= 0` invariant 100% held.
+  2. Degraded engine attack (browser ignores `margin: auto` or ignores `safe`): Tested. Result: Defense-in-depth via `max-height: calc(100svh - 2rem)` prevents card from exceeding viewport, keeping free space positive.
+  3. Dynamic toolbar collapse/expand perturbation: Tested. Result: `svh` constraint keeps card within visible viewport during toolbar expansion.
+  4. Landscape mobile short viewport (375x667 landscape, 360x800 landscape): Tested. Result: Content scales fluidly with internal scrolling, header remains pinned inside viewport.
+  5. Body scroll lock reentrancy and position preservation: Tested. Result: Exact scroll offset preserved and restored.
+- **Vulnerabilities found**: 0 vulnerabilities in updated implementation. (Reproduction of baseline defect confirmed legacy code had `top = -47.3px`).
+- **Untested angles**: Hardware-specific iOS 12 legacy quirks (out of modern Next.js 15 runtime scope).
 
 ## Loaded Skills
 - None
-
-## Key Decisions Made
-- Executed 19-test adversarial stress harness in `tests/m1_challenger_stress.test.mjs` alongside 13 unit tests and 147 E2E tests.
-- Verdict: APPROVE. Milestone M1 implementation meets all functional, liturgical, and boundary stress criteria.
-
-## Artifact Index
-- `.agents/challenger_m1_1/DISPATCH.md` — Log of incoming dispatches
-- `.agents/challenger_m1_1/BRIEFING.md` — Agent state and briefing
-- `.agents/challenger_m1_1/progress.md` — Liveness and progress tracking
-- `.agents/challenger_m1_1/handoff.md` — Final handoff report

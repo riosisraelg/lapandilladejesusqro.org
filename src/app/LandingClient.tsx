@@ -898,19 +898,28 @@ export default function Landing() {
     }
   }, []);
 
-  // Lock body scroll when any modal is open to prevent background scrolling
+  // Robust mobile body scroll lock when any modal is open
   useEffect(() => {
-    if (showCancionero || showOraciones || showGuiaMisa || showConfesion || showAppleMusicGuia) {
+    const isAnyModalOpen = Boolean(showCancionero || showOraciones || showGuiaMisa || showConfesion || showAppleMusicGuia);
+    if (isAnyModalOpen) {
+      const existingTop = document.body.style.top;
+      const scrollY = existingTop ? Math.abs(parseInt(existingTop, 10)) : window.scrollY;
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = '100%';
       document.body.style.overflow = 'hidden';
       document.body.classList.add('modal-open');
-    } else {
-      document.body.style.overflow = '';
-      document.body.classList.remove('modal-open');
+      return () => {
+        const currentTop = document.body.style.top;
+        document.body.style.position = '';
+        document.body.style.top = '';
+        document.body.style.width = '';
+        document.body.style.overflow = '';
+        document.body.classList.remove('modal-open');
+        const restoredY = currentTop ? Math.abs(parseInt(currentTop, 10)) : scrollY;
+        window.scrollTo(0, restoredY);
+      };
     }
-    return () => {
-      document.body.style.overflow = '';
-      document.body.classList.remove('modal-open');
-    };
   }, [showCancionero, showOraciones, showGuiaMisa, showConfesion, showAppleMusicGuia]);
 
   const [isClosingModal, setIsClosingModal] = useState<string | null>(null);
@@ -1389,14 +1398,13 @@ export default function Landing() {
                   className="nav-mobile-shortcut-btn priority-high"
                   onClick={() => { 
                     setMobileMenuOpen(false); 
-                    setActiveGuiaTab('lecturas'); 
-                    setModalUrl('guia'); 
+                    setModalUrl('guia_misa_interactiva', { seccion: 'rito-de-entrada' }); 
                     triggerHaptic('medium'); 
                   }}
                 >
                   <span className="shortcut-icon">📖</span>
                   <div className="shortcut-info">
-                    <span className="shortcut-title">Guía de Misa y Lecturas</span>
+                    <span className="shortcut-title">Seguir Misa</span>
                     <span className="shortcut-desc">Lecturas de hoy, Ordinario y Respuestas</span>
                   </div>
                   <span className="shortcut-badge">Interactivo</span>
@@ -1672,6 +1680,28 @@ export default function Landing() {
                 <Link href="/calendario" className="btn-ver-calendar" data-tooltip="Ver toda la planeación y el calendario de eventos del mes">Ver todo</Link>
               </div>
 
+              {/* EVENTO FIJO DESTACADO DENTRO DEL PANE */}
+              {new Date() < new Date('2026-11-04') && (
+                <div className="event-day-item" style={{ border: "1px solid var(--border)", marginBottom: "1rem", backgroundColor: "var(--bg-secondary)" }}>
+                  <div className="event-day-info">
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "0.25rem" }}>
+                      <span className="event-type-badge conferencia" style={{ padding: "2px 6px", borderRadius: "12px", fontSize: "0.7rem", fontWeight: "bold" }}>
+                        📌 Conferencia Especial
+                      </span>
+                    </div>
+                    <h5 style={{ fontSize: "1rem" }}>Conferencia: Los 4 pilares de la pareja</h5>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginTop: '4px' }}>
+                      <span className="event-detail-time" style={{ fontSize: "0.8rem", color: "var(--text-light)" }}>
+                        <ClockIcon /> 3 Nov 2026 · 8:00 PM
+                      </span>
+                      <span className="event-detail-location" style={{ fontSize: "0.8rem", color: "var(--text-light)" }}>
+                        <MapPinIcon /> Parroquia de la Sagrada Familia, Qro.
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               <div className="week-events-list">
                 {!weekEvents.hasAny ? (
                   <div className="events-empty">
@@ -1879,12 +1909,10 @@ export default function Landing() {
                 <button 
                   className={`recursos-btn btn-seguir-misa ${bounceBtn === 'seguir-misa' ? 'bounce-active' : ''}`} 
                   onClick={() => { 
-                    setActiveGuiaTab('respuestas'); 
-                    setActiveMisaSectionIdx(0); 
-                    setModalUrl('guia', { seccion: 'respuestas' }); 
+                    setModalUrl('guia_misa_interactiva', { seccion: 'rito-de-entrada' }); 
                     triggerHaptic('medium'); 
                   }}
-                  data-tooltip="Seguir la Misa: lecturas, salmos, respuestas y cantos litúrgicos"
+                  data-tooltip="Seguir la Misa con cantos interactivos"
                 >
                   <div className="recursos-icon-circle">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -1892,7 +1920,7 @@ export default function Landing() {
                       <path d="M12 6v7l3-3" />
                     </svg>
                   </div>
-                  Seguir la Misa
+                  Seguir Misa
                 </button>
               </div>
             </div>
@@ -3342,7 +3370,7 @@ export default function Landing() {
         hideCloseBtn={true}
       >
         <AppleMusicLyrics
-          title="Guía de Misa"
+          title="Seguir Misa"
           subtitle={`${massResponses[activeMisaSectionIdx].title[guiaLang]} (${activeMisaSectionIdx + 1} de ${massResponses.length})${dailyReadings?.isFallback && activeMisaSectionIdx === 1 ? (guiaLang === 'en' ? ' • Offline Mode' : ' • Modo sin conexión') : ''}`}
           langToggle={
             <button 

@@ -1,16 +1,18 @@
-## 2026-08-27T06:45:40Z
+## 2026-09-10T17:37:30Z
+You are Challenger 1 (Mobile Layout & Viewport Stress Challenger).
+Your working directory is: /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/challenger_m1_1.
+Initialize your BRIEFING.md and progress.md in your working directory.
 
-You are Challenger 1 for Milestone M1 (Food Prayers & Auto-Day Deck).
-Working directory: /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/challenger_m1_1/
-Project root: /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org
-Authoritative Request: /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/ORIGINAL_REQUEST.md
+Authoritative Documents to Read First:
+1. /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/ORIGINAL_REQUEST.md
+2. /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/PROJECT.md
+3. /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/worker_m1/handoff.md
 
-Task:
-Adversarially challenge Milestone M1:
-1. Write and execute stress tests checking edge cases on `getFoodPrayersDeck` and auto-day selection (invalid day indices, boundary days 0 and 6, leap years, timezone offsets, missing fields).
-2. Test deck switching between alimentos, basicas, comunidad, and rosario.
-3. Report verdict: APPROVE or REQUEST_CHANGES.
+Tasks:
+1. Empirically challenge and stress-test the mobile viewport and modal rendering layout.
+2. Write and execute validation tests or scripts (e.g., node scripts) to test layout calculations, CSS constraints, and simulated viewport dimensions (e.g. 375x667 iPhone SE, 393x852 iPhone 14 Pro, 360x740 Android, 820x1180 iPad).
+3. Test whether any configuration can cause modal content to extend into negative coordinate space (`top < 0`) or permanently clip the header/close button.
+4. Verify build and test suites: `npm test`, `npx tsc --noEmit`, `npm run build`.
 
-Write report to `/Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/challenger_m1_1/handoff.md`.
-Update `.agents/challenger_m1_1/progress.md`.
-Send completion message.
+Deliver your challenge report to /Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agents/challenger_m1_1/handoff.md following the Handoff Protocol. Include an explicit verdict: APPROVE or REJECT.
+Send a message to the orchestrator when done.
