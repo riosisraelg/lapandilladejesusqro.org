@@ -80,3 +80,34 @@ Ensure `LandingClient.tsx` correctly consumes the data from the updated API rout
 - [ ] Running the local Next.js dev server shows the daily readings populated correctly in the UI.
 - [ ] Clicking the "↻ Actualizar" button fetches and renders the readings without throwing React errors.
 
+## Follow-up — 2026-09-10T23:11:12Z
+
+# Teamwork Project Prompt — Draft
+
+> Status: Launched
+> Goal: Craft prompt → get user approval → delegate to teamwork_preview
+> Requested team: Full team
+
+Build a web application with its own repository to display daily Catholic Mass readings in Spanish (using the `rcolfin/catholic-mass-readings` structure) and interactive Mass responses/lyrics. It will generate a specific interactive guide for the Mass at the Basilica de Guadalupe (Sept 10, 2026) by combining the transcript of a provided YouTube video with standard English/Spanish Mass responses.
+
+Working directory: `~/teamwork_projects/guadalupe_mass_interactive`
+Integrity mode: development
+
+## Requirements
+
+### R1. Interactive "Seguir Misa" Guide
+Create an interactive "seguir misa" (follow the mass) guide. Instead of building a generic new component, use a real example to capture the exact sayings of the priest: extract the transcript from the provided YouTube video (`https://www.youtube.com/watch?v=EkoysbFU47c`) for the Mass at the Basilica de Guadalupe (Sept 10, 2026). Combine the priest's exact words with the bilingual assembly responses from `https://rejoiceinfaith.org/Mass_responses_in_English_and_Spanish`.
+
+### R2. Spanish Mass Readings Integration
+The tool must provide the Spanish version of the actual daily mass readings for September 10, 2026. The current engine only has USCCB readings in English; you must implement the logic to integrate the Spanish equivalents, structuring the data based on the format used in the `rcolfin/catholic-mass-readings` repository.
+
+## Acceptance Criteria
+
+### Interactive Guide Verification
+- [ ] A programmatic test verifies that the application's output contains the priest's exact sayings extracted from the provided YouTube transcript.
+- [ ] A test verifies that the UI pairs the priest's parts with the corresponding bilingual (English and Spanish) assembly responses.
+- [ ] An automated browser test (or similar script) verifies that an interactive element exists that allows the user to follow along ("seguir misa").
+
+### Spanish Readings Verification
+- [ ] A test verifies that the application successfully retrieves or displays the Spanish version of the readings for September 10, 2026.
+- [ ] A programmatic test verifies that the Spanish readings data structure matches the `rcolfin/catholic-mass-readings` format.

@@ -1684,25 +1684,25 @@ export default function Landing() {
               {new Date() < new Date('2026-11-04') && (
                 <div 
                   className="event-day-item talk-highlight-card" 
-                  style={{ marginBottom: "1rem", backgroundColor: "var(--bg-secondary)", cursor: 'pointer' }}
+                  style={{ marginBottom: "1rem", backgroundColor: "var(--bg-secondary)", cursor: 'pointer', padding: '1.25rem' }}
                   onClick={() => router.push('/calendario?evento=platica-pilares-pareja')}
                 >
                   <div className="event-day-info">
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "0.25rem" }}>
-                      <span className="event-type-badge platica" style={{ padding: "2px 6px", borderRadius: "12px", fontSize: "0.7rem", fontWeight: "bold" }}>
-                        Plática Especial
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "0.5rem" }}>
+                      <span className="event-type-badge platica" style={{ padding: "4px 8px", borderRadius: "12px", fontSize: "0.75rem", fontWeight: "bold" }}>
+                        Plática
                       </span>
                     </div>
-                    <h5 style={{ fontSize: "1rem" }}>Plática: Los 4 pilares de la pareja</h5>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginTop: '4px' }}>
-                      <span className="event-detail-time" style={{ fontSize: "0.8rem", color: "var(--text-light)" }}>
+                    <h5 style={{ fontSize: "1.1rem", marginBottom: "0.5rem" }}>Plática: Los 4 pilares de la pareja</h5>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginTop: '4px' }}>
+                      <span className="event-detail-time" style={{ fontSize: "0.85rem", color: "var(--text-light)" }}>
                         <ClockIcon /> 3 Nov 2026 · 8:00 PM
                       </span>
-                      <span className="event-detail-location" style={{ fontSize: "0.8rem", color: "var(--text-light)" }}>
+                      <span className="event-detail-location" style={{ fontSize: "0.85rem", color: "var(--text-light)" }}>
                         <MapPinIcon /> Parroquia de la Sagrada Familia, Qro.
                       </span>
                     </div>
-                    <button className="talk-details-btn">
+                    <button className="talk-details-btn" style={{ width: '100%', justifyContent: 'center', marginTop: '1rem', padding: '0.5rem' }}>
                       Ver detalles
                     </button>
                   </div>

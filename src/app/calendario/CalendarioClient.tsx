@@ -715,7 +715,7 @@ export default function Calendario() {
                   <div className="event-detail-top">
                     <div className="event-type-badges-container">
                       <span className="event-type-badge platica">
-                        Plática Especial
+                        Plática
                       </span>
                     </div>
                     <span className="event-detail-time">
