@@ -67,6 +67,20 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
     }
   }
 
+  // Hardcoded featured event fallback
+  if (!found && eventId === "platica-pilares-pareja") {
+    found = {
+      id: "platica-pilares-pareja",
+      title: "Plática: Los 4 pilares de la pareja",
+      date: "2026-11-03",
+      time: "8:00 PM - 9:30 PM",
+      location: "Parroquia de la Sagrada Familia, Blvd Jardines de la Hacienda 710, Querétaro, Qro.",
+      description: "Plática impartida por el Dr. Mauricio Terrasas, psicoterapeuta.\nTemas: afectividad, sexualidad, economía y proyectos en común.\nDirigida a parejas, novios y matrimonios.\nCosto: $100 MXN.",
+      isPrecepto: false,
+      type: "Plática"
+    };
+  }
+
   const eventTitle = found ? found.title : 'Evento de la Comunidad';
   let eventDesc = baseDescription;
   if (found) {

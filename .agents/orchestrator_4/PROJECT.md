@@ -74,10 +74,10 @@ Reference Request: `/Users/riosisraelg/Desktop/1/lapandilladejesusqro.org/.agent
 | # | Name | Scope | Dependencies | Status |
 |---|------|-------|-------------|--------|
 | M1 | Repo & Test Scaffolding | Next.js 15, TS, Tailwind, Vitest, Playwright setup in target repo | none | DONE |
-| M2 | Spanish Readings Integration | Sept 10, 2026 Spanish readings engine & `catholic-mass-readings` schema | M1 | IN_PROGRESS |
-| M3 | Transcript & Bilingual Responses | Exact priest transcript (`EkoysbFU47c`) paired with `rejoiceinfaith.org` | M1 | IN_PROGRESS |
-| M4 | Interactive UI ("Seguir Misa") | Interactive guide UI, stepper, bilingual toggle, Playwright browser test | M2, M3 | PLANNED |
-| M5 | E2E Testing & Final Verification | Full acceptance test pass (Tiers 1-4), adversarial tests & forensic audit | M4 | PLANNED |
+| M2 | Spanish Readings Integration | Sept 10, 2026 Spanish readings engine & `catholic-mass-readings` schema | M1 | DONE |
+| M3 | Transcript & Bilingual Responses | Exact priest transcript (`EkoysbFU47c`) paired with `rejoiceinfaith.org` | M1 | DONE |
+| M4 | Interactive UI ("Seguir Misa") | Interactive guide UI, stepper, bilingual toggle, Playwright browser test | M2, M3 | DONE |
+| M5 | E2E Testing & Final Verification | Full acceptance test pass (Tiers 1-4), adversarial tests & forensic audit | M4 | DONE |
 
 ---
 
