@@ -432,7 +432,6 @@ export default function Landing() {
   const pathname = usePathname();
 
   const [events, setEvents] = useState<Array<any>>([]);
-  const [showTalkModal, setShowTalkModal] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('hero');
@@ -1686,7 +1685,7 @@ export default function Landing() {
                 <div 
                   className="event-day-item talk-highlight-card" 
                   style={{ marginBottom: "1rem", backgroundColor: "var(--bg-secondary)", cursor: 'pointer' }}
-                  onClick={() => setShowTalkModal(true)}
+                  onClick={() => router.push('/calendario?evento=platica-pilares-pareja')}
                 >
                   <div className="event-day-info">
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "0.25rem" }}>
@@ -3395,33 +3394,6 @@ export default function Landing() {
           initialSection={initialSection}
           lines={getCanonicalMassLines(activeMisaSectionIdx, dailyReadings, guiaLang)}
         />
-      </GlobalModal>
-
-      {/* ── TALK HIGHLIGHT MODAL ── */}
-      <GlobalModal isOpen={showTalkModal} onClose={() => setShowTalkModal(false)}>
-        <div className="gcal-modal-wrapper">
-          <div className="gcal-modal-header" style={{ borderBottom: '1px solid var(--border-subtle)', paddingBottom: '1rem', marginBottom: '1rem' }}>
-            <h2 style={{ fontSize: '1.4rem', color: 'var(--text-dark)', marginBottom: '0.5rem' }}>Plática: Los 4 pilares de la pareja</h2>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-light)', fontSize: '0.9rem', marginBottom: '0.25rem' }}>
-              <ClockIcon /> 3 de noviembre, 2026 · 8:00 PM - 9:30 PM
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-light)', fontSize: '0.9rem' }}>
-              <MapPinIcon /> 
-              <a href="https://maps.google.com/?q=Parroquia+de+la+Sagrada+Familia,+Blvd+Jardines+de+la+Hacienda+710,+Querétaro,+Qro." target="_blank" rel="noopener noreferrer" style={{ color: 'var(--gold)', textDecoration: 'underline' }}>
-                Parroquia de la Sagrada Familia, Blvd Jardines de la Hacienda 710, Querétaro, Qro.
-              </a>
-            </div>
-          </div>
-          <div className="gcal-modal-body" style={{ color: 'var(--text-body)', fontSize: '0.95rem', lineHeight: '1.6', whiteSpace: 'pre-wrap' }}>
-            {`Plática impartida por el Dr. Mauricio Terrasas, psicoterapeuta.\nTemas: afectividad, sexualidad, economía y proyectos en común.\nDirigida a parejas, novios y matrimonios.\nCosto: $100 MXN.\n\nPara pagar tu entrada o pedir más informes contáctanos por WhatsApp al +52 1 442 249 7485`}
-            
-            <div style={{ marginTop: '1.5rem', textAlign: 'center' }}>
-              <a href="https://wa.me/5214422497485" target="_blank" rel="noopener noreferrer" className="nav-cta-wa" style={{ display: 'inline-flex', padding: '0.75rem 1.5rem', fontSize: '1rem' }}>
-                <WhatsAppIcon size={20} /> Contáctanos por WhatsApp
-              </a>
-            </div>
-          </div>
-        </div>
       </GlobalModal>
 
       {/* ── VERTICAL SIDE INDEX BAR ── */}
