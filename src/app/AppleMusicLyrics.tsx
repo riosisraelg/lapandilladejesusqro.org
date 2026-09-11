@@ -39,102 +39,147 @@ interface PaletteDef {
 }
 
 const DAY_PALETTES: PaletteDef[] = [
-  // 1. Arena Cálida & Ámbar
-  { hues: [38, 48, 24], sat: [40, 50], light: [55, 65] },
-  // 2. Bracero de Terracota
-  { hues: [18, 28, 12], sat: [50, 60], light: [58, 68] },
-  // 3. Miel de Alba
-  { hues: [44, 54, 32], sat: [45, 55], light: [60, 70] },
-  // 4. Atardecer Coral
-  { hues: [12, 4, 22], sat: [55, 65], light: [62, 72] },
-  // 5. Rosa Aurora
-  { hues: [352, 6, 342], sat: [42, 52], light: [60, 70] },
-  // 6. Olivares al Sol
-  { hues: [82, 94, 70], sat: [35, 45], light: [52, 62] },
-  // 7. Jardín de Salvia
-  { hues: [118, 130, 105], sat: [30, 40], light: [54, 64] },
-  // 8. Esmeralda Matutina
-  { hues: [145, 160, 130], sat: [35, 45], light: [48, 58] },
-  // 9. Brisa de Mar Turquesa
-  { hues: [175, 190, 162], sat: [40, 50], light: [52, 62] },
-  // 10. Laguna Caribeña
-  { hues: [182, 198, 170], sat: [45, 55], light: [54, 64] },
-  // 11. Cielo Cerúleo
-  { hues: [205, 218, 195], sat: [42, 52], light: [56, 66] },
-  // 12. Azul Océano Pacífico
-  { hues: [215, 228, 202], sat: [40, 50], light: [52, 62] },
-  // 13. Zafiro Mediterráneo
-  { hues: [222, 235, 210], sat: [45, 55], light: [50, 60] },
-  // 14. Caramelo & Vainilla
-  { hues: [32, 42, 22], sat: [48, 58], light: [58, 68] },
-  // 15. Canela & Cedro
-  { hues: [24, 34, 16], sat: [42, 52], light: [56, 66] },
-  // 16. Oro Imperial
-  { hues: [48, 58, 38], sat: [50, 60], light: [60, 70] },
-  // 17. Cobre Radiante
-  { hues: [16, 26, 8], sat: [52, 62], light: [58, 68] },
-  // 18. Prado Primaveral
-  { hues: [132, 146, 120], sat: [38, 48], light: [50, 60] },
-  // 19. Papiro & Lino
-  { hues: [42, 50, 30], sat: [32, 42], light: [62, 72] },
-  // 20. Manantial Glaciar
-  { hues: [195, 208, 185], sat: [38, 48], light: [58, 68] },
+  { hues: [339, 0, 326], sat: [40, 55], light: [55, 68] }, // Day 1
+  { hues: [252, 319, 227], sat: [40, 55], light: [55, 68] }, // Day 2
+  { hues: [253, 315, 234], sat: [40, 55], light: [55, 68] }, // Day 3
+  { hues: [224, 251, 199], sat: [40, 55], light: [55, 68] }, // Day 4
+  { hues: [171, 182, 141], sat: [40, 55], light: [55, 68] }, // Day 5
+  { hues: [80, 93, 54], sat: [40, 55], light: [55, 68] }, // Day 6
+  { hues: [325, 348, 255], sat: [40, 55], light: [55, 68] }, // Day 7
+  { hues: [72, 90, 54], sat: [40, 55], light: [55, 68] }, // Day 8
+  { hues: [252, 318, 232], sat: [40, 55], light: [55, 68] }, // Day 9
+  { hues: [147, 167, 132], sat: [40, 55], light: [55, 68] }, // Day 10
+  { hues: [81, 99, 51], sat: [40, 55], light: [55, 68] }, // Day 11
+  { hues: [162, 185, 135], sat: [40, 55], light: [55, 68] }, // Day 12
+  { hues: [345, 14, 327], sat: [40, 55], light: [55, 68] }, // Day 13
+  { hues: [216, 242, 191], sat: [40, 55], light: [55, 68] }, // Day 14
+  { hues: [194, 218, 171], sat: [40, 55], light: [55, 68] }, // Day 15
+  { hues: [226, 248, 202], sat: [40, 55], light: [55, 68] }, // Day 16
+  { hues: [115, 141, 91], sat: [40, 55], light: [55, 68] }, // Day 17
+  { hues: [215, 235, 193], sat: [40, 55], light: [55, 68] }, // Day 18
+  { hues: [82, 111, 54], sat: [40, 55], light: [55, 68] }, // Day 19
+  { hues: [173, 184, 160], sat: [40, 55], light: [55, 68] }, // Day 20
+  { hues: [312, 339, 258], sat: [40, 55], light: [55, 68] }, // Day 21
+  { hues: [21, 46, 352], sat: [40, 55], light: [55, 68] }, // Day 22
+  { hues: [149, 162, 137], sat: [40, 55], light: [55, 68] }, // Day 23
+  { hues: [174, 200, 151], sat: [40, 55], light: [55, 68] }, // Day 24
+  { hues: [188, 212, 173], sat: [40, 55], light: [55, 68] }, // Day 25
+  { hues: [9, 26, 347], sat: [40, 55], light: [55, 68] }, // Day 26
+  { hues: [67, 90, 43], sat: [40, 55], light: [55, 68] }, // Day 27
+  { hues: [207, 220, 187], sat: [40, 55], light: [55, 68] }, // Day 28
+  { hues: [217, 244, 202], sat: [40, 55], light: [55, 68] }, // Day 29
+  { hues: [121, 138, 98], sat: [40, 55], light: [55, 68] }, // Day 30
+  { hues: [0, 14, 330], sat: [40, 55], light: [55, 68] }, // Day 31
+  { hues: [234, 244, 213], sat: [40, 55], light: [55, 68] }, // Day 32
+  { hues: [333, 348, 320], sat: [40, 55], light: [55, 68] }, // Day 33
+  { hues: [76, 90, 50], sat: [40, 55], light: [55, 68] }, // Day 34
+  { hues: [350, 5, 335], sat: [40, 55], light: [55, 68] }, // Day 35
+  { hues: [57, 85, 38], sat: [40, 55], light: [55, 68] }, // Day 36
+  { hues: [123, 145, 98], sat: [40, 55], light: [55, 68] }, // Day 37
+  { hues: [140, 157, 127], sat: [40, 55], light: [55, 68] }, // Day 38
+  { hues: [164, 178, 141], sat: [40, 55], light: [55, 68] }, // Day 39
+  { hues: [5, 20, 349], sat: [40, 55], light: [55, 68] }, // Day 40
+  { hues: [22, 50, 5], sat: [40, 55], light: [55, 68] }, // Day 41
+  { hues: [236, 314, 214], sat: [40, 55], light: [55, 68] }, // Day 42
+  { hues: [117, 128, 101], sat: [40, 55], light: [55, 68] }, // Day 43
+  { hues: [217, 246, 207], sat: [40, 55], light: [55, 68] }, // Day 44
+  { hues: [218, 243, 199], sat: [40, 55], light: [55, 68] }, // Day 45
+  { hues: [11, 25, 356], sat: [40, 55], light: [55, 68] }, // Day 46
+  { hues: [179, 195, 151], sat: [40, 55], light: [55, 68] }, // Day 47
+  { hues: [352, 19, 324], sat: [40, 55], light: [55, 68] }, // Day 48
+  { hues: [149, 166, 125], sat: [40, 55], light: [55, 68] }, // Day 49
+  { hues: [330, 348, 320], sat: [40, 55], light: [55, 68] }, // Day 50
 ];
 
 const NIGHT_PALETTES: PaletteDef[] = [
-  // 1. Espresso & Brasas
-  { hues: [24, 34, 14], sat: [35, 50], light: [16, 26] },
-  // 2. Obsidiana & Oro Antiguo
-  { hues: [40, 50, 28], sat: [38, 52], light: [14, 24] },
-  // 3. Cedro Ahumado
-  { hues: [18, 28, 10], sat: [32, 46], light: [15, 25] },
-  // 4. Cereza Negra & Caoba
-  { hues: [348, 2, 338], sat: [30, 45], light: [14, 24] },
-  // 5. Esmeralda Abisal
-  { hues: [142, 156, 128], sat: [28, 40], light: [12, 22] },
-  // 6. Pino Nocturno
-  { hues: [154, 168, 140], sat: [26, 38], light: [13, 23] },
-  // 7. Turquesa de Medianoche
-  { hues: [178, 192, 165], sat: [30, 44], light: [14, 24] },
-  // 8. Fosa Oceánica
-  { hues: [186, 200, 172], sat: [32, 46], light: [12, 22] },
-  // 9. Zafiro Nocturno
-  { hues: [216, 228, 204], sat: [30, 44], light: [12, 22] },
-  // 10. Pizarra & Carbón Azul
-  { hues: [208, 220, 196], sat: [24, 36], light: [13, 23] },
-  // 11. Cobalto Profundo
-  { hues: [224, 236, 212], sat: [32, 45], light: [12, 22] },
-  // 12. Bronce Sagrado
-  { hues: [34, 44, 22], sat: [40, 55], light: [15, 25] },
-  // 13. Cacao & Canela Oscura
-  { hues: [26, 36, 16], sat: [36, 48], light: [14, 24] },
-  // 14. Selva en Tinieblas
-  { hues: [136, 150, 122], sat: [25, 38], light: [12, 22] },
-  // 15. Musgo Umbrío
-  { hues: [88, 100, 76], sat: [26, 38], light: [13, 23] },
-  // 16. Basalto Volcánico & Rubí
-  { hues: [354, 8, 344], sat: [34, 48], light: [13, 23] },
-  // 17. Cobre Ancestral
-  { hues: [14, 24, 6], sat: [38, 52], light: [15, 25] },
-  // 18. Arrecife Abisal
-  { hues: [170, 184, 158], sat: [28, 42], light: [13, 23] },
-  // 19. Noche Polar Ártica
-  { hues: [198, 212, 186], sat: [26, 40], light: [13, 23] },
-  // 20. Índigo Profundo & Ocre
-  { hues: [230, 240, 36], sat: [30, 45], light: [12, 22] },
+  { hues: [105, 118, 77], sat: [30, 48], light: [14, 25] }, // Night 1
+  { hues: [182, 199, 171], sat: [30, 48], light: [14, 25] }, // Night 2
+  { hues: [179, 207, 150], sat: [30, 48], light: [14, 25] }, // Night 3
+  { hues: [177, 192, 148], sat: [30, 48], light: [14, 25] }, // Night 4
+  { hues: [76, 99, 47], sat: [30, 48], light: [14, 25] }, // Night 5
+  { hues: [251, 313, 238], sat: [30, 48], light: [14, 25] }, // Night 6
+  { hues: [205, 227, 192], sat: [30, 48], light: [14, 25] }, // Night 7
+  { hues: [157, 177, 135], sat: [30, 48], light: [14, 25] }, // Night 8
+  { hues: [218, 247, 200], sat: [30, 48], light: [14, 25] }, // Night 9
+  { hues: [84, 108, 55], sat: [30, 48], light: [14, 25] }, // Night 10
+  { hues: [43, 63, 20], sat: [30, 48], light: [14, 25] }, // Night 11
+  { hues: [126, 143, 113], sat: [30, 48], light: [14, 25] }, // Night 12
+  { hues: [35, 56, 20], sat: [30, 48], light: [14, 25] }, // Night 13
+  { hues: [343, 356, 332], sat: [30, 48], light: [14, 25] }, // Night 14
+  { hues: [147, 169, 129], sat: [30, 48], light: [14, 25] }, // Night 15
+  { hues: [341, 356, 325], sat: [30, 48], light: [14, 25] }, // Night 16
+  { hues: [42, 61, 30], sat: [30, 48], light: [14, 25] }, // Night 17
+  { hues: [54, 79, 26], sat: [30, 48], light: [14, 25] }, // Night 18
+  { hues: [340, 353, 326], sat: [30, 48], light: [14, 25] }, // Night 19
+  { hues: [145, 155, 121], sat: [30, 48], light: [14, 25] }, // Night 20
+  { hues: [122, 133, 98], sat: [30, 48], light: [14, 25] }, // Night 21
+  { hues: [233, 320, 218], sat: [30, 48], light: [14, 25] }, // Night 22
+  { hues: [11, 37, 345], sat: [30, 48], light: [14, 25] }, // Night 23
+  { hues: [7, 31, 347], sat: [30, 48], light: [14, 25] }, // Night 24
+  { hues: [41, 59, 13], sat: [30, 48], light: [14, 25] }, // Night 25
+  { hues: [14, 38, 351], sat: [30, 48], light: [14, 25] }, // Night 26
+  { hues: [20, 38, 352], sat: [30, 48], light: [14, 25] }, // Night 27
+  { hues: [193, 217, 176], sat: [30, 48], light: [14, 25] }, // Night 28
+  { hues: [358, 28, 348], sat: [30, 48], light: [14, 25] }, // Night 29
+  { hues: [40, 63, 21], sat: [30, 48], light: [14, 25] }, // Night 30
+  { hues: [79, 91, 67], sat: [30, 48], light: [14, 25] }, // Night 31
+  { hues: [170, 198, 145], sat: [30, 48], light: [14, 25] }, // Night 32
+  { hues: [53, 72, 23], sat: [30, 48], light: [14, 25] }, // Night 33
+  { hues: [314, 340, 259], sat: [30, 48], light: [14, 25] }, // Night 34
+  { hues: [80, 98, 65], sat: [30, 48], light: [14, 25] }, // Night 35
+  { hues: [258, 311, 228], sat: [30, 48], light: [14, 25] }, // Night 36
+  { hues: [147, 164, 128], sat: [30, 48], light: [14, 25] }, // Night 37
+  { hues: [225, 235, 214], sat: [30, 48], light: [14, 25] }, // Night 38
+  { hues: [72, 84, 60], sat: [30, 48], light: [14, 25] }, // Night 39
+  { hues: [356, 19, 326], sat: [30, 48], light: [14, 25] }, // Night 40
+  { hues: [206, 223, 185], sat: [30, 48], light: [14, 25] }, // Night 41
+  { hues: [19, 43, 2], sat: [30, 48], light: [14, 25] }, // Night 42
+  { hues: [340, 2, 326], sat: [30, 48], light: [14, 25] }, // Night 43
+  { hues: [254, 318, 240], sat: [30, 48], light: [14, 25] }, // Night 44
+  { hues: [84, 100, 65], sat: [30, 48], light: [14, 25] }, // Night 45
+  { hues: [23, 47, 357], sat: [30, 48], light: [14, 25] }, // Night 46
+  { hues: [29, 48, 14], sat: [30, 48], light: [14, 25] }, // Night 47
+  { hues: [147, 160, 132], sat: [30, 48], light: [14, 25] }, // Night 48
+  { hues: [134, 157, 123], sat: [30, 48], light: [14, 25] }, // Night 49
+  { hues: [34, 63, 4], sat: [30, 48], light: [14, 25] }, // Night 50
 ];
 
 function generateGradientColors(): string[] {
   const isDark = typeof window !== 'undefined' 
     ? window.matchMedia('(prefers-color-scheme: dark)').matches 
     : false;
+  
+  const poolName = isDark ? 'NIGHT_PALETTES' : 'DAY_PALETTES';
   const pool = isDark ? NIGHT_PALETTES : DAY_PALETTES;
-  const palette = pool[Math.floor(Math.random() * pool.length)];
+  
+  let usedIndices: number[] = [];
+  if (typeof window !== 'undefined') {
+    try {
+      const stored = localStorage.getItem(`used_palettes_${poolName}`);
+      if (stored) usedIndices = JSON.parse(stored);
+    } catch (e) {}
+  }
+  
+  let availableIndices = pool.map((_, i) => i).filter(i => !usedIndices.includes(i));
+  if (availableIndices.length === 0) {
+    availableIndices = pool.map((_, i) => i);
+    usedIndices = [];
+  }
+  
+  const randomAvailableIndex = availableIndices[Math.floor(Math.random() * availableIndices.length)];
+  usedIndices.push(randomAvailableIndex);
+  
+  if (typeof window !== 'undefined') {
+    try {
+      localStorage.setItem(`used_palettes_${poolName}`, JSON.stringify(usedIndices));
+    } catch (e) {}
+  }
+
+  const palette = pool[randomAvailableIndex];
   
   return palette.hues.map((h) => {
     const s = palette.sat[0] + Math.random() * (palette.sat[1] - palette.sat[0]);
     const l = palette.light[0] + Math.random() * (palette.light[1] - palette.light[0]);
-    // Add slight hue jitter (±5°) for organic variation
     const jitteredH = (h + Math.floor(Math.random() * 10 - 5) + 360) % 360;
     return `hsl(${jitteredH}, ${Math.round(s)}%, ${Math.round(l)}%)`;
   });

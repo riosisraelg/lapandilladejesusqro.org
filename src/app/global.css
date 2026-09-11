@@ -2836,6 +2836,23 @@ body.modal-open [data-tooltip]::after {
   background: #6b2710;
 }
 
+.btn-kerigma {
+  background: var(--white);
+  color: var(--text-dark);
+  border: 1px solid var(--border-subtle);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+.btn-kerigma:hover {
+  background: var(--bg-secondary);
+}
+.btn-kerigma .recursos-icon-circle {
+  background: rgba(234, 88, 12, 0.12); /* Soft translucent orange */
+  color: #ea580c; /* Orange icon */
+}
+.btn-kerigma:hover .recursos-icon-circle {
+  background: rgba(234, 88, 12, 0.2);
+}
+
 /* Modals layout */
 .recursos-modal-card {
   background: var(--white);

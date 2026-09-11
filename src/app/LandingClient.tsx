@@ -70,6 +70,96 @@ const ChevronDown = () => (
   </svg>
 );
 
+// ── Kerigma Data ──
+const KERIGMA_SECTIONS = [
+  {
+    title: "¿YA LO TIENES TÚ?",
+    lines: [
+      { text: "¡UN ENCUENTRO VIVO CON CRISTO PARA TENER VIDA NUEVA!" },
+      { text: "TÚ LO PUEDES TENER AHORA JUNTO A MARÍA, TU MADRE, EN TU PROPIA IGLESIA CATÓLICA" },
+      { text: "¡TE ESPERAMOS AHÍ!" },
+    ]
+  },
+  {
+    title: "1. DIOS TE AMA",
+    lines: [
+      { text: "COMO PADRE AMOROSO Y TE AMA DE MANERA PERSONAL E INCONDICIONAL" },
+      { text: "" },
+      { text: "\"No temas, te he llamado por tu nombre, eres mío, eres precioso a mis ojos, eres estimado y Yo te amo, no temas que Yo estoy contigo\"." },
+      { text: "Isaías 43,1-5", isLeft: true, speaker: "Biblia" },
+      { text: "" },
+      { text: "Porque es eterno Su amor, y Su fidelidad dura por siempre." },
+      { text: "En María descubres el rostro maternal de Dios." },
+      { text: "\"Yo he venido para que tengan Vida y la tengan en abundancia\"" },
+      { text: "Juan 10,10", isLeft: true, speaker: "Biblia" },
+      { text: "" },
+      { text: "¿LA QUIERES?" },
+      { text: "¿Qué te impide experimentar el amor de Dios y la Vida abundante?" },
+      { text: "- figura distorsionada de un Dios castigador", isLeft: true, speaker: "Impedimento" },
+      { text: "- imagen paterna dañada", isLeft: true, speaker: "Impedimento" },
+      { text: "- situación de pecado", isLeft: true, speaker: "Impedimento" },
+    ]
+  },
+  {
+    title: "2. EL PECADO NOS HA SEPARADO",
+    lines: [
+      { text: "\"Todos han pecado y están privados de la gloria de Dios\"." },
+      { text: "Romanos 3,23", isLeft: true, speaker: "Biblia" },
+      { text: "" },
+      { text: "Por el pecado se ha levantado un muro de separación entre Dios y la Humanidad, y se ha abierto un abismo que Tú mismo constatas lamentablemente en tu vida:" },
+      { text: "- Persona enferma en su cuerpo, mente y espíritu.", isLeft: true, speaker: "Abismo" },
+      { text: "- Relaciones dañadas o destruidas.", isLeft: true, speaker: "Abismo" },
+      { text: "- Sociedad corrompida, injusta y violenta.", isLeft: true, speaker: "Abismo" },
+      { text: "- Mundo contaminado, en guerra y agonía.", isLeft: true, speaker: "Abismo" },
+      { text: "" },
+      { text: "El hombre pretendiendo ser Dios:" },
+      { text: "falsas, superficiales, pasiones, dinero, poder y poseer: cosas materiales, drogas, alcohol, sexo, posición social, fama, etc." },
+      { text: "" },
+      { text: "¿DÓNDE ESTÁS TÚ?" },
+    ]
+  },
+  {
+    title: "3. UNA DECISIÓN PERSONAL",
+    lines: [
+      { text: "Haz ahora una decisión personal por Cristo, ábrele tu corazón y tu vida." },
+      { text: "\"A los que lo recibieron les dio el poder de ser hijos de Dios\"" },
+      { text: "Juan 1,12", isLeft: true, speaker: "Biblia" },
+      { text: "" },
+      { text: "Un encuentro personal, vivo, de ojos abiertos y corazón palpitante con el Señor resucitado." },
+      { text: "\"Si me buscan de todo corazón, me dejaré encontrar de ustedes\"" },
+      { text: "Jeremías 29,12", isLeft: true, speaker: "Biblia" },
+      { text: "" },
+      { text: "Dale una adhesión personal a Jesús por una sincera conversión del corazón." },
+      { text: "¿QUÉ ESTÁS ESPERANDO?" },
+    ]
+  },
+  {
+    title: "5. ACEPTA A JESUS",
+    lines: [
+      { text: "COMO TU SALVADOR" },
+      { text: "" },
+      { text: "\"Mira que estoy a la puerta y llamo: si alguno oye mi voz y me abre la puerta, entraré\"" },
+      { text: "Apocalipsis 3,20", isLeft: true, speaker: "Biblia" },
+    ]
+  },
+  {
+    title: "6. NECESITAS NACER",
+    lines: [
+      { text: "POR LA ACCIÓN VIVIFICADORA DEL ESPÍRITU" },
+      { text: "" },
+      { text: "No basta el estar bautizado, hay que desarrollar el germen de Vida sembrado por el Espíritu Santo en el Bautismo." },
+      { text: "Necesitas tener la experiencia de un nuevo nacimiento para tener Vida Nueva y ser nueva criatura." },
+      { text: "" },
+      { text: "Él nos prepara en la comunidad a:" },
+      { text: "- nos hace reconocer como pecadores", isLeft: true, speaker: "Comunidad" },
+      { text: "- descubrir a Jesús como Salvador", isLeft: true, speaker: "Comunidad" },
+      { text: "- junta el pecador con el Salvador para el perdón, la salvación y Vida Nueva.", isLeft: true, speaker: "Comunidad" },
+      { text: "" },
+      { text: "INVÓCALO: ÁBRETE A SU ACCIÓN EN TI" },
+    ]
+  }
+];
+
 // ── FAQ Data ──
 const FAQ_DATA: Array<{ q: string; a: React.ReactNode }> = [
   {
@@ -561,6 +651,15 @@ export default function Landing() {
 
   // Recursos Modals States
   const [showCancionero, setShowCancionero] = useState(false);
+  const [showKerigma, setShowKerigma] = useState(false);
+  const [activeKerigmaIdx, setActiveKerigmaIdx] = useState(0);
+
+  const handleKerigmaNav = (newIdx: number) => {
+    if (newIdx >= 0 && newIdx < KERIGMA_SECTIONS.length) {
+      setActiveKerigmaIdx(newIdx);
+      triggerHaptic('medium');
+    }
+  };
   const [showOraciones, setShowOraciones] = useState(false);
   const [showGuiaMisa, setShowGuiaMisa] = useState(false);
   const [showConfesion, setShowConfesion] = useState(false);
@@ -818,6 +917,7 @@ export default function Landing() {
     
     // Default to closed
     setShowCancionero(false);
+    setShowKerigma(false);
     setShowOraciones(false);
     setShowGuiaMisa(false);
     setShowConfesion(false);
@@ -834,6 +934,8 @@ export default function Landing() {
         const sIdx = songs.findIndex(s => s.id.toString() === cancion);
         if (sIdx !== -1) setActiveSongIdx(sIdx);
       }
+    } else if (modal === 'kerigma') {
+      setShowKerigma(true);
     } else if (modal === 'oraciones') {
       setShowOraciones(true);
       const isAlimentos = deck === 'alimentos';
@@ -900,7 +1002,7 @@ export default function Landing() {
 
   // Robust mobile body scroll lock when any modal is open
   useEffect(() => {
-    const isAnyModalOpen = Boolean(showCancionero || showOraciones || showGuiaMisa || showConfesion || showAppleMusicGuia);
+    const isAnyModalOpen = Boolean(showCancionero || showKerigma || showOraciones || showGuiaMisa || showConfesion || showAppleMusicGuia);
     if (isAnyModalOpen) {
       const existingTop = document.body.style.top;
       const scrollY = existingTop ? Math.abs(parseInt(existingTop, 10)) : window.scrollY;
@@ -920,7 +1022,7 @@ export default function Landing() {
         window.scrollTo(0, restoredY);
       };
     }
-  }, [showCancionero, showOraciones, showGuiaMisa, showConfesion, showAppleMusicGuia]);
+  }, [showCancionero, showKerigma, showOraciones, showGuiaMisa, showConfesion, showAppleMusicGuia]);
 
   const [isClosingModal, setIsClosingModal] = useState<string | null>(null);
   const [bounceBtn, setBounceBtn] = useState<string | null>(null);
@@ -1499,6 +1601,23 @@ export default function Landing() {
                     <span className="shortcut-desc">Examen de conciencia y pasos del sacramento</span>
                   </div>
                 </button>
+
+                {/* 7. Kerigma */}
+                <button 
+                  type="button"
+                  className="nav-mobile-shortcut-btn"
+                  onClick={() => { 
+                    setMobileMenuOpen(false); 
+                    setModalUrl('kerigma'); 
+                    triggerHaptic('medium'); 
+                  }}
+                >
+                  <span className="shortcut-icon">🔥</span>
+                  <div className="shortcut-info">
+                    <span className="shortcut-title">Kerigma</span>
+                    <span className="shortcut-desc">Un encuentro vivo con Cristo para tener vida nueva</span>
+                  </div>
+                </button>
               </div>
             </div>
 
@@ -1908,7 +2027,11 @@ export default function Landing() {
                   data-tooltip="Rezar el Santo Rosario con guía interactiva"
                 >
                   <div className="recursos-icon-circle">
-                    <span style={{ fontSize: '18px' }}>📿</span>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="12" cy="8" r="6" />
+                      <path d="M12 14v7" />
+                      <path d="M9 18h6" />
+                    </svg>
                   </div>
                   Santo Rosario
                 </button>
@@ -1928,6 +2051,22 @@ export default function Landing() {
                     </svg>
                   </div>
                   Seguir Misa
+                </button>
+
+                <button 
+                  className={`recursos-btn btn-kerigma ${bounceBtn === 'kerigma' ? 'bounce-active' : ''}`} 
+                  onClick={() => { 
+                    setModalUrl('kerigma'); 
+                    triggerHaptic('medium'); 
+                  }}
+                  data-tooltip="Mensaje de salvación y encuentro vivo con Cristo"
+                >
+                  <div className="recursos-icon-circle">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>
+                    </svg>
+                  </div>
+                  Kerigma
                 </button>
               </div>
             </div>
@@ -2371,6 +2510,31 @@ export default function Landing() {
           onPrev={() => handleSongNav(activeSongIdx - 1)}
           onNext={() => handleSongNav(activeSongIdx + 1)}
           lines={songs[activeSongIdx]?.lyrics.split('\n').map(l => ({ text: l, isLeft: true })) || []}
+        />
+      </GlobalModal>
+
+      {/* Kerigma Modal */}
+      <GlobalModal
+        isOpen={showKerigma}
+        isClosing={false}
+        onClose={() => setModalUrl(null)}
+        className="apple-music-mode"
+        hideCloseBtn={true}
+      >
+        <AppleMusicLyrics
+          title="Kerigma"
+          subtitle={`${KERIGMA_SECTIONS[activeKerigmaIdx]?.title || ""} (${activeKerigmaIdx + 1} de ${KERIGMA_SECTIONS.length})`}
+          onClose={() => setModalUrl(null)}
+          onPrev={() => handleKerigmaNav(activeKerigmaIdx - 1)}
+          onNext={() => handleKerigmaNav(activeKerigmaIdx + 1)}
+          lines={
+            KERIGMA_SECTIONS[activeKerigmaIdx]
+              ? [
+                  { text: `---SECTION---${KERIGMA_SECTIONS[activeKerigmaIdx].title}` },
+                  ...KERIGMA_SECTIONS[activeKerigmaIdx].lines
+                ]
+              : []
+          }
         />
       </GlobalModal>
 
