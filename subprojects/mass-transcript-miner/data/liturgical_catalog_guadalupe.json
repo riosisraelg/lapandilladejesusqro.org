@@ -1,0 +1,1263 @@
+{
+  "massTitle": "Misa en la Insigne y Nacional Basílica de Santa María de Guadalupe - Jueves Eucarístico y Sacerdotal",
+  "date": "2026-09-10",
+  "location": "Insigne y Nacional Basílica de Santa María de Guadalupe, Ciudad de México",
+  "celebrant": "Pbro. Celebrante de la Basílica de Guadalupe",
+  "youtubeVideoId": "EkoysbFU47c",
+  "steps": [
+    {
+      "id": "sec-1-rito-inicial",
+      "rite": "RITO_INICIAL",
+      "title": {
+        "es": "1. Rito Inicial / Canto de Entrada y Saludo",
+        "en": "1. Introductory Rites / Entrance Hymn and Greeting"
+      },
+      "description": {
+        "es": "El sacerdote y los ministros se dirigen al altar mientras el coro entona el himno de entrada. Sigue el saludo y las intenciones de la Santa Misa.",
+        "en": "The priest and ministers proceed to the altar while the entrance hymn is sung. The liturgical greeting and Mass intentions follow."
+      },
+      "posture": {
+        "es": "De pie",
+        "en": "Standing"
+      },
+      "videoTimestampSeconds": 238,
+      "turns": [
+        {
+          "id": "turn-1-1-canto-entrada",
+          "speaker": "choir",
+          "text": {
+            "es": "Pueblo de reyes, pueblo sacerdotal, asamblea santa, pueblo consagrado a Dios, bendice a tu Señor. Te cantamos, oh Hijo amado del Padre... Te alabamos, eterna palabra salida de Dios... Te cantamos, oh Hijo de la Virgen María... Te alabamos, oh Cristo nuestro hermano, nuestro Salvador.",
+            "en": "People of kings, priestly people, holy assembly, people consecrated to God, bless your Lord. We sing to you, O beloved Son of the Father... We praise you, eternal word come forth from God... We sing to you, O Son of the Virgin Mary... We praise you, O Christ our brother, our Savior."
+          },
+          "rubrics": {
+            "es": "Canto de entrada entonado por el coro y la asamblea.",
+            "en": "Entrance chant sung by choir and congregation."
+          },
+          "timecode": "00:05:22",
+          "timestampSeconds": 322,
+          "isLeft": true,
+          "stepId": "sec-1-rito-inicial"
+        },
+        {
+          "id": "turn-1-2-senal-cruz",
+          "speaker": "priest",
+          "text": {
+            "es": "En el nombre del Padre y del Hijo y del Espíritu Santo.",
+            "en": "In the name of the Father, and of the Son, and of the Holy Spirit."
+          },
+          "exactPriestSayingEs": "En el nombre del Padre y del Hijo y del Espíritu Santo.",
+          "rubrics": {
+            "es": "El sacerdote y la asamblea se santiguan.",
+            "en": "The priest and congregation make the sign of the cross."
+          },
+          "timecode": "00:07:54",
+          "timestampSeconds": 474,
+          "isLeft": false,
+          "stepId": "sec-1-rito-inicial"
+        },
+        {
+          "id": "turn-1-3-amen-cruz",
+          "speaker": "assembly",
+          "text": {
+            "es": "Amén.",
+            "en": "Amen."
+          },
+          "timecode": "00:07:57",
+          "timestampSeconds": 477,
+          "isLeft": true,
+          "stepId": "sec-1-rito-inicial"
+        },
+        {
+          "id": "turn-1-4-saludo",
+          "speaker": "priest",
+          "text": {
+            "es": "La paz y la caridad y la fe de parte de Dios Padre y de Jesucristo el Señor estén con todos ustedes.",
+            "en": "The peace, charity, and faith from God the Father and the Lord Jesus Christ be with you all."
+          },
+          "exactPriestSayingEs": "La paz y la caridad y la fe de parte de Dios Padre y de Jesucristo el Señor estén con todos ustedes.",
+          "rubrics": {
+            "es": "El sacerdote extiende las manos y saluda al pueblo.",
+            "en": "The priest extends his hands and greets the people."
+          },
+          "timecode": "00:07:58",
+          "timestampSeconds": 478,
+          "isLeft": false,
+          "stepId": "sec-1-rito-inicial"
+        },
+        {
+          "id": "turn-1-5-saludo-respuesta",
+          "speaker": "assembly",
+          "text": {
+            "es": "Y con tu espíritu.",
+            "en": "And with your spirit."
+          },
+          "timecode": "00:08:08",
+          "timestampSeconds": 488,
+          "isLeft": true,
+          "stepId": "sec-1-rito-inicial"
+        },
+        {
+          "id": "turn-1-6-monicion-intenciones",
+          "speaker": "priest",
+          "text": {
+            "es": "Buenos días a todos ustedes y bienvenidos a esta casita de nuestra madre María de Guadalupe, que es madre de misericordia. Este es el corazón del mensaje de nuestra madre María de Guadalupe cuando en este lugar se aparece a Juan Diego Cuauhtlatoatzin como la madre del Dios misericordioso que acoge todas las angustias y las preocupaciones de todos los que sufren por diversas circunstancias las tragedias de la vida. Damos gracias infinitas al Señor por concedernos también a nosotros en esta mañana de participar a la celebración de las misericordias del Señor en esta santa eucaristía que hoy celebramos especialmente fijándonos en Jesucristo, sumo y eterno sacerdote, como el único mediador de la misericordia divina. Y vamos a ofrecer esta Santa Eucaristía por la salud de Ezequiel Mayagón López y por la familia Urbán; y los difuntos Ignacio López, Silvia Silva Sánchez, Teófilo García Martínez, Adriana Yturribarría, Ramona Rogelia Garduño González, Ricky Spilker y Carlos Enríquez. Y asimismo pedimos al Señor por todos los bienhechores de esta basílica y por todas las intenciones que cada uno de nosotros trae aquí ante el altar del Señor. Y nos preparamos para la celebración de los santos misterios, pidiendo perdón al Señor por nuestros pecados.",
+            "en": "Good morning to all of you and welcome to this little house of our mother Mary of Guadalupe, who is mother of mercy. This is the heart of the message of our mother Mary of Guadalupe when in this place she appeared to Juan Diego Cuauhtlatoatzin as the mother of the merciful God who embraces all the anguish and concerns of all who suffer through various circumstances the tragedies of life. We give infinite thanks to the Lord for granting us also this morning to participate in the celebration of the mercies of the Lord in this holy Eucharist that we celebrate today, especially focusing on Jesus Christ, high and eternal priest, as the sole mediator of divine mercy. And we offer this Holy Eucharist for the health of Ezequiel Mayagón López and for the Urbán family; and the deceased Ignacio López, Silvia Silva Sánchez, Teófilo García Martínez, Adriana Yturribarría, Ramona Rogelia Garduño González, Ricky Spilker and Carlos Enríquez. And likewise we ask the Lord for all the benefactors of this basilica and for all the intentions each of us brings here before the altar of the Lord. And we prepare ourselves for the celebration of the sacred mysteries, asking forgiveness of the Lord for our sins."
+          },
+          "exactPriestSayingEs": "Buenos días a todos ustedes y bienvenidos a esta casita de nuestra madre María de Guadalupe, que es madre de misericordia. Este es el corazón del mensaje de nuestra madre María de Guadalupe cuando en este lugar se aparece a Juan Diego Cuauhtlatoatzin como la madre del Dios misericordioso que acoge todas las angustias y las preocupaciones de todos los que sufren por diversas circunstancias las tragedias de la vida. Damos gracias infinitas al Señor por concedernos también a nosotros en esta mañana de participar a la celebración de las misericordias del Señor en esta santa eucaristía que hoy celebramos especialmente fijándonos en Jesucristo, sumo y eterno sacerdote, como el único mediador de la misericordia divina. Y vamos a ofrecer esta Santa Eucaristía por la salud de Ezequiel Mayagón López y por la familia Urbán; y los difuntos Ignacio López, Silvia Silva Sánchez, Teófilo García Martínez, Adriana Yturribarría, Ramona Rogelia Garduño González, Ricky Spilker y Carlos Enríquez. Y asimismo pedimos al Señor por todos los bienhechores de esta basílica y por todas las intenciones que cada uno de nosotros trae aquí ante el altar del Señor. Y nos preparamos para la celebración de los santos misterios, pidiendo perdón al Señor por nuestros pecados.",
+          "timecode": "00:08:11",
+          "timestampSeconds": 491,
+          "isLeft": false,
+          "stepId": "sec-1-rito-inicial"
+        }
+      ]
+    },
+    {
+      "id": "sec-2-acto-penitencial",
+      "rite": "RITO_INICIAL",
+      "title": {
+        "es": "2. Acto Penitencial (Confiteor / Kyrie)",
+        "en": "2. Penitential Act (Confiteor / Kyrie)"
+      },
+      "description": {
+        "es": "Reconocimiento comunitario de los pecados pidiendo la misericordia divina.",
+        "en": "Communal confession of sins imploring divine mercy."
+      },
+      "posture": {
+        "es": "De pie",
+        "en": "Standing"
+      },
+      "videoTimestampSeconds": 669,
+      "turns": [
+        {
+          "id": "turn-2-1-confiteor",
+          "speaker": "all",
+          "text": {
+            "es": "Yo confieso ante Dios todopoderoso y ante ustedes, hermanos, que he pecado mucho de pensamiento, palabra, obra y omisión: por mi culpa, por mi culpa, por mi gran culpa. Por eso ruego a Santa María, siempre Virgen, a los ángeles, a los santos y a ustedes, hermanos, que intercedan por mí ante Dios, nuestro Señor.",
+            "en": "I confess to almighty God and to you, my brothers and sisters, that I have greatly sinned, in my thoughts and in my words, in what I have done and in what I have failed to do, through my fault, through my fault, through my most grievous fault; therefore I ask blessed Mary ever-Virgin, all the Angels and Saints, and you, my brothers and sisters, to pray for me to the Lord our God."
+          },
+          "exactPriestSayingEs": "Yo confieso ante Dios todopoderoso y ante ustedes, hermanos, que he pecado mucho de pensamiento, palabra, obra y omisión. Por mi culpa, por mi culpa, por mi gran culpa. Por eso ruego a Santa María siempre Virgen, a los ángeles y a los santos y a ustedes, hermanos, que intercedan por mí ante Dios nuestro Señor.",
+          "rubrics": {
+            "es": "Golpeándose el pecho al decir: por mi culpa, por mi culpa, por mi gran culpa.",
+            "en": "Striking the breast while saying: through my fault, through my fault, through my most grievous fault."
+          },
+          "timecode": "00:11:09",
+          "timestampSeconds": 669,
+          "isLeft": true,
+          "stepId": "sec-2-acto-penitencial"
+        },
+        {
+          "id": "turn-2-2-absolucion",
+          "speaker": "priest",
+          "text": {
+            "es": "Dios todopoderoso tenga misericordia de nosotros, perdone nuestros pecados y nos lleve a la vida eterna.",
+            "en": "May almighty God have mercy on us, forgive us our sins, and bring us to everlasting life."
+          },
+          "exactPriestSayingEs": "Dios todopoderoso tenga misericordia de nosotros, perdone nuestros pecados y nos lleve a la vida eterna.",
+          "timecode": "00:11:37",
+          "timestampSeconds": 697,
+          "isLeft": false,
+          "stepId": "sec-2-acto-penitencial"
+        },
+        {
+          "id": "turn-2-3-amen-penitencial",
+          "speaker": "assembly",
+          "text": {
+            "es": "Amén.",
+            "en": "Amen."
+          },
+          "timecode": "00:11:46",
+          "timestampSeconds": 706,
+          "isLeft": true,
+          "stepId": "sec-2-acto-penitencial"
+        },
+        {
+          "id": "turn-2-4-kyrie",
+          "speaker": "all",
+          "text": {
+            "es": "Señor, ten piedad de nosotros. Señor, ten piedad de nosotros. Cristo, ten piedad de nosotros. Cristo, ten piedad de nosotros. Señor, ten piedad de nosotros. Señor, ten piedad de nosotros.",
+            "en": "Lord, have mercy. Lord, have mercy. Christ, have mercy. Christ, have mercy. Lord, have mercy. Lord, have mercy.",
+            "greek": "Kýrie, eléison. Christe, eléison. Kýrie, eléison."
+          },
+          "timecode": "00:11:54",
+          "timestampSeconds": 714,
+          "isLeft": true,
+          "stepId": "sec-2-acto-penitencial"
+        }
+      ]
+    },
+    {
+      "id": "sec-3-gloria",
+      "rite": "RITO_INICIAL",
+      "title": {
+        "es": "3. Gloria (Omitido por rúbrica)",
+        "en": "3. Gloria (Omitted per rubrics)"
+      },
+      "description": {
+        "es": "Se omite el Gloria por ser misa ferial de jueves del Tiempo Ordinario (Misa votiva de Jesucristo Sumo y Eterno Sacerdote sin rango de solemnidad o fiesta, conforme a la Instrucción General del Misal Romano, IGMR #53).",
+        "en": "The Gloria is omitted on ferial weekdays of Ordinary Time (votive Mass of Jesus Christ High Priest without rank of solemnity or feast, in accordance with the General Instruction of the Roman Missal, GIRM #53)."
+      },
+      "videoTimestampSeconds": 768,
+      "turns": [
+        {
+          "id": "turn-3-1-gloria-rubrica",
+          "speaker": "all",
+          "text": {
+            "es": "[Se omite el Gloria en esta misa ferial votiva, conforme a la IGMR #53. Texto de referencia canónica: Gloria a Dios en el cielo, y en la tierra paz a los hombres que ama el Señor. Por tu inmensa gloria te alabamos, te bendecimos, te adoramos, te glorificamos, te damos gracias, Señor Dios, Rey celestial, Dios Padre todopoderoso...]",
+            "en": "[The Gloria is omitted in this ferial votive Mass, in accordance with GIRM #53. Canonical reference text: Glory to God in the highest, and on earth peace to people of good will. We praise you, we bless you, we adore you, we glorify you, we give you thanks for your great glory, Lord God, heavenly King, O God, almighty Father...]"
+          },
+          "rubrics": {
+            "es": "Omitido según la IGMR #53. El celebrante pasa directamente del Kyrie a la Oración Colecta.",
+            "en": "Omitted according to GIRM #53. The celebrant proceeds directly from the Kyrie to the Collect."
+          },
+          "timecode": "00:12:48",
+          "timestampSeconds": 768,
+          "isLeft": true,
+          "stepId": "sec-3-gloria"
+        }
+      ]
+    },
+    {
+      "id": "sec-4-oracion-colecta",
+      "rite": "RITO_INICIAL",
+      "title": {
+        "es": "4. Oración Colecta",
+        "en": "4. Collect Prayer"
+      },
+      "description": {
+        "es": "Oración de apertura que reúne las intenciones de toda la Iglesia.",
+        "en": "Opening prayer gathering the prayers of the entire Church."
+      },
+      "posture": {
+        "es": "De pie",
+        "en": "Standing"
+      },
+      "videoTimestampSeconds": 778,
+      "turns": [
+        {
+          "id": "turn-4-1-colecta",
+          "speaker": "priest",
+          "text": {
+            "es": "Oremos. Dios y Padre nuestro, que para gloria tuya y salvación del género humano constituiste a Cristo, sumo y eterno sacerdote, concede al pueblo redimido con su sangre por la participación en este memorial, experimentar el poder de la cruz y la resurrección de tu Hijo. Él, que vive y reina contigo en la unidad del Espíritu Santo y es Dios por los siglos de los siglos.",
+            "en": "Let us pray. O God, who for the glory of your majesty and the salvation of the human race, made your Only Begotten Son eternal High Priest, grant that, through the outpouring of the Holy Spirit, those whom he has chosen as ministers and stewards of his mysteries may be found faithful in carrying out the ministry they have received. Through our Lord Jesus Christ, your Son, who lives and reigns with you in the unity of the Holy Spirit, God, for ever and ever."
+          },
+          "exactPriestSayingEs": "Oremos. Dios y Padre nuestro, que para gloria tuya y salvación del género humano constituiste a Cristo, sumo y eterno sacerdote, concede al pueblo redimido con su sangre por la participación en este memorial, experimentar el poder de la cruz y la resurrección de tu Hijo. Él, que vive y reina contigo en la unidad del Espíritu Santo y es Dios por los siglos de los siglos.",
+          "rubrics": {
+            "es": "El sacerdote con las manos juntas dice: Oremos; y todos oran en silencio. Luego extiende las manos y proclama la oración.",
+            "en": "The priest with hands joined says: Let us pray; all pray in silence. He then extends his hands and says the prayer."
+          },
+          "timecode": "00:12:58",
+          "timestampSeconds": 778,
+          "isLeft": false,
+          "stepId": "sec-4-oracion-colecta"
+        },
+        {
+          "id": "turn-4-2-amen-colecta",
+          "speaker": "assembly",
+          "text": {
+            "es": "Amén.",
+            "en": "Amen."
+          },
+          "timecode": "00:13:34",
+          "timestampSeconds": 814,
+          "isLeft": true,
+          "stepId": "sec-4-oracion-colecta"
+        }
+      ]
+    },
+    {
+      "id": "sec-5-liturgia-palabra",
+      "rite": "LITURGIA_DE_LA_PALABRA",
+      "title": {
+        "es": "5. Liturgia de la Palabra / Evangelio",
+        "en": "5. Liturgy of the Word / Gospel"
+      },
+      "description": {
+        "es": "Proclamación de las Sagradas Escrituras: Primera Lectura (1 Corintios 8), Salmo Responsorial (Salmo 138), Aclamación y Santo Evangelio (San Lucas 6).",
+        "en": "Proclamation of Holy Scripture: First Reading (1 Cor 8), Responsorial Psalm (Psalm 138), Acclamation and Holy Gospel (Luke 6)."
+      },
+      "posture": {
+        "es": "Sentados durante las lecturas / De pie para el Evangelio",
+        "en": "Seated for the readings / Standing for the Gospel"
+      },
+      "videoTimestampSeconds": 826,
+      "readingsRef": "2026-09-10",
+      "turns": [
+        {
+          "id": "turn-5-1-primera-lectura",
+          "speaker": "lector",
+          "text": {
+            "es": "De la primera carta del apóstol San Pablo a los Corintios (1 Cor 8, 1b-7. 11-13). Queridos hermanos: ya sé que todos ustedes conocen lo que está permitido con respecto a la carne inmolada a los ídolos, pero cuidado, porque el puro hecho de conocer llena de soberbia. El amor, en cambio, hace el bien. Y si alguno piensa que ese conocimiento le basta, no tiene idea de lo que es verdadero conocimiento. Porque aquel que ama a Dios es verdaderamente conocido por Dios... Por lo tanto, si un alimento le es ocasión de pecado a mi hermano, nunca comeré carne para no darle ocasión de pecado. Palabra de Dios.",
+            "en": "A reading from the first Letter of Saint Paul to the Corinthians (1 Cor 8:1b-7, 11-13). Brothers and sisters: Knowledge inflates with pride, but love builds up. If anyone supposes he knows something, he does not yet know as he ought to know. But if one loves God, one is known by him... Therefore, if food causes my brother to sin, I will never eat meat again, so that I may not cause my brother to sin. The word of the Lord."
+          },
+          "timecode": "00:13:46",
+          "timestampSeconds": 826,
+          "isLeft": true,
+          "stepId": "sec-5-liturgia-palabra"
+        },
+        {
+          "id": "turn-5-2-respuesta-lectura",
+          "speaker": "assembly",
+          "text": {
+            "es": "Te alabamos, Señor.",
+            "en": "Thanks be to God."
+          },
+          "timecode": "00:16:25",
+          "timestampSeconds": 985,
+          "isLeft": true,
+          "stepId": "sec-5-liturgia-palabra"
+        },
+        {
+          "id": "turn-5-3-salmo-responsorial",
+          "speaker": "all",
+          "text": {
+            "es": "Salmo 138 (139). R. Señor, no dejes que me pierda. / Tú conoces cuando me siento y me levanto. Desde lejos sabes mis pensamientos. Tú observas mi camino y mi descanso. Todas mis sendas te son familiares... Tú formaste mis entrañas, me tejiste en el seno materno. Te doy gracias por tan grandes maravillas. Soy un prodigio y tus obras son prodigiosas... Examíname, Dios mío, para conocer mi corazón. Ponme a prueba para conocer mis sentimientos. Y si mi camino se desvía, no dejes que me pierda.",
+            "en": "Psalm 138 (139). R. Guide me, Lord, along the everlasting way. / O Lord, you have probed me, you know me; you know when I sit and when I stand; you understand my thoughts from afar. My journeys and my rest you scrutinize, with all my ways you are familiar... Truly you have formed my inmost being; you knit me in my mother's womb. I give you thanks that I am fearfully, wonderfully made; wonderful are your works... Probe me, God, and know my heart; try me, and know my thoughts; see if my way is crooked, and lead me in the way of old."
+          },
+          "timecode": "00:16:43",
+          "timestampSeconds": 1003,
+          "isLeft": true,
+          "stepId": "sec-5-liturgia-palabra"
+        },
+        {
+          "id": "turn-5-4-aleluya",
+          "speaker": "all",
+          "text": {
+            "es": "Aleluya, aleluya. Si nos amamos los unos a los otros, Dios permanece en nosotros y su amor ha llegado en nosotros a su plenitud (1 Jn 4, 12). Aleluya.",
+            "en": "Alleluia, alleluia. If we love one another, God remains in us and his love is brought to perfection in us (1 Jn 4:12). Alleluia."
+          },
+          "timecode": "00:19:33",
+          "timestampSeconds": 1173,
+          "isLeft": true,
+          "stepId": "sec-5-liturgia-palabra"
+        },
+        {
+          "id": "turn-5-5-evangelio-saludo",
+          "speaker": "priest",
+          "text": {
+            "es": "El Señor esté con ustedes.",
+            "en": "The Lord be with you."
+          },
+          "exactPriestSayingEs": "El Señor esté con ustedes.",
+          "timecode": "00:20:29",
+          "timestampSeconds": 1229,
+          "isLeft": false,
+          "stepId": "sec-5-liturgia-palabra"
+        },
+        {
+          "id": "turn-5-6-evangelio-saludo-resp",
+          "speaker": "assembly",
+          "text": {
+            "es": "Y con tu espíritu.",
+            "en": "And with your spirit."
+          },
+          "timecode": "00:20:31",
+          "timestampSeconds": 1231,
+          "isLeft": true,
+          "stepId": "sec-5-liturgia-palabra"
+        },
+        {
+          "id": "turn-5-7-evangelio-anuncio",
+          "speaker": "priest",
+          "text": {
+            "es": "Del santo evangelio según San Lucas.",
+            "en": "A reading from the holy Gospel according to Luke."
+          },
+          "exactPriestSayingEs": "Del santo evangelio según San Lucas.",
+          "rubrics": {
+            "es": "El sacerdote signa el libro y a sí mismo en la frente, boca y pecho.",
+            "en": "The priest makes the sign of the cross on the book and on his forehead, lips, and breast."
+          },
+          "timecode": "00:20:33",
+          "timestampSeconds": 1233,
+          "isLeft": false,
+          "stepId": "sec-5-liturgia-palabra"
+        },
+        {
+          "id": "turn-5-8-evangelio-anuncio-resp",
+          "speaker": "assembly",
+          "text": {
+            "es": "Gloria a ti, Señor.",
+            "en": "Glory to you, O Lord."
+          },
+          "timecode": "00:20:35",
+          "timestampSeconds": 1235,
+          "isLeft": true,
+          "stepId": "sec-5-liturgia-palabra"
+        },
+        {
+          "id": "turn-5-9-evangelio-proclamacion",
+          "speaker": "priest",
+          "text": {
+            "es": "En aquel tiempo, Jesús dijo a sus discípulos: 'Amen a sus enemigos, hagan el bien a los que los aborrecen, bendigan a quienes los maldicen y oren por quienes los difaman. Al que te golpee en una mejilla, preséntale la otra. Al que te quite el manto, déjalo llevarse también la túnica. Al que te pida, dale; y al que lleve lo tuyo, no se lo reclames. Traten a los demás como quieran que los traten a ustedes. Porque si aman solo a los que los aman, ¿qué hacen de extraordinario? También los pecadores aman a quienes los aman. Si hacen el bien solo a los que les hacen el bien, ¿qué tiene de extraordinario? Lo mismo hacen los pecadores. Si prestan solamente cuando esperan cobrar, ¿qué hacen de extraordinario? También los pecadores prestan a otros pecadores con la intención de cobrárselo después. Ustedes, en cambio, amen a sus enemigos, hagan el bien y presten sin esperar recompensa. Así tendrán un gran premio y serán hijos del Altísimo, porque él es bueno hasta con los malos y los ingratos. Sean misericordiosos como su Padre es misericordioso. No juzguen y no serán juzgados. No condenen y no serán condenados. Perdonen y serán perdonados. Den y se les dará. Recibirán una medida buena, bien sacudida, apretada y rebosante en los pliegues de su túnica, porque con la misma medida con que midan serán medidos.'",
+            "en": "At that time, Jesus said to his disciples: 'To you who hear I say, love your enemies, do good to those who hate you, bless those who curse you, pray for those who mistreat you. To the person who strikes you on one cheek, offer the other one as well, and from the person who takes your cloak, do not withhold even your tunic. Give to everyone who asks of you, and from the one who takes what is yours do not demand it back. Do to others as you would have them do to you. For if you love those who love you, what credit is that to you? Even sinners love those who love them. And if you do good to those who do good to you, what credit is that to you? Even sinners do the same. If you lend money to those from whom you expect repayment, what credit is that to you? Even sinners lend to sinners, and get back the same amount. But rather, love your enemies and do good to them, and lend expecting nothing back; then your reward will be great and you will be children of the Most High, for he himself is kind to the ungrateful and the wicked. Be merciful, just as also your Father is merciful. Stop judging and you will not be judged. Stop condemning and you will not be condemned. Forgive and you will be forgiven. Give and gifts will be given to you; a good measure, packed together, shaken down, and overflowing, will be poured into your lap. For the measure with which you measure will in return be measured out to you.'"
+          },
+          "exactPriestSayingEs": "En aquel tiempo, Jesús dijo a sus discípulos: 'Amen a sus enemigos, hagan el bien a los que los aborrecen, bendigan a quienes los maldicen y oren por quienes los difaman. Al que te golpee en una mejilla, preséntale la otra. Al que te quite el manto, déjalo llevarse también la túnica. Al que te pida, dale; y al que lleve lo tuyo, no se lo reclames. Traten a los demás como quieran que los traten a ustedes. Porque si aman solo a los que los aman, ¿qué hacen de extraordinario? También los pecadores aman a quienes los aman. Si hacen el bien solo a los que les hacen el bien, ¿qué tiene de extraordinario? Lo mismo hacen los pecadores. Si prestan solamente cuando esperan cobrar, ¿qué hacen de extraordinario? También los pecadores prestan a otros pecadores con la intención de cobrárselo después. Ustedes, en cambio, amen a sus enemigos, hagan el bien y presten sin esperar recompensa. Así tendrán un gran premio y serán hijos del Altísimo, porque él es bueno hasta con los malos y los ingratos. Sean misericordiosos como su Padre es misericordioso. No juzguen y no serán juzgados. No condenen y no serán condenados. Perdonen y serán perdonados. Den y se les dará. Recibirán una medida buena, bien sacudida, apretada y rebosante en los pliegues de su túnica, porque con la misma medida con que midan serán medidos.'",
+          "timecode": "00:20:58",
+          "timestampSeconds": 1258,
+          "isLeft": false,
+          "stepId": "sec-5-liturgia-palabra"
+        },
+        {
+          "id": "turn-5-10-evangelio-despido",
+          "speaker": "priest",
+          "text": {
+            "es": "Palabra del Señor.",
+            "en": "The Gospel of the Lord."
+          },
+          "exactPriestSayingEs": "Palabra del Señor.",
+          "timecode": "00:23:02",
+          "timestampSeconds": 1382,
+          "isLeft": false,
+          "stepId": "sec-5-liturgia-palabra"
+        },
+        {
+          "id": "turn-5-11-evangelio-despido-resp",
+          "speaker": "assembly",
+          "text": {
+            "es": "Gloria a ti, Señor Jesús.",
+            "en": "Praise to you, Lord Jesus Christ."
+          },
+          "timecode": "00:23:04",
+          "timestampSeconds": 1384,
+          "isLeft": true,
+          "stepId": "sec-5-liturgia-palabra"
+        }
+      ]
+    },
+    {
+      "id": "sec-6-homilia",
+      "rite": "LITURGIA_DE_LA_PALABRA",
+      "title": {
+        "es": "6. Homilía",
+        "en": "6. Homily"
+      },
+      "description": {
+        "es": "Reflexión del sacerdote sobre el seguimiento a Cristo Sumo y Eterno Sacerdote y el testimonio de misericordia.",
+        "en": "The priest's homily reflecting on following Christ High Priest and witnessing mercy in times of conflict."
+      },
+      "posture": {
+        "es": "Sentados",
+        "en": "Seated"
+      },
+      "videoTimestampSeconds": 1413,
+      "turns": [
+        {
+          "id": "turn-6-1-homilia",
+          "speaker": "priest",
+          "text": {
+            "es": "Estamos celebrando esta Santa Eucaristía en honor de nuestro Señor Jesucristo, sumo y eterno sacerdote. Contemplando el misterio de Cristo, nos damos cuenta de que el corazón del seguimiento a Cristo es precisamente un seguimiento total hasta el derramamiento de la sangre si nos fuese requerido. En los umbrales del siglo XXI San Juan Pablo II nos recordaba que el siglo XX fue el siglo de los mártires, más de 27 millones de cristianos de diversas confesiones que dieron su vida testimoniando el amor a Cristo. Y el Papa Francisco nos ha insistido en que estamos viviendo una tercera guerra mundial a pedazos, de confusión, de conflictos, de ambigüedades y de incertidumbre. ¿Cómo ser testigos de Cristo en esta época de confusión? Ser testigos del amor y del perdón de Dios. El auténtico nombre de Dios es Misericordia. Que Santa María Virgen, nuestra madre de Guadalupe, nos conceda la gracia de ser un signo tangible y vivible de la misericordia de Dios a través del perdón. Amén.",
+            "en": "We are celebrating this Holy Eucharist in honor of our Lord Jesus Christ, high and eternal priest. Contemplating the mystery of Christ, we realize that the heart of following Christ is precisely total discipleship even unto the shedding of blood if it were required of us. On the threshold of the 21st century, St. John Paul II reminded us that the 20th century was the century of martyrs—over 27 million Christians across various denominations who laid down their lives witnessing to the love of Christ. And Pope Francis has insisted that we are living through a third world war in pieces, marked by confusion, conflicts, ambiguities, and uncertainty. How can we be witnesses of Christ in this era of confusion? By being witnesses of God's love and forgiveness. The authentic name of God is Mercy. May the Blessed Virgin Mary, our Mother of Guadalupe, grant us the grace to be a tangible and living sign of God's mercy through forgiveness. Amen."
+          },
+          "exactPriestSayingEs": "Estamos celebrando esta Santa Eucaristía en honor de nuestro Señor Jesucristo, sumo y eterno sacerdote. Contemplando el misterio de Cristo, nos damos cuenta de que el corazón del seguimiento a Cristo es precisamente un seguimiento total hasta el derramamiento de la sangre si nos fuese requerido. En los umbrales del siglo XXI San Juan Pablo II nos recordaba que el siglo XX fue el siglo de los mártires, más de 27 millones de cristianos de diversas confesiones que dieron su vida testimoniando el amor a Cristo. Y el Papa Francisco nos ha insistido en que estamos viviendo una tercera guerra mundial a pedazos, de confusión, de conflictos, de ambigüedades y de incertidumbre. ¿Cómo ser testigos de Cristo en esta época de confusión? Ser testigos del amor y del perdón de Dios. El auténtico nombre de Dios es Misericordia. Que Santa María Virgen, nuestra madre de Guadalupe, nos conceda la gracia de ser un signo tangible y vivible de la misericordia de Dios a través del perdón. Amén.",
+          "timecode": "00:23:33",
+          "timestampSeconds": 1413,
+          "isLeft": false,
+          "stepId": "sec-6-homilia"
+        }
+      ]
+    },
+    {
+      "id": "sec-7-oracion-universal",
+      "rite": "LITURGIA_DE_LA_PALABRA",
+      "title": {
+        "es": "7. Oración Universal / de los Fieles",
+        "en": "7. Universal Prayer / Prayer of the Faithful"
+      },
+      "description": {
+        "es": "Plegarias de intercesión por la Iglesia, las autoridades civiles, los enfermos y los fieles difuntos.",
+        "en": "Intercessory prayers for the Church, civil authorities, the sick, and the deceased."
+      },
+      "posture": {
+        "es": "De pie",
+        "en": "Standing"
+      },
+      "videoTimestampSeconds": 1873,
+      "turns": [
+        {
+          "id": "turn-7-1-intro",
+          "speaker": "priest",
+          "text": {
+            "es": "Presentemos, hermanos, nuestra oración a Dios en favor de todos los hombres y después de cada petición diremos: Escúchanos, Señor.",
+            "en": "Let us present, brothers and sisters, our prayer to God for all mankind, and after each petition we shall say: Lord, hear our prayer."
+          },
+          "exactPriestSayingEs": "Presentemos, hermanos, nuestra oración a Dios en favor de todos los hombres y después de cada petición diremos: Escúchanos, Señor.",
+          "timecode": "00:31:13",
+          "timestampSeconds": 1873,
+          "isLeft": false,
+          "stepId": "sec-7-oracion-universal"
+        },
+        {
+          "id": "turn-7-2-peticion-1",
+          "speaker": "lector",
+          "text": {
+            "es": "Por el Papa y nuestro obispo Carlos, para que Dios los bendiga. Oremos.",
+            "en": "For the Pope and our bishop Carlos, that God may bless them. Let us pray to the Lord."
+          },
+          "timecode": "00:31:25",
+          "timestampSeconds": 1885,
+          "isLeft": true,
+          "stepId": "sec-7-oracion-universal"
+        },
+        {
+          "id": "turn-7-3-resp-1",
+          "speaker": "assembly",
+          "text": {
+            "es": "Escúchanos, Señor.",
+            "en": "Lord, hear our prayer."
+          },
+          "timecode": "00:31:31",
+          "timestampSeconds": 1891,
+          "isLeft": true,
+          "stepId": "sec-7-oracion-universal"
+        },
+        {
+          "id": "turn-7-4-peticion-2",
+          "speaker": "lector",
+          "text": {
+            "es": "Por los que rigen los destinos del mundo, para que los guíe y sostenga su trabajo. Oremos.",
+            "en": "For those who govern the destinies of the world, that God may guide and sustain their labors. Let us pray to the Lord."
+          },
+          "timecode": "00:31:33",
+          "timestampSeconds": 1893,
+          "isLeft": true,
+          "stepId": "sec-7-oracion-universal"
+        },
+        {
+          "id": "turn-7-5-resp-2",
+          "speaker": "assembly",
+          "text": {
+            "es": "Escúchanos, Señor.",
+            "en": "Lord, hear our prayer."
+          },
+          "timecode": "00:31:39",
+          "timestampSeconds": 1899,
+          "isLeft": true,
+          "stepId": "sec-7-oracion-universal"
+        },
+        {
+          "id": "turn-7-6-peticion-3",
+          "speaker": "lector",
+          "text": {
+            "es": "Por los que sufren tentaciones, para que les dé fuerza para resistirlas. Oremos.",
+            "en": "For those who endure temptation, that God may grant them strength to withstand it. Let us pray to the Lord."
+          },
+          "timecode": "00:31:41",
+          "timestampSeconds": 1901,
+          "isLeft": true,
+          "stepId": "sec-7-oracion-universal"
+        },
+        {
+          "id": "turn-7-7-resp-3",
+          "speaker": "assembly",
+          "text": {
+            "es": "Escúchanos, Señor.",
+            "en": "Lord, hear our prayer."
+          },
+          "timecode": "00:31:47",
+          "timestampSeconds": 1907,
+          "isLeft": true,
+          "stepId": "sec-7-oracion-universal"
+        },
+        {
+          "id": "turn-7-8-peticion-4",
+          "speaker": "lector",
+          "text": {
+            "es": "Por nosotros, para que nos libre de una muerte inesperada. Oremos.",
+            "en": "For ourselves, that the Lord may preserve us from an unexpected death. Let us pray to the Lord."
+          },
+          "timecode": "00:31:49",
+          "timestampSeconds": 1909,
+          "isLeft": true,
+          "stepId": "sec-7-oracion-universal"
+        },
+        {
+          "id": "turn-7-9-resp-4",
+          "speaker": "assembly",
+          "text": {
+            "es": "Escúchanos, Señor.",
+            "en": "Lord, hear our prayer."
+          },
+          "timecode": "00:31:52",
+          "timestampSeconds": 1912,
+          "isLeft": true,
+          "stepId": "sec-7-oracion-universal"
+        },
+        {
+          "id": "turn-7-10-peticion-5",
+          "speaker": "lector",
+          "text": {
+            "es": "Por la paz y seguridad del pueblo mexicano, de los países en conflicto bélico y los países que han sufrido los desastres naturales, para que todas las autoridades civiles trabajen por la seguridad y el bienestar común. Por todas las personas que han enviado digitalmente a la basílica diversas intenciones y peticiones por sus necesidades y acciones de gracias y por todos los bienhechores vivos y difuntos de la basílica. Oremos.",
+            "en": "For the peace and security of the Mexican people, of nations in armed conflict, and countries that have suffered natural disasters, that civil authorities work for safety and common good. For all people who have sent digital prayer requests to the basilica for their needs and thanksgiving, and for all living and deceased benefactors of this basilica. Let us pray to the Lord."
+          },
+          "timecode": "00:31:54",
+          "timestampSeconds": 1914,
+          "isLeft": true,
+          "stepId": "sec-7-oracion-universal"
+        },
+        {
+          "id": "turn-7-11-resp-5",
+          "speaker": "assembly",
+          "text": {
+            "es": "Escúchanos, Señor.",
+            "en": "Lord, hear our prayer."
+          },
+          "timecode": "00:32:19",
+          "timestampSeconds": 1939,
+          "isLeft": true,
+          "stepId": "sec-7-oracion-universal"
+        },
+        {
+          "id": "turn-7-12-peticion-6",
+          "speaker": "lector",
+          "text": {
+            "es": "Por las intenciones de la familia Urbán, por la salud de Ezequiel Mayagón López. Oremos.",
+            "en": "For the intentions of the Urbán family, and for the health of Ezequiel Mayagón López. Let us pray to the Lord."
+          },
+          "timecode": "00:32:21",
+          "timestampSeconds": 1941,
+          "isLeft": true,
+          "stepId": "sec-7-oracion-universal"
+        },
+        {
+          "id": "turn-7-13-resp-6",
+          "speaker": "assembly",
+          "text": {
+            "es": "Escúchanos, Señor.",
+            "en": "Lord, hear our prayer."
+          },
+          "timecode": "00:32:28",
+          "timestampSeconds": 1948,
+          "isLeft": true,
+          "stepId": "sec-7-oracion-universal"
+        },
+        {
+          "id": "turn-7-14-peticion-7",
+          "speaker": "lector",
+          "text": {
+            "es": "Para que el Señor le conceda el eterno descanso a todos los fieles difuntos, especialmente a Ignacio López, Silvia Silva Sánchez, Teófilo García Martínez en el noveno mes, Adriana Yturribarría en el octavo aniversario, Ramona Rogelia Garduño González, Ricky Spilker y Carlos Enríquez. Oremos.",
+            "en": "That the Lord may grant eternal rest to all faithful departed, especially Ignacio López, Silvia Silva Sánchez, Teófilo García Martínez in the ninth month, Adriana Yturribarría in the eighth anniversary, Ramona Rogelia Garduño González, Ricky Spilker and Carlos Enríquez. Let us pray to the Lord."
+          },
+          "timecode": "00:32:30",
+          "timestampSeconds": 1950,
+          "isLeft": true,
+          "stepId": "sec-7-oracion-universal"
+        },
+        {
+          "id": "turn-7-15-resp-7",
+          "speaker": "assembly",
+          "text": {
+            "es": "Escúchanos, Señor.",
+            "en": "Lord, hear our prayer."
+          },
+          "timecode": "00:32:56",
+          "timestampSeconds": 1976,
+          "isLeft": true,
+          "stepId": "sec-7-oracion-universal"
+        },
+        {
+          "id": "turn-7-16-conclusion",
+          "speaker": "priest",
+          "text": {
+            "es": "Te lo pedimos, Señor, por medio de Cristo, sumo y eterno sacerdote y con la intercesión de la bienaventurada Virgen María de Guadalupe. Te lo pedimos a ti, Señor, que vives y reinas por los siglos de los siglos.",
+            "en": "We ask this, Lord, through Christ, high and eternal priest, and with the intercession of the Blessed Virgin Mary of Guadalupe. We ask this of you, Lord, who live and reign for ever and ever."
+          },
+          "exactPriestSayingEs": "Te lo pedimos, Señor, por medio de Cristo, sumo y eterno sacerdote y con la intercesión de la bienaventurada Virgen María de Guadalupe. Te lo pedimos a ti, Señor, que vives y reinas por los siglos de los siglos.",
+          "timecode": "00:32:59",
+          "timestampSeconds": 1979,
+          "isLeft": false,
+          "stepId": "sec-7-oracion-universal"
+        },
+        {
+          "id": "turn-7-17-amen-universal",
+          "speaker": "assembly",
+          "text": {
+            "es": "Amén.",
+            "en": "Amen."
+          },
+          "timecode": "00:33:17",
+          "timestampSeconds": 1997,
+          "isLeft": true,
+          "stepId": "sec-7-oracion-universal"
+        }
+      ]
+    },
+    {
+      "id": "sec-8-liturgia-eucaristica",
+      "rite": "LITURGIA_EUCARISTICA",
+      "title": {
+        "es": "8. Liturgia Eucarística / Presentación de Dones / Prefacio / Santo / Plegaria Eucarística II",
+        "en": "8. Liturgy of the Eucharist / Offertory / Preface / Sanctus / Eucharistic Prayer II"
+      },
+      "description": {
+        "es": "Presentación de las ofrendas, diálogo del Prefacio de Jesucristo Sumo y Eterno Sacerdote, canto del Sanctus, Consagración Eucarística, Aclamación Memorial y Doxología Mayor.",
+        "en": "Presentation of the gifts, Preface of Jesus Christ High Priest dialogue, Sanctus, Eucharistic Consecration, Memorial Acclamation, and Great Doxology."
+      },
+      "posture": {
+        "es": "Sentados durante las ofrendas / De rodillas o de pie con reverencia para la Consagración",
+        "en": "Seated for Offertory / Kneeling or standing with reverence for Consecration"
+      },
+      "videoTimestampSeconds": 2020,
+      "turns": [
+        {
+          "id": "turn-8-1-ofertorio",
+          "speaker": "choir",
+          "text": {
+            "es": "Te presentamos el vino y el pan, bendito seas por siempre, Señor. Fruto de la tierra y del trabajo de los hombres, te presentamos el vino y el pan.",
+            "en": "We present to you wine and bread, blessed are you forever, Lord. Fruit of the earth and the work of human hands, we present to you wine and bread."
+          },
+          "timecode": "00:33:40",
+          "timestampSeconds": 2020,
+          "isLeft": true,
+          "stepId": "sec-8-liturgia-eucaristica"
+        },
+        {
+          "id": "turn-8-2-orate-fratres",
+          "speaker": "priest",
+          "text": {
+            "es": "Oren, hermanos y hermanas, para que este sacrificio mío y de ustedes sea agradable a Dios Padre todopoderoso.",
+            "en": "Pray, brethren (brothers and sisters), that my sacrifice and yours may be acceptable to God, the almighty Father."
+          },
+          "exactPriestSayingEs": "Oren, hermanos y hermanas, para que este sacrificio mío y de ustedes sea agradable a Dios Padre todopoderoso.",
+          "rubrics": {
+            "es": "De pie en el centro del altar, de cara al pueblo, el sacerdote extiende y junta las manos.",
+            "en": "Standing at the middle of the altar, facing the people, extending and then joining his hands."
+          },
+          "timecode": "00:36:22",
+          "timestampSeconds": 2182,
+          "isLeft": false,
+          "stepId": "sec-8-liturgia-eucaristica"
+        },
+        {
+          "id": "turn-8-3-orate-fratres-resp",
+          "speaker": "assembly",
+          "text": {
+            "es": "El Señor reciba de tus manos este sacrificio para alabanza y gloria de su nombre, para nuestro bien y el de toda su santa Iglesia.",
+            "en": "May the Lord accept the sacrifice at your hands for the praise and glory of his name, for our good and the good of all his holy Church."
+          },
+          "timecode": "00:36:29",
+          "timestampSeconds": 2189,
+          "isLeft": true,
+          "stepId": "sec-8-liturgia-eucaristica"
+        },
+        {
+          "id": "turn-8-4-oracion-ofrendas",
+          "speaker": "priest",
+          "text": {
+            "es": "Concédenos, Señor, participar dignamente en estos misterios, porque cada vez que se celebra el memorial de este sacrificio se realiza la obra de nuestra redención. Por Jesucristo nuestro Señor.",
+            "en": "Grant us, O Lord, we pray, that we may participate worthily in these mysteries, for whenever the memorial of this sacrifice is celebrated the work of our redemption is accomplished. Through Christ our Lord."
+          },
+          "exactPriestSayingEs": "Concédenos, Señor, participar dignamente en estos misterios, porque cada vez que se celebra el memorial de este sacrificio se realiza la obra de nuestra redención. Por Jesucristo nuestro Señor.",
+          "timecode": "00:36:42",
+          "timestampSeconds": 2202,
+          "isLeft": false,
+          "stepId": "sec-8-liturgia-eucaristica"
+        },
+        {
+          "id": "turn-8-5-amen-ofrendas",
+          "speaker": "assembly",
+          "text": {
+            "es": "Amén.",
+            "en": "Amen."
+          },
+          "timecode": "00:36:53",
+          "timestampSeconds": 2213,
+          "isLeft": true,
+          "stepId": "sec-8-liturgia-eucaristica"
+        },
+        {
+          "id": "turn-8-6-prefacio-dialogo-1",
+          "speaker": "priest",
+          "text": {
+            "es": "El Señor esté con ustedes.",
+            "en": "The Lord be with you."
+          },
+          "exactPriestSayingEs": "El Señor esté con ustedes.",
+          "timecode": "00:36:55",
+          "timestampSeconds": 2215,
+          "isLeft": false,
+          "stepId": "sec-8-liturgia-eucaristica"
+        },
+        {
+          "id": "turn-8-7-prefacio-dialogo-1-resp",
+          "speaker": "assembly",
+          "text": {
+            "es": "Y con tu espíritu.",
+            "en": "And with your spirit."
+          },
+          "timecode": "00:36:56",
+          "timestampSeconds": 2216,
+          "isLeft": true,
+          "stepId": "sec-8-liturgia-eucaristica"
+        },
+        {
+          "id": "turn-8-8-prefacio-dialogo-2",
+          "speaker": "priest",
+          "text": {
+            "es": "Levantemos el corazón.",
+            "en": "Lift up your hearts."
+          },
+          "exactPriestSayingEs": "Levantemos el corazón.",
+          "timecode": "00:36:58",
+          "timestampSeconds": 2218,
+          "isLeft": false,
+          "stepId": "sec-8-liturgia-eucaristica"
+        },
+        {
+          "id": "turn-8-9-prefacio-dialogo-2-resp",
+          "speaker": "assembly",
+          "text": {
+            "es": "Lo tenemos levantado hacia el Señor.",
+            "en": "We lift them up to the Lord."
+          },
+          "timecode": "00:37:00",
+          "timestampSeconds": 2220,
+          "isLeft": true,
+          "stepId": "sec-8-liturgia-eucaristica"
+        },
+        {
+          "id": "turn-8-10-prefacio-dialogo-3",
+          "speaker": "priest",
+          "text": {
+            "es": "Demos gracias al Señor, nuestro Dios.",
+            "en": "Let us give thanks to the Lord our God."
+          },
+          "exactPriestSayingEs": "Demos gracias al Señor, nuestro Dios.",
+          "timecode": "00:37:02",
+          "timestampSeconds": 2222,
+          "isLeft": false,
+          "stepId": "sec-8-liturgia-eucaristica"
+        },
+        {
+          "id": "turn-8-11-prefacio-dialogo-3-resp",
+          "speaker": "assembly",
+          "text": {
+            "es": "Es justo y necesario.",
+            "en": "It is right and just."
+          },
+          "timecode": "00:37:04",
+          "timestampSeconds": 2224,
+          "isLeft": true,
+          "stepId": "sec-8-liturgia-eucaristica"
+        },
+        {
+          "id": "turn-8-12-prefacio",
+          "speaker": "priest",
+          "text": {
+            "es": "En verdad es justo y necesario, es nuestro deber y salvación darte gracias siempre y en todo lugar, Señor, Padre Santo, Dios todopoderoso y eterno, ya que por la unción del Espíritu Santo constituiste a tu Unigénito pontífice de la alianza nueva y eterna, y en tu designio providente has querido que su sacerdocio único se perpetuara en la Iglesia. En efecto, Cristo no solo confiere la dignidad del sacerdocio real a todo su pueblo santo, sino que con especial predilección elige a algunos de entre los hermanos y mediante la imposición de las manos los hace partícipes de su ministerio de salvación, a fin de que renueven en su nombre el sacrificio redentor, preparen para tus hijos el banquete pascual, fomenten la caridad en tu pueblo santo, lo alimenten con la palabra, lo fortifiquen con los sacramentos y consagrando su vida a ti y a la salvación de sus hermanos, se esfuercen por reproducir en sí mismos la imagen de Cristo y te den un constante testimonio de fidelidad y de amor. Y por eso, Señor, con todos los ángeles y santos te alabamos cantando llenos de alegría:",
+            "en": "It is truly right and just, our duty and our salvation, always and everywhere to give you thanks, Lord, holy Father, almighty and eternal God. For by the anointing of the Holy Spirit you made your Only Begotten Son High Priest of the new and eternal covenant, and by your wondrous design were pleased to decree that his many offices should encompass the Church. For he not only adorns with a royal priesthood the people he has made his own, but with a brother's kindness also chooses men to become sharers in his sacred ministry through the laying on of hands. They are to renew in his name the sacrifice of human redemption, to set before your children the paschal banquet, to lead your holy people in charity, to nourish them with the word and strengthen them with the Sacraments. As they give up their lives for you and for the salvation of their brothers and sisters, they strive to be conformed to the image of Christ himself and offer you a constant witness of faith and love. And so, Lord, with all the Angels and Saints, we, too, give you thanks, as in exultation we acclaim:"
+          },
+          "exactPriestSayingEs": "En verdad es justo y necesario, es nuestro deber y salvación darte gracias siempre y en todo lugar, Señor, Padre Santo, Dios todopoderoso y eterno, ya que por la unción del Espíritu Santo constituiste a tu Unigénito pontífice de la alianza nueva y eterna, y en tu designio providente has querido que su sacerdocio único se perpetuara en la Iglesia. En efecto, Cristo no solo confiere la dignidad del sacerdocio real a todo su pueblo santo, sino que con especial predilección elige a algunos de entre los hermanos y mediante la imposición de las manos los hace partícipes de su ministerio de salvación, a fin de que renueven en su nombre el sacrificio redentor, preparen para tus hijos el banquete pascual, fomenten la caridad en tu pueblo santo, lo alimenten con la palabra, lo fortifiquen con los sacramentos y consagrando su vida a ti y a la salvación de sus hermanos, se esfuercen por reproducir en sí mismos la imagen de Cristo y te den un constante testimonio de fidelidad y de amor. Y por eso, Señor, con todos los ángeles y santos te alabamos cantando llenos de alegría:",
+          "timecode": "00:37:06",
+          "timestampSeconds": 2226,
+          "isLeft": false,
+          "stepId": "sec-8-liturgia-eucaristica"
+        },
+        {
+          "id": "turn-8-13-sanctus",
+          "speaker": "all",
+          "text": {
+            "es": "Santo, Santo, Santo es el Señor Dios del universo. Llenos están el cielo y la tierra de tu gloria. Hosanna en el cielo. Bendito el que viene en nombre del Señor. Hosanna en el cielo.",
+            "en": "Holy, Holy, Holy Lord God of hosts. Heaven and earth are full of your glory. Hosanna in the highest. Blessed is he who comes in the name of the Lord. Hosanna in the highest.",
+            "latin": "Sanctus, Sanctus, Sanctus Dóminus Deus Sábaoth. Pleni sunt cæli et terra glória tua. Hosánna in excélsis. Benedíctus qui venit in nómine Dómini. Hosánna in excélsis."
+          },
+          "timecode": "00:38:51",
+          "timestampSeconds": 2331,
+          "isLeft": true,
+          "stepId": "sec-8-liturgia-eucaristica"
+        },
+        {
+          "id": "turn-8-14-epiclesis",
+          "speaker": "priest",
+          "text": {
+            "es": "Santo eres en verdad, Señor, fuente de toda santidad. Por eso te pedimos que santifiques estos dones con la efusión de tu Espíritu, de manera que se conviertan para nosotros en el cuerpo y la sangre de Jesucristo, nuestro Señor.",
+            "en": "You are indeed Holy, O Lord, the fount of all holiness. Make holy, therefore, these gifts, we pray, by sending down your Spirit upon them like the dewfall, so that they may become for us the Body and Blood of our Lord Jesus Christ."
+          },
+          "exactPriestSayingEs": "Santo eres en verdad, Señor, fuente de toda santidad. Por eso te pedimos que santifiques estos dones con la efusión de tu Espíritu, de manera que se conviertan para nosotros en el cuerpo y la sangre de Jesucristo, nuestro Señor.",
+          "rubrics": {
+            "es": "El sacerdote extiende las manos sobre las ofrendas para la epíclesis.",
+            "en": "The priest extends his hands over the offerings for the epiclesis."
+          },
+          "timecode": "00:40:28",
+          "timestampSeconds": 2428,
+          "isLeft": false,
+          "stepId": "sec-8-liturgia-eucaristica"
+        },
+        {
+          "id": "turn-8-15-consagracion-pan",
+          "speaker": "priest",
+          "text": {
+            "es": "El cual, cuando iba a ser entregado a su pasión voluntariamente aceptada, tomó pan, dándote gracias, lo partió y lo dio a sus discípulos diciendo: 'Tomen y coman todos de él, porque esto es mi cuerpo que será entregado por ustedes.'",
+            "en": "At the time he was betrayed and entered willingly into his Passion, he took bread and, giving thanks, broke it, and gave it to his disciples, saying: 'Take this, all of you, and eat of it, for this is my Body, which will be given up for you.'"
+          },
+          "exactPriestSayingEs": "El cual, cuando iba a ser entregado a su pasión voluntariamente aceptada, tomó pan, dándote gracias, lo partió y lo dio a sus discípulos diciendo: 'Tomen y coman todos de él, porque esto es mi cuerpo que será entregado por ustedes.'",
+          "rubrics": {
+            "es": "El sacerdote pronuncia claramente las palabras del Señor sobre el pan, eleva la hostia consagrada y hace genuflexión.",
+            "en": "The priest pronounces the words of consecration clearly over the bread, elevates the consecrated host, and genuflects."
+          },
+          "timecode": "00:40:49",
+          "timestampSeconds": 2449,
+          "isLeft": false,
+          "stepId": "sec-8-liturgia-eucaristica"
+        },
+        {
+          "id": "turn-8-16-consagracion-caliz",
+          "speaker": "priest",
+          "text": {
+            "es": "Del mismo modo, acabada la cena, tomó el cáliz y dándote gracias de nuevo, lo pasó a sus discípulos diciendo: 'Tomen y beban todos de él, porque este es el cáliz de mi sangre. Sangre de la alianza nueva y eterna que será derramada por ustedes y por muchos para el perdón de los pecados. Hagan esto en conmemoración mía.'",
+            "en": "In a similar way, when supper was ended, he took the chalice and, once more giving thanks, he gave it to his disciples, saying: 'Take this, all of you, and drink from it, for this is the chalice of my Blood, the Blood of the new and eternal covenant, which will be poured out for you and for many for the forgiveness of sins. Do this in memory of me.'"
+          },
+          "exactPriestSayingEs": "Del mismo modo, acabada la cena, tomó el cáliz y dándote gracias de nuevo, lo pasó a sus discípulos diciendo: 'Tomen y beban todos de él, porque este es el cáliz de mi sangre. Sangre de la alianza nueva y eterna que será derramada por ustedes y por muchos para el perdón de los pecados. Hagan esto en conmemoración mía.'",
+          "rubrics": {
+            "es": "El sacerdote pronuncia las palabras sobre el cáliz, eleva el cáliz y hace genuflexión.",
+            "en": "The priest pronounces the words over the chalice, elevates the chalice, and genuflects."
+          },
+          "timecode": "00:41:24",
+          "timestampSeconds": 2484,
+          "isLeft": false,
+          "stepId": "sec-8-liturgia-eucaristica"
+        },
+        {
+          "id": "turn-8-17-aclamacion-dialogo",
+          "speaker": "priest",
+          "text": {
+            "es": "Éste es el sacramento de nuestra fe.",
+            "en": "The mystery of faith."
+          },
+          "exactPriestSayingEs": "Éste es el sacramento de nuestra fe.",
+          "timecode": "00:42:04",
+          "timestampSeconds": 2524,
+          "isLeft": false,
+          "stepId": "sec-8-liturgia-eucaristica"
+        },
+        {
+          "id": "turn-8-18-aclamacion-memorial",
+          "speaker": "assembly",
+          "text": {
+            "es": "Anunciamos tu muerte, proclamamos tu resurrección. ¡Ven, Señor Jesús!",
+            "en": "We proclaim your Death, O Lord, and profess your Resurrection until you come again."
+          },
+          "timecode": "00:42:09",
+          "timestampSeconds": 2529,
+          "isLeft": true,
+          "stepId": "sec-8-liturgia-eucaristica"
+        },
+        {
+          "id": "turn-8-19-anamnesis-intercesiones",
+          "speaker": "priest",
+          "text": {
+            "es": "Así pues, Padre, al celebrar ahora el memorial de la muerte y resurrección de tu Hijo, te ofrecemos el pan de vida y el cáliz de salvación, y te damos gracias porque nos haces dignos de servirte en tu presencia. Te pedimos humildemente que el Espíritu Santo congregue en la unidad a cuantos participamos del cuerpo y la sangre de Cristo. Acuérdate, Señor, de tu Iglesia extendida por toda la tierra y con el Papa, con nuestro obispo Carlos, sus obispos auxiliares y todos los pastores que cuidan de tu pueblo, llévala a su perfección por la caridad. Acuérdate también de nuestros hermanos que se durmieron en la esperanza de la resurrección y de todos los que han muerto en tu misericordia; admítelos a contemplar la luz de tu rostro. Ten misericordia de todos nosotros, y así, con María, la Virgen Madre de Dios, su esposo San José, los apóstoles, el humilde San Juan Diego Cuauhtlatoatzin y cuantos vivieron en tu amistad a través de los tiempos, merezcamos, por tu Hijo Jesucristo, compartir la vida eterna y cantar tus alabanzas.",
+            "en": "Therefore, as we celebrate the memorial of his Death and Resurrection, we offer you, Lord, the Bread of life and the Chalice of salvation, giving thanks that you have held us worthy to be in your presence and minister to you. Humbly we pray that, partaking of the Body and Blood of Christ, we may be gathered into one by the Holy Spirit. Remember, Lord, your Church, spread throughout the world, and bring her to the fullness of charity, together with the Pope, Carlos our Bishop, his assistant bishops, and all the clergy. Remember also our brothers and sisters who have fallen asleep in the hope of the resurrection, and all who have died in your mercy: welcome them into the light of your face. Have mercy on us all, we pray, that with the Blessed Virgin Mary, Mother of God, with blessed Joseph, her Spouse, with the blessed Apostles, humble Saint Juan Diego Cuauhtlatoatzin, and all the Saints who have pleased you throughout the ages, we may merit to be coheirs to eternal life, and may praise and glorify you through your Son, Jesus Christ."
+          },
+          "exactPriestSayingEs": "Así pues, Padre, al celebrar ahora el memorial de la muerte y resurrección de tu Hijo, te ofrecemos el pan de vida y el cáliz de salvación, y te damos gracias porque nos haces dignos de servirte en tu presencia. Te pedimos humildemente que el Espíritu Santo congregue en la unidad a cuantos participamos del cuerpo y la sangre de Cristo. Acuérdate, Señor, de tu Iglesia extendida por toda la tierra y con el Papa, con nuestro obispo Carlos, sus obispos auxiliares y todos los pastores que cuidan de tu pueblo, llévala a su perfección por la caridad. Acuérdate también de nuestros hermanos que se durmieron en la esperanza de la resurrección y de todos los que han muerto en tu misericordia; admítelos a contemplar la luz de tu rostro. Ten misericordia de todos nosotros, y así, con María, la Virgen Madre de Dios, su esposo San José, los apóstoles, el humilde San Juan Diego Cuauhtlatoatzin y cuantos vivieron en tu amistad a través de los tiempos, merezcamos, por tu Hijo Jesucristo, compartir la vida eterna y cantar tus alabanzas.",
+          "timecode": "00:42:09",
+          "timestampSeconds": 2529,
+          "isLeft": false,
+          "stepId": "sec-8-liturgia-eucaristica"
+        },
+        {
+          "id": "turn-8-20-doxologia",
+          "speaker": "priest",
+          "text": {
+            "es": "Por Cristo, con él y en él, a ti, Dios Padre omnipotente, en la unidad del Espíritu Santo, todo honor y toda gloria por los siglos de los siglos.",
+            "en": "Through him, and with him, and in him, O God, almighty Father, in the unity of the Holy Spirit, all glory and honor is yours, for ever and ever."
+          },
+          "exactPriestSayingEs": "Por Cristo, con él y en él, a ti, Dios Padre omnipotente, en la unidad del Espíritu Santo, todo honor y toda gloria por los siglos de los siglos.",
+          "rubrics": {
+            "es": "El sacerdote toma la patena con la hostia y el cáliz y los sostiene elevados.",
+            "en": "The priest takes the paten with the host and the chalice and elevates both."
+          },
+          "timecode": "00:43:29",
+          "timestampSeconds": 2609,
+          "isLeft": false,
+          "stepId": "sec-8-liturgia-eucaristica"
+        },
+        {
+          "id": "turn-8-21-doxologia-resp",
+          "speaker": "assembly",
+          "text": {
+            "es": "Amén.",
+            "en": "Amen."
+          },
+          "timecode": "00:43:38",
+          "timestampSeconds": 2618,
+          "isLeft": true,
+          "stepId": "sec-8-liturgia-eucaristica"
+        }
+      ]
+    },
+    {
+      "id": "sec-9-rito-comunion",
+      "rite": "RITO_DE_LA_COMUNION",
+      "title": {
+        "es": "9. Rito de la Comunión / Padre Nuestro / Paz / Cordero de Dios",
+        "en": "9. Communion Rite / Lord's Prayer / Sign of Peace / Lamb of God"
+      },
+      "description": {
+        "es": "Oración del Señor (Padre Nuestro), Embolismo, Rito de la Paz, Fracción del Pan (Cordero de Dios), e Invitación a la Santa Comunión.",
+        "en": "The Lord's Prayer, Embolism, Rite of Peace, Fraction of Bread (Lamb of God), and Communion Invitation."
+      },
+      "posture": {
+        "es": "De pie / De rodillas o de pie con reverencia para comulgar",
+        "en": "Standing / Kneeling or standing with reverence for Communion"
+      },
+      "videoTimestampSeconds": 2623,
+      "turns": [
+        {
+          "id": "turn-9-1-intro-padre-nuestro",
+          "speaker": "priest",
+          "text": {
+            "es": "Fieles a la recomendación del Salvador y siguiendo su divina enseñanza, nos atrevemos a decir:",
+            "en": "At the Savior's command and formed by divine teaching, we dare to say:"
+          },
+          "exactPriestSayingEs": "Fieles a la recomendación del Salvador y siguiendo su divina enseñanza, nos atrevemos a decir:",
+          "timecode": "00:43:43",
+          "timestampSeconds": 2623,
+          "isLeft": false,
+          "stepId": "sec-9-rito-comunion"
+        },
+        {
+          "id": "turn-9-2-padre-nuestro",
+          "speaker": "all",
+          "text": {
+            "es": "Padre nuestro, que estás en el cielo, santificado sea tu nombre; venga a nosotros tu reino; hágase tu voluntad en la tierra como en el cielo. Danos hoy nuestro pan de cada día; perdona nuestras ofensas como también nosotros perdonamos a los que nos ofenden; no nos dejes caer en la tentación, y líbranos del mal.",
+            "en": "Our Father, who art in heaven, hallowed be thy name; thy kingdom come, thy will be done on earth as it is in heaven. Give us this day our daily bread, and forgive us our trespasses, as we forgive those who trespass against us; and lead us not into temptation, but deliver us from evil."
+          },
+          "exactPriestSayingEs": "Padre nuestro, que estás en el cielo, santificado sea tu nombre; venga a nosotros tu reino; hágase tu voluntad en la tierra como en el cielo. Danos hoy nuestro pan de cada día; perdona nuestras ofensas como también nosotros perdonamos a los que nos ofenden; no nos dejes caer en la tentación, y líbranos del mal.",
+          "timecode": "00:43:51",
+          "timestampSeconds": 2631,
+          "isLeft": true,
+          "stepId": "sec-9-rito-comunion"
+        },
+        {
+          "id": "turn-9-3-embolismo",
+          "speaker": "priest",
+          "text": {
+            "es": "Líbranos de todos los males, Señor, y concédenos la paz en nuestros días, para que, ayudados por tu misericordia, vivamos siempre libres de pecado y protegidos de toda perturbación, mientras esperamos la gloriosa venida de nuestro Salvador Jesucristo.",
+            "en": "Deliver us, Lord, we pray, from every evil, graciously grant peace in our days, that, by the help of your mercy, we may be always free from sin and safe from all distress, as we await the blessed hope and the coming of our Savior, Jesus Christ."
+          },
+          "exactPriestSayingEs": "Líbranos de todos los males, Señor, y concédenos la paz en nuestros días, para que, ayudados por tu misericordia, vivamos siempre libres de pecado y protegidos de toda perturbación, mientras esperamos la gloriosa venida de nuestro Salvador Jesucristo.",
+          "timecode": "00:44:19",
+          "timestampSeconds": 2659,
+          "isLeft": false,
+          "stepId": "sec-9-rito-comunion"
+        },
+        {
+          "id": "turn-9-4-doxologia-padre-nuestro",
+          "speaker": "assembly",
+          "text": {
+            "es": "Tuyo es el reino, tuyo el poder y la gloria por siempre, Señor.",
+            "en": "For the kingdom, the power and the glory are yours now and for ever."
+          },
+          "timecode": "00:44:39",
+          "timestampSeconds": 2679,
+          "isLeft": true,
+          "stepId": "sec-9-rito-comunion"
+        },
+        {
+          "id": "turn-9-5-oracion-paz",
+          "speaker": "priest",
+          "text": {
+            "es": "Señor Jesucristo, que dijiste a tus apóstoles: 'La paz les dejo, mi paz les doy'. No tengas en cuenta nuestros pecados, sino la fe de tu Iglesia y conforme a tu palabra concédele la paz y la unidad. Tú que vives y reinas por los siglos de los siglos.",
+            "en": "Lord Jesus Christ, who said to your Apostles: Peace I leave you, my peace I give you, look not on our sins, but on the faith of your Church, and graciously grant her peace and unity in accordance with your will. Who live and reign for ever and ever."
+          },
+          "exactPriestSayingEs": "Señor Jesucristo, que dijiste a tus apóstoles: 'La paz les dejo, mi paz les doy'. No tengas en cuenta nuestros pecados, sino la fe de tu Iglesia y conforme a tu palabra concédele la paz y la unidad. Tú que vives y reinas por los siglos de los siglos.",
+          "timecode": "00:44:43",
+          "timestampSeconds": 2683,
+          "isLeft": false,
+          "stepId": "sec-9-rito-comunion"
+        },
+        {
+          "id": "turn-9-6-amen-paz",
+          "speaker": "assembly",
+          "text": {
+            "es": "Amén.",
+            "en": "Amen."
+          },
+          "timecode": "00:45:01",
+          "timestampSeconds": 2701,
+          "isLeft": true,
+          "stepId": "sec-9-rito-comunion"
+        },
+        {
+          "id": "turn-9-7-saludo-paz",
+          "speaker": "priest",
+          "text": {
+            "es": "La paz del Señor esté siempre con ustedes.",
+            "en": "The peace of the Lord be with you always."
+          },
+          "exactPriestSayingEs": "La paz del Señor esté siempre con ustedes.",
+          "timecode": "00:45:03",
+          "timestampSeconds": 2703,
+          "isLeft": false,
+          "stepId": "sec-9-rito-comunion"
+        },
+        {
+          "id": "turn-9-8-saludo-paz-resp",
+          "speaker": "assembly",
+          "text": {
+            "es": "Y con tu espíritu.",
+            "en": "And with your spirit."
+          },
+          "timecode": "00:45:06",
+          "timestampSeconds": 2706,
+          "isLeft": true,
+          "stepId": "sec-9-rito-comunion"
+        },
+        {
+          "id": "turn-9-9-invitacion-paz",
+          "speaker": "priest",
+          "text": {
+            "es": "Dense fraternalmente la paz.",
+            "en": "Let us offer each other the sign of peace."
+          },
+          "exactPriestSayingEs": "Dense fraternalmente la paz.",
+          "timecode": "00:45:08",
+          "timestampSeconds": 2708,
+          "isLeft": false,
+          "stepId": "sec-9-rito-comunion"
+        },
+        {
+          "id": "turn-9-10-agnus-dei",
+          "speaker": "all",
+          "text": {
+            "es": "Cordero de Dios que quitas el pecado del mundo, ten piedad de nosotros. Cordero de Dios que quitas el pecado del mundo, ten piedad de nosotros. Cordero de Dios que quitas el pecado del mundo, danos la paz.",
+            "en": "Lamb of God, you take away the sins of the world, have mercy on us. Lamb of God, you take away the sins of the world, have mercy on us. Lamb of God, you take away the sins of the world, grant us peace.",
+            "latin": "Agnus Dei, qui tollis peccáta mundi: miserére nobis. Agnus Dei, qui tollis peccáta mundi: miserére nobis. Agnus Dei, qui tollis peccáta mundi: dona nobis pacem."
+          },
+          "timecode": "00:45:30",
+          "timestampSeconds": 2730,
+          "isLeft": true,
+          "stepId": "sec-9-rito-comunion"
+        },
+        {
+          "id": "turn-9-11-ecce-agnus-dei",
+          "speaker": "priest",
+          "text": {
+            "es": "Éste es Jesucristo, el Hijo de Dios vivo, el cordero de Dios que quita el pecado del mundo. Dichosos nosotros los llamados a la cena del Señor.",
+            "en": "Behold the Lamb of God, behold him who takes away the sins of the world. Blessed are those called to the supper of the Lamb."
+          },
+          "exactPriestSayingEs": "Éste es Jesucristo, el Hijo de Dios vivo, el cordero de Dios que quita el pecado del mundo. Dichosos nosotros los llamados a la cena del Señor.",
+          "rubrics": {
+            "es": "El sacerdote muestra el Pan eucarístico sobre la patena o sobre el cáliz.",
+            "en": "The priest shows the Eucharistic Bread above the paten or chalice."
+          },
+          "timecode": "00:46:47",
+          "timestampSeconds": 2807,
+          "isLeft": false,
+          "stepId": "sec-9-rito-comunion"
+        },
+        {
+          "id": "turn-9-12-ecce-agnus-dei-resp",
+          "speaker": "assembly",
+          "text": {
+            "es": "Señor, yo no soy digno de que entres en mi casa, pero una palabra tuya bastará para sanarme.",
+            "en": "Lord, I am not worthy that you should enter under my roof, but only say the word and my soul shall be healed."
+          },
+          "timecode": "00:46:56",
+          "timestampSeconds": 2816,
+          "isLeft": true,
+          "stepId": "sec-9-rito-comunion"
+        },
+        {
+          "id": "turn-9-13-canto-comunion",
+          "speaker": "choir",
+          "text": {
+            "es": "El Señor es mi pastor, nada me faltará. Me conduce por verdes pastos... Yo conozco a mis ovejas y ellas me conocen a mí.",
+            "en": "The Lord is my shepherd, there is nothing I lack. In green pastures he makes me lie down... I know my sheep and my sheep know me."
+          },
+          "timecode": "00:48:11",
+          "timestampSeconds": 2891,
+          "isLeft": true,
+          "stepId": "sec-9-rito-comunion"
+        }
+      ]
+    },
+    {
+      "id": "sec-10-rito-conclusion",
+      "rite": "RITO_DE_CONCLUSION",
+      "title": {
+        "es": "10. Rito de Conclusión / Adoración",
+        "en": "10. Concluding Rite / Eucharistic Adoration"
+      },
+      "description": {
+        "es": "Monición post-comunión, Oración después de la Comunión y Procesión eucarística para la adoración (con omisión de bendición final y despido ordinario según las rúbricas litúrgicas romanas).",
+        "en": "Post-communion monition, Prayer after Communion, and Eucharistic procession for adoration (final blessing and dismissal omitted per Roman Missal rubrics)."
+      },
+      "posture": {
+        "es": "De pie / De rodillas para la adoración",
+        "en": "Standing / Kneeling for adoration"
+      },
+      "videoTimestampSeconds": 3103,
+      "turns": [
+        {
+          "id": "turn-10-1-monicion-post-comunion",
+          "speaker": "priest",
+          "text": {
+            "es": "En este jueves eucarístico vocacional, recordamos que es un día de encuentro, de adoración con Cristo Eucaristía mediante la procesión en primer lugar eucarística, que les invitamos a orar, cantar y adorar al Señor más cuando va pasando junto a nosotros y pues tener estos momentos de oración en su capilla. Nos ponemos de pie.",
+            "en": "On this vocational Eucharistic Thursday, we recall that it is a day of encounter, of adoration with Christ in the Eucharist through the procession in the first place, which we invite you to pray, sing, and adore the Lord, especially as he passes beside us, and to have these moments of prayer in his chapel. Let us stand."
+          },
+          "exactPriestSayingEs": "En este jueves eucarístico vocacional, recordamos que es un día de encuentro, de adoración con Cristo Eucaristía mediante la procesión en primer lugar eucarística, que les invitamos a orar, cantar y adorar al Señor más cuando va pasando junto a nosotros y pues tener estos momentos de oración en su capilla. Nos ponemos de pie.",
+          "timecode": "00:51:43",
+          "timestampSeconds": 3103,
+          "isLeft": false,
+          "stepId": "sec-10-rito-conclusion"
+        },
+        {
+          "id": "turn-10-2-oracion-post-comunion",
+          "speaker": "priest",
+          "text": {
+            "es": "Oremos. Por la participación de este sacrificio que tu Hijo nos mandó ofrecer en conmemoración suya, te rogamos, Señor, que unidos a él seamos una oblación perenne. Por Jesucristo nuestro Señor.",
+            "en": "Let us pray. May this divine sacrifice, which we have offered and received, fill us with life, O Lord, we pray, so that, bound to you in lasting charity, we may bear fruit that lasts for ever. Through Christ our Lord."
+          },
+          "exactPriestSayingEs": "Oremos. Por la participación de este sacrificio que tu Hijo nos mandó ofrecer en conmemoración suya, te rogamos, Señor, que unidos a él seamos una oblación perenne. Por Jesucristo nuestro Señor.",
+          "timecode": "00:52:28",
+          "timestampSeconds": 3148,
+          "isLeft": false,
+          "stepId": "sec-10-rito-conclusion"
+        },
+        {
+          "id": "turn-10-3-amen-post-comunion",
+          "speaker": "assembly",
+          "text": {
+            "es": "Amén.",
+            "en": "Amen."
+          },
+          "timecode": "00:52:46",
+          "timestampSeconds": 3166,
+          "isLeft": true,
+          "stepId": "sec-10-rito-conclusion"
+        },
+        {
+          "id": "turn-10-4-despido-rubrica",
+          "speaker": "priest",
+          "text": {
+            "es": "No habrá la bendición final porque acompañaremos al Señor en procesión hasta su capilla para la adoración.",
+            "en": "There will be no final blessing because we will accompany the Lord in procession to his chapel for adoration."
+          },
+          "exactPriestSayingEs": "No habrá la bendición final porque acompañaremos al Señor en procesión hasta su capilla para la adoración.",
+          "rubrics": {
+            "es": "En las misas seguidas inmediatamente de exposición y procesión del Santísimo Sacramento a la capilla de adoración o reserva, se omite la bendición y el despido ordinario (\"Pueden ir en paz\"), conforme a las rúbricas litúrgicas romanas (IGMR #170).",
+            "en": "In Masses followed immediately by exposition and procession of the Blessed Sacrament to the chapel of adoration or reservation, the final blessing and ordinary dismissal (\"Go in peace\") are omitted in accordance with Roman liturgical rubrics (GIRM #170)."
+          },
+          "timecode": "00:52:48",
+          "timestampSeconds": 3168,
+          "isLeft": false,
+          "stepId": "sec-10-rito-conclusion"
+        },
+        {
+          "id": "turn-10-5-canto-procesion",
+          "speaker": "all",
+          "text": {
+            "es": "Pange lingua gloriosi corporis mysterium, sanguinisque pretiosi... / ¡Bendito, bendito, bendito sea Dios! Los ángeles cantan y alaban a Dios... Yo creo, Jesús mío, que estás en el altar, oculto en la hostia te vengo a adorar... Jesús Eucaristía, ardiente sol de amor, abrásame en el fuego de tu gracia y perdón...",
+            "en": "Sing, my tongue, the Savior's glory, of His flesh the mystery sing... / Blessed, blessed, blessed be God! Angels sing and praise God... I believe, my Jesus, that you are on the altar, hidden in the host I come to adore you... Jesus in the Eucharist, burning sun of love, consume me in the fire of your grace and pardon...",
+            "latin": "Pange, lingua, gloriósi Córporis mystérium, Sanguinísque pretiósi, quem in mundi prétium fructus ventris generósi Rex effúdit géntium."
+          },
+          "timecode": "00:53:07",
+          "timestampSeconds": 3187,
+          "isLeft": true,
+          "stepId": "sec-10-rito-conclusion"
+        }
+      ]
+    }
+  ]
+}

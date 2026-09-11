@@ -1,0 +1,25 @@
+{
+  "name": "mass-transcript-miner",
+  "version": "1.0.0",
+  "description": "Liturgical Mass Transcript Mining, Curation, and Dialogue Alignment Tool",
+  "type": "module",
+  "bin": {
+    "transcript-curator": "./src/index.ts"
+  },
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "curate": "node --experimental-strip-types src/index.ts",
+    "test": "node --test --experimental-strip-types tests/mining-curation.test.ts",
+    "test:alignment": "node tests/test-alignment.mjs"
+  },
+  "keywords": [
+    "liturgy",
+    "catholic-mass",
+    "transcript-mining",
+    "rejoiceinfaith",
+    "dialogue-alignment"
+  ],
+  "author": "La Pandilla de Jesús Querétaro",
+  "license": "MIT"
+}

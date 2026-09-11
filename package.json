@@ -16,8 +16,12 @@
     "next": "^15.1.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "rrule": "^2.8.1"
+    "rrule": "^2.8.1",
+    "spanish-mass-readings": "file:./subprojects/spanish-mass-readings"
   },
+  "workspaces": [
+    "subprojects/*"
+  ],
   "devDependencies": {
     "@types/node": "^22.10.2",
     "@types/react": "^19.0.2",

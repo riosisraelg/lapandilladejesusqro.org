@@ -1,464 +1,378 @@
 # ISO/IEC/IEEE 29148:2018 Software Requirements Specification (SRS)
 
-**System Name**: La Pandilla de Jesús — Querétaro Web Platform  
-**Standard**: ISO/IEC/IEEE 29148:2018 (Systems and software engineering — Life cycle processes — Requirements engineering)  
-**Document Version**: 1.1.0  
-**Date**: 2026-08-28  
-**Status**: Approved & Authoritative  
+**System Name**: La Pandilla de Jesús — Querétaro Web Platform & Liturgical Scraper Ecosystem  
+**Governing Standard**: ISO/IEC/IEEE 29148:2018 (Systems and software engineering — Life cycle processes — Requirements engineering)  
+**Document Identification**: `SRS-LPJQRO-2026-02`  
+**Document Version**: 2.0.0  
+**Date**: 2026-09-11  
+**Status**: Authoritative & Approved  
+**Author**: Worker M1 (Architecture & Requirements Engineering)  
+**Lifecycle State**: State 2 (Requirements Baseline)  
 
 ---
 
 ## 1. Introduction
 
 ### 1.1 Purpose
-This Software Requirements Specification (SRS) establishes the complete, rigorous, and verifiable functional and non-functional requirements for the **La Pandilla de Jesús** web application (`lapandilladejesusqro.org`). It provides the single source of truth for engineering development, autonomous subagent collaboration, automated multi-tier opaque-box testing, quality assurance verification, and stakeholder acceptance.
+This Software Requirements Specification (SRS) establishes the definitive, complete, and verifiable functional, non-functional, and interface requirements for the **La Pandilla de Jesús Querétaro** ecosystem (`lapandilladejesusqro.org`), including its two specialized subprojects:
+1. **Subproject 1 (`subprojects/spanish-mass-readings`)**: Open-source Spanish USCCB Mass Readings Scraper library and CLI.
+2. **Subproject 2 (`subprojects/mass-transcript-miner`)**: YouTube Mass Transcript Mining and Liturgical Dialogue Curation Tool.
+3. **Host Application Integration**: Dual-engine bilingual scraper route and interactive chat-style lyrics modal.
+
+This specification serves as the formal contractual baseline for implementation, multi-tier automated testing, and independent quality auditing.
 
 ### 1.2 Scope of the System
-The platform is a progressive web application serving the Catholic youth community and parish of La Sagrada Familia in Querétaro, México. The system encompasses:
-1. Daily Catholic Food Prayers deck (Domingo a Sábado, Antes y Después de las comidas) transcribed from the Roman *Bendicional*.
-2. Interactive 3D deck carousel with auto-day selection, infinite continuous swiping, and dynamic brand color tone generation.
-3. Complete Rosary overhaul featuring a 5-element mystery sequence, untruncated text, collapsible nested repeated prayers, dedicated sub-decks, and top-bar vibrating bead counter.
-4. **Mass Guide & Liturgical Readings Scraper Subsystem (RF-08)**: Complete Roman Missal ordinary dialogues, priest private Communion prayers, Mexican sung liturgical hymns, automated edge scraper for daily Mass readings (`/api/mass-readings`), sequential canonical injection into the Liturgy of the Word (GIRM sequence), kinetic interactive streaming mode (`AppleMusicLyrics`), and direct access launchers with client mount pre-fetching.
-5. Annual Jesus calendar integrating *Misas de Precepto* (Holy Days of Obligation per Canon 1246 and Mexican Episcopal Conference CEM), dynamic 1200x630px Open Graph social preview generation, deep-linked event modals, and universal multi-platform calendar export (.ics, Google, Apple, Outlook Web, Outlook Desktop, Yahoo).
-6. Global usability enhancements including standardized 450ms long-press tooltips with haptic feedback.
+The system delivers:
+- Autonomous web scraping of Catholic daily Mass readings from the USCCB Spanish Lectionary (`https://bible.usccb.org/es/bible/lecturas/`) with anti-bot challenge solving (Obolus PoW).
+- Standalone packaging, Calendar Versioning (`2026.09.0`), and public GitHub repository publication via GitHub CLI (`gh`).
+- Speech-to-liturgy transcript ingestion from YouTube Mass recordings (video ID `EkoysbFU47c`), segmenting dialogues into 10 canonical Roman Rite steps.
+- Dialogue curation aligning celebrant prompts with bilingual assembly responses from `rejoiceinfaith.org`.
+- Chat-style visual presentation where priest sayings align to the right (`.duet-right`) and assembly responses align to the left (`.duet-left`).
+- Dynamic backend route `/api/mass-readings` orchestrating English (`catholic-mass-readings`) and Spanish (`spanish-mass-readings`) queries based on `lang` parameters.
+- Reusable logic extraction from the proven reference codebase `~/teamwork_projects/guadalupe_mass_interactive`.
 
 ### 1.3 Definitions, Acronyms and Abbreviations
+- **CalVer**: Calendar Versioning format (`YYYY.MM.MINOR`, e.g., `2026.09.0`).
 - **CEM**: *Conferencia del Episcopado Mexicano* (Mexican Episcopal Conference).
-- **Canon 1246**: Universal canon in the Code of Canon Law establishing Sundays and feast days of precept (Holy Days of Obligation).
-- **Computus**: Mathematical algorithm calculating the astronomical date of Easter Sunday and dependent movable liturgical feasts.
+- **Cheerio**: Fast, flexible, and lean implementation of core jQuery designed for the server.
 - **GIRM / IGMR**: *General Instruction of the Roman Missal* / *Instrucción General del Misal Romano*.
-- **Misal Romano 3ª Edición**: Official liturgical book for the celebration of Mass according to the Roman Rite.
-- **Deck**: A card-stack user interface element rendered in 3D perspective with physical gesture navigation.
-- **OG**: Open Graph protocol for generating dynamic social media link preview images.
-- **RRULE**: Recurrence Rule format conforming to RFC 5545 (iCalendar specification).
-- **WCAG**: Web Content Accessibility Guidelines (version 2.1 Level AA).
+- **Obolus**: Cryptographic proof-of-work (PoW) challenge firewall protecting USCCB web endpoints.
+- **RTM**: Requirements Traceability Matrix.
+- **SSOT**: Single Source of Truth.
+- **USCCB**: United States Conference of Catholic Bishops.
 
 ---
 
 ## 2. Overall Description
 
-### 2.1 Product Perspective & Context
-The application operates as a high-performance Next.js 15 App Router web system with client hydration on React 19. It interfaces upstream with:
-- Google Calendar iCal feed (via `/api/calendar`).
-- USCCB Daily Liturgical Reading Lectionary via `catholic-mass-readings` (via `/api/mass-readings`).
-- Social Media metadata crawlers (via `/api/og` dynamic image generator).
+### 2.1 Product Perspective & Operating Environment
+The system operates across three interoperable runtime environments:
+1. **Node.js CLI & Library Runtime (Subproject 1)**: Executes in Node.js $\ge 20.0.0$ environments (CLI terminal or as an imported ESM package).
+2. **Data-Mining & Curation Runtime (Subproject 2)**: Executes locally via Node.js scripts processing JSON streams and emitting curated liturgical catalogs.
+3. **Serverless Edge & Client Hydration Runtime (Host App)**: Executes within Next.js 15 App Router running on Vercel infrastructure, hydrated in modern mobile and desktop browsers (iOS Safari, Chrome, Firefox, Edge).
 
-### 2.2 User Persona Characteristics
-1. **Youth Ministry Member / Teen**: Accesses the site via mobile phone during meal times, retreats, and prayer sessions. Demands zero load lag, haptic feedback, and fluid swipe gestures.
-2. **Parishioner / Parent / Assembly**: Attends daily or Sunday Mass. Utilizes the Mass Guide to follow liturgical responses and read the Word of God in uninterrupted canonical sequence without clunky dropdown toggles.
-3. **Catechist / Liturgical Minister / Lector**: Leads community prayer and reads Mass readings. Demands liturgical exactness, complete antiphon responses with verses, full citations, and doctrinal fidelity.
-4. **Priest / Deacon (Celebrant)**: Needs complete dialogues, priest private prayers during Communion, and seasonal Gospel acclamations.
+### 2.2 User Classes and Characteristics
+- **Open Source Consumers**: Developers incorporating Spanish Catholic lectionary data into apps. They require a zero-config CLI and standard ESM exports.
+- **Parishioners & Assembly Users**: Congregants participating in daily Mass on smartphones. They require immediate loading, zero clipping or layout shifts, and intuitive visual speaker separation.
+- **Lectors & Cantors**: Ministers proclaiming the First Reading, Psalm, and Second Reading. They require untruncated citations, full antiphon responses, and complete verses.
+- **Presiders (Priests & Deacons)**: Celebrants leading liturgical rites. They require complete dialogues with canonical fidelity.
 
-### 2.3 Design and Implementation Constraints
-- **Zero Heavy UI Dependencies**: Styling must be authored in monolithic Vanilla CSS (`src/app/global.css`) using CSS Custom Properties without Tailwind, SCSS, or CSS-in-JS runtime overhead.
-- **TypeScript Strictness**: TypeScript 5.7 compilation with `strict: true` and zero `any` declarations in production code.
-- **Mobile First & Touch Ergonomics**: Minimum touch target size of 44x44 CSS pixels. Prevention of double-scroll jumping on mobile web browsers.
+### 2.3 Operating Constraints
+- **Zero Global Host Pollution**: All toolchains and dependencies must reside strictly inside `./node_modules` or local project folders. Global installations (`npm install -g`, `brew`) are strictly prohibited.
+- **Strict TypeScript Compliance**: All code must compile cleanly under TypeScript 5.7+ with `strict: true`, zero diagnostic errors, and zero `any` evasions.
+- **Network Resilience**: Upstream USCCB endpoints may fail, throttle, or present cryptographic challenges. The scraper must handle network timeouts ($< 8\text{s}$) with graceful fallback degradation.
 
 ---
 
 ## 3. Specific Functional Requirements
 
-### RF-01: Catholic Food Prayers Transcription & Deck Integration
-- **ID**: `RF-01`
-- **Priority**: High | **Source**: `ORIGINAL_REQUEST.md §R1`
-- **Description**: The system shall provide a dedicated "Prayers for Food" deck containing the Catholic daily prayers for meals transcribed from the Roman *Bendicional* (nn. 883-884).
-- **Functional Specification**:
-  1. The deck shall replace all obsolete food prayers and contain structured entries for all 7 days of the week (Sunday through Saturday).
-  2. Each day shall contain:
-     - **Antes de las comidas**: Scripture Versicle (V.), Assembly Response (R.), and the "Oremos" Blessing Prayer.
-     - **Después de las comidas**: Thanksgiving "Oremos" Prayer.
-  3. The introductory liturgical rubric from *Bendicional* nn. 883-884 regarding charity toward the poor shall be included.
-  4. Language shall default to Spanish.
-- **Acceptance Criteria**:
-  - **AC-RF01-1**: Given the food prayers deck is loaded, all 7 days (Domingo to Sábado) are present with exact verbatim text matching the *Bendicional* transcription.
-  - **AC-RF01-2**: Given any day of the week, the "Antes de las comidas" section contains both the versicle, response, and prayer.
-  - **AC-RF01-3**: Given Sunday through Saturday, the "Después de las comidas" thanksgiving prayer is rendered with complete liturgical doxologies.
+### 3.1 Subproject 1: Open Source Spanish Liturgy Scraper (`REQ-FUN-SCR`)
+
+#### `REQ-FUN-SCR-01`: USCCB Spanish Endpoint & Date Resolution
+- **Description**: The scraper shall accept an ISO date (`YYYY-MM-DD`) or a JavaScript `Date` object and format it into the USCCB URL date format `MMDDYY`. It shall target the base URL `https://bible.usccb.org/es/bible/lecturas/{MMDDYY}.cfm` and support liturgical variants (`-Day.cfm`, `-Dawn.cfm`, `-Night.cfm`).
+- **BDD Scenario**:
+  ```gherkin
+  Scenario: Resolve target Spanish USCCB URL for a given date
+    Given a target date of "2026-09-10"
+    When the USCCBSpanish client builds the request URL
+    Then the generated URL must be "https://bible.usccb.org/es/bible/lecturas/091026.cfm"
+  ```
+
+#### `REQ-FUN-SCR-02`: Plain-Text Citation Parsing for Unlinked `.address`
+- **Description**: The HTML parser shall inspect `.address` elements inside `.container`. If no child anchor (`<a>`) tags exist (standard in Spanish USCCB pages), the parser must extract the raw text (e.g. `"1 Corintios 8, 1-13"`), trim whitespace, parse the book name, and construct a valid `Verse` and `Reading` object without throwing `USCCBParseError`.
+- **BDD Scenario**:
+  ```gherkin
+  Scenario: Parse unlinked Spanish citation container
+    Given a Cheerio DOM containing '<div class="address">1 Corintios 8, 1-13</div>' with 0 anchor tags
+    When the Spanish parser extracts verses from the address container
+    Then it must return an array of 1 Verse object
+    And the verse text must equal "1 Corintios 8, 1-13"
+    And the parsed book name must equal "1 Corintios"
+  ```
+
+#### `REQ-FUN-SCR-03`: Spanish Section Header Classification
+- **Description**: The parser shall classify liturgical sections by matching Spanish header strings:
+  - `"Primera lectura"`, `"Segunda lectura"`, `"Lectura"` $\rightarrow$ `SectionType.READING`
+  - `"Salmo Responsorial"`, `"Salmo"` $\rightarrow$ `SectionType.PSALM`
+  - `"Aclamación antes del Evangelio"`, `"Aleluya"` $\rightarrow$ `SectionType.ALLELUIA`
+  - `"Evangelio"` $\rightarrow$ `SectionType.GOSPEL`
+  - `"Secuencia"` $\rightarrow$ `SectionType.SEQUENCE`
+  - `"O bien"` $\rightarrow$ `SectionType.ALTERNATIVE`
+- **BDD Scenario**:
+  ```gherkin
+  Scenario: Classify Spanish lectionary headers into standard section enums
+    Given the following header strings:
+      | Header Text                       | Expected Enum         |
+      | "Primera lectura"                 | SectionType.READING   |
+      | "Salmo Responsorial"              | SectionType.PSALM     |
+      | "Aclamación antes del Evangelio"  | SectionType.ALLELUIA  |
+      | "Evangelio"                       | SectionType.GOSPEL    |
+    When sectionTypeFromHeaderEs is invoked on each header
+    Then the resulting section type must match the expected enum
+  ```
+
+#### `REQ-FUN-SCR-04`: Obolus Bot-Challenge Proof-of-Work Solver
+- **Description**: The HTTP client shall detect the USCCB Obolus bot challenge (HTTP 200 containing `<title>Checking connection</title>` or cookie `X_Obolus_Grace`). It shall compute the required proof-of-work hash in $\le 1.5$ seconds and re-issue the HTTP request with cookie `X_Obolus_Proof`, retrieving the actual lectionary HTML.
+- **BDD Scenario**:
+  ```gherkin
+  Scenario: Transparently solve USCCB Obolus challenge
+    Given an HTTP client targeting "https://bible.usccb.org/es/bible/lecturas/091026.cfm"
+    When the upstream server responds with an Obolus challenge challenge payload
+    Then the client must compute the cryptographic proof
+    And successfully retrieve the parsed lectionary HTML without surfacing an HTTP error
+  ```
+
+#### `REQ-FUN-SCR-05`: Command-Line Interface (CLI)
+- **Description**: The package shall provide an executable CLI binary (`bin/spanish-mass-readings`) supporting commands:
+  - `get-mass --date <YYYY-MM-DD>`: Prints serialized JSON to stdout.
+  - `--citations-only`: Prints only reading headings and verse citations.
+  - `--save <path>`: Writes the serialized JSON payload to the specified disk path.
+- **BDD Scenario**:
+  ```gherkin
+  Scenario: Execute CLI to output Spanish readings
+    Given the CLI command "spanish-mass-readings get-mass --date 2026-09-10"
+    When executed in a shell
+    Then the process must exit with code 0
+    And stdout must contain valid JSON conforming to the SerializedMass schema
+    And the title must contain "XXIII semana del Tiempo ordinario"
+  ```
+
+#### `REQ-FUN-SCR-06`: Standalone Git Repository, GitHub CLI Publication & CalVer
+- **Description**: Subproject 1 shall be initialized as its own independent Git repository located at `subprojects/spanish-mass-readings`. Using the GitHub CLI (`gh`), a public repository `riosisraelg/spanish-mass-readings` shall be created and pushed. The release shall be tagged with Calendar Versioning (CalVer) `2026.09.0`.
+- **BDD Scenario**:
+  ```gherkin
+  Scenario: Verify Git initialization, remote origin and CalVer tag
+    Given the subproject directory "subprojects/spanish-mass-readings"
+    When inspecting git metadata
+    Then "git status" must confirm an initialized git repository on branch "main"
+    And "git remote get-url origin" must contain "github.com/riosisraelg/spanish-mass-readings"
+    And "git tag -l" must contain the tag "2026.09.0"
+  ```
 
 ---
 
-### RF-02: Auto-Day Selection & Minimalist Deck Viewport
-- **ID**: `RF-02`
-- **Priority**: High | **Source**: `ORIGINAL_REQUEST.md §R2`
-- **Description**: The food deck shall automatically detect the user's current day of the week and open directly to that day's meal prayer, while allowing manual swipe navigation to any other day.
-- **Functional Specification**:
-  1. Upon opening the Food Prayers deck, the system shall read `new Date().getDay()` (0=Domingo, 1=Lunes, ..., 6=Sábado).
-  2. The deck shall initialize with the active card index corresponding to today's day of the week.
-  3. The viewport shall feature a clean, minimalist card aesthetic matching the Rosary deck.
-- **Acceptance Criteria**:
-  - **AC-RF02-1**: Given the system clock is Tuesday, opening the food prayers deck initializes with the "Martes" card selected.
-  - **AC-RF02-2**: Manual swipe gestures permit unrestricted navigation to all other days.
+### 3.2 Subproject 2: Mass Transcript Mining & Curation Tool (`REQ-FUN-MIN`)
+
+#### `REQ-FUN-MIN-01`: YouTube Auto-Transcript Ingestion & Cleaning
+- **Description**: The mining engine shall ingest timestamped subtitle segments from YouTube video `EkoysbFU47c` (schema: `{ start, end, startSeconds, endSeconds, text }`). It shall filter automated non-speech tags (such as `[Música]`), strip repetitive vocal pauses, and normalize whitespace.
+- **BDD Scenario**:
+  ```gherkin
+  Scenario: Clean and ingest YouTube video transcript
+    Given a raw transcript cue with text "[Música] El Señor esté con ustedes [Aplausos]"
+    When the transcript ingestion cleaner processes the cue
+    Then the sanitized text must equal "El Señor esté con ustedes"
+  ```
+
+#### `REQ-FUN-MIN-02`: 10 Canonical Roman Rite Step Segmentation
+- **Description**: The segmenter shall categorize the transcript cues into the 10 canonical Roman Rite steps:
+  1. `sec-1-rito-inicial`
+  2. `sec-2-acto-penitencial`
+  3. `sec-3-gloria`
+  4. `sec-4-oracion-colecta`
+  5. `sec-5-liturgia-palabra`
+  6. `sec-6-homilia`
+  7. `sec-7-oracion-universal`
+  8. `sec-8-liturgia-eucaristica`
+  9. `sec-9-rito-comunion`
+  10. `sec-10-rito-conclusion`
+- **BDD Scenario**:
+  ```gherkin
+  Scenario: Segment transcript into 10 canonical steps
+    Given the raw Basílica de Guadalupe Mass transcript for September 10, 2026
+    When the segmentation algorithm executes
+    Then exactly 10 liturgical steps must be identified
+    And each step must contain an array of ordered turns with valid start and end timestamps
+  ```
+
+#### `REQ-FUN-MIN-03`: Dialogue Pairing with RejoiceInFaith Assembly Responses
+- **Description**: The curation tool shall pair celebrant prompt utterances with the 18 standard Roman Missal assembly responses extracted from `rejoiceinfaith.org` (e.g. `GREETING`, `PENITENTIAL_ACT`, `PREFACE_DIALOGUE_GREETING`, `MEMORIAL_ACCLAMATION`).
+- **BDD Scenario**:
+  ```gherkin
+  Scenario: Pair celebrant prompt with canonical assembly response
+    Given a celebrant cue containing "El Señor esté con ustedes"
+    When matched against the canonical dialogue catalog
+    Then it must be paired with the assembly response "Y con tu espíritu" (Spanish) and "And with your spirit" (English)
+    And the dialogue key must be "GREETING"
+  ```
+
+#### `REQ-FUN-MIN-04`: Chat-Style Alignment Formatting (Priest Right vs Public Left)
+- **Description**: The curation output data structure shall explicitly enforce chat alignment metadata:
+  - Celebrant / Priest sayings: `speaker: "priest"`, `isLeft: false` (maps to `.duet-right`).
+  - Assembly / Public responses: `speaker: "assembly"`, `isLeft: true` (maps to `.duet-left`).
+- **BDD Scenario**:
+  ```gherkin
+  Scenario: Enforce chat alignment attributes
+    Given a dialogue turn for the celebrant saying "Oremos"
+    And a dialogue turn for the assembly saying "Amén"
+    When the chat formatter processes both turns
+    Then the celebrant turn must have isLeft set to false
+    And the assembly turn must have isLeft set to true
+  ```
+
+#### `REQ-FUN-MIN-05`: Liturgical Catalog Archival Pipeline
+- **Description**: The tool shall compile the segmented and aligned dialogues into a verified JSON catalog file `src/data/liturgical_catalog_guadalupe.json` conforming to `SeguirMisaCatalog`.
+- **BDD Scenario**:
+  ```gherkin
+  Scenario: Export structured liturgical catalog
+    Given the completed curation of video EkoysbFU47c
+    When the catalog exporter writes to disk
+    Then the file "src/data/liturgical_catalog_guadalupe.json" must exist
+    And validate successfully against the SeguirMisaCatalog TypeScript schema
+  ```
 
 ---
 
-### RF-03: Minimalist Continuous Infinite Swipe Gesture Loop
-- **ID**: `RF-03`
-- **Priority**: High | **Source**: `ORIGINAL_REQUEST.md §R3`
-- **Description**: The 3D deck carousel shall implement smooth, continuous infinite circular navigation via circular modulo index calculations.
-- **Acceptance Criteria**:
-  - **AC-RF03-1**: Swiping left on the last card loops seamlessly to the first card index.
-  - **AC-RF03-2**: Swiping right on the first card loops seamlessly to the last card index.
+### 3.3 Host Application Scraper Integration (`REQ-FUN-INT`)
+
+#### `REQ-FUN-INT-01`: Bilingual Route Handler Delegation
+- **Description**: `src/app/api/mass-readings/route.ts` shall parse the query parameters `date` and `lang`.
+  - If `lang=es`: Query `USCCBSpanish` from `subprojects/spanish-mass-readings`.
+  - If `lang=en`: Query `USCCB` from `catholic-mass-readings`.
+  - If `lang=both` or `bilingual`: Execute both concurrently via `Promise.all` and return merged readings.
+  - Map results to `MassReadingsResponse`.
+- **BDD Scenario**:
+  ```gherkin
+  Scenario: Fetch Spanish readings via API route
+    Given a GET request to "/api/mass-readings?lang=es&date=2026-09-10"
+    When the route handler executes
+    Then the response status must be 200
+    And the JSON response must have language equal to "es"
+    And source equal to "spanish-mass-readings"
+    And the firstReading citation must equal "1 Corintios 8, 1-13"
+  ```
+
+#### `REQ-FUN-INT-02`: Fallback Graceful Degradation
+- **Description**: If upstream USCCB queries exceed 8 seconds or encounter network failure, the route shall return HTTP 200 with static cached Spanish lectionary readings, setting `isFallback: true` and `source: 'fallback'`.
+- **BDD Scenario**:
+  ```gherkin
+  Scenario: Graceful degradation upon network failure
+    Given a simulated network disconnection from bible.usccb.org
+    When a GET request is made to "/api/mass-readings?lang=es"
+    Then the route must return HTTP 200 within 8.5 seconds
+    And the response must contain isFallback equal to true
+    And firstReading, psalm, and gospel must be populated
+  ```
+
+#### `REQ-FUN-INT-03`: UI Consumer Dynamic Language Switch
+- **Description**: In `LandingClient.tsx`, switching `guiaLang` between `'es'` and `'en'` shall immediately re-fetch the readings from `/api/mass-readings?lang=` and re-render the First Reading, Psalm, Alleluia, and Gospel without throwing React runtime errors or hydration mismatches.
+- **BDD Scenario**:
+  ```gherkin
+  Scenario: Switch language in UI
+    Given the user is viewing the Mass Guide modal
+    When the user toggles the language switch from "ES" to "EN"
+    Then the UI must fetch "/api/mass-readings?lang=en"
+    And replace Spanish readings with English readings dynamically
+  ```
+
+#### `REQ-FUN-INT-04`: Interactive "Seguir Misa" Chat-Style Alignment Rendering
+- **Description**: In `AppleMusicLyrics.tsx`, dialogue lines shall be rendered according to the `isLeft` property: lines with `isLeft: false` shall apply `.lyric-line.duet-right` (right aligned, celebrant), and lines with `isLeft: true` shall apply `.lyric-line.duet-left` (left aligned, assembly).
+- **BDD Scenario**:
+  ```gherkin
+  Scenario: Render chat lines with correct alignment classes
+    Given an active "Seguir Misa" session
+    When the component renders a celebrant line
+    Then the DOM element must contain the CSS class "duet-right"
+    When the component renders an assembly line
+    Then the DOM element must contain the CSS class "duet-left"
+  ```
 
 ---
 
-### RF-04: Dynamic Brand Color Tone Generator
-- **ID**: `RF-04`
-- **Priority**: Medium | **Source**: `ORIGINAL_REQUEST.md §R4`
-- **Description**: The deck component shall dynamically compute brand color tone variations (lightness/chroma) based on card index while maintaining WCAG 2.1 AA text contrast.
-- **Acceptance Criteria**:
-  - **AC-RF04-1**: Each card index generates a distinct tone variant within brand guidelines.
-  - **AC-RF04-2**: Contrast ratio between card text and calculated background is $\ge 4.5:1$.
+### 3.4 Codebase Extraction & Separation (`REQ-FUN-EXT`)
+
+#### `REQ-FUN-EXT-01`: Proven Spanish Logic Reusability
+- **Description**: Subproject 1 and Subproject 2 shall extract and reuse the proven algorithms from `~/teamwork_projects/guadalupe_mass_interactive` (including `readings-adapter.ts`, `seguir-misa-engine.ts`, and test fixtures) rather than re-implementing scraping and dialogue parsing from scratch.
+- **BDD Scenario**:
+  ```gherkin
+  Scenario: Verify codebase extraction provenance
+    Given the source files in "~/teamwork_projects/guadalupe_mass_interactive"
+    When comparing extracted adapter logic in "subprojects/spanish-mass-readings"
+    Then the extraction review script must confirm algorithmic equivalence
+  ```
 
 ---
 
-### RF-05: Global Long-Press Tooltips with Haptic Feedback
-- **ID**: `RF-05`
-- **Priority**: High | **Source**: `ORIGINAL_REQUEST.md §R5`
-- **Description**: All interactive action and navigation buttons shall declare descriptive tooltips accessible via a 450ms long-press touch gesture with haptic vibration.
-- **Acceptance Criteria**:
-  - **AC-RF05-1**: Holding touch for 450ms triggers `navigator.vibrate` and displays the tooltip popover.
-  - **AC-RF05-2**: Scrolling or lifting touch before 450ms cancels tooltip display.
+## 4. External Interface Specifications
+
+### 4.1 USCCB Spanish HTTP/Cheerio Interface
+- **Endpoint**: `https://bible.usccb.org/es/bible/lecturas/{MMDDYY}.cfm`
+- **Method**: `GET`
+- **Headers**:
+  - `User-Agent`: Modern browser impersonation string
+  - `Accept`: `text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8`
+  - `Accept-Language`: `es-ES,es;q=0.9,en;q=0.8`
+  - `Cookie`: `X_Obolus_Proof={hash}` (when challenge active)
+- **DOM Parsing Target**:
+  - Main containers: `.container`
+  - Section title: `.name` (e.g. "Primera lectura")
+  - Address: `.address` (plain text, e.g. "1 Corintios 8, 1-13")
+  - Content: `.content-body`
+
+### 4.2 Next.js Route Handler Contract (`/api/mass-readings`)
+- **URL**: `/api/mass-readings`
+- **Method**: `GET`
+- **Query Parameters**:
+  - `date` (optional): `YYYY-MM-DD` or `YYYYMMDD` (defaults to today in `America/Mexico_City`).
+  - `lang` (optional): `'es'` | `'en'` | `'both'` | `'bilingual'` (defaults to `'es'`).
+- **Response Format**: `application/json`
+- **Response Status Codes**:
+  - `200 OK`: Readings retrieved successfully (either live or fallback).
+  - `400 Bad Request`: Malformed date format.
+  - `500 Internal Server Error`: Critical unhandled server fault.
+
+### 4.3 GitHub CLI Interface
+- **Tool**: `gh` (version $\ge 2.98.0$)
+- **Authentication**: `gh auth status` must confirm active login for user `riosisraelg` with `repo` and `workflow` scopes.
+- **Repository Creation Command**:
+  ```bash
+  gh repo create spanish-mass-readings --public --source=. --remote=origin --push
+  ```
 
 ---
 
-### RF-06: Event OG Image Generator & Shareable Deep-Linked Modals
-- **ID**: `RF-06`
-- **Priority**: High | **Source**: `ORIGINAL_REQUEST.md §R6`
-- **Description**: The system shall generate dynamic 1200x630px Open Graph banner images via `/api/og` and provide shareable deep-linked URLs that immediately open event modals.
-- **Acceptance Criteria**:
-  - **AC-RF06-1**: Requesting `/api/og?title=...&date=...&category=...` returns a valid 1200x630 PNG image.
-  - **AC-RF06-2**: Visiting `/calendario?evento=[id]` opens the corresponding event modal immediately on page load.
+## 5. Non-Functional Requirements (ISO/IEC 25010)
+
+### 5.1 Performance Efficiency (`REQ-NFR-PERF`)
+- **`REQ-NFR-PERF-01`**: The Obolus PoW challenge solver shall complete cryptographic hash verification in under $1,500\text{ms}$ on standard x86/ARM hardware.
+- **`REQ-NFR-PERF-02`**: The `/api/mass-readings` route handler shall respond within $400\text{ms}$ on cached requests and within $3,000\text{ms}$ on cold live scraping requests.
+
+### 5.2 Reliability & Fault Tolerance (`REQ-NFR-REL`)
+- **`REQ-NFR-REL-01`**: Under complete network severance from `bible.usccb.org`, `/api/mass-readings` shall return HTTP 200 with `isFallback: true` and populated reading fields within $8.5\text{seconds}$.
+- **`REQ-NFR-REL-02`**: Subproject 1 CLI shall exit with code 1 and a descriptive stderr message if an invalid date format is supplied, never throwing unhandled stack traces.
+
+### 5.3 Usability & Ergonomics (`REQ-NFR-USA`)
+- **`REQ-NFR-USA-01`**: The "Seguir Misa" interactive modal shall display celebrant lines in `.duet-right` (font-size 2.2rem) and assembly lines in `.duet-left` (font-size 1.3rem) with contrast ratio $\ge 4.5:1$ conforming to WCAG 2.1 AA.
+- **`REQ-NFR-USA-02`**: Modal dialogs shall utilize `100dvh` viewport height bounds with body scroll locking to ensure zero vertical clipping or top-edge data loss on mobile devices.
+
+### 5.4 Modularity & Maintainability (`REQ-NFR-MNT`)
+- **`REQ-NFR-MNT-01`**: Subproject 1 shall have zero dependencies on Next.js or React, maintaining standalone portability.
+- **`REQ-NFR-MNT-02`**: Calendar Versioning `YYYY.MM.MINOR` shall be strictly synchronized between `package.json` and Git release tags.
+
+### 5.5 Security (`REQ-NFR-SEC`)
+- **`REQ-NFR-SEC-01`**: Input date parameters shall be strictly sanitized using regular expressions (`/^\d{4}-?\d{2}-?\d{2}$/`) to prevent Server-Side Request Forgery (SSRF) or path traversal attacks against upstream endpoints.
 
 ---
 
-### RF-07: Rosary UI Overhaul, 5-Element Mystery Sequence & Top-Bar Vibrating Counter
-- **ID**: `RF-07`
-- **Priority**: High | **Source**: `ORIGINAL_REQUEST.md §R7`
-- **Description**: The Rosary interface shall feature complete 5-element mystery sequences, untruncated text, collapsible repeated prayers, dedicated sub-decks, and a top-bar vibrating bead counter.
-- **Acceptance Criteria**:
-  - **AC-RF07-1**: Every mystery across all 4 Rosary types renders all 5 required elements (Artwork, Citation, Scripture, Meditation, Reflection Question).
-  - **AC-RF07-2**: The decade bead counter is rendered in the top header, increments on tap, and invokes `navigator.vibrate`.
-  - **AC-RF07-3**: Repeated prayers inside mystery cards expand and collapse on tap.
+## 6. Requirements Traceability Matrix (RTM)
 
----
-
-### RF-08: Mass Guide & Liturgical Readings Scraper Subsystem (Master Requirement)
-- **ID**: `RF-08`
-- **Priority**: Critical | **Source**: `ORIGINAL_REQUEST.md §R1, §R2, §R3`
-- **Description**: The Mass Guide shall provide a complete, canonical, and seamless liturgical experience according to the *Misal Romano (3ª Edición Típica)* and *Instrucción General del Misal Romano* (IGMR). The system shall overhaul the daily liturgical readings scraper API, eliminate the detached readings accordion, dynamically inject the readings sequentially into the "Liturgia de la Palabra" ordinary flow and kinetic stream reader, and provide direct one-touch launch with proactive background pre-fetching.
-- **Sub-Requirements**: Decomposed into `RF-08.1`, `RF-08.2`, and `RF-08.3`.
-
----
-
-#### RF-08.1: Daily Mass Readings Scraper API Engine
-- **ID**: `RF-08.1`
-- **Priority**: Critical | **Source**: `ORIGINAL_REQUEST.md §R1, Follow-up 2026-09-10 §R1, §R2`
-- **Description**: The route handler at `src/app/api/mass-readings/route.ts` shall fetch, parse, and structure the complete text of the Catholic daily liturgy using the `catholic-mass-readings` library, mapping upstream USCCB data models cleanly to `MassReadingsResponse`.
-- **Functional Specification**:
-  1. **Upstream Lectionary Query**:
-     - Instantiate `USCCB` client using `createNodeHttpClient()`.
-     - `dateParam` shall support normalized `YYYYMMDD` and `YYYY-MM-DD` formats, converting them into a JavaScript `Date` object passed to `usccb.getMassFromDate(date)`. Defaults to current date in `America/Mexico_City` timezone.
-     - `langParam` shall read query parameter `lang` (e.g. `'es'`, `'en'`). The engine shall gracefully handle both languages without crashing, respecting the package capabilities (USCCB English Lectionary) while preserving seamless API responses.
-  2. **Comprehensive Section Mapping to `MassReadingsResponse`**:
-     - `liturgicalDay`: Mapped from `mass.title` (e.g., *"Thursday of the Twenty-third Week in Ordinary Time"*).
-     - `firstReading`: Extracted from section where `type === SectionType.READING` (first occurrence or header containing "1"). Full citation from verses array (`verses.map(v => v.text).join(', ')`), short citation, and full proclamation text (`reading.text`).
-     - `psalm`: Extracted from section where `type === SectionType.PSALM`. Full citation from verses, antiphon `response` parsed from lines starting with `R.`, complete stanzas array (`stanzas`), and complete text (`reading.text`).
-     - `secondReading`: Extracted from section where `type === SectionType.READING` (second occurrence or header containing "2" / "Second"). Populated on Sundays and Solemnities; omitted (`undefined`) on ferial weekdays.
-     - `alleluia`: Extracted from section where `type === SectionType.ALLELUIA`. Acclamation formula (`acclamation`), lectionary verse (`verse`), and citation.
-     - `gospel`: Extracted from section where `type === SectionType.GOSPEL`. Full citation from verses, short citation, and full proclamation text (`reading.text`).
-     - `date`: Normalized date string in `YYYYMMDD` format.
-     - `source`: Set to `'catholic-mass-readings'` on successful upstream parse, or `'fallback'` if served from fallback.
-     - `isFallback`: Boolean flag (`false` on live parse, `true` on fallback).
-  3. **Data Sanitization & Antiphon Parsing**:
-     - Cleanly parse Responsorial Psalm paragraphs: isolate antiphon prefix matching `/^R\.\s*(?:\([^\)]+\)\s*)?/i` without truncating verse 1 or duplicating antiphon lines inside stanzas.
-     - Parse Alleluia section to isolate acclamation line (`R. Alleluia...`) from the scripture verse.
-  4. **Timeout, Caching & Zero-Downtime Fallback**:
-     - Operations shall include resilient error boundaries to handle USCCB challenge-response latencies and potential network timeouts.
-     - Success responses shall return HTTP status 200 with headers `Cache-Control: public, s-maxage=86400, stale-while-revalidate=43200` and Next.js revalidation (`revalidate: 86400`).
-     - On upstream failure, network timeout, null response, or out-of-range dates, the endpoint shall catch errors and return the bundled canonical `FALLBACK_READINGS` with HTTP status 200, `isFallback: true`, `source: 'fallback'`, and `Cache-Control: public, s-maxage=300, stale-while-revalidate=3600`.
-
----
-
-#### RF-08.2: Canonical Sequential UI Injection & Accordion Removal
-- **ID**: `RF-08.2`
-- **Priority**: Critical | **Source**: `ORIGINAL_REQUEST.md §R2`
-- **Description**: The Mass Guide UI in `src/app/LandingClient.tsx` and `src/app/massResponses.ts` shall eliminate the detached readings accordion and dynamically inject the live readings directly into the canonical flow of Section 2 ("Liturgia de la Palabra") according to the General Instruction of the Roman Missal (GIRM).
-- **Functional Specification**:
-  1. **Accordion Removal**:
-     - The legacy collapsible accordion button `showLecturasInResponses` and its associated dropdown container in Tab 2 (`activeGuiaTab === 'respuestas'`) shall be completely removed from the DOM hierarchy.
-  2. **Canonical Sequential Injection Flow**:
-     - Inside Section 2 ("Liturgia de la Palabra"), the static placeholder lines shall be dynamically replaced with the live structured readings in exact liturgical sequence:
-       1. **Primera Lectura** (Sentados):
-          - Rubric: *"Sentados"*
-          - Title: *"Primera Lectura — [dailyReadings.firstReading.citation]"*
-          - Speaker: *"Lector"*
-          - Text: Full reading body paragraphs.
-          - Proclamation Dialogue: Lector: *"Palabra de Dios."* | Pueblo: *"Te alabamos, Señor."*
-       2. **Salmo Responsorial** (Sentados):
-          - Rubric: *"Sentados"*
-          - Title: *"Salmo Responsorial — [dailyReadings.psalm.citation]"*
-          - Antiphon Box: Display highlighted response `"R. [dailyReadings.psalm.response]"`.
-          - Stanzas: Complete psalm stanzas rendered with repeated assembly response `"R. [dailyReadings.psalm.response]"` after each stanza.
-       3. **Segunda Lectura** (Sentados) [Conditional Rendering]:
-          - Condition: Rendered ONLY when `dailyReadings.secondReading` exists and contains text (Sundays & Solemnities). Gracefully omitted on ferial weekdays with zero empty headers or gaps.
-          - Rubric: *"Sentados"*
-          - Title: *"Segunda Lectura — [dailyReadings.secondReading.citation]"*
-          - Speaker: *"Lector"*
-          - Text: Full epistle body paragraphs.
-          - Proclamation Dialogue: Lector: *"Palabra de Dios."* | Pueblo: *"Te alabamos, Señor."*
-       4. **Aclamación antes del Evangelio (Aleluya)** (De pie):
-          - Rubric: *"De pie"*
-          - Title: *"Aclamación antes del Evangelio"*
-          - Speaker: *"Todos"*
-          - Text: Acclamation formula (`"¡Aleluya, aleluya!"` or Lenten verse) followed by the lectionary verse (`dailyReadings.alleluia.verse`).
-       5. **Proclamación del Santo Evangelio** (De pie):
-          - Rubric: *"De pie"*
-          - Title: *"Santo Evangelio — [dailyReadings.gospel.citation]"*
-          - Introductory Dialogue:
-            * Sacerdote: *"El Señor esté con ustedes."* | Pueblo: *"Y con tu espíritu."*
-            * Sacerdote: *"Lectura del santo Evangelio según [evangelista]."* | Pueblo: *"Gloria a ti, Señor."*
-          - Proclamation Text: Full Gospel body paragraphs.
-          - Concluding Dialogue:
-            * Sacerdote: *"Palabra del Señor."* | Pueblo: *"Gloria a ti, Señor Jesús."*
-          - Secret Priest Rubric: *"Sacerdote (en secreto): Las palabras del Evangelio borren nuestros pecados."*
-       6. **Homilía, Credo, y Oración Universal**:
-          - Standard Roman Missal ordinary flow continues seamlessly.
-  3. **Interactive Mode (`AppleMusicLyrics`) Stream Generator**:
-     - The helper function `getCanonicalMassLines(sectionIdx, dailyReadings, lang)` shall dynamically produce the linear line stream for Section 2, pairing each line with appropriate speaker tags (`Lector`, `Salmista`, `Sacerdote`, `Pueblo`, `Todos`) and left/right kinetic alignments without hydration mismatches.
-
----
-
-#### RF-08.3: Direct Access Mass Launcher & Proactive Auto-Fetch
-- **ID**: `RF-08.3`
-- **Priority**: High | **Source**: `ORIGINAL_REQUEST.md §R3`
-- **Description**: The main Mass launcher buttons across the site shall open directly to the Mass Guide without intermediate menu friction, and daily readings shall be fetched proactively in the background on initial page mount.
-- **Functional Specification**:
-  1. **Autonomous Mount Pre-Fetching**:
-     - `LandingClient.tsx` shall execute `fetchDailyReadings()` in a `useEffect` hook on client mount.
-     - Fetched readings shall be cached in React state (`dailyReadings`), ensuring that readings are 100% pre-loaded and ready before the user opens or navigates to Liturgia de la Palabra.
-     - A manual refresh button (`↻ Actualizar`) shall be available to force cache re-fetching.
-  2. **Direct Mass Launcher Buttons**:
-     - Main Hero CTA button ("Guía de Misa" / "Seguir la Misa") and Mobile Drawer navigation link shall directly open the Mass Guide modal initialized to Section 1 (Ritos Iniciales, `activeMisaSectionIdx = 0`).
-  3. **UI Loading & Offline States**:
-     - If the user accesses readings while fetching is in progress, a smooth non-blocking indicator shall be displayed.
-     - If `dailyReadings.isFallback === true`, an unobtrusive badge `(Liturgia común / modo sin conexión)` shall indicate offline mode without disrupting Mass flow.
-
----
-
-### RF-08 Acceptance Criteria Matrix
-
-| Criterion ID | Target Feature | Acceptance Verification Condition |
-|---|---|---|
-| **AC-RF08-1** | Full Text Preservation | `GET /api/mass-readings` returns non-empty full text, citations, and models for First Reading, Psalm, Gospel, and Alleluia using `catholic-mass-readings`. |
-| **AC-RF08-2** | Responsorial Psalm Integrity | The Psalm object contains both a clean antiphon `response` string parsed from `R.` and the complete verse stanzas array without duplications or truncation of verse 1. |
-| **AC-RF08-3** | Sunday vs Weekday 2nd Reading | Querying a Sunday date returns a populated `secondReading` object; querying a weekday ferial date returns `secondReading === undefined` without errors. |
-| **AC-RF08-4** | Gospel Acclamation (Alleluia) | The `alleluia` object provides acclamation text and lectionary verse parsed from USCCB Alleluia section. |
-| **AC-RF08-5** | Resilience & Edge Caching | Upstream timeouts or errors return `FALLBACK_READINGS` with status 200, `isFallback: true`, `source: 'fallback'`, and valid `Cache-Control` headers. |
-| **AC-RF08-6** | Accordion Removal | The legacy `showLecturasInResponses` accordion button and dropdown container are completely removed from Tab 2 in `LandingClient.tsx`. |
-| **AC-RF08-7** | Sequential Canonical Injection | Navigating to Section 2 ("Liturgia de la Palabra") renders the readings in exact GIRM sequence (1st Reading → Psalm with R. → 2nd Reading [if Sunday] → Aleluya → Gospel) in both standard modal and `AppleMusicLyrics` interactive mode. |
-| **AC-RF08-8** | Direct Launch & Auto-Fetch | Clicking the Mass button in Hero/Nav opens the Mass modal directly at Section 1 (Ritos Iniciales), with readings automatically fetched on mount without manual intervention. |
-| **AC-RF08-9** | Language Parameter Handling | Querying `/api/mass-readings?lang=es` or `/api/mass-readings?lang=en` returns valid JSON without throwing runtime errors or crashes. |
-
----
-
-### RF-09: Misas de Precepto Calendar Integration & Multi-Platform Export
-- **ID**: `RF-09`
-- **Priority**: High | **Source**: `ORIGINAL_REQUEST.md §R9`
-- **Description**: The system shall compute and integrate all Holy Days of Obligation (*Misas de Precepto* per Canon 1246 and Mexican Episcopal Conference CEM) into the Jesus calendar, providing detailed event modals and universal multi-platform export.
-- **Acceptance Criteria**:
-  - **AC-RF09-1**: Given any target year, all fixed and movable Misas de Precepto are generated with correct dates and tagged with `isPrecepto: true`.
-  - **AC-RF09-2**: Clicking "Agregar a Google Calendar" on any event opens a pre-populated Google Calendar event creation URL.
-  - **AC-RF09-3**: Clicking "Descargar archivo iCal (.ics)" initiates a valid RFC 5545 `.ics` file download.
-
----
-
-### RF-10: Autonomous Execution, Granular Git Commits, Semver Tagging & Remote Deployment
-- **ID**: `RF-10`
-- **Priority**: High | **Source**: `ORIGINAL_REQUEST.md §R10`
-- **Description**: The development workflow shall execute autonomously, creating granular atomic git commits, assigning semantic version tags to each milestone commit, verifying 100% test passing, and pushing all branches/tags to the remote repository.
-- **Acceptance Criteria**:
-  - **AC-RF10-1**: Git log contains granular, descriptive commits corresponding to each milestone.
-  - **AC-RF10-2**: Git repository contains valid annotated/lightweight semantic version tags.
-  - **AC-RF10-3**: Final release tag `v1.0.0` is pushed to remote origin.
-
----
-
-## 4. Non-Functional Requirements (RNF)
-
-| ID | Category | Requirement Specification | Measurement Metric |
+| Requirement ID | Description | Architecture Component | Test Case Verification ID |
 |---|---|---|---|
-| **RNF-01** | **Performance** | The application shall achieve sub-second initial load on standard 4G mobile networks. | FCP $\le 1.0\text{s}$, LCP $\le 1.8\text{s}$, CLS $= 0.00$. |
-| **RNF-02** | **Animation Frame Rate** | 3D card deck dragging and kinetic text streaming shall maintain smooth hardware-accelerated GPU rendering. | 60 FPS consistent with zero dropped frames. |
-| **RNF-03** | **Usability** | The interface shall provide single-scroll containment, eliminating double-scroll jump bugs. | Modal container has `overflow: hidden`, inner card has `overflow-y: auto`. |
-| **RNF-04** | **Accessibility** | All text, buttons, and dialogs shall comply with WCAG 2.1 Level AA standards. | Text contrast $\ge 4.5:1$, touch targets $\ge 44 \times 44\text{px}$, full keyboard navigation. |
-| **RNF-05** | **Internationalization** | All UI copy and prayer texts shall maintain authentic Spanish Catholic liturgical phrasing, with English support for universal dialogues. | 100% translation completeness in bilingual prayer cards. |
-| **RNF-06** | **Reliability & Resilience** | The daily Mass readings scraper and Google Calendar integration shall gracefully fall back to local canonical data when offline. | Zero unhandled exceptions; fallback UI rendered seamlessly. |
-| **RNF-07** | **Security & Privacy** | Public read-only architecture with zero collection of personally identifiable information (PII). | No cookies, no unauthorized trackers, sanitized external XML inputs. |
-| **RNF-08** | **Cross-Platform Support** | Flawless rendering and interaction across iOS Safari (15+), Android Chrome, macOS Safari/Chrome, and Windows Edge. | 100% automated test passing on Chromium, WebKit, and Firefox engines. |
+| `REQ-FUN-SCR-01` | Spanish Endpoint & Date Resolution | `subprojects/spanish-mass-readings/src/usccb-spanish.ts` | `UT-SCR-01` (parser.test.ts) |
+| `REQ-FUN-SCR-02` | Plain-Text Citation Parsing | `subprojects/spanish-mass-readings/src/usccb-spanish.ts` | `UT-SCR-02` (parser.test.ts) |
+| `REQ-FUN-SCR-03` | Spanish Header Classification | `subprojects/spanish-mass-readings/src/usccb-spanish.ts` | `UT-SCR-03` (parser.test.ts) |
+| `REQ-FUN-SCR-04` | Obolus PoW Challenge Solver | `subprojects/spanish-mass-readings/src/obolus.ts` | `UT-SCR-04` (obolus.test.ts) |
+| `REQ-FUN-SCR-05` | Standalone CLI Binary | `subprojects/spanish-mass-readings/bin/cli.ts` | `UT-SCR-05` (cli.test.ts) |
+| `REQ-FUN-SCR-06` | Git Repo, `gh` CLI & CalVer | `subprojects/spanish-mass-readings/` | `ST-SCR-01` (verify-subproject-1.sh) |
+| `REQ-FUN-MIN-01` | YouTube Auto-Transcript Ingestion | `subprojects/mass-transcript-miner/src/ingest.ts` | `UT-MIN-01` (ingest.test.ts) |
+| `REQ-FUN-MIN-02` | 10 Roman Rite Step Segmentation | `subprojects/mass-transcript-miner/src/segmenter.ts` | `UT-MIN-02` (segmenter.test.ts) |
+| `REQ-FUN-MIN-03` | Dialogue Pairing with RejoiceInFaith | `subprojects/mass-transcript-miner/src/dialogue-matcher.ts` | `UT-MIN-03` (dialogue.test.ts) |
+| `REQ-FUN-MIN-04` | Chat Alignment (Right/Left) | `subprojects/mass-transcript-miner/src/chat-formatter.ts` | `UT-MIN-04` (chat.test.ts) |
+| `REQ-FUN-MIN-05` | Liturgical Catalog Archival | `subprojects/mass-transcript-miner/src/index.ts` | `UT-MIN-05` (catalog.test.ts) |
+| `REQ-FUN-INT-01` | Bilingual Route Handler Delegation | `src/app/api/mass-readings/route.ts` | `IT-INT-01` (test-e2e.mjs) |
+| `REQ-FUN-INT-02` | Fallback Graceful Degradation | `src/app/api/mass-readings/route.ts` | `IT-INT-02` (test-e2e.mjs) |
+| `REQ-FUN-INT-03` | UI Dynamic Language Switch | `src/app/LandingClient.tsx` | `IT-INT-03` (test-e2e.mjs) |
+| `REQ-FUN-INT-04` | Interactive "Seguir Misa" Alignment | `src/app/AppleMusicLyrics.tsx`, `src/app/global.css` | `IT-INT-04` (test-e2e.mjs) |
+| `REQ-FUN-EXT-01` | Codebase Extraction & Provenance | `subprojects/` | `ST-EXT-01` (extraction-audit.sh) |
 
 ---
-
-## 5. Complete Data Models & Schemas
-
-### 5.1 Food Prayers Data Schema
-```typescript
-export interface MealPrayer {
-  verse?: string;
-  response?: string;
-  prayer: string;
-}
-
-export interface FoodPrayerDay {
-  id: string;
-  day: 'domingo' | 'lunes' | 'martes' | 'miercoles' | 'jueves' | 'viernes' | 'sabado';
-  dayName: string;
-  before: MealPrayer;
-  after?: MealPrayer;
-  intro?: {
-    title: string;
-    citation: string;
-    text: string;
-  };
-}
-```
-
-### 5.2 Rosary 5-Element Mystery Schema
-```typescript
-export interface MysteryItem {
-  number: number;
-  title: string;
-  titleEn: string;
-  biblicalRef: string;
-  scriptureText: string;
-  scriptureTextEn: string;
-  meditation: string;
-  meditationEn: string;
-  reflectionQuestion: string;
-  reflectionQuestionEn: string;
-  image: string;
-}
-
-export interface MysteryInfo {
-  type: 'gozosos' | 'dolorosos' | 'gloriosos' | 'luminosos';
-  name: string;
-  nameEn: string;
-  days: string;
-  daysEn: string;
-  mysteries: MysteryItem[];
-}
-```
-
-### 5.3 Daily Mass Readings API Schema (`MassReadingsResponse`)
-```typescript
-export interface MassReadingsResponse {
-  date: string; // 'YYYYMMDD' or 'YYYY-MM-DD'
-  liturgicalDay: string; // e.g. "Viernes de la 21a semana del Tiempo Ordinario"
-  saint?: string; // Saint commemoration
-  firstReading: {
-    citation: string;
-    shortCitation?: string;
-    text: string;
-  };
-  psalm: {
-    citation: string;
-    shortCitation?: string;
-    response: string;
-    text: string;
-    stanzas?: string[];
-  };
-  secondReading?: {
-    citation: string;
-    shortCitation?: string;
-    text: string;
-  };
-  alleluia: {
-    citation?: string;
-    acclamation: string;
-    verse: string;
-  };
-  gospel: {
-    citation: string;
-    shortCitation?: string;
-    text: string;
-  };
-  meditation?: {
-    author: string;
-    text: string;
-  };
-  isFallback?: boolean;
-  source?: string;
-}
-```
-
-### 5.4 Calendar & Misas de Precepto Schema
-```typescript
-export interface ParsedEvent {
-  id: string;
-  title: string;
-  summary?: string;
-  description: string;
-  date: string; // YYYY-MM-DD
-  endDate?: string;
-  time: string;
-  location: string;
-  type: string;
-  types: string[];
-  isPrecepto?: boolean;
-  preceptoRule?: 'CEM_OBLIGATION' | 'UNIVERSAL_CANON_1246' | 'SOLEMNITY';
-  shareUrl?: string;
-  ogImageUrl?: string;
-}
-```
-
----
-
-## 6. Use Case Specifications
-
-### UC-01: Blessing Daily Meals with Auto-Day Food Deck
-- **Actor**: Community Member.
-- **Precondition**: User opens `lapandilladejesusqro.org` on a smartphone at lunch time.
-- **Main Flow**:
-  1. User taps "Oraciones" or scrolls to Decks section.
-  2. System detects local day of week and displays the corresponding day's card (e.g. "Jueves").
-  3. User reads the versicle, leads the group in the response ("Bendito seas por siempre, Señor"), and recites the "Oremos" blessing.
-  4. After eating, user views the "Después de las comidas" section on the same card for thanksgiving.
-  5. User can swipe horizontally to view upcoming days.
-- **Postcondition**: Daily meal prayer completed with authentic liturgical text.
-
-### UC-02: Praying the Holy Rosary with Top-Bar Counter & 5-Element Mysteries
-- **Actor**: Youth Group Leader / Catechist.
-- **Precondition**: User opens the Rosary modal.
-- **Main Flow**:
-  1. User selects mystery type (e.g., "Misterios Gozosos") and variant ("mexicana").
-  2. System loads dedicated Opening Prayers deck.
-  3. User advances to Mystery 1: System displays (1) Mystery illustration, (2) Scripture citation, (3) Direct Scripture text, (4) Meditation, and (5) Reflection question.
-  4. User taps the top-bar bead counter button (`📿 0/10`) for each Ave María; device emits a gentle 25ms haptic vibration on each count.
-  5. User expands the collapsible repeated prayers list if needed.
-  6. Upon completing 5 decades, user advances to the Concluding Prayers deck.
-- **Postcondition**: Complete Rosary recited with guided meditation and verified decade counting.
-
-### UC-03: Exporting Misas de Precepto to Personal Calendar
-- **Actor**: Parishioner.
-- **Precondition**: User is viewing `/calendario`.
-- **Main Flow**:
-  1. User filters events or browses to "Nuestra Señora de Guadalupe" (12 de Diciembre).
-  2. Event card displays prominent "Misa de Precepto Obligatorio" badge.
-  3. User taps the event card: Layered event modal opens displaying liturgical description, Mass times, and location.
-  4. User taps "Agregar a Google Calendar" or "Descargar archivo iCal (.ics)".
-  5. Personal calendar app opens with pre-populated event details.
-- **Postcondition**: Holy Day of Obligation successfully synced to the user's personal device calendar.
-
-### UC-04: Participating in Daily and Sunday Mass with Canonical Reading Flow
-- **Actor**: Parishioner / Assembly Member.
-- **Precondition**: User is attending Mass at La Sagrada Familia and opens `lapandilladejesusqro.org`.
-- **Main Flow**:
-  1. User taps the standalone "Guía de Misa" button on the hero section.
-  2. System opens the modal directly at Section 1 (Ritos Iniciales) while automatically pre-fetching today's daily readings in the background.
-  3. User participates in the Introductory Rites (Greeting, Penitential Act, Gloria).
-  4. User advances to Section 2 ("Liturgia de la Palabra"):
-     - Primera Lectura is seamlessly rendered with full scripture text and dialogue.
-     - Salmo Responsorial is rendered with the antiphon response and all verse stanzas.
-     - Segunda Lectura is rendered if Sunday, or omitted smoothly if a weekday.
-     - Gospel Acclamation (Aleluya) and Holy Gospel are rendered with complete rubrics and dialogues.
-  5. User can switch to "AppleMusicLyrics" kinetic full-screen reader for synchronized text following during the homily or liturgy.
-  6. User continues through Liturgia Eucarística, Rito de Comunión (with priest private prayers), and Ritos Conclusivos.
-- **Postcondition**: Complete Catholic Mass followed in exact canonical order with live daily scriptures and zero UI friction.
+*End of ISO/IEC/IEEE 29148:2018 Software Requirements Specification.*

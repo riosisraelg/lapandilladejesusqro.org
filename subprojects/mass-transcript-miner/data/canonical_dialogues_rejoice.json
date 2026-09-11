@@ -1,0 +1,218 @@
+[
+  {
+    "dialogueKey": "GREETING",
+    "stepId": "sec-1-rito-inicial",
+    "celebrantPrompt": {
+      "es": "La paz y la caridad y la fe de parte de Dios Padre y de Jesucristo el Señor estén con todos ustedes.",
+      "en": "The peace and love and faith from God the Father and Jesus Christ the Lord be with you all."
+    },
+    "assemblyResponse": {
+      "es": "Y con tu espíritu.",
+      "en": "And with your spirit."
+    }
+  },
+  {
+    "dialogueKey": "PENITENTIAL_ACT",
+    "stepId": "sec-2-acto-penitencial",
+    "celebrantPrompt": {
+      "es": "Dios todopoderoso tenga misericordia de nosotros, perdone nuestros pecados y nos lleve a la vida eterna.",
+      "en": "May almighty God have mercy on us, forgive us our sins, and bring us to everlasting life."
+    },
+    "assemblyResponse": {
+      "es": "Amén.",
+      "en": "Amen."
+    }
+  },
+  {
+    "dialogueKey": "COLLECT",
+    "stepId": "sec-4-oracion-colecta",
+    "celebrantPrompt": {
+      "es": "Oremos. Dios y Padre nuestro, que para gloria tuya y salvación del género humano constituiste a Cristo, sumo y eterno sacerdote, concede al pueblo redimido con su sangre por la participación en este memorial, experimentar el poder de la cruz y la resurrección de tu Hijo. Él, que vive y reina contigo en la unidad del Espíritu Santo y es Dios por los siglos de los siglos.",
+      "en": "Let us pray. O God and our Father, who for your glory and the salvation of the human race appointed Christ as high and eternal priest, grant that the people redeemed by his blood through participation in this memorial may experience the power of the cross and the resurrection of your Son. Who lives and reigns with you in the unity of the Holy Spirit, God for ever and ever."
+    },
+    "assemblyResponse": {
+      "es": "Amén.",
+      "en": "Amen."
+    }
+  },
+  {
+    "dialogueKey": "GOSPEL_DIALOGUE_GREETING",
+    "stepId": "sec-5-liturgia-palabra",
+    "celebrantPrompt": {
+      "es": "El Señor esté con ustedes.",
+      "en": "The Lord be with you."
+    },
+    "assemblyResponse": {
+      "es": "Y con tu espíritu.",
+      "en": "And with your spirit."
+    }
+  },
+  {
+    "dialogueKey": "GOSPEL_DIALOGUE_ACCLAMATION",
+    "stepId": "sec-5-liturgia-palabra",
+    "celebrantPrompt": {
+      "es": "Del santo evangelio según San Lucas.",
+      "en": "A reading from the holy Gospel according to Luke."
+    },
+    "assemblyResponse": {
+      "es": "Gloria a ti, Señor.",
+      "en": "Glory to you, O Lord."
+    }
+  },
+  {
+    "dialogueKey": "GOSPEL_DIALOGUE_DISMISSAL",
+    "stepId": "sec-5-liturgia-palabra",
+    "celebrantPrompt": {
+      "es": "Palabra del Señor.",
+      "en": "The Gospel of the Lord."
+    },
+    "assemblyResponse": {
+      "es": "Gloria a ti, Señor Jesús.",
+      "en": "Praise to you, Lord Jesus Christ."
+    }
+  },
+  {
+    "dialogueKey": "ORATE_FRATRES",
+    "stepId": "sec-8-liturgia-eucaristica",
+    "celebrantPrompt": {
+      "es": "Oren, hermanos, para que este sacrificio mío y de ustedes sea agradable a Dios, Padre todopoderoso.",
+      "en": "Pray, brothers and sisters, that my sacrifice and yours may be acceptable to God, the almighty Father."
+    },
+    "assemblyResponse": {
+      "es": "El Señor reciba de tus manos este sacrificio para alabanza y gloria de su nombre, para nuestro bien y el de toda su santa Iglesia.",
+      "en": "May the Lord accept the sacrifice at your hands for the praise and glory of his name, for our good and the good of all his holy Church."
+    }
+  },
+  {
+    "dialogueKey": "OFFERTORY_PRAYER",
+    "stepId": "sec-8-liturgia-eucaristica",
+    "celebrantPrompt": {
+      "es": "Señor, concédenos participar dignamente en estos misterios, pues cada vez que se celebra el memorial de este sacrificio se realiza la obra de nuestra redención. Por Jesucristo, nuestro Señor.",
+      "en": "Grant us, Lord, we pray, that we may participate worthily in these mysteries, for whenever the memorial of this sacrifice is celebrated the work of our redemption is accomplished. Through Christ our Lord."
+    },
+    "assemblyResponse": {
+      "es": "Amén.",
+      "en": "Amen."
+    }
+  },
+  {
+    "dialogueKey": "PREFACE_DIALOGUE_GREETING",
+    "stepId": "sec-8-liturgia-eucaristica",
+    "celebrantPrompt": {
+      "es": "El Señor esté con ustedes.",
+      "en": "The Lord be with you."
+    },
+    "assemblyResponse": {
+      "es": "Y con tu espíritu.",
+      "en": "And with your spirit."
+    }
+  },
+  {
+    "dialogueKey": "PREFACE_DIALOGUE_SURSUM",
+    "stepId": "sec-8-liturgia-eucaristica",
+    "celebrantPrompt": {
+      "es": "Levantemos el corazón.",
+      "en": "Lift up your hearts."
+    },
+    "assemblyResponse": {
+      "es": "Lo tenemos levantado hacia el Señor.",
+      "en": "We lift them up to the Lord."
+    }
+  },
+  {
+    "dialogueKey": "PREFACE_DIALOGUE_GRATIAS",
+    "stepId": "sec-8-liturgia-eucaristica",
+    "celebrantPrompt": {
+      "es": "Demos gracias al Señor, nuestro Dios.",
+      "en": "Let us give thanks to the Lord our God."
+    },
+    "assemblyResponse": {
+      "es": "Es justo y necesario.",
+      "en": "It is right and just."
+    }
+  },
+  {
+    "dialogueKey": "MEMORIAL_ACCLAMATION",
+    "stepId": "sec-8-liturgia-eucaristica",
+    "celebrantPrompt": {
+      "es": "Éste es el sacramento de nuestra fe.",
+      "en": "The mystery of faith."
+    },
+    "assemblyResponse": {
+      "es": "Anunciamos tu muerte, proclamamos tu resurrección. ¡Ven, Señor Jesús!",
+      "en": "We proclaim your Death, O Lord, and profess your Resurrection until you come again."
+    }
+  },
+  {
+    "dialogueKey": "DOXOLOGY",
+    "stepId": "sec-8-liturgia-eucaristica",
+    "celebrantPrompt": {
+      "es": "Por Cristo, con él y en él, a ti, Dios Padre omnipotente, en la unidad del Espíritu Santo, todo honor y toda gloria por los siglos de los siglos.",
+      "en": "Through him, and with him, and in him, O God, almighty Father, in the unity of the Holy Spirit, all glory and honor is yours, for ever and ever."
+    },
+    "assemblyResponse": {
+      "es": "Amén.",
+      "en": "Amen."
+    }
+  },
+  {
+    "dialogueKey": "LORDS_PRAYER_EMBOLISM",
+    "stepId": "sec-9-rito-comunion",
+    "celebrantPrompt": {
+      "es": "Líbranos de todos los males, Señor, y concédenos la paz en nuestros días, para que, ayudados por tu misericordia, vivamos siempre libres de pecado y protegidos de toda perturbación, mientras esperamos la gloriosa venida de nuestro Salvador Jesucristo.",
+      "en": "Deliver us, Lord, we pray, from every evil, graciously grant peace in our days, that, by the help of your mercy, we may be always free from sin and safe from all distress, as we await the blessed hope and the coming of our Savior, Jesus Christ."
+    },
+    "assemblyResponse": {
+      "es": "Tuyo es el reino, tuyo el poder y la gloria por siempre, Señor.",
+      "en": "For the kingdom, the power and the glory are yours now and for ever."
+    }
+  },
+  {
+    "dialogueKey": "PEACE_PRAYER",
+    "stepId": "sec-9-rito-comunion",
+    "celebrantPrompt": {
+      "es": "Señor Jesucristo, que dijiste a tus apóstoles: 'La paz les dejo, mi paz les doy', no tengas en cuenta nuestros pecados, sino la fe de tu Iglesia y, conforme a tu palabra, concédele la paz y la unidad. Tú que vives y reinas por los siglos de los siglos.",
+      "en": "Lord Jesus Christ, who said to your Apostles: Peace I leave you, my peace I give you; look not on our sins, but on the faith of your Church, and graciously grant her peace and unity in accordance with your will. Who live and reign for ever and ever."
+    },
+    "assemblyResponse": {
+      "es": "Amén.",
+      "en": "Amen."
+    }
+  },
+  {
+    "dialogueKey": "SIGN_OF_PEACE",
+    "stepId": "sec-9-rito-comunion",
+    "celebrantPrompt": {
+      "es": "La paz del Señor esté siempre con ustedes.",
+      "en": "The peace of the Lord be with you always."
+    },
+    "assemblyResponse": {
+      "es": "Y con tu espíritu.",
+      "en": "And with your spirit."
+    }
+  },
+  {
+    "dialogueKey": "ECCE_AGNUS_DEI",
+    "stepId": "sec-9-rito-comunion",
+    "celebrantPrompt": {
+      "es": "Éste es Jesucristo, el Hijo de Dios vivo, el cordero de Dios que quita el pecado del mundo. Dichosos nosotros los llamados a la cena del Señor.",
+      "en": "Behold the Lamb of God, behold him who takes away the sins of the world. Blessed are those called to the supper of the Lamb."
+    },
+    "assemblyResponse": {
+      "es": "Señor, yo no soy digno de que entres en mi casa, pero una palabra tuya bastará para sanarme.",
+      "en": "Lord, I am not worthy that you should enter under my roof, but only say the word and my soul shall be healed."
+    }
+  },
+  {
+    "dialogueKey": "POST_COMMUNION_PRAYER",
+    "stepId": "sec-10-rito-conclusion",
+    "celebrantPrompt": {
+      "es": "Oremos. Alimentados por esta víctima celestial, te rogamos, Señor, que por la participación en este misterio se afiance en nosotros la herencia de la vida eterna que nos mereció el sacerdocio de tu Hijo. Él, que vive y reina por los siglos de los siglos.",
+      "en": "Let us pray. Nourished by this heavenly victim, we pray, O Lord, that through participation in this mystery the heritage of eternal life won for us by the priesthood of your Son may be confirmed within us. Who lives and reigns for ever and ever."
+    },
+    "assemblyResponse": {
+      "es": "Amén.",
+      "en": "Amen."
+    }
+  }
+]

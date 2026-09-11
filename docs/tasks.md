@@ -1,138 +1,168 @@
 # ISO/IEC/IEEE 12207:2017 Software Life Cycle Task Plan & Execution Matrix
 
-**System Name**: La Pandilla de Jesús — Querétaro Web Platform  
-**Standard**: ISO/IEC/IEEE 12207:2017 (Systems and software engineering — Software life cycle processes)  
-**Document Version**: 1.1.0  
-**Date**: 2026-08-28  
-**Status**: Approved & Authoritative  
+**System Name**: La Pandilla de Jesús — Querétaro Web Platform & Liturgical Scraper Ecosystem  
+**Governing Standard**: ISO/IEC/IEEE 12207:2017 (Systems and software engineering — Software life cycle processes)  
+**Document Identification**: `PLAN-LPJQRO-2026-02`  
+**Document Version**: 2.0.0  
+**Date**: 2026-09-11  
+**Status**: Authoritative & Approved  
+**Author**: Worker M1 (Architecture & Requirements Engineering)  
+**Lifecycle State**: State 3 (Execution Planning Baseline)  
 
 ---
 
 ## 1. Life Cycle Process Model & Methodology
 
 ### 1.1 Process Model Overview
-In accordance with ISO/IEC/IEEE 12207:2017, the platform execution adheres to the **Software Implementation**, **Software Verification**, **Software Validation**, and **Software Configuration Management** processes across all functional milestones.
+In accordance with ISO/IEC/IEEE 12207:2017, the execution lifecycle is structured into six discrete, phase-gated milestones spanning Software Implementation, Integration, Verification, Validation, and Software Configuration Management processes.
 
 ```
-+--------------------------------------------------------------------------------------------------+
-|                             ISO/IEC/IEEE 12207:2017 PROCESS LIFECYCLE                            |
-+--------------------------------------------------------------------------------------------------+
-|                                                                                                  |
-|   [M0: Architecture & Standards (ISO 42010, 29148, 12207)]                                       |
-|                 │                                                                                |
-|                 ▼                                                                                |
-|   [M1: Scraper API Overhaul (RF-08.1)] ───────► [M2: Canonical UI Injection (RF-08.2)]           |
-|                 │                                              │                                 |
-|                 └──────────────────────┐                       ▼                                 |
-|                                        ▼       [M3: Direct Access & Auto-fetch (RF-08.3)]        |
-|                         [M4: 5-Tier Test Harness (Tiers 1-5)] ◄┘                                 |
-|                                        │                                                         |
-|                                        ▼                                                         |
-|                         [M5: Build Verification & Regression]                                    |
-|                                        │                                                         |
-|                                        ▼                                                         |
-|                         [M6: Forensic Audit & Production Release]                                |
-+--------------------------------------------------------------------------------------------------+
+┌────────────────────────────────────────────────────────────────────────────────────────┐
+│                        ISO/IEC/IEEE 12207:2017 EXECUTION ROADMAP                       │
+│                                                                                        │
+│  [M1: Architecture, Requirements & Task Plan Baseline (ISO 42010, 29148, 12207)]       │
+│                                           │                                            │
+│                                           ▼                                            │
+│  ┌────────────────────────────────────────┴─────────────────────────────────────────┐   │
+│  │                                                                                  │   │
+│  ▼                                                                                  ▼   │
+│  [M2: Subproject 1 Extraction & Scraper Engine]     [M3: Subproject 2 Transcript    │   │
+│  • spanish-mass-readings package setup              • Mining tool & segmentation    │   │
+│  • Plain-text Cheerio citation parser               • 18 rejoiceinfaith pairs       │   │
+│  • Obolus PoW challenge solver                      • Chat-style alignment          │   │
+│  • CLI & unit test suite                            • Liturgical catalog export     │   │
+│  │                                                                                  │   │
+│  └────────────────────────────────────────┬─────────────────────────────────────────┘   │
+│                                           │                                            │
+│                                           ▼                                            │
+│  [M4: Host Application Integration]                                                    │
+│  • /api/mass-readings dual-scraper routing (lang=es|en|both)                           │
+│  • LandingClient.tsx dynamic language toggle                                           │
+│  • AppleMusicLyrics.tsx chat-style alignment rendering (.duet-right vs .duet-left)     │
+│                                           │                                            │
+│                                           ▼                                            │
+│  [M5: Multi-Tier Verification & Adversarial Testing]                                   │
+│  • Vitest unit tests (Subprojects 1 & 2)                                               │
+│  • Host application E2E suite (test-e2e.mjs) & viewport regression tests              │
+│                                           │                                            │
+│                                           ▼                                            │
+│  [M6: Release Engineering, CalVer Tagging & GitHub CLI Publication]                   │
+│  • Subproject 1 Git initialization on branch main                                      │
+│  • GitHub repo creation: riosisraelg/spanish-mass-readings via gh CLI                  │
+│  • Calendar Versioning (CalVer) tag: 2026.09.0                                         │
+│  • Final forensic audit sign-off                                                       │
+└────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
 ## 2. Work Breakdown Structure (WBS) & Atomic Execution Matrix
 
-### Milestone M0: Technical Standards & Architecture Documentation
-- **Objective**: Author foundational IEEE architectural, requirements, and lifecycle documentation.
+### Milestone M1: Architecture & Requirements Baseline (ISO Standards)
+- **Objective**: Author authoritative engineering manuals and top-level governance files.
+- **Milestone Status**: `[⏳] In Progress`
 
-| Task ID | Task Description | Assignee | Affected Artifacts | Inputs | Outputs | Verification Method | Dependencies | Status |
-|---|---|---|---|---|---|---|---|---|
-| `TSK-M0-01` | Author ISO/IEC/IEEE 42010:2022 System Architecture Description | Docs Specialist | `docs/architecture.md` | Survey reports, GIRM rubrics | Authoritative architecture manual | Review against ISO 42010 standard | None | DONE |
-| `TSK-M0-02` | Author ISO/IEC/IEEE 29148:2018 Software Requirements Specification | Docs Specialist | `docs/srs.md` | ORIGINAL_REQUEST.md, Stakeholder needs | Authoritative SRS with RF-08.1 to RF-08.3 & AC matrix | Review against ISO 29148 standard | `TSK-M0-01` | DONE |
-| `TSK-M0-03` | Author ISO/IEC/IEEE 12207:2017 Life Cycle Task Execution Plan | Docs Specialist | `docs/tasks.md` | WBS & Test Matrix | Atomic task matrix TSK-M6-01 to TSK-M6-07 | Review against ISO 12207 standard | `TSK-M0-02` | DONE |
-
----
-
-### Milestone M6: Mass Guide & Liturgical Readings Scraper Subsystem (RF-08)
-- **Objective**: Deliver complete, verified, and canonical Mass readings scraping, sequential UI injection into the Liturgy of the Word, interactive kinetic text streaming, and direct one-touch launch.
-
-| Task ID | Task Description | Assignee | Affected Artifacts | Inputs | Outputs | Verification Method | Dependencies | Status |
-|---|---|---|---|---|---|---|---|---|
-| `TSK-M6-01` | **Migrate Daily Readings Route Handler to `catholic-mass-readings`** (`RF-08.1`) | Scraper Engineer | `src/app/api/mass-readings/route.ts` | `catholic-mass-readings` library, `MassReadingsResponse` schema, `FALLBACK_READINGS` | `USCCB` client integration via `createNodeHttpClient()`, clean antiphon `R.` extraction, stanzas array, date and lang parameter handling, 6s timeout/resilience, 24h Edge caching | `npm test` (Unit tests `UT-SCR-01` to `UT-SCR-08`) + live API curl test | `TSK-M0-03` | PLANNED |
-| `TSK-M6-02` | **Obsolete Accordion Removal from Mass UI** (`RF-08.2`) | UI Engineer | `src/app/LandingClient.tsx` | `LandingClient.tsx` state and Tab 2 render tree | Complete deletion of `showLecturasInResponses` state, toggle button, and redundant dropdown container from DOM | `npm test` (Integration test `IT-UI-01`) + DOM inspection | `TSK-M0-03` | PLANNED |
-| `TSK-M6-03` | **Implement Sequential Canonical Injection in Liturgia de la Palabra** (`RF-08.2`) | UI Engineer | `src/app/LandingClient.tsx`, `src/app/massResponses.ts` | `MassReadingsResponse` object, Missal ordinary sequence | Direct dynamic embedding of 1st Reading, Psalm (response + all stanzas), conditional 2nd Reading, Alleluia, and Gospel into Section 2 | `npm test` (Integration test `IT-UI-02`) + visual inspection | `TSK-M6-01`, `TSK-M6-02` | PLANNED |
-| `TSK-M6-04` | **Update Interactive Mode (`AppleMusicLyrics`) Kinetic Stream Feed** (`RF-08.2`) | UI Engineer | `src/app/LandingClient.tsx`, `src/app/AppleMusicLyrics.tsx` | `getCanonicalMassLines` generator function | Kinetic text stream generator producing ordered lines with speaker labels (`Lector`, `Salmista`, `Sacerdote`, `Pueblo`, `Todos`) and alignments for Section 2 | `npm test` (Integration test `IT-UI-03`) + full-screen interactive test | `TSK-M6-03` | PLANNED |
-| `TSK-M6-05` | **Implement Direct Access Launcher and Client Mount Auto-Fetch** (`RF-08.3`) | UI Engineer | `src/app/LandingClient.tsx` | Hero & Nav button handlers, mount lifecycle hook | Hero "Guía de Misa" and "Seguir la Misa" buttons opening directly to Section 1 (Ritos Iniciales, index 0); background pre-fetch on page mount with language pass-through; offline fallback banner | `npm test` (Integration tests `IT-UI-04`, `IT-UI-05`) + manual click journey | `TSK-M6-03` | PLANNED |
-| `TSK-M6-06` | **Implement Comprehensive Automated Test Suite (Tiers 1–5)** | QA Engineer | `scripts/test-e2e.mjs` | Test specifications for R1, R2, R3, and edge cases | Extended test harness containing $\ge 189$ passing tests across Tiers 1 to 5 | `npm test` (100% pass across all $\ge 189$ tests in < 100ms) | `TSK-M6-01` to `TSK-M6-05` | PLANNED |
-| `TSK-M6-07` | **Full Regression Suite Execution and Next.js 15 Production Build Verification** | QA Engineer | Whole project | Next.js build toolchain, TypeScript strict compiler | Production build artifact (`.next/`), zero type errors, zero linter regressions | `npm run build` (Exit code 0) & `tsc --noEmit` | `TSK-M6-06` | PLANNED |
+| Task ID | Task Title & Summary | Traceability | Inputs | Target Files | Verification Command | Dependencies | Status |
+|---|---|---|---|---|---|---|:---:|
+| `TASK-M1-01` | **Author ISO 42010 System Architecture Description** | STD-GOV-2026-01 | Survey reports 1, 2, 3; ORIGINAL_REQUEST | `docs/architecture.md` | Check file structure against ISO 42010 checklist | None | `[x]` DONE |
+| `TASK-M1-02` | **Author ISO 29148 Software Requirements Specification** | STD-GOV-2026-01 | Survey reports 1, 2, 3; ORIGINAL_REQUEST | `docs/srs.md` | Check file structure against ISO 29148 checklist | `TASK-M1-01` | `[x]` DONE |
+| `TASK-M1-03` | **Author ISO 12207 Execution Plan & Atomic Task Matrix** | STD-GOV-2026-01 | WBS, RTM, survey handoffs | `docs/tasks.md` | Check file structure against ISO 12207 checklist | `TASK-M1-02` | `[⏳]` In Progress |
+| `TASK-M1-04` | **Update Master Documentation Index (MDI)** | STD-GOV-2026-01 | Architecture, SRS, Tasks | `docs/index.md` | Audit active links & status badges | `TASK-M1-03` | `[ ]` PLANNED |
+| `TASK-M1-05` | **Author Top-Level Project Governance (PROJECT.md)** | STD-GOV-2026-01 | Architecture, Survey findings | `PROJECT.md` | Verify Feature Inventory & Milestones | `TASK-M1-04` | `[ ]` PLANNED |
 
 ---
 
-## 3. Detailed Verification & Test Execution Plan
+### Milestone M2: Subproject 1 Extraction & Scraper Development
+- **Objective**: Build `subprojects/spanish-mass-readings` as an independent TypeScript package extracting logic from `~/teamwork_projects/guadalupe_mass_interactive`.
+- **Milestone Status**: `[ ]` PLANNED
 
-### 3.1 Unit Testing Strategy: Scraper Engine (`TSK-M6-01`)
-| Test ID | Test Category | Specification & Verification Criteria |
-|---|---|---|
-| `UT-SCR-01` | Weekday Liturgy Extraction | Query `catholic-mass-readings` adapter for weekday mass. Assert `firstReading`, `psalm`, `alleluia`, and `gospel` are fully extracted with citations and text. |
-| `UT-SCR-02` | Sunday / Solemnity with 2nd Reading | Query Sunday date. Assert `secondReading` object is present with full citation and text, while weekdays return `undefined`. |
-| `UT-SCR-03` | Responsorial Psalm Antiphon & Stanzas | Verify `psalm.response` extracts antiphon from `R.` and `psalm.stanzas` is an array of non-empty verse stanzas without truncating verse 1. |
-| `UT-SCR-04` | Gospel Acclamation (Alleluia) | Verify extraction of Alleluia acclamation and lectionary verse from USCCB Alleluia section. |
-| `UT-SCR-05` | Language Parameter Handling | Verify query with `lang=es` and `lang=en` executes gracefully without errors or server exceptions. |
-| `UT-SCR-06` | Timeout & Network Failure Fallback | When upstream fails or responds with error, return `FALLBACK_READINGS` with status 200, `source: 'fallback'`, and `isFallback: true`. |
-| `UT-SCR-07` | Date Parameter Parsing | Verify date resolution converts `YYYYMMDD` and `YYYY-MM-DD` strings into JavaScript `Date` objects for USCCB query. |
-| `UT-SCR-08` | HTTP Cache-Control Headers | Verify `Cache-Control: public, s-maxage=86400, stale-while-revalidate=43200` on success. |
-
-### 3.2 Component & Integration Testing Strategy (`TSK-M6-02` to `TSK-M6-05`)
-| Test ID | Test Category | Specification & Verification Criteria |
-|---|---|---|
-| `IT-UI-01` | Accordion Removal | Confirm legacy `showLecturasInResponses` toggle and container are completely absent from DOM. |
-| `IT-UI-02` | Canonical Sequential Injection | Verify GIRM order in Section 2: 1. Primera Lectura → 2. Salmo Responsorial (with R. and stanzas) → 3. Segunda Lectura (conditional) → 4. Aleluya → 5. Santo Evangelio. |
-| `IT-UI-03` | Interactive Kinetic Stream Mapping | Verify `getCanonicalMassLines` produces structured lines with correct speaker tags (`Lector`, `Salmista`, `Sacerdote`, `Pueblo`, `Todos`) for Section 2. |
-| `IT-UI-04` | Direct Access Launcher | Clicking "Guía de Misa" / "Seguir la Misa" opens modal directly at Section 1 ("Ritos Iniciales", index 0). |
-| `IT-UI-05` | Client Mount Auto-Fetch | Verify `fetchDailyReadings()` executes on client component mount without requiring manual click, passing active `lang`. |
-| `IT-UI-06` | Bilingual Rubrics Synchronization | Switching language between `es` and `en` updates liturgical dialogues while preserving scripture readings. |
-
-### 3.3 5-Tier Regression Matrix Targets
-
-| Tier | Focus Area | Target Test Count | Expected Pass Rate | Execution Time |
-|---|---|:---:|:---:|:---:|
-| **Tier 1** | **Feature Coverage (RF-01 to RF-10)** | $\ge 75$ tests | 100% | $\le 30\text{ms}$ |
-| **Tier 2** | **Boundary & Corner Cases** | $\ge 65$ tests | 100% | $\le 25\text{ms}$ |
-| **Tier 3** | **Cross-Feature Pairwise Combinations** | $\ge 23$ tests | 100% | $\le 15\text{ms}$ |
-| **Tier 4** | **Real-World User Journeys** | $\ge 13$ tests | 100% | $\le 15\text{ms}$ |
-| **Tier 5** | **Adversarial Stress & Hardening** | $\ge 13$ tests | 100% | $\le 15\text{ms}$ |
-| **TOTAL** | **Comprehensive Regression Suite** | **$\ge 189$ Tests** | **100% PASS** | **$\le 100\text{ms}$** |
+| Task ID | Task Title & Summary | Traceability | Inputs | Target Files | Verification Command | Dependencies | Status |
+|---|---|---|---|---|---|---|:---:|
+| `TASK-M2-01` | **Scaffold Subproject 1 Package Structure**<br>Initialize `subprojects/spanish-mass-readings` with `package.json` (`name: "spanish-mass-readings"`, `version: "2026.09.0"`, `type: "module"`), `tsconfig.json`, and directory layout. | `REQ-FUN-SCR-06`, `REQ-NFR-MNT-01` | `node_modules/catholic-mass-readings/package.json` | `subprojects/spanish-mass-readings/package.json`, `subprojects/spanish-mass-readings/tsconfig.json` | `node -e 'const pkg=JSON.parse(fs.readFileSync("subprojects/spanish-mass-readings/package.json")); assert.equal(pkg.version, "2026.09.0");'` | `TASK-M1-05` | `[ ]` PLANNED |
+| `TASK-M2-02` | **Implement Data Models, Enums & Error Hierarchy**<br>Define `Mass`, `Section`, `Reading`, `Verse`, `SectionType`, `SerializedMass`, and custom errors (`USCCBParseError`, etc.). | `REQ-FUN-SCR-03` | `guadalupe/src/types/catholic-mass-readings.ts` | `subprojects/spanish-mass-readings/src/models.ts`, `subprojects/spanish-mass-readings/src/errors.ts` | `npx tsc --noEmit -p subprojects/spanish-mass-readings` | `TASK-M2-01` | `[ ]` PLANNED |
+| `TASK-M2-03` | **Implement HTTP Client & Obolus PoW Challenge Solver**<br>Extract and implement `HttpClient` and `obolus.ts` to solve USCCB Pantheon/Varnish bot challenges and manage cookies. | `REQ-FUN-SCR-04`, `REQ-NFR-PERF-01` | `catholic-mass-readings/dist/obolus.js` | `subprojects/spanish-mass-readings/src/http.ts`, `subprojects/spanish-mass-readings/src/obolus.ts` | `node subprojects/spanish-mass-readings/tests/test-obolus.mjs` | `TASK-M2-02` | `[ ]` PLANNED |
+| `TASK-M2-04` | **Implement Spanish HTML Lectionary Parser**<br>Implement Cheerio plain-text `.address` citation parsing and Spanish header classification (`sectionTypeFromHeaderEs`). | `REQ-FUN-SCR-01`, `REQ-FUN-SCR-02`, `REQ-FUN-SCR-03` | Survey 3 specifications, `guadalupe/src/lib/readings-adapter.ts` | `subprojects/spanish-mass-readings/src/usccb-spanish.ts`, `subprojects/spanish-mass-readings/src/constants.ts` | `node subprojects/spanish-mass-readings/tests/test-parser.mjs` | `TASK-M2-03` | `[ ]` PLANNED |
+| `TASK-M2-05` | **Implement CLI Executable & Barrel Exports**<br>Create `bin/cli.ts` (using Commander) and `src/index.ts` central export. | `REQ-FUN-SCR-05` | `catholic-mass-readings/dist/cli.js` | `subprojects/spanish-mass-readings/bin/cli.ts`, `subprojects/spanish-mass-readings/src/index.ts` | `node subprojects/spanish-mass-readings/bin/cli.js get-mass --date 2026-09-10 --citations-only` | `TASK-M2-04` | `[ ]` PLANNED |
+| `TASK-M2-06` | **Unit Test Suite for Subproject 1**<br>Implement comprehensive test suite verifying schema adherence, offline fixtures, plain-text citations, and Obolus PoW. | `REQ-FUN-SCR-01`..`05` | `guadalupe/src/data/spanish_readings_2026_09_10.json` | `subprojects/spanish-mass-readings/tests/` | `npm run test:subproject1` | `TASK-M2-05` | `[ ]` PLANNED |
 
 ---
 
-## 4. Requirements Traceability Matrix (RTM)
+### Milestone M3: Subproject 2 Transcript Mining & Curation Tool
+- **Objective**: Build `subprojects/mass-transcript-miner` to ingest YouTube transcripts and curate chat-aligned liturgical dialogues.
+- **Milestone Status**: `[ ]` PLANNED
 
-| Requirement ID | Requirement Description | Milestone Task | Affected Source Files | Primary Verification Test |
-|---|---|---|---|---|
-| **RF-01** | Food Prayers Transcription | `TSK-M1-01` | `src/data/oracionesData.ts` | Tier 1: `T1-R1-01` to `T1-R1-05` |
-| **RF-02** | Auto-Day Selection & Decks | `TSK-M1-03` | `src/app/LandingClient.tsx` | Tier 1: `T1-R2-01` to `T1-R2-05` |
-| **RF-03** | Infinite Swipe Animations | `TSK-M2-01` | `src/app/LandingClient.tsx`, `global.css` | Tier 1: `T1-R3-01` to `T1-R3-05` |
-| **RF-04** | Dynamic Color Tones | `TSK-M2-03` | `src/app/LandingClient.tsx`, `global.css` | Tier 1: `T1-R4-01` to `T1-R4-05` |
-| **RF-05** | Global Long-Press Tooltips | `TSK-M3-01` | `src/utils/useLongPress.ts`, `global.css` | Tier 1: `T1-R5-01` to `T1-R5-05` |
-| **RF-06** | Event OG Images & Modals | `TSK-M4-01` | `src/app/api/og/route.tsx`, `calendario/` | Tier 1: `T1-R6-01` to `T1-R6-05` |
-| **RF-07** | Rosary UI & Top Counter | `TSK-M5-01` | `src/data/oracionesData.ts`, `LandingClient.tsx` | Tier 1: `T1-R7-01` to `T1-R7-05` |
-| **RF-08.1** | Daily Scraper API (`catholic-mass-readings`) | `TSK-M6-01` | `src/app/api/mass-readings/route.ts` | Tier 1: `T1-R8-01` to `T1-R8-05`, `UT-SCR-01..08` |
-| **RF-08.2** | Canonical UI Injection | `TSK-M6-02`, `TSK-M6-03`, `TSK-M6-04` | `src/app/LandingClient.tsx`, `massResponses.ts` | Tier 1: `T1-R8-06` to `T1-R8-10`, `IT-UI-01..03` |
-| **RF-08.3** | Direct Access & Auto-fetch | `TSK-M6-05` | `src/app/LandingClient.tsx` | Tier 1: `T1-R8-11` to `T1-R8-15`, `IT-UI-04..06` |
-| **RF-09** | Misas de Precepto & Calendar | `TSK-M7-01` | `src/data/preceptoData.ts`, `calendarExport.ts` | Tier 1: `T1-R9-01` to `T1-R9-05` |
-| **RF-10** | Autonomous Commits & Tags | `TSK-M9-01` | Git repository, `docs/tasks.md` | Tier 1: `T1-R10-01` to `T1-R10-05` |
+| Task ID | Task Title & Summary | Traceability | Inputs | Target Files | Verification Command | Dependencies | Status |
+|---|---|---|---|---|---|---|:---:|
+| `TASK-M3-01` | **Scaffold Subproject 2 Structure & Ingest Raw YouTube Transcript**<br>Set up `subprojects/mass-transcript-miner` and copy `guadalupe_transcript_2026_09_10.json` (video `EkoysbFU47c`). | `REQ-FUN-MIN-01`, `REQ-FUN-EXT-01` | `guadalupe/src/data/guadalupe_transcript_2026_09_10.json` | `subprojects/mass-transcript-miner/package.json`, `subprojects/mass-transcript-miner/data/raw_transcript_EkoysbFU47c.json` | `node -e 'assert(fs.existsSync("subprojects/mass-transcript-miner/data/raw_transcript_EkoysbFU47c.json"))'` | `TASK-M1-05` | `[ ]` PLANNED |
+| `TASK-M3-02` | **Implement 10 Roman Rite Step Segmenter**<br>Classify cues into 10 canonical steps (Rito Inicial through Rito de Conclusión) with timestamp boundaries. | `REQ-FUN-MIN-02` | `guadalupe/src/lib/seguir-misa-engine.ts` | `subprojects/mass-transcript-miner/src/segmenter.ts` | `node subprojects/mass-transcript-miner/tests/test-segmenter.mjs` | `TASK-M3-01` | `[ ]` PLANNED |
+| `TASK-M3-03` | **Implement 18 Dialogue Pairs Matching & RejoiceInFaith Curation**<br>Pair celebrant prompts with standard English and Spanish assembly responses from `rejoiceinfaith.org`. | `REQ-FUN-MIN-03` | `guadalupe/src/data/liturgical_catalog_guadalupe.json` | `subprojects/mass-transcript-miner/src/dialogue-matcher.ts` | `node subprojects/mass-transcript-miner/tests/test-dialogue.mjs` | `TASK-M3-02` | `[ ]` PLANNED |
+| `TASK-M3-04` | **Implement Chat-Style Alignment Logic (Priest Right vs Public Left)**<br>Assign `isLeft: false` to celebrant sayings and `isLeft: true` to assembly responses. | `REQ-FUN-MIN-04` | Survey 1, 2, 3 alignment specifications | `subprojects/mass-transcript-miner/src/chat-formatter.ts` | `node subprojects/mass-transcript-miner/tests/test-alignment.mjs` | `TASK-M3-03` | `[ ]` PLANNED |
+| `TASK-M3-05` | **Export Curated Liturgical Catalog to Host App**<br>Execute curation pipeline to emit `src/data/liturgical_catalog_guadalupe.json`. | `REQ-FUN-MIN-05` | Mining engine output | `src/data/liturgical_catalog_guadalupe.json` | `node -e 'const cat=JSON.parse(fs.readFileSync("src/data/liturgical_catalog_guadalupe.json")); assert.equal(cat.steps.length, 10);'` | `TASK-M3-04` | `[ ]` PLANNED |
 
 ---
 
-## 5. Configuration Management & Release Tagging
+### Milestone M4: Host Application Integration & Dual-Scraper Routing
+- **Objective**: Connect both subprojects into `lapandilladejesusqro.org`, upgrading the API route and UI.
+- **Milestone Status**: `[ ]` PLANNED
 
-### 5.1 Conventional Commit Convention
-- Types: `feat`, `fix`, `docs`, `test`, `refactor`, `chore`.
-- Scopes: `docs`, `api-scraper`, `canonical-ui`, `direct-mass`, `testing`, `release`.
+| Task ID | Task Title & Summary | Traceability | Inputs | Target Files | Verification Command | Dependencies | Status |
+|---|---|---|---|---|---|---|:---:|
+| `TASK-M4-01` | **Configure Workspace & Path Aliases in Host App**<br>Add `workspaces: ["subprojects/*"]` in root `package.json` and `"spanish-mass-readings"` path alias in `tsconfig.json`. | `REQ-NFR-MNT-01` | Subproject 1 path | `package.json`, `tsconfig.json` | `npx tsc --noEmit` | `TASK-M2-05` | `[ ]` PLANNED |
+| `TASK-M4-02` | **Upgrade `/api/mass-readings/route.ts` for Bilingual Routing**<br>Route `lang=es` to `USCCBSpanish`, `lang=en` to `catholic-mass-readings`, and support `lang=both`. Maintain fallback resilience. | `REQ-FUN-INT-01`, `REQ-FUN-INT-02` | `USCCBSpanish`, `USCCB`, `MassReadingsResponse` | `src/app/api/mass-readings/route.ts` | `curl -s "http://localhost:3000/api/mass-readings?lang=es" \| grep "1 Corintios"` | `TASK-M4-01` | `[ ]` PLANNED |
+| `TASK-M4-03` | **Update `LandingClient.tsx` for Seamless Dynamic Language Switch**<br>Ensure language toggle re-fetches `/api/mass-readings?lang=` and updates state without React errors. | `REQ-FUN-INT-03` | `MassReadingsResponse` | `src/app/LandingClient.tsx` | `node scripts/test-e2e.mjs` | `TASK-M4-02` | `[ ]` PLANNED |
+| `TASK-M4-04` | **Verify Chat-Style Alignment Rendering in `AppleMusicLyrics.tsx`**<br>Verify celebrant lines render with `.duet-right` (right aligned) and assembly lines render with `.duet-left` (left aligned). | `REQ-FUN-INT-04`, `REQ-NFR-USA-01` | `liturgical_catalog_guadalupe.json`, `global.css` | `src/app/AppleMusicLyrics.tsx`, `src/app/global.css` | `node scripts/verify-chat-alignment.mjs` | `TASK-M3-05`, `TASK-M4-03` | `[ ]` PLANNED |
 
-### 5.2 Release Tagging Roadmap
+---
+
+### Milestone M5: Multi-Tier Verification & Adversarial Testing
+- **Objective**: Validate the integrated platform across unit, integration, end-to-end, and viewport stress suites.
+- **Milestone Status**: `[ ]` PLANNED
+
+| Task ID | Task Title & Summary | Traceability | Inputs | Target Files | Verification Command | Dependencies | Status |
+|---|---|---|---|---|---|---|:---:|
+| `TASK-M5-01` | **Run Subproject 1 & 2 Automated Test Suites**<br>Verify all unit tests pass in both subprojects with zero failures. | `REQ-FUN-SCR-01`..`05`, `REQ-FUN-MIN-01`..`05` | Test suites in subprojects | `subprojects/*/tests/` | `npm run test:subprojects` | `TASK-M2-06`, `TASK-M3-05` | `[ ]` PLANNED |
+| `TASK-M5-02` | **Execute Host E2E Test Harness (5 Tiers)**<br>Execute `scripts/test-e2e.mjs` ensuring all feature tiers, boundaries, user journeys, and fuzzing pass 100%. | All REQ-FUN-INT | Test runner | `scripts/test-e2e.mjs` | `node scripts/test-e2e.mjs` | `TASK-M4-04` | `[ ]` PLANNED |
+| `TASK-M5-03` | **Execute Mobile Viewport Stress & Scroll Suites**<br>Execute `adversarial-mobile-viewport-suite.mjs` (21 viewports) and `modal-scroll-stress-suite.mjs`. | `REQ-NFR-USA-02` | Viewport test runners | `scripts/*.mjs` | `node scripts/adversarial-mobile-viewport-suite.mjs && node scripts/modal-scroll-stress-suite.mjs` | `TASK-M4-04` | `[ ]` PLANNED |
+| `TASK-M5-04` | **Execute Strict TypeScript Compilation & Production Build**<br>Verify `tsc --noEmit` and `npm run build` succeed with exit code 0. | `REQ-NFR-MNT-01` | Entire workspace | All sources | `npx tsc --noEmit && npm run build` | `TASK-M5-02` | `[ ]` PLANNED |
+
+---
+
+### Milestone M6: Release Engineering, CalVer Tagging & GitHub CLI Publication
+- **Objective**: Initialize Subproject 1 Git repo, create public GitHub repository via `gh`, tag `2026.09.0`, and audit.
+- **Milestone Status**: `[ ]` PLANNED
+
+| Task ID | Task Title & Summary | Traceability | Inputs | Target Files | Verification Command | Dependencies | Status |
+|---|---|---|---|---|---|---|:---:|
+| `TASK-M6-01` | **Initialize Git Repository in Subproject 1**<br>Execute `git init -b main`, configure local git user, stage files, and create initial commit. Ensure parent `.gitignore` ignores `subprojects/spanish-mass-readings/.git`. | `REQ-FUN-SCR-06` | Subproject 1 directory | `subprojects/spanish-mass-readings/.git`, `.gitignore` | `cd subprojects/spanish-mass-readings && git status` | `TASK-M5-04` | `[ ]` PLANNED |
+| `TASK-M6-02` | **Create Public GitHub Repository & Push via `gh` CLI**<br>Execute `gh repo create spanish-mass-readings --public --source=. --remote=origin --push`. | `REQ-FUN-SCR-06` | GitHub CLI auth | GitHub remote repository | `gh repo view riosisraelg/spanish-mass-readings --json name,visibility` | `TASK-M6-01` | `[ ]` PLANNED |
+| `TASK-M6-03` | **Apply Calendar Versioning (CalVer) Git Tag `2026.09.0`**<br>Create annotated git tag `git tag -a 2026.09.0 -m "Release 2026.09.0"` and push to origin. | `REQ-FUN-SCR-06` | Git commit on main | Git tag metadata | `cd subprojects/spanish-mass-readings && git tag --points-at HEAD` | `TASK-M6-02` | `[ ]` PLANNED |
+| `TASK-M6-04` | **Run Automated Acceptance Verification Script**<br>Execute shell script verifying all 5 user acceptance criteria: Spanish scraper test, Git/gh/CalVer tag, mining tool dialogue output, dual-scraper host API call, and extraction review. | All Acceptance Criteria | Verification script | `scripts/verify-all-acceptance.sh` | `bash scripts/verify-all-acceptance.sh` | `TASK-M6-03` | `[ ]` PLANNED |
+| `TASK-M6-05` | **Final Forensic Audit & Sign-off**<br>Independent verification by Forensic Auditor confirming zero hardcoded dummy facades and 100% genuine execution. | Integrity Mandate | All deliverables and test logs | `.agents/teamwork_preview_worker_m1/handoff.md` | Audit verification checklist | `TASK-M6-04` | `[ ]` PLANNED |
+
+---
+
+## 3. Atomic Verification Commands Quick Reference
+
+```bash
+# 1. Verify Subproject 1 Package Version:
+node -e 'const pkg=JSON.parse(fs.readFileSync("subprojects/spanish-mass-readings/package.json")); assert.equal(pkg.version, "2026.09.0"); console.log("✓ CalVer 2026.09.0 verified in package.json");'
+
+# 2. Verify Subproject 1 Git & Tag Status:
+cd subprojects/spanish-mass-readings && git status && git remote -v && git tag -l "2026.09.0"
+
+# 3. Verify Subproject 2 Output:
+node -e 'const cat=JSON.parse(fs.readFileSync("src/data/liturgical_catalog_guadalupe.json")); assert.equal(cat.steps.length, 10); console.log("✓ Liturgical catalog contains 10 canonical steps");'
+
+# 4. Verify Host Application TypeScript Compilation:
+npx tsc --noEmit
+
+# 5. Verify Host Application E2E Suite:
+node scripts/test-e2e.mjs
+
+# 6. Verify Mobile Viewport Stability:
+node scripts/adversarial-mobile-viewport-suite.mjs
+node scripts/modal-scroll-stress-suite.mjs
 ```
-v1.0.0-m0.docs-standards     -> Foundational ISO 42010, ISO 29148, ISO 12207 manuals
-v1.1.0-m1.scraper-overhaul   -> Scraper API engine with complete psalm stanzas, alleluia, and entity decoding
-v1.1.0-m2.canonical-ui       -> Obsolete accordion removed, sequential injection in Liturgia de la Palabra
-v1.1.0-m3.direct-mass        -> Direct Mass launcher and mount auto-fetch
-v1.1.0-m4.e2e-verified       -> 100% passing across ≥189 automated test assertions
-v1.1.0                       -> Official production release of upgraded Mass Readings platform
-```
+
+---
+*End of ISO/IEC/IEEE 12207:2017 Software Life Cycle Task Plan & Execution Matrix.*

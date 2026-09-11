@@ -40,3 +40,6 @@ dist-ssr/
 .env.production.local
 .vercel
 *.tsbuildinfo
+
+# Subproject Standalone Git Repositories
+/subprojects/spanish-mass-readings/.git

@@ -765,7 +765,7 @@ export default function Landing() {
   const [selectedMexicanHymn, setSelectedMexicanHymn] = useState<string>('gloriaMejia');
 
   const fetchDailyReadings = useCallback(async (force = false) => {
-    if (dailyReadings && !force) return;
+    if (dailyReadings && !force && dailyReadings.language === guiaLang) return;
     setIsLoadingReadings(true);
     try {
       const res = await fetch('/api/mass-readings?lang=' + guiaLang);
