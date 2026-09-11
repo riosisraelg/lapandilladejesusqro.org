@@ -1,0 +1,3 @@
+[submodule "subprojects/spanish-mass-readings"]
+	path = subprojects/spanish-mass-readings
+	url = https://github.com/riosisraelg/spanish-mass-readings.git
