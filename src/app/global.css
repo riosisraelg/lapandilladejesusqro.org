@@ -38,7 +38,15 @@ body.landing-body {
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
+html, body { 
+  max-width: 100%; 
+  overflow-x: hidden; 
+}
+html { 
+  scroll-behavior: smooth;
+  text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+}
 
 @keyframes gradientBgAnimation {
   0% { background-position: 0% 50%; }
@@ -47,6 +55,8 @@ html { scroll-behavior: smooth; }
 }
 
 body.landing-body {
+  width: 100%;
+  min-height: 100vh;
   background: linear-gradient(
     -45deg, 
     var(--cream), 
@@ -57,7 +67,6 @@ body.landing-body {
   background-size: 400% 400%;
   animation: gradientBgAnimation 25s ease infinite;
   color: var(--text-body);
-  overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
 
