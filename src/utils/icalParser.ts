@@ -124,20 +124,17 @@ const parseDateTime = (dtStr: string): { date: string; time: string; jsDate?: Da
   let timePart = `${hh}:${mm}`;
   let jsDate: Date | undefined;
 
-  // If it ends with Z (UTC time), parse it as a standard Date object to convert to the user's browser timezone!
+  // If it ends with Z (UTC time), parse it as a standard Date object to convert to Mexico City timezone.
+  // This ensures IDs match between the client browser and the Next.js server (which often defaults to UTC).
   if (raw.endsWith("Z")) {
     const utcISO = `${y}-${m}-${d}T${hh}:${mm}:${ss}Z`;
     const dateObj = new Date(utcISO);
     if (!isNaN(dateObj.getTime())) {
       jsDate = dateObj;
-      const localHH = String(dateObj.getHours()).padStart(2, "0");
-      const localMM = String(dateObj.getMinutes()).padStart(2, "0");
-      timePart = `${localHH}:${localMM}`;
+      const dateStr = dateObj.toLocaleDateString('en-CA', { timeZone: 'America/Mexico_City' }); // YYYY-MM-DD
+      timePart = dateObj.toLocaleTimeString('en-GB', { timeZone: 'America/Mexico_City', hour: '2-digit', minute: '2-digit' }); // HH:MM
       
-      const localY = dateObj.getFullYear();
-      const localM = String(dateObj.getMonth() + 1).padStart(2, "0");
-      const localD = String(dateObj.getDate()).padStart(2, "0");
-      return { date: `${localY}-${localM}-${localD}`, time: timePart, jsDate };
+      return { date: dateStr, time: timePart, jsDate };
     }
   }
 
